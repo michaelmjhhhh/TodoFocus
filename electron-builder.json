@@ -1,0 +1,58 @@
+{
+  "appId": "com.zen.todo",
+  "productName": "zen.",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "electron/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": ".next/standalone",
+      "to": "standalone",
+      "filter": ["**/*"]
+    },
+    {
+      "from": ".next/static",
+      "to": "standalone/.next/static",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "public",
+      "to": "standalone/public",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "prisma",
+      "to": "prisma",
+      "filter": ["schema.prisma", "migrations/**/*"]
+    },
+    {
+      "from": "node_modules/.prisma",
+      "to": "prisma-engine",
+      "filter": ["**/*"]
+    }
+  ],
+  "mac": {
+    "target": ["dmg", "zip"],
+    "icon": "public/icon.icns",
+    "category": "public.app-category.productivity",
+    "darkModeSupport": true
+  },
+  "win": {
+    "target": ["nsis", "zip"],
+    "icon": "public/icon.ico"
+  },
+  "linux": {
+    "target": ["AppImage", "deb"],
+    "icon": "public/icon.png",
+    "category": "Office"
+  },
+  "npmRebuild": true,
+  "asar": true,
+  "asarUnpack": [
+    "**/node_modules/better-sqlite3/**",
+    "**/node_modules/@prisma/**"
+  ]
+}

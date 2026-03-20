@@ -1,13 +1,18 @@
 {
-  "name": "todo_focus",
+  "name": "zen-todo",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "setup": "cp -n .env.example .env 2>/dev/null; npx prisma migrate dev && npx prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "electron:dev": "concurrently -n next,electron -c cyan,yellow \"next dev\" \"wait-on http://127.0.0.1:3000 && NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && electron-builder --mac",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
     "@electron/get": "^4.0.2",
@@ -28,10 +33,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "concurrently": "^9.2.1",
+    "electron": "^35.2.1",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "prisma": "^7.5.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.4"
   }
 }
