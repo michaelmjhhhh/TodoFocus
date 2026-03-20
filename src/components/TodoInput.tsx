@@ -4,7 +4,17 @@ import { useRef, useTransition } from "react";
 import { addTodo } from "@/actions/todos";
 import { Plus } from "lucide-react";
 
-export function TodoInput() {
+interface TodoInputProps {
+  listId?: string;
+  isMyDay?: boolean;
+  placeholder?: string;
+}
+
+export function TodoInput({
+  listId,
+  isMyDay,
+  placeholder = "Add a task...",
+}: TodoInputProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
@@ -23,49 +33,32 @@ export function TodoInput() {
   }
 
   return (
-    <form
-      ref={formRef}
-      action={handleSubmit}
-      className="group relative"
-    >
-      <input
-        ref={inputRef}
-        type="text"
-        name="title"
-        placeholder="what needs your attention..."
-        autoComplete="off"
-        disabled={isPending}
-        className={`
-          w-full px-5 py-4 
-          bg-white/60 backdrop-blur-sm
-          border border-transparent
-          rounded-xl
-          text-[var(--zen-text)] placeholder:text-[var(--zen-accent)]
-          font-light tracking-wide
-          transition-all duration-300 ease-out
-          focus:outline-none focus:border-[var(--zen-accent-soft)]
-          focus:bg-white focus:shadow-[var(--zen-shadow-md)]
-          hover:bg-white/80
-          disabled:opacity-50
-        `}
-      />
-      <button
-        type="submit"
-        disabled={isPending}
-        aria-label="Add todo"
-        className={`
-          absolute right-3 top-1/2 -translate-y-1/2
-          p-2 rounded-lg
-          text-[var(--zen-accent)]
-          transition-all duration-200
-          hover:text-[var(--zen-text)] hover:bg-[var(--zen-border)]/50
-          focus-visible:outline-2 focus-visible:outline-[var(--zen-accent)]
-          disabled:opacity-30
-          cursor-pointer
-        `}
-      >
-        <Plus size={18} strokeWidth={1.5} />
-      </button>
+    <form ref={formRef} action={handleSubmit} className="relative">
+      <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[var(--zen-surface)] border border-[var(--zen-border)] hover:border-[var(--zen-text-muted)] focus-within:border-[var(--zen-accent)] transition-colors">
+        <Plus
+          size={16}
+          strokeWidth={1.5}
+          className="text-[var(--zen-text-muted)] flex-shrink-0"
+        />
+        <input
+          ref={inputRef}
+          type="text"
+          name="title"
+          placeholder={placeholder}
+          autoComplete="off"
+          disabled={isPending}
+          className="
+            w-full bg-transparent text-[13px]
+            text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)]
+            focus:outline-none
+            disabled:opacity-50
+          "
+        />
+        {listId ? <input type="hidden" name="listId" value={listId} /> : null}
+        {isMyDay ? (
+          <input type="hidden" name="isMyDay" value="true" />
+        ) : null}
+      </div>
     </form>
   );
 }
