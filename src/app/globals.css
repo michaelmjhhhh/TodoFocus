@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/* ─── Zen Design Tokens ─── */
+:root {
+  --zen-bg: #F8FAFC;
+  --zen-text: #1E293B;
+  --zen-text-muted: #64748B;
+  --zen-accent: #94A3B8;
+  --zen-accent-soft: #CBD5E1;
+  --zen-border: #E2E8F0;
+  --zen-surface: #FFFFFF;
+  --zen-shadow-sm: 0 1px 3px rgba(148, 163, 184, 0.12), 0 1px 2px rgba(148, 163, 184, 0.08);
+  --zen-shadow-md: 0 4px 12px rgba(148, 163, 184, 0.1), 0 2px 4px rgba(148, 163, 184, 0.06);
+  --zen-shadow-soft: 6px 6px 16px rgba(174, 190, 205, 0.2), -6px -6px 16px rgba(255, 255, 255, 0.7);
+  --zen-radius: 12px;
+  --zen-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-heading: "Lora", Georgia, serif;
+  --font-body: "Raleway", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--zen-bg);
+  --color-foreground: var(--zen-text);
+  --color-muted: var(--zen-text-muted);
+  --color-accent: var(--zen-accent);
+  --color-accent-soft: var(--zen-accent-soft);
+  --color-border: var(--zen-border);
+  --color-surface: var(--zen-surface);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+}
+
+/* ─── Base Styles ─── */
+body {
+  background-color: var(--zen-bg);
+  color: var(--zen-text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background-color: #CBD5E1;
+  color: #1E293B;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--zen-accent-soft);
+  border-radius: 3px;
+}
+
+/* ─── Focus States ─── */
+*:focus-visible {
+  outline: 2px solid var(--zen-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Smooth Transitions ─── */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
