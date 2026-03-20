@@ -6,16 +6,9 @@
   },
   "files": [
     "electron/**/*",
-    "package.json",
-    ".next/**/*",
-    "node_modules/**/*",
+    ".next/standalone/**/*",
     "prisma/**/*",
-    "!node_modules/.cache",
-    "!node_modules/**/*.md",
-    "!node_modules/**/test/**",
-    "!node_modules/**/tests/**",
-    "!node_modules/**/example/**",
-    "!node_modules/**/examples/**"
+    "package.json"
   ],
   "extraResources": [],
   "mac": {
@@ -34,5 +27,10 @@
     "category": "Office"
   },
   "npmRebuild": true,
-  "asar": false
+  "asar": true,
+  "asarUnpack": [
+    ".next/standalone/**",
+    "**/*.node",
+    "**/better-sqlite3/**"
+  ]
 }
