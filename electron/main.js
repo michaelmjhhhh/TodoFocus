@@ -125,8 +125,12 @@ async function startNextServer() {
 
   // Use Next standalone server entry.
   const serverPath = app.isPackaged
-    ? path.join(process.resourcesPath, "app", ".next", "standalone", "server.js")
+    ? path.join(process.resourcesPath, "app.asar.unpacked", ".next", "standalone", "server.js")
     : path.join(__dirname, "..", ".next", "standalone", "server.js");
+
+  if (!require("fs").existsSync(serverPath)) {
+    throw new Error(`Missing Next standalone server: ${serverPath}`);
+  }
 
   console.log("[electron] Starting Next.js from:", serverPath);
 
@@ -174,7 +178,7 @@ async function ensureDatabase() {
   process.env.DATABASE_URL = getDbUrl();
 
   const migrationsDir = app.isPackaged
-    ? path.join(process.resourcesPath, "app", "prisma", "migrations")
+    ? path.join(app.getAppPath(), "prisma", "migrations")
     : path.join(__dirname, "..", "prisma", "migrations");
 
   ensureDatabaseAtPath({ dbPath, migrationsDir });
@@ -202,7 +206,7 @@ app.whenReady().then(async () => {
   } catch (error) {
     const message = error instanceof Error ? error.stack || error.message : String(error);
     console.error("[electron] app startup failed:\n", message);
-    dialog.showErrorBox("Failed to start Zen", message);
+    dialog.showErrorBox("Failed to start TodoFocus", message);
     app.quit();
   }
 });

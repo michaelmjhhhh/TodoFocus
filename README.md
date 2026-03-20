@@ -82,6 +82,54 @@ npm run lint           # ESLint
 npx prisma studio      # Browse database in browser
 ```
 
+## Desktop Packaging (Electron)
+
+### Build rules we follow
+
+- Use **Next standalone output** only for packaging.
+- Keep `asar` enabled for smaller artifacts and faster distribution.
+- Unpack only native runtime files (`*.node`, `better-sqlite3`) via `asarUnpack`.
+- Include Prisma SQL migrations in the packaged app (`prisma/migrations/**/*`).
+- Before packaging, copy static assets into standalone:
+  - `.next/static` -> `.next/standalone/.next/static`
+  - `public` -> `.next/standalone/public`
+
+These rules are encoded in `package.json` scripts and `electron-builder.json`.
+
+### Commands
+
+```bash
+# Full build (mac targets configured in electron-builder)
+npm run electron:build
+
+# Fast local validation build (no full release workflow)
+npm run build
+npm run build:electron:assets
+CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never
+```
+
+### Quick DMG creation (fast path)
+
+When `dist-electron/mac-arm64/TodoFocus.app` already exists and works, create/replace a DMG directly:
+
+```bash
+hdiutil create -volname "TodoFocus" \
+  -srcfolder "dist-electron/mac-arm64/TodoFocus.app" \
+  -ov -format UDZO "dist-electron/TodoFocus-mac-arm64.dmg"
+```
+
+### Runtime and local data
+
+- App starts an internal Next.js server from `.next/standalone/server.js`.
+- On first launch, SQL migrations from `prisma/migrations` are applied automatically.
+- Local database path on macOS:
+  - `~/Library/Application Support/todofocus/todofocus.db`
+
+### Common issue and fix
+
+- If UI looks unstyled (plain HTML buttons/text), verify CSS endpoint is reachable from the app's internal port.
+- Typical root cause is stale app process/port conflict; restart app after killing old processes.
+
 ## License
 
 MIT
