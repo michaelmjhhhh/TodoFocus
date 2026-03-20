@@ -20,6 +20,7 @@ import {
   toggleImportant,
   toggleMyDay,
 } from "@/actions/todos";
+import { cn } from "@/lib/cn";
 
 interface Step {
   id: string;
@@ -56,7 +57,6 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
   const stepInputRef = useRef<HTMLInputElement>(null);
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
-  // Sync notes state when todo changes
   useEffect(() => {
     setNotes(todo.notes);
   }, [todo.notes]);
@@ -73,9 +73,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
 
   function handleDueDate(e: React.ChangeEvent<HTMLInputElement>) {
     startTransition(async () => {
-      await updateTodo(todo.id, {
-        dueDate: e.target.value || null,
-      });
+      await updateTodo(todo.id, { dueDate: e.target.value || null });
     });
   }
 
@@ -129,10 +127,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 24, opacity: 0 }}
       transition={{ duration: 0.15 }}
-      className="
-        w-[360px] h-screen flex flex-col
-        bg-[var(--zen-bg-secondary)] border-l border-[var(--zen-border)]
-      "
+      className="w-[360px] h-screen flex flex-col bg-[var(--zen-bg-secondary)] border-l border-[var(--zen-border)]"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-3">
@@ -154,30 +149,24 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
         <div className="flex gap-2">
           <button
             onClick={handleToggleMyDay}
-            className={`
-              flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium
-              transition-colors cursor-pointer border
-              ${
-                todo.isMyDay
-                  ? "border-[var(--zen-accent)] text-[var(--zen-accent)] bg-[var(--zen-accent-soft)]"
-                  : "border-[var(--zen-border)] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
-              }
-            `}
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer border",
+              todo.isMyDay
+                ? "border-[var(--zen-accent)] text-[var(--zen-accent)] bg-[var(--zen-accent-soft)]"
+                : "border-[var(--zen-border)] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
+            )}
           >
             <Sun size={13} strokeWidth={1.5} />
             My Day
           </button>
           <button
             onClick={handleToggleImportant}
-            className={`
-              flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium
-              transition-colors cursor-pointer border
-              ${
-                todo.isImportant
-                  ? "border-[var(--zen-warning)] text-[var(--zen-warning)] bg-[rgba(245,158,11,0.1)]"
-                  : "border-[var(--zen-border)] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
-              }
-            `}
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer border",
+              todo.isImportant
+                ? "border-[var(--zen-warning)] text-[var(--zen-warning)] bg-[rgba(245,158,11,0.1)]"
+                : "border-[var(--zen-border)] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
+            )}
           >
             <Star
               size={13}
@@ -204,18 +193,13 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
                   className="group flex items-center gap-2"
                 >
                   <button
-                    onClick={() =>
-                      handleToggleStep(step.id, !step.isCompleted)
-                    }
-                    className={`
-                      flex-shrink-0 w-4 h-4 rounded-full border-[1.5px]
-                      transition-all duration-100 cursor-pointer
-                      ${
-                        step.isCompleted
-                          ? "border-[var(--zen-accent)] bg-[var(--zen-accent)]"
-                          : "border-[var(--zen-text-muted)] hover:border-[var(--zen-accent)]"
-                      }
-                    `}
+                    onClick={() => handleToggleStep(step.id, !step.isCompleted)}
+                    className={cn(
+                      "relative flex-shrink-0 w-4 h-4 rounded-full border-[1.5px] transition-all duration-100 cursor-pointer",
+                      step.isCompleted
+                        ? "border-[var(--zen-accent)] bg-[var(--zen-accent)]"
+                        : "border-[var(--zen-text-muted)] hover:border-[var(--zen-accent)]"
+                    )}
                   >
                     {step.isCompleted ? (
                       <Check
@@ -226,11 +210,12 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
                     ) : null}
                   </button>
                   <span
-                    className={`flex-1 text-[13px] ${
+                    className={cn(
+                      "flex-1 text-[13px]",
                       step.isCompleted
                         ? "line-through text-[var(--zen-text-muted)]"
                         : "text-[var(--zen-text)]"
-                    }`}
+                    )}
                   >
                     {step.title}
                   </span>
@@ -257,11 +242,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
                 name="step"
                 placeholder="Add a step..."
                 autoComplete="off"
-                className="
-                  w-full py-1 bg-transparent text-[13px]
-                  text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)]
-                  focus:outline-none
-                "
+                className="w-full py-1 bg-transparent text-[13px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none"
               />
             </div>
           </form>
@@ -282,12 +263,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
               type="date"
               value={dueDateValue}
               onChange={handleDueDate}
-              className="
-                bg-[var(--zen-surface)] border border-[var(--zen-border)]
-                rounded-md px-3 py-1.5 text-[13px]
-                text-[var(--zen-text)]
-                focus:outline-none focus:border-[var(--zen-accent)]
-              "
+              className="bg-[var(--zen-surface)] border border-[var(--zen-border)] rounded-md px-3 py-1.5 text-[13px] text-[var(--zen-text)] focus:outline-none focus:border-[var(--zen-accent)]"
             />
             {dueDateValue ? (
               <button
@@ -315,13 +291,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
             onChange={(e) => handleNotesChange(e.target.value)}
             placeholder="Add notes..."
             rows={4}
-            className="
-              w-full bg-[var(--zen-surface)] border border-[var(--zen-border)]
-              rounded-lg px-3 py-2 text-[13px] leading-relaxed
-              text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)]
-              focus:outline-none focus:border-[var(--zen-accent)]
-              resize-none
-            "
+            className="w-full bg-[var(--zen-surface)] border border-[var(--zen-border)] rounded-lg px-3 py-2 text-[13px] leading-relaxed text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)] resize-none"
           />
         </div>
       </div>
@@ -329,17 +299,12 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
       {/* Footer */}
       <div className="px-4 py-3 border-t border-[var(--zen-border)] flex items-center justify-between">
         <span className="text-[11px] text-[var(--zen-text-muted)]">
-          Created {new Date(todo.updatedAt).toLocaleDateString()}
+          Created {new Date(todo.createdAt).toLocaleDateString()}
         </span>
         <button
           onClick={handleDelete}
           disabled={isPending}
-          className="
-            flex items-center gap-1.5 px-3 py-1.5 rounded-md
-            text-xs text-[var(--zen-danger)]
-            hover:bg-[var(--zen-danger-soft)]
-            transition-colors cursor-pointer
-          "
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-[var(--zen-danger)] hover:bg-[var(--zen-danger-soft)] transition-colors cursor-pointer"
         >
           <Trash2 size={13} strokeWidth={1.5} />
           Delete

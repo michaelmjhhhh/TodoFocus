@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { motion } from "framer-motion";
 import { toggleTodo, toggleImportant, deleteTodo } from "@/actions/todos";
 import { Star, X, Check, CalendarDays, ListChecks } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 interface Step {
   id: string;
@@ -98,13 +99,10 @@ export function TodoItem({
         opacity: { duration: 0.15 },
       }}
       onClick={() => onSelect(id)}
-      className={`
-        group flex items-start gap-3 px-4 py-3
-        rounded-lg cursor-pointer
-        transition-colors duration-100
-        hover:bg-[var(--zen-surface-hover)]
-        ${isPending ? "opacity-50" : ""}
-      `}
+      className={cn(
+        "group flex items-start gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors duration-100 hover:bg-[var(--zen-surface-hover)]",
+        isPending && "opacity-50"
+      )}
     >
       {/* Checkbox */}
       <button
@@ -112,17 +110,12 @@ export function TodoItem({
         onClick={handleToggle}
         disabled={isPending}
         aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
-        className={`
-          relative flex-shrink-0 mt-0.5
-          w-[18px] h-[18px] rounded-full
-          border-[1.5px] transition-all duration-150
-          cursor-pointer
-          ${
-            isCompleted
-              ? "border-[var(--zen-accent)] bg-[var(--zen-accent)]"
-              : "border-[var(--zen-text-muted)] hover:border-[var(--zen-accent)]"
-          }
-        `}
+        className={cn(
+          "relative flex-shrink-0 mt-0.5 w-[18px] h-[18px] rounded-full border-[1.5px] transition-all duration-150 cursor-pointer",
+          isCompleted
+            ? "border-[var(--zen-accent)] bg-[var(--zen-accent)]"
+            : "border-[var(--zen-text-muted)] hover:border-[var(--zen-accent)]"
+        )}
       >
         {isCompleted ? (
           <Check
@@ -136,15 +129,12 @@ export function TodoItem({
       {/* Content */}
       <div className="flex-1 min-w-0">
         <span
-          className={`
-            block text-[13px] leading-snug
-            transition-colors duration-150
-            ${
-              isCompleted
-                ? "line-through text-[var(--zen-text-muted)]"
-                : "text-[var(--zen-text)]"
-            }
-          `}
+          className={cn(
+            "block text-[13px] leading-snug transition-colors duration-150",
+            isCompleted
+              ? "line-through text-[var(--zen-text-muted)]"
+              : "text-[var(--zen-text)]"
+          )}
         >
           {title}
         </span>
@@ -160,11 +150,12 @@ export function TodoItem({
             ) : null}
             {dueDateInfo ? (
               <span
-                className={`flex items-center gap-1 text-[11px] ${
+                className={cn(
+                  "flex items-center gap-1 text-[11px]",
                   dueDateInfo.isOverdue
                     ? "text-[var(--zen-danger)]"
                     : "text-[var(--zen-text-muted)]"
-                }`}
+                )}
               >
                 <CalendarDays size={11} strokeWidth={1.5} />
                 {dueDateInfo.text}
@@ -185,20 +176,17 @@ export function TodoItem({
 
       {/* Right actions */}
       <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
-        {/* Star */}
         <button
           type="button"
           onClick={handleStar}
           disabled={isPending}
           aria-label={isImportant ? "Remove importance" : "Mark as important"}
-          className={`
-            p-1 rounded transition-colors duration-100 cursor-pointer
-            ${
-              isImportant
-                ? "text-[var(--zen-warning)]"
-                : "text-transparent group-hover:text-[var(--zen-text-muted)] hover:!text-[var(--zen-warning)]"
-            }
-          `}
+          className={cn(
+            "p-1 rounded transition-colors duration-100 cursor-pointer",
+            isImportant
+              ? "text-[var(--zen-warning)]"
+              : "text-transparent group-hover:text-[var(--zen-text-muted)] hover:!text-[var(--zen-warning)]"
+          )}
         >
           <Star
             size={14}
@@ -207,19 +195,12 @@ export function TodoItem({
           />
         </button>
 
-        {/* Delete */}
         <button
           type="button"
           onClick={handleDelete}
           disabled={isPending}
           aria-label="Delete todo"
-          className="
-            p-1 rounded
-            text-transparent
-            group-hover:text-[var(--zen-text-muted)]
-            hover:!text-[var(--zen-danger)] hover:bg-[var(--zen-danger-soft)]
-            transition-colors duration-100 cursor-pointer
-          "
+          className="p-1 rounded text-transparent group-hover:text-[var(--zen-text-muted)] hover:!text-[var(--zen-danger)] hover:bg-[var(--zen-danger-soft)] transition-colors duration-100 cursor-pointer"
         >
           <X size={14} strokeWidth={1.5} />
         </button>

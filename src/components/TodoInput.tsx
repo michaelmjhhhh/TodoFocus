@@ -47,12 +47,7 @@ export function TodoInput({
           placeholder={placeholder}
           autoComplete="off"
           disabled={isPending}
-          className="
-            w-full bg-transparent text-[13px]
-            text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)]
-            focus:outline-none
-            disabled:opacity-50
-          "
+          className="w-full bg-transparent text-[13px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none disabled:opacity-50"
         />
         {listId ? <input type="hidden" name="listId" value={listId} /> : null}
         {isMyDay ? (

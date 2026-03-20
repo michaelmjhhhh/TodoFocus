@@ -3,29 +3,28 @@
 
 /* ─── Dark Theme (default, Linear-style) ─── */
 :root {
-  --zen-bg: #0A0A0B;
-  --zen-bg-secondary: #111113;
-  --zen-surface: #18181B;
-  --zen-surface-hover: #1F1F23;
-  --zen-surface-active: #27272A;
+  --zen-bg: #09090B;
+  --zen-bg-secondary: #0F0F12;
+  --zen-surface: #16161A;
+  --zen-surface-hover: #1C1C22;
+  --zen-surface-active: #25252D;
   --zen-text: #ECECEF;
-  --zen-text-secondary: #A0A0AB;
-  --zen-text-muted: #63637A;
+  --zen-text-secondary: #A1A1AA;
+  --zen-text-muted: #52525B;
   --zen-accent: #8B5CF6;
-  --zen-accent-hover: #7C3AED;
-  --zen-accent-soft: rgba(139, 92, 246, 0.15);
-  --zen-border: #27272A;
-  --zen-border-subtle: #1F1F23;
-  --zen-danger: #EF4444;
-  --zen-danger-soft: rgba(239, 68, 68, 0.12);
-  --zen-success: #22C55E;
-  --zen-warning: #F59E0B;
-  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --zen-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --zen-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --zen-accent-hover: #A78BFA;
+  --zen-accent-soft: rgba(139, 92, 246, 0.12);
+  --zen-border: rgba(255, 255, 255, 0.06);
+  --zen-border-subtle: rgba(255, 255, 255, 0.03);
+  --zen-danger: #F87171;
+  --zen-danger-soft: rgba(248, 113, 113, 0.1);
+  --zen-success: #34D399;
+  --zen-warning: #FBBF24;
+  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --zen-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --zen-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
   --zen-radius: 8px;
   --zen-radius-lg: 12px;
-  --zen-transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -41,16 +40,16 @@
   --zen-text-muted: #A1A1AA;
   --zen-accent: #7C3AED;
   --zen-accent-hover: #6D28D9;
-  --zen-accent-soft: rgba(124, 58, 237, 0.1);
-  --zen-border: #E4E4E7;
-  --zen-border-subtle: #F4F4F5;
+  --zen-accent-soft: rgba(124, 58, 237, 0.08);
+  --zen-border: rgba(0, 0, 0, 0.08);
+  --zen-border-subtle: rgba(0, 0, 0, 0.04);
   --zen-danger: #DC2626;
-  --zen-danger-soft: rgba(220, 38, 38, 0.08);
+  --zen-danger-soft: rgba(220, 38, 38, 0.06);
   --zen-success: #16A34A;
   --zen-warning: #D97706;
-  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --zen-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --zen-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --zen-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --zen-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -63,7 +62,11 @@
   --font-sans: var(--font-body);
 }
 
-/* ─── Base Styles ─── */
+/* ─── Base ─── */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--zen-bg);
   color: var(--zen-text);
@@ -71,8 +74,11 @@ body {
   font-weight: 400;
   font-size: 14px;
   line-height: 1.6;
+  letter-spacing: -0.006em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 /* ─── Selection ─── */
@@ -89,20 +95,23 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--zen-border);
+  background: transparent;
   border-radius: 3px;
+  transition: background 0.2s;
 }
+*:hover > ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb:hover {
   background: var(--zen-text-muted);
 }
 
-/* ─── Focus States ─── */
+/* ─── Focus ─── */
 *:focus-visible {
   outline: 2px solid var(--zen-accent);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* ─── Input reset for dark mode ─── */
+/* ─── Input color scheme ─── */
 input, textarea {
   color-scheme: dark;
 }
@@ -111,7 +120,25 @@ input, textarea {
   color-scheme: light;
 }
 
-/* ─── Transitions ─── */
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Smooth global transitions ─── */
 * {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Placeholder animation ─── */
+input::placeholder, textarea::placeholder {
+  transition: opacity 0.2s ease;
+}
+input:focus::placeholder, textarea:focus::placeholder {
+  opacity: 0.4;
 }

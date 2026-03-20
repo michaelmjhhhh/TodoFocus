@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { createList, deleteList } from "@/actions/todos";
 import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/lib/cn";
 
 export type SmartList = "myday" | "important" | "planned" | "all";
 
@@ -59,6 +60,7 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
 
   function handleDeleteList(e: React.MouseEvent, id: string) {
     e.stopPropagation();
+    e.preventDefault();
     startTransition(async () => {
       await deleteList(id);
       if (activeView === id) onNavigate("all");
@@ -81,16 +83,12 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
           <button
             key={id}
             onClick={() => onNavigate(id)}
-            className={`
-              w-full flex items-center gap-3 px-3 py-2 rounded-lg
-              text-[13px] font-medium transition-colors duration-100
-              cursor-pointer
-              ${
-                activeView === id
-                  ? "bg-[var(--zen-accent-soft)] text-[var(--zen-accent)]"
-                  : "text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
-              }
-            `}
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-100 cursor-pointer",
+              activeView === id
+                ? "bg-[var(--zen-accent-soft)] text-[var(--zen-accent)]"
+                : "text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
+            )}
           >
             <Icon size={16} strokeWidth={1.5} />
             <span>{label}</span>
@@ -117,19 +115,20 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
         </div>
 
         {lists.map((list) => (
-          <button
+          <div
             key={list.id}
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigate(list.id)}
-            className={`
-              group w-full flex items-center gap-3 px-3 py-2 rounded-lg
-              text-[13px] font-medium transition-colors duration-100
-              cursor-pointer
-              ${
-                activeView === list.id
-                  ? "bg-[var(--zen-accent-soft)] text-[var(--zen-accent)]"
-                  : "text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
-              }
-            `}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") onNavigate(list.id);
+            }}
+            className={cn(
+              "group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-100 cursor-pointer",
+              activeView === list.id
+                ? "bg-[var(--zen-accent-soft)] text-[var(--zen-accent)]"
+                : "text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)]"
+            )}
           >
             <Hash size={14} strokeWidth={1.5} style={{ color: list.color }} />
             <span className="flex-1 text-left truncate">{list.name}</span>
@@ -140,17 +139,12 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
             ) : null}
             <button
               onClick={(e) => handleDeleteList(e, list.id)}
-              className="
-                opacity-0 group-hover:opacity-100
-                p-0.5 rounded text-[var(--zen-text-muted)]
-                hover:text-[var(--zen-danger)] hover:bg-[var(--zen-danger-soft)]
-                transition-all cursor-pointer
-              "
+              className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--zen-text-muted)] hover:text-[var(--zen-danger)] hover:bg-[var(--zen-danger-soft)] transition-all cursor-pointer"
               aria-label={`Delete list ${list.name}`}
             >
               <Trash2 size={12} strokeWidth={1.5} />
             </button>
-          </button>
+          </div>
         ))}
 
         {/* New list input */}
@@ -168,13 +162,7 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
               onKeyDown={(e) => {
                 if (e.key === "Escape") setIsAdding(false);
               }}
-              className="
-                w-full px-2 py-1.5 rounded-md
-                bg-[var(--zen-surface)] border border-[var(--zen-border)]
-                text-[13px] text-[var(--zen-text)]
-                placeholder:text-[var(--zen-text-muted)]
-                focus:outline-none focus:border-[var(--zen-accent)]
-              "
+              className="w-full px-2 py-1.5 rounded-md bg-[var(--zen-surface)] border border-[var(--zen-border)] text-[13px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
             />
           </form>
         ) : null}
