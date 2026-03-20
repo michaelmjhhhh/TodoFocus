@@ -1,4 +1,4 @@
-# zen.
+# TodoFocus
 
 A mindful todo app. Dark by default. Local-first with SQLite.
 

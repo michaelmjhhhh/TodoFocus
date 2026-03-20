@@ -1,20 +1,22 @@
-const { app, BrowserWindow, shell } = require("electron");
+const { app, BrowserWindow, shell, dialog } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
 const net = require("net");
+const { ensureDatabaseAtPath } = require("./database");
 
 // Keep a global reference of the window object to prevent GC
 let mainWindow = null;
 let nextProcess = null;
 
 const isDev = process.env.NODE_ENV === "development";
-const PORT = 3000;
+const DEFAULT_PORT = 3000;
+let serverPort = DEFAULT_PORT;
 
 // SQLite database path: use app's userData directory so it persists
 // across updates and is specific to this app
 function getDbPath() {
   const userDataPath = app.getPath("userData");
-  return path.join(userDataPath, "zen.db");
+  return path.join(userDataPath, "todofocus.db");
 }
 
 function getDbUrl() {
@@ -52,6 +54,34 @@ function waitForPort(port, timeout = 30000) {
     }
     check();
   });
+}
+
+function getAvailablePort(preferredPort) {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.unref();
+    server.on("error", (err) => {
+      reject(err);
+    });
+    server.listen(preferredPort, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        server.close(() => reject(new Error("Failed to resolve available port")));
+        return;
+      }
+      const { port } = address;
+      server.close(() => resolve(port));
+    });
+  });
+}
+
+async function resolveServerPort() {
+  if (isDev) return DEFAULT_PORT;
+  try {
+    return await getAvailablePort(DEFAULT_PORT);
+  } catch {
+    return await getAvailablePort(0);
+  }
 }
 
 function createWindow() {
@@ -93,17 +123,19 @@ async function startNextServer() {
     return;
   }
 
-  // In production, start the standalone Next.js server
-  const serverPath = path.join(
-    process.resourcesPath,
-    "standalone",
-    "server.js"
-  );
+  // Use Next standalone server entry.
+  const serverPath = app.isPackaged
+    ? path.join(process.resourcesPath, "app", ".next", "standalone", "server.js")
+    : path.join(__dirname, "..", ".next", "standalone", "server.js");
+
+  console.log("[electron] Starting Next.js from:", serverPath);
 
   nextProcess = spawn(process.execPath, [serverPath], {
+    cwd: path.dirname(serverPath),
     env: {
       ...process.env,
-      PORT: String(PORT),
+      ELECTRON_RUN_AS_NODE: "1",
+      PORT: String(serverPort),
       HOSTNAME: "127.0.0.1",
       NODE_ENV: "production",
       DATABASE_URL: getDbUrl(),
@@ -122,6 +154,10 @@ async function startNextServer() {
   nextProcess.on("error", (err) => {
     console.error("Failed to start Next.js server:", err);
   });
+
+  nextProcess.on("exit", (code, signal) => {
+    console.error(`[next] exited with code=${code} signal=${signal}`);
+  });
 }
 
 // Ensure the database directory exists and run migrations if needed
@@ -136,25 +172,39 @@ async function ensureDatabase() {
 
   // Set DATABASE_URL for the current process so Prisma picks it up
   process.env.DATABASE_URL = getDbUrl();
+
+  const migrationsDir = app.isPackaged
+    ? path.join(process.resourcesPath, "app", "prisma", "migrations")
+    : path.join(__dirname, "..", "prisma", "migrations");
+
+  ensureDatabaseAtPath({ dbPath, migrationsDir });
 }
 
 app.whenReady().then(async () => {
-  await ensureDatabase();
-  await startNextServer();
+  try {
+    await ensureDatabase();
+    serverPort = await resolveServerPort();
+    await startNextServer();
 
-  if (!isDev) {
-    await waitForPort(PORT);
-  }
-
-  createWindow();
-  mainWindow.loadURL(`http://127.0.0.1:${PORT}`);
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-      mainWindow.loadURL(`http://127.0.0.1:${PORT}`);
+    if (!isDev) {
+      await waitForPort(serverPort);
     }
-  });
+
+    createWindow();
+    mainWindow.loadURL(`http://127.0.0.1:${serverPort}`);
+
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+        mainWindow.loadURL(`http://127.0.0.1:${serverPort}`);
+      }
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.stack || error.message : String(error);
+    console.error("[electron] app startup failed:\n", message);
+    dialog.showErrorBox("Failed to start Zen", message);
+    app.quit();
+  }
 });
 
 app.on("window-all-closed", () => {

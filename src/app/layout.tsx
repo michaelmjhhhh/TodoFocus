@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "zen.",
+  title: "TodoFocus",
   description: "A mindful todo app",
 };
 
@@ -26,7 +26,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                var t = localStorage.getItem('zen-theme');
+                var t = localStorage.getItem('todofocus-theme');
                 if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
               })();
             `,

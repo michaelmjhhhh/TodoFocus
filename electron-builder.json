@@ -1,39 +1,23 @@
 {
-  "appId": "com.zen.todo",
-  "productName": "zen.",
+  "appId": "com.todofocus.app",
+  "productName": "TodoFocus",
   "directories": {
     "output": "dist-electron"
   },
   "files": [
-    "electron/**/*"
+    "electron/**/*",
+    "package.json",
+    ".next/**/*",
+    "node_modules/**/*",
+    "prisma/**/*",
+    "!node_modules/.cache",
+    "!node_modules/**/*.md",
+    "!node_modules/**/test/**",
+    "!node_modules/**/tests/**",
+    "!node_modules/**/example/**",
+    "!node_modules/**/examples/**"
   ],
-  "extraResources": [
-    {
-      "from": ".next/standalone",
-      "to": "standalone",
-      "filter": ["**/*"]
-    },
-    {
-      "from": ".next/static",
-      "to": "standalone/.next/static",
-      "filter": ["**/*"]
-    },
-    {
-      "from": "public",
-      "to": "standalone/public",
-      "filter": ["**/*"]
-    },
-    {
-      "from": "prisma",
-      "to": "prisma",
-      "filter": ["schema.prisma", "migrations/**/*"]
-    },
-    {
-      "from": "node_modules/.prisma",
-      "to": "prisma-engine",
-      "filter": ["**/*"]
-    }
-  ],
+  "extraResources": [],
   "mac": {
     "target": ["dmg", "zip"],
     "icon": "public/icon.icns",
@@ -50,9 +34,5 @@
     "category": "Office"
   },
   "npmRebuild": true,
-  "asar": true,
-  "asarUnpack": [
-    "**/node_modules/better-sqlite3/**",
-    "**/node_modules/@prisma/**"
-  ]
+  "asar": false
 }
