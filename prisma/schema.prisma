@@ -7,10 +7,40 @@ datasource db {
   provider = "sqlite"
 }
 
+model List {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("#6366F1")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  todos     Todo[]
+}
+
 model Todo {
   id          String   @id @default(cuid())
   title       String
   isCompleted Boolean  @default(false)
+  isImportant Boolean  @default(false)
+  isMyDay     Boolean  @default(false)
+  notes       String   @default("")
+  dueDate     DateTime?
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  list   List?   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String?
+
+  steps Step[]
+}
+
+model Step {
+  id          String  @id @default(cuid())
+  title       String
+  isCompleted Boolean @default(false)
+  sortOrder   Int     @default(0)
+
+  todo   Todo   @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  todoId String
 }

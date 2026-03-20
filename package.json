@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "cp -n .env.example .env 2>/dev/null; npx prisma migrate dev && npx prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

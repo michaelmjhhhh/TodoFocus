@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# zen.
 
-## Getting Started
+A mindful todo app. Dark by default. Local-first with SQLite.
 
-First, run the development server:
+Inspired by Microsoft Todo's feature set and Linear's aesthetic.
+
+## Features
+
+- **My Day / Important / Planned** -- smart lists that filter automatically
+- **Custom lists** -- create, rename, delete with color coding
+- **Subtasks (Steps)** -- break tasks into smaller pieces
+- **Due dates** -- with relative display (Today, Tomorrow, Overdue)
+- **Notes** -- per-task free-text notes with auto-save
+- **Dark / Light theme** -- toggle with persistence, dark by default
+- **Smooth animations** -- Framer Motion layout transitions throughout
+- **Local SQLite** -- all data stays on your machine, zero cloud dependency
+
+## Quick Start
 
 ```bash
+git clone https://github.com/michaelmjhhhh/TodoFocus.git
+cd TodoFocus
+npm install
+npm run setup
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+That's it. The `setup` script copies `.env.example` to `.env`, runs the database migration, and generates the Prisma client. The SQLite database file (`dev.db`) is created in the project root.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Requirements
 
-## Learn More
+- **Node.js** >= 18
+- **npm** >= 9
 
-To learn more about Next.js, take a look at the following resources:
+No external database needed. No API keys. No accounts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 16 (App Router, Server Actions) |
+| Styling | Tailwind CSS v4 |
+| Animation | Framer Motion |
+| Database | SQLite via Prisma v7 + better-sqlite3 |
+| Icons | Lucide React |
+| Font | Inter (via next/font) |
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  app/
+    globals.css        # Design tokens, dark/light theme
+    layout.tsx         # Root layout with ThemeProvider
+    page.tsx           # Server component, data fetching
+  actions/
+    todos.ts           # Server actions (all CRUD)
+  components/
+    AppShell.tsx        # 3-panel layout orchestrator
+    Sidebar.tsx         # Navigation (smart + custom lists)
+    TodoInput.tsx       # Task creation input
+    TodoList.tsx        # Animated task list
+    TodoItem.tsx        # Individual task row
+    TaskDetail.tsx      # Right panel (steps, notes, due date)
+    ThemeProvider.tsx    # Dark/light theme context
+    ThemeToggle.tsx     # Theme switch button
+  lib/
+    cn.ts              # clsx + tailwind-merge utility
+    db.ts              # Prisma client singleton
+prisma/
+  schema.prisma        # Data model (Todo, List, Step)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development
+
+```bash
+npm run dev            # Start dev server (localhost:3000)
+npm run build          # Production build
+npm run lint           # ESLint
+npx prisma studio      # Browse database in browser
+```
+
+## License
+
+MIT

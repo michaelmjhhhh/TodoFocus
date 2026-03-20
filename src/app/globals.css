@@ -1,22 +1,55 @@
-@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
-/* ─── Zen Design Tokens ─── */
+/* ─── Dark Theme (default, Linear-style) ─── */
 :root {
-  --zen-bg: #F8FAFC;
-  --zen-text: #1E293B;
-  --zen-text-muted: #64748B;
-  --zen-accent: #94A3B8;
-  --zen-accent-soft: #CBD5E1;
-  --zen-border: #E2E8F0;
+  --zen-bg: #09090B;
+  --zen-bg-secondary: #0F0F12;
+  --zen-surface: #16161A;
+  --zen-surface-hover: #1C1C22;
+  --zen-surface-active: #25252D;
+  --zen-text: #ECECEF;
+  --zen-text-secondary: #A1A1AA;
+  --zen-text-muted: #52525B;
+  --zen-accent: #8B5CF6;
+  --zen-accent-hover: #A78BFA;
+  --zen-accent-soft: rgba(139, 92, 246, 0.12);
+  --zen-border: rgba(255, 255, 255, 0.06);
+  --zen-border-subtle: rgba(255, 255, 255, 0.03);
+  --zen-danger: #F87171;
+  --zen-danger-soft: rgba(248, 113, 113, 0.1);
+  --zen-success: #34D399;
+  --zen-warning: #FBBF24;
+  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --zen-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --zen-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --zen-radius: 8px;
+  --zen-radius-lg: 12px;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Light Theme ─── */
+[data-theme="light"] {
+  --zen-bg: #FAFAFA;
+  --zen-bg-secondary: #F4F4F5;
   --zen-surface: #FFFFFF;
-  --zen-shadow-sm: 0 1px 3px rgba(148, 163, 184, 0.12), 0 1px 2px rgba(148, 163, 184, 0.08);
-  --zen-shadow-md: 0 4px 12px rgba(148, 163, 184, 0.1), 0 2px 4px rgba(148, 163, 184, 0.06);
-  --zen-shadow-soft: 6px 6px 16px rgba(174, 190, 205, 0.2), -6px -6px 16px rgba(255, 255, 255, 0.7);
-  --zen-radius: 12px;
-  --zen-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-heading: "Lora", Georgia, serif;
-  --font-body: "Raleway", system-ui, sans-serif;
+  --zen-surface-hover: #F4F4F5;
+  --zen-surface-active: #E4E4E7;
+  --zen-text: #18181B;
+  --zen-text-secondary: #52525B;
+  --zen-text-muted: #A1A1AA;
+  --zen-accent: #7C3AED;
+  --zen-accent-hover: #6D28D9;
+  --zen-accent-soft: rgba(124, 58, 237, 0.08);
+  --zen-border: rgba(0, 0, 0, 0.08);
+  --zen-border-subtle: rgba(0, 0, 0, 0.04);
+  --zen-danger: #DC2626;
+  --zen-danger-soft: rgba(220, 38, 38, 0.06);
+  --zen-success: #16A34A;
+  --zen-warning: #D97706;
+  --zen-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --zen-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --zen-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -24,52 +57,88 @@
   --color-foreground: var(--zen-text);
   --color-muted: var(--zen-text-muted);
   --color-accent: var(--zen-accent);
-  --color-accent-soft: var(--zen-accent-soft);
-  --color-border: var(--zen-border);
   --color-surface: var(--zen-surface);
+  --color-border: var(--zen-border);
   --font-sans: var(--font-body);
-  --font-serif: var(--font-heading);
 }
 
-/* ─── Base Styles ─── */
+/* ─── Base ─── */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--zen-bg);
   color: var(--zen-text);
   font-family: var(--font-body);
   font-weight: 400;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: -0.006em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 /* ─── Selection ─── */
 ::selection {
-  background-color: #CBD5E1;
-  color: #1E293B;
+  background-color: var(--zen-accent-soft);
+  color: var(--zen-text);
 }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
   width: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--zen-accent-soft);
+  background: transparent;
   border-radius: 3px;
+  transition: background 0.2s;
+}
+*:hover > ::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--zen-text-muted);
 }
 
-/* ─── Focus States ─── */
+/* ─── Focus ─── */
 *:focus-visible {
   outline: 2px solid var(--zen-accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* ─── Smooth Transitions ─── */
+/* ─── Input color scheme ─── */
+input, textarea {
+  color-scheme: dark;
+}
+[data-theme="light"] input,
+[data-theme="light"] textarea {
+  color-scheme: light;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Smooth global transitions ─── */
 * {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Placeholder animation ─── */
+input::placeholder, textarea::placeholder {
+  transition: opacity 0.2s ease;
+}
+input:focus::placeholder, textarea:focus::placeholder {
+  opacity: 0.4;
 }
