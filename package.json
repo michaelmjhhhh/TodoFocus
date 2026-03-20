@@ -1,15 +1,22 @@
 {
-  "name": "todo_focus",
+  "name": "todofocus",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "setup": "cp -n .env.example .env 2>/dev/null; npx prisma migrate dev && npx prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
+    "build:electron:assets": "mkdir -p .next/standalone/.next && rm -rf .next/standalone/.next/static .next/standalone/public && cp -R .next/static .next/standalone/.next/static && cp -R public .next/standalone/public",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "electron:dev": "concurrently -n next,electron -c cyan,yellow \"next dev\" \"wait-on http://127.0.0.1:3000 && NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && npm run build:electron:assets && electron-builder --mac",
+    "electron:build:win": "npm run build && npm run build:electron:assets && electron-builder --win",
+    "electron:build:linux": "npm run build && npm run build:electron:assets && electron-builder --linux"
   },
   "dependencies": {
+    "@electron/get": "^4.0.2",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "clsx": "^2.1.1",
@@ -27,10 +34,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "concurrently": "^9.2.1",
+    "electron": "^35.2.1",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "prisma": "^7.5.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.4"
   }
 }

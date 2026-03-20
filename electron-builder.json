@@ -1,0 +1,38 @@
+{
+  "appId": "com.todofocus.app",
+  "productName": "TodoFocus",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "electron/**/*",
+    "package.json",
+    ".next/**/*",
+    "node_modules/**/*",
+    "prisma/**/*",
+    "!node_modules/.cache",
+    "!node_modules/**/*.md",
+    "!node_modules/**/test/**",
+    "!node_modules/**/tests/**",
+    "!node_modules/**/example/**",
+    "!node_modules/**/examples/**"
+  ],
+  "extraResources": [],
+  "mac": {
+    "target": ["dmg", "zip"],
+    "icon": "public/icon.icns",
+    "category": "public.app-category.productivity",
+    "darkModeSupport": true
+  },
+  "win": {
+    "target": ["nsis", "zip"],
+    "icon": "public/icon.ico"
+  },
+  "linux": {
+    "target": ["AppImage", "deb"],
+    "icon": "public/icon.png",
+    "category": "Office"
+  },
+  "npmRebuild": true,
+  "asar": false
+}

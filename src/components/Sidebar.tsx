@@ -72,7 +72,7 @@ export function Sidebar({ lists, activeView, onNavigate }: SidebarProps) {
       {/* Header */}
       <div className="px-4 pt-5 pb-3 flex items-center justify-between">
         <h1 className="text-lg font-semibold tracking-tight text-[var(--zen-text)]">
-          zen.
+          TodoFocus.
         </h1>
         <ThemeToggle />
       </div>

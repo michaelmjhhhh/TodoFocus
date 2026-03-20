@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AnimatePresence } from "framer-motion";
 import { Sidebar, type SmartList } from "./Sidebar";
 import { TodoInput } from "./TodoInput";
 import { TodoList, type TodoData } from "./TodoList";
@@ -150,15 +149,13 @@ export function AppShell({ todos, lists }: AppShellProps) {
       </main>
 
       {/* Detail panel */}
-      <AnimatePresence>
-        {selectedTodo ? (
-          <TaskDetail
-            key={selectedTodo.id}
-            todo={selectedTodo}
-            onClose={() => setSelectedTodoId(null)}
-          />
-        ) : null}
-      </AnimatePresence>
+      {selectedTodo ? (
+        <TaskDetail
+          key={selectedTodo.id}
+          todo={selectedTodo}
+          onClose={() => setSelectedTodoId(null)}
+        />
+      ) : null}
     </div>
   );
 }
