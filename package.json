@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@electron/get": "^4.0.2",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "clsx": "^2.1.1",
