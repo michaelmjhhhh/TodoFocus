@@ -1,7 +1,8 @@
-const { app, BrowserWindow, shell, dialog } = require("electron");
+const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const path = require("path");
 const net = require("net");
 const { ensureDatabaseAtPath } = require("./database");
+const { launchAll, MAX_LAUNCH_ITEMS } = require("./launchpad");
 
 // Keep a global reference of the window object to prevent GC
 let mainWindow = null;
@@ -10,6 +11,64 @@ let nextServerBootstrapped = false;
 const isDev = process.env.NODE_ENV === "development";
 const DEFAULT_PORT = 3000;
 let serverPort = DEFAULT_PORT;
+
+function isPlainObject(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function buildInvalidLaunchPayloadResult() {
+  return {
+    ok: false,
+    launchedCount: 0,
+    results: [],
+    reason: "invalid-payload",
+  };
+}
+
+function normalizeLaunchResourcesPayload(payload) {
+  if (!isPlainObject(payload) || !Array.isArray(payload.resources)) {
+    return null;
+  }
+
+  const boundedResources = payload.resources.slice(0, MAX_LAUNCH_ITEMS);
+  return boundedResources.map((resource) => {
+    if (!isPlainObject(resource)) {
+      return {};
+    }
+
+    return {
+      id: resource.id,
+      type: resource.type,
+      value: resource.value,
+    };
+  });
+}
+
+ipcMain.handle("launchpad:launch-all", async (_event, payload) => {
+  const resources = normalizeLaunchResourcesPayload(payload);
+  if (resources === null) {
+    return buildInvalidLaunchPayloadResult();
+  }
+
+  try {
+    return await launchAll(resources, {
+      openExternal: (target) => shell.openExternal(target),
+      openPath: (target) => shell.openPath(target),
+    });
+  } catch {
+    return {
+      ok: false,
+      launchedCount: 0,
+      results: [],
+      reason: "launch-handler-failed",
+    };
+  }
+});
 
 // SQLite database path: use app's userData directory so it persists
 // across updates and is specific to this app
