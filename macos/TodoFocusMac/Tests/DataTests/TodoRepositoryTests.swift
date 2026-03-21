@@ -191,4 +191,24 @@ final class TodoRepositoryTests: XCTestCase {
             XCTAssertEqual(error as? TodoRepositoryError, .notFound)
         }
     }
+
+    func testClearCompletedTodosDeletesOnlyCompletedRows() throws {
+        let repo = try makeRepository()
+        let active = try repo.addTodo(
+            AddTodoInput(title: "Keep me", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+        let completed = try repo.addTodo(
+            AddTodoInput(title: "Done", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.isCompleted = true
+        try repo.updateTodo(id: completed.id, input: patch)
+
+        let deletedCount = try repo.clearCompletedTodos()
+
+        XCTAssertEqual(deletedCount, 1)
+        XCTAssertNotNil(try repo.fetchTodo(id: active.id))
+        XCTAssertNil(try repo.fetchTodo(id: completed.id))
+    }
 }

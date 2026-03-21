@@ -169,6 +169,13 @@ struct TodoRepository {
         }
     }
 
+    func clearCompletedTodos() throws -> Int {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM todo WHERE isCompleted = 1")
+            return Int(db.changesCount)
+        }
+    }
+
     private func normalizeLaunchResources(_ value: String?) throws -> String {
         guard let value else { return "[]" }
         if value.count > 16_000 {

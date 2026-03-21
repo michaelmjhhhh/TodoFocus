@@ -95,6 +95,15 @@ final class TodoAppStore {
         try reload()
     }
 
+    func clearCompletedTodos() throws {
+        let selectedTodoWasRemoved = selectedTodo?.isCompleted ?? false
+        _ = try todoRepository.clearCompletedTodos()
+        if selectedTodoWasRemoved {
+            appModel.selectedTodoID = nil
+        }
+        try reload()
+    }
+
     func selectTodo(todoId: String) {
         appModel.selectedTodoID = todoId
     }

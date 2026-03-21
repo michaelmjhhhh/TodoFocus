@@ -128,4 +128,63 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertNil(store.selectedTodo)
         XCTAssertFalse(store.todos.contains(where: { $0.id == created.id }))
     }
+
+    func testClearCompletedTodosRemovesCompletedAndClearsSelectionForCompletedSelection() throws {
+        let (store, _, _, _) = try makeStore()
+        let active = try store.quickAdd(
+            title: "Active",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+        let completed = try store.quickAdd(
+            title: "Completed",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        try store.toggleComplete(todoId: completed.id)
+        store.selectTodo(todoId: completed.id)
+
+        try store.clearCompletedTodos()
+
+        XCTAssertNil(store.selectedTodo)
+        XCTAssertTrue(store.todos.contains(where: { $0.id == active.id }))
+        XCTAssertFalse(store.todos.contains(where: { $0.id == completed.id }))
+    }
+
+    @MainActor
+    func testTaskListSearchFiltersByTitleAndNotesCaseInsensitive() {
+        let todoA = Todo(
+            id: "a",
+            title: "Plan Sprint",
+            isCompleted: false,
+            isImportant: false,
+            isMyDay: false,
+            dueDate: nil,
+            notes: "Review roadmap",
+            listId: nil,
+            launchResourcesRaw: "[]"
+        )
+        let todoB = Todo(
+            id: "b",
+            title: "Write docs",
+            isCompleted: false,
+            isImportant: false,
+            isMyDay: false,
+            dueDate: nil,
+            notes: "Add API SEARCH examples",
+            listId: nil,
+            launchResourcesRaw: "[]"
+        )
+        let preFiltered = [todoA, todoB]
+
+        XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "sprint").map(\.id), ["a"])
+        XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "search").map(\.id), ["b"])
+        XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "").map(\.id), ["a", "b"])
+        XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "vendor").map(\.id), [])
+    }
 }
