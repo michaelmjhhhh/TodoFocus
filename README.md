@@ -1,8 +1,31 @@
 # TodoFocus
 
-A mindful todo app. Dark by default. Local-first with SQLite.
+Local-first desktop todo app for focused execution, not just list keeping.
 
-Inspired by Microsoft Todo's feature set and Linear's aesthetic.
+TodoFocus combines familiar task management with a launch-oriented workflow:
+- capture and organize tasks quickly
+- filter by time per view
+- open the exact work context (URLs, files, apps) from each task
+
+## Why TodoFocus
+
+Most todo apps stop at "remember this." TodoFocus helps you "start now."
+
+- Local-first by default (SQLite, no account required)
+- Fast desktop workflow with Electron + native pickers
+- Context Launchpad Tasks: one task can launch all related resources
+- Clean focus-oriented UI with animated interactions
+
+## What Makes It Different
+
+1. Context Launchpad Tasks
+   - Attach `url`, `file`, and `app` resources to a task
+   - Click `Launch All` to open your work context instantly
+2. Per-view Time Filters
+   - Apply date windows in every view (`Overdue`, `Today`, `Tomorrow`, `Next 7 days`, `No date`)
+3. Local-first Desktop Runtime
+   - Data lives on your machine
+   - Native desktop interactions (file/app picker, launch actions)
 
 ## Features
 
@@ -19,6 +42,13 @@ Inspired by Microsoft Todo's feature set and Linear's aesthetic.
 - **Dark / Light theme** -- toggle with persistence, dark by default
 - **Smooth animations** -- Framer Motion layout transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
+
+## Screens and UX
+
+- Three-panel app shell (lists, tasks, detail)
+- Resizable detail panel for dense task metadata
+- Native file/app picker buttons for launch resources
+- Smooth task/list transitions with Framer Motion
 
 ## Quick Start
 
@@ -38,6 +68,12 @@ If Prisma client files are missing (e.g. in fresh CI/workspaces), run:
 
 ```bash
 npm run prisma:generate
+```
+
+For desktop behavior (launch resources, native pickers), use:
+
+```bash
+npm run electron:dev
 ```
 
 ## Requirements
@@ -75,11 +111,18 @@ src/
     TodoList.tsx        # Animated task list
     TodoItem.tsx        # Individual task row
     TaskDetail.tsx      # Right panel (steps, notes, due date)
+    LaunchResourceEditor.tsx # Launch resource management UI
     ThemeProvider.tsx    # Dark/light theme context
     ThemeToggle.tsx     # Theme switch button
   lib/
     cn.ts              # clsx + tailwind-merge utility
     db.ts              # Prisma client singleton
+    launchResources.ts # Launch resource validation/serialization
+    launchAllClient.ts # Renderer launch orchestration
+electron/
+  main.js              # App bootstrap, secure IPC handlers
+  preload.js           # Safe API bridge to renderer
+  launchpad.js         # Launch resource runtime validation + launch logic
 prisma/
   schema.prisma        # Data model (Todo, List, Step)
 ```
@@ -98,6 +141,12 @@ npx prisma studio      # Browse database in browser
 - For bugs, follow evidence-first debugging (root cause before code changes).
 - For new features, we use: `issue -> branch -> implement -> PR`.
 - Prefer a short implementation plan for non-trivial features before coding.
+
+## Open Source Notes
+
+- License: MIT
+- Contributions: Issues and PRs are welcome
+- Security baseline: launch actions are IPC-based and validated in Electron main process
 
 ## Desktop Packaging (Electron)
 
