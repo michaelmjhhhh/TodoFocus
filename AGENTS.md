@@ -17,6 +17,7 @@
 
 - Treat desktop packaging as a **standalone runtime** flow (not the same as `npm run dev`).
 - Always package from **clean, updated main** when preparing release artifacts.
+- Release assets should be produced by CI workflow (`release-macos`) rather than manual local upload when possible.
 - Keep `asar` enabled; only unpack what is required at runtime.
 - Include `prisma/migrations/**/*` in packaged files; missing migrations break first-run DB setup.
 - Keep static copy step before packaging:
@@ -24,6 +25,9 @@
   - `public` -> `.next/standalone/public`
 - Rebuild native modules for Electron target before or during packaging:
   - `npx electron-builder install-app-deps`
+- Gate release upload with both checks:
+  - ABI check (`npm run verify:electron:abi`)
+  - Packaged app smoke check (`npm run verify:electron:smoke`)
 
 ### Build Requirements
 
@@ -53,6 +57,8 @@
   1. `npm run build`
   2. `npm run build:electron:assets`
   3. `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never`
+- CI-equivalent guarded local packaging:
+  - `npm run electron:ci:package`
 
 ### Release Upload Flow
 

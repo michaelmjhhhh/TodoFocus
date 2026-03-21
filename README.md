@@ -99,6 +99,9 @@ npx prisma studio      # Browse database in browser
 - Include Prisma SQL migrations in the packaged app (`prisma/migrations/**/*`).
 - Rebuild native dependencies for Electron target before release packaging:
   - `npx electron-builder install-app-deps`
+- Gate release uploads on:
+  - ABI check (`npm run verify:electron:abi`)
+  - Smoke check (`npm run verify:electron:smoke`)
 - Before packaging, copy static assets into standalone:
   - `.next/static` -> `.next/standalone/.next/static`
   - `public` -> `.next/standalone/public`
@@ -115,7 +118,23 @@ npm run electron:build
 npm run build
 npm run build:electron:assets
 CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never
+
+# CI-equivalent guarded local packaging
+npm run electron:ci:package
 ```
+
+### CI Release (Recommended)
+
+Use GitHub Actions workflow `release-macos` to publish release artifacts from a clean environment:
+
+1. Ensure target tag exists (e.g. `v0.1.0`).
+2. Run workflow `release-macos` with input `tag`.
+3. Workflow performs:
+   - `npm ci`
+   - package build
+   - ABI gate
+   - smoke gate
+   - DMG upload to release via `gh release upload --clobber`
 
 ### Release Checklist (Recommended)
 

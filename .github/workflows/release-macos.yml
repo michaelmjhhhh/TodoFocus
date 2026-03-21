@@ -1,0 +1,52 @@
+name: release-macos
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.1.0)"
+        required: true
+        type: string
+
+jobs:
+  build-and-upload:
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package app with ABI/smoke gates
+        run: npm run electron:ci:package
+
+      - name: Build DMG artifact
+        run: |
+          hdiutil create \
+            -volname "TodoFocus" \
+            -srcfolder "dist-electron/mac-arm64/TodoFocus.app" \
+            -ov -format UDZO \
+            "dist-electron/TodoFocus-mac-arm64.dmg"
+
+      - name: Upload DMG to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ inputs.tag }}" "dist-electron/TodoFocus-mac-arm64.dmg" --clobber
+
+      - name: Publish workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TodoFocus-mac-arm64-dmg
+          path: dist-electron/TodoFocus-mac-arm64.dmg
