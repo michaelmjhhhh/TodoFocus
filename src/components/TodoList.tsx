@@ -25,6 +25,7 @@ export interface TodoData {
   recurrenceInterval: number;
   lastCompletedAt: Date | null;
   notes: string;
+  launchResources: string;
   dueDate: Date | null;
   sortOrder: number;
   createdAt: Date;

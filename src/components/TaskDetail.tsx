@@ -46,6 +46,7 @@ interface TaskDetailProps {
     recurrenceInterval: number;
     lastCompletedAt: Date | null;
     notes: string;
+    launchResources: string;
     dueDate: Date | null;
     steps: Step[];
     list: ListInfo | null;
