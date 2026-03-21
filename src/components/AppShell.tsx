@@ -5,7 +5,9 @@ import { Sidebar, type SmartList } from "./Sidebar";
 import { TodoInput } from "./TodoInput";
 import { TodoList, type TodoData } from "./TodoList";
 import { TaskDetail } from "./TaskDetail";
+import { TimeFilterBar } from "./TimeFilterBar";
 import { Sun, Star, CalendarDays, List } from "lucide-react";
+import { matchesTimeFilter, type TimeFilter } from "@/lib/timeFilter";
 
 interface ListItem {
   id: string;
@@ -39,10 +41,12 @@ const viewConfig: Record<
 
 export function AppShell({ todos, lists }: AppShellProps) {
   const [activeView, setActiveView] = useState<SmartList | string>("myday");
+  const [activeTimeFilter, setActiveTimeFilter] = useState<TimeFilter>("all-dates");
   const [selectedTodoId, setSelectedTodoId] = useState<string | null>(null);
 
   const filteredTodos = useMemo(() => {
-    switch (activeView) {
+    const viewFilteredTodos = (() => {
+      switch (activeView) {
       case "myday":
         return todos.filter((t) => t.isMyDay);
       case "important":
@@ -53,8 +57,14 @@ export function AppShell({ todos, lists }: AppShellProps) {
         return todos;
       default:
         return todos.filter((t) => t.listId === activeView);
-    }
-  }, [todos, activeView]);
+      }
+    })();
+
+    const now = new Date();
+    return viewFilteredTodos.filter((t) =>
+      matchesTimeFilter(activeTimeFilter, t.dueDate, now)
+    );
+  }, [todos, activeView, activeTimeFilter]);
 
   const selectedTodo = useMemo(() => {
     if (!selectedTodoId) return null;
@@ -112,6 +122,7 @@ export function AppShell({ todos, lists }: AppShellProps) {
               {config.description}
             </p>
           ) : null}
+          <TimeFilterBar value={activeTimeFilter} onChange={setActiveTimeFilter} />
         </header>
 
         {/* Add task */}
