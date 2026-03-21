@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */; };
 		10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */; };
 		16ACF235ABA07CC911031068 /* LaunchResourceValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD67E5BD83F1A8B609F0661 /* LaunchResourceValidation.swift */; };
 		17B573B6B5E9AC9AE93BDF39 /* TodoAppStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C4E9EB9EEDE55EC25A2997 /* TodoAppStoreTests.swift */; };
@@ -27,6 +28,8 @@
 		3C6F2349B5015A515214E282 /* AppSelectionStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */; };
 		47F5DFB75F5754B0E0DACAFB /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D33F3EBD610561E79741C23 /* SidebarView.swift */; };
 		49C094D18BEB5BD380E70B5B /* ResizableSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */; };
+		4CE24FFE60180831BD73DE60 /* WindowPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CA53AF462BCDF9BF9DFD547 /* WindowPersistenceTests.swift */; };
+		4E502D71D14C35BD7194756F /* WindowPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */; };
 		639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F49BBBD3470E39E67D6825 /* AppModelTests.swift */; };
 		64CAC0EE2BA2F5B20FAEB504 /* SmartListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */; };
 		652B5E948824C3E5FB9D0F85 /* TodoAppStoreSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949D723E4C031395230F5093 /* TodoAppStoreSelectionTests.swift */; };
@@ -84,6 +87,7 @@
 		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistence.swift; sourceTree = "<group>"; };
 		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
 		2F3E319E19EF05FA501E7B85 /* SelectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionState.swift; sourceTree = "<group>"; };
 		30D5FE3587E551AA2AF551C4 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 		3D33F3EBD610561E79741C23 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceValidationTests.swift; sourceTree = "<group>"; };
 		417BF9D384CB7E95497290B3 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureBehaviorTests.swift; sourceTree = "<group>"; };
 		4BC65359FCD8A661E494F8E6 /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
 		515BEFC0401BABD096FDF98D /* ListRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRecord.swift; sourceTree = "<group>"; };
 		5CC15A3652F4971562B5E623 /* TodoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRecord.swift; sourceTree = "<group>"; };
@@ -106,6 +111,7 @@
 		7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadServiceTests.swift; sourceTree = "<group>"; };
 		81F49BBBD3470E39E67D6825 /* AppModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModelTests.swift; sourceTree = "<group>"; };
 		84179A8739D2AB7CE0C44350 /* GRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GRDB.swift; path = ../../vendor/GRDB.swift; sourceTree = SOURCE_ROOT; };
+		8CA53AF462BCDF9BF9DFD547 /* WindowPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistenceTests.swift; sourceTree = "<group>"; };
 		92EF39FF31F1FD2127E4C901 /* TodoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppStore.swift; sourceTree = "<group>"; };
 		949D723E4C031395230F5093 /* TodoAppStoreSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppStoreSelectionTests.swift; sourceTree = "<group>"; };
 		988EA3A536904886FAC704C1 /* StepRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRepository.swift; sourceTree = "<group>"; };
@@ -215,6 +221,7 @@
 			children = (
 				81F49BBBD3470E39E67D6825 /* AppModelTests.swift */,
 				DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */,
+				4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */,
 				7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */,
 				3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */,
 				2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */,
@@ -222,6 +229,7 @@
 				949D723E4C031395230F5093 /* TodoAppStoreSelectionTests.swift */,
 				10C4E9EB9EEDE55EC25A2997 /* TodoAppStoreTests.swift */,
 				B49658E6F7D71CC961B6F7F1 /* TodoQueryTests.swift */,
+				8CA53AF462BCDF9BF9DFD547 /* WindowPersistenceTests.swift */,
 			);
 			name = CoreTests;
 			path = Tests/CoreTests;
@@ -304,6 +312,7 @@
 				2F3E319E19EF05FA501E7B85 /* SelectionState.swift */,
 				6A0EACE45650F8B34190D4A3 /* ThemeStore.swift */,
 				92EF39FF31F1FD2127E4C901 /* TodoAppStore.swift */,
+				2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -493,6 +502,7 @@
 				67ED88BEBF2651E62E8D23A0 /* TodoRecord.swift in Sources */,
 				268C75C1B8CFC0C6F9D5083B /* TodoRepository.swift in Sources */,
 				CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */,
+				4E502D71D14C35BD7194756F /* WindowPersistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +512,7 @@
 			files = (
 				639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */,
 				3C6F2349B5015A515214E282 /* AppSelectionStateTests.swift in Sources */,
+				0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */,
 				B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */,
 				9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */,
 				64CAC0EE2BA2F5B20FAEB504 /* SmartListFilterTests.swift in Sources */,
@@ -509,6 +520,7 @@
 				652B5E948824C3E5FB9D0F85 /* TodoAppStoreSelectionTests.swift in Sources */,
 				17B573B6B5E9AC9AE93BDF39 /* TodoAppStoreTests.swift in Sources */,
 				F6B9E9BCFE7CDC43C8016C89 /* TodoQueryTests.swift in Sources */,
+				4CE24FFE60180831BD73DE60 /* WindowPersistenceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,11 +31,12 @@ struct WorkspaceLauncher: LaunchOpening {
     }
 
     func openFile(atPath path: String) -> Bool {
-        NSWorkspace.shared.openFile(path)
+        NSWorkspace.shared.open(URL(fileURLWithPath: path))
     }
 
     func openApplication(atPath path: String) -> Bool {
-        NSWorkspace.shared.openFile(path)
+        NSWorkspace.shared.openApplication(at: URL(fileURLWithPath: path), configuration: NSWorkspace.OpenConfiguration())
+        return true
     }
 }
 

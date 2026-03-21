@@ -5,6 +5,7 @@ struct RootView: View {
     @Bindable var store: TodoAppStore
     let launchpadService: LaunchpadService
     let databasePath: String
+    @State private var containerWidth: Double = 1200
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String) {
         self._appModel = Bindable(appModel)
@@ -24,7 +25,9 @@ struct RootView: View {
             ResizableSplitView(
                 rightWidth: Binding(
                     get: { appModel.detailPanelWidth },
-                    set: { (value: Double) in appModel.detailPanelWidth = value }
+                    set: { (value: Double) in
+                        appModel.updateDetailPanelWidth(value, windowWidth: containerWidth)
+                    }
                 )
             ) {
                 VStack(alignment: .leading, spacing: 12) {
@@ -42,6 +45,19 @@ struct RootView: View {
                 TaskDetailView(store: store, launchpadService: launchpadService, todo: store.selectedTodo)
             }
         }
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        containerWidth = proxy.size.width
+                        appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
+                    }
+                    .onChange(of: proxy.size.width) { _, newValue in
+                        containerWidth = newValue
+                        appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: newValue)
+                    }
+            }
+        )
         .task {
             try? store.reload()
         }

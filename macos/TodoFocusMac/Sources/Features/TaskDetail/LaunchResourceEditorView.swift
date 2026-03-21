@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct LaunchResourceEditorView: View {
     @Bindable var store: TodoAppStore
@@ -39,6 +40,14 @@ struct LaunchResourceEditorView: View {
                     addDraftResource()
                 }
                 .disabled(draft.count >= 12)
+
+                Button("Pick File") {
+                    pickFile()
+                }
+
+                Button("Pick App") {
+                    pickApp()
+                }
 
                 Button("Save") {
                     saveDraft()
@@ -127,5 +136,36 @@ struct LaunchResourceEditorView: View {
             return "Launched \(summary.launchedCount)"
         }
         return "Launched \(summary.launchedCount). \(summary.failedCount + summary.rejectedCount) failed"
+    }
+
+    private func pickFile() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+
+        if panel.runModal() == .OK, let url = panel.url {
+            selectedType = .file
+            valueText = url.path
+            if labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                labelText = url.lastPathComponent
+            }
+        }
+    }
+
+    private func pickApp() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = [.application]
+
+        if panel.runModal() == .OK, let url = panel.url {
+            selectedType = .app
+            valueText = url.path
+            if labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                labelText = url.deletingPathExtension().lastPathComponent
+            }
+        }
     }
 }

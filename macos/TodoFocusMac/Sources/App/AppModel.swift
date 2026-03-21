@@ -6,7 +6,7 @@ final class AppModel {
     var selection: SidebarSelection = .myDay
     var timeFilter: TimeFilter = .allDates
     var selectedTodoID: String?
-    var detailPanelWidth: Double = 360
+    var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {
@@ -32,5 +32,11 @@ final class AppModel {
         case let .customList(id):
             return id
         }
+    }
+
+    func updateDetailPanelWidth(_ value: Double, windowWidth: Double) {
+        let clamped = WindowPersistence.clampDetailWidth(value, windowWidth: windowWidth)
+        detailPanelWidth = clamped
+        WindowPersistence.saveDetailWidth(clamped)
     }
 }
