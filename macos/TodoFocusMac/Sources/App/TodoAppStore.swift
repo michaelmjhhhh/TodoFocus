@@ -87,6 +87,14 @@ final class TodoAppStore {
         try reload()
     }
 
+    func deleteTodo(todoId: String) throws {
+        try todoRepository.deleteTodo(id: todoId)
+        if appModel.selectedTodoID == todoId {
+            appModel.selectedTodoID = nil
+        }
+        try reload()
+    }
+
     func selectTodo(todoId: String) {
         appModel.selectedTodoID = todoId
     }
@@ -116,6 +124,18 @@ final class TodoAppStore {
         input.dueDate = date
         try? todoRepository.updateTodo(id: todoId, input: input, now: now())
         try? reload()
+    }
+
+    func updateTitle(todoId: String, title: String) -> Result<Void, TodoRepositoryError> {
+        do {
+            try todoRepository.updateTitle(id: todoId, title: title, now: now())
+            try reload()
+            return .success(())
+        } catch let error as TodoRepositoryError {
+            return .failure(error)
+        } catch {
+            return .failure(.notFound)
+        }
     }
 
     func addStep(todoId: String, title: String) {

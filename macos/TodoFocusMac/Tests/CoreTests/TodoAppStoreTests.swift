@@ -111,4 +111,21 @@ final class TodoAppStoreTests: XCTestCase {
 
         XCTAssertEqual(appModel.selection, .all)
     }
+
+    func testDeleteTodoRemovesItAndClearsSelectionWhenSelected() throws {
+        let (store, _, _, _) = try makeStore()
+        let created = try store.quickAdd(
+            title: "Delete selected",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+        store.selectTodo(todoId: created.id)
+
+        try store.deleteTodo(todoId: created.id)
+
+        XCTAssertNil(store.selectedTodo)
+        XCTAssertFalse(store.todos.contains(where: { $0.id == created.id }))
+    }
 }

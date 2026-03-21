@@ -40,6 +40,20 @@ final class TodoDetailMutationTests: XCTestCase {
         XCTAssertNil(updated.dueDate)
     }
 
+    func testUpdateTitlePersistsTrimmedValue() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Original", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        let now = Date(timeIntervalSince1970: 4_000)
+        try repo.updateTitle(id: created.id, title: "  Renamed task  ", now: now)
+
+        let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
+        XCTAssertEqual(updated.title, "Renamed task")
+        XCTAssertEqual(updated.updatedAt, now)
+    }
+
     func testDetailHelpersWithMissingIDThrowNotFound() throws {
         let repo = try makeRepository()
 
@@ -49,6 +63,21 @@ final class TodoDetailMutationTests: XCTestCase {
 
         XCTAssertThrowsError(try repo.setDueDate(id: "missing", dueDate: Date(), now: Date())) { error in
             XCTAssertEqual(error as? TodoRepositoryError, .notFound)
+        }
+
+        XCTAssertThrowsError(try repo.updateTitle(id: "missing", title: "x", now: Date())) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .notFound)
+        }
+    }
+
+    func testUpdateTitleWithWhitespaceOnlyThrowsInvalidTitle() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Original", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        XCTAssertThrowsError(try repo.updateTitle(id: created.id, title: "  \n\t  ", now: Date())) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .invalidTitle)
         }
     }
 }
