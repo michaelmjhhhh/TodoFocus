@@ -66,11 +66,85 @@ export async function addTodo(formData: FormData) {
   revalidatePath("/");
 }
 
+function addDays(base: Date, days: number) {
+  const next = new Date(base);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function addWeeks(base: Date, weeks: number) {
+  return addDays(base, weeks * 7);
+}
+
+function addMonthsPreservingDay(base: Date, months: number) {
+  const day = base.getDate();
+  const firstOfTarget = new Date(base.getFullYear(), base.getMonth() + months, 1);
+  const lastDay = new Date(
+    firstOfTarget.getFullYear(),
+    firstOfTarget.getMonth() + 1,
+    0
+  ).getDate();
+  firstOfTarget.setDate(Math.min(day, lastDay));
+  return firstOfTarget;
+}
+
+function getNextRecurringDate(
+  recurrence: string,
+  interval: number,
+  anchor: Date
+): Date {
+  const safeInterval = Number.isFinite(interval) && interval > 0 ? Math.floor(interval) : 1;
+
+  switch (recurrence) {
+    case "daily":
+      return addDays(anchor, safeInterval);
+    case "weekly":
+      return addWeeks(anchor, safeInterval);
+    case "monthly":
+      return addMonthsPreservingDay(anchor, safeInterval);
+    default:
+      return anchor;
+  }
+}
+
 export async function toggleTodo(id: string, isCompleted: boolean) {
-  await prisma.todo.update({
-    where: { id },
-    data: { isCompleted },
-  });
+  if (!isCompleted) {
+    await prisma.todo.update({
+      where: { id },
+      data: { isCompleted: false },
+    });
+    revalidatePath("/");
+    return;
+  }
+
+  const todo = await prisma.todo.findUnique({ where: { id } });
+  if (!todo) return;
+
+  const recurrence = todo.recurrence;
+  if (recurrence === "daily" || recurrence === "weekly" || recurrence === "monthly") {
+    const now = new Date();
+    const anchor = todo.dueDate ?? now;
+    const nextDueDate = getNextRecurringDate(
+      recurrence,
+      todo.recurrenceInterval,
+      anchor
+    );
+
+    await prisma.todo.update({
+      where: { id },
+      data: {
+        isCompleted: false,
+        dueDate: nextDueDate,
+        lastCompletedAt: now,
+      },
+    });
+  } else {
+    await prisma.todo.update({
+      where: { id },
+      data: { isCompleted: true },
+    });
+  }
+
   revalidatePath("/");
 }
 
@@ -98,6 +172,8 @@ export async function updateTodo(
     dueDate?: string | null;
     isImportant?: boolean;
     isMyDay?: boolean;
+    recurrence?: string | null;
+    recurrenceInterval?: number;
     listId?: string | null;
   }
 ) {
@@ -109,6 +185,16 @@ export async function updateTodo(
   }
   if (data.isImportant !== undefined) updateData.isImportant = data.isImportant;
   if (data.isMyDay !== undefined) updateData.isMyDay = data.isMyDay;
+  if (data.recurrence !== undefined) {
+    updateData.recurrence = data.recurrence;
+    if (data.recurrence === null) {
+      updateData.recurrenceInterval = 1;
+      updateData.lastCompletedAt = null;
+    }
+  }
+  if (data.recurrenceInterval !== undefined) {
+    updateData.recurrenceInterval = Math.max(1, Math.floor(data.recurrenceInterval));
+  }
   if (data.listId !== undefined) updateData.listId = data.listId || null;
 
   await prisma.todo.update({ where: { id }, data: updateData });

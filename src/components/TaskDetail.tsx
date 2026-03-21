@@ -7,6 +7,7 @@ import {
   Plus,
   Check,
   CalendarDays,
+  Repeat,
   Sun,
   Star,
   Trash2,
@@ -41,6 +42,9 @@ interface TaskDetailProps {
     isCompleted: boolean;
     isImportant: boolean;
     isMyDay: boolean;
+    recurrence: string | null;
+    recurrenceInterval: number;
+    lastCompletedAt: Date | null;
     notes: string;
     dueDate: Date | null;
     steps: Step[];
@@ -74,6 +78,15 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
   function handleDueDate(e: React.ChangeEvent<HTMLInputElement>) {
     startTransition(async () => {
       await updateTodo(todo.id, { dueDate: e.target.value || null });
+    });
+  }
+
+  function handleRecurrenceChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value;
+    startTransition(async () => {
+      await updateTodo(todo.id, {
+        recurrence: value === "none" ? null : value,
+      });
     });
   }
 
@@ -120,6 +133,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
   const dueDateValue = todo.dueDate
     ? new Date(todo.dueDate).toISOString().split("T")[0]
     : "";
+  const recurrenceValue = todo.recurrence ?? "none";
 
   return (
     <motion.div
@@ -278,6 +292,30 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
                 <X size={12} strokeWidth={1.5} />
               </button>
             ) : null}
+          </div>
+        </div>
+
+        {/* Recurrence */}
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--zen-text-muted)] mb-2">
+            Repeat
+          </p>
+          <div className="flex items-center gap-2">
+            <Repeat
+              size={14}
+              strokeWidth={1.5}
+              className="text-[var(--zen-text-muted)]"
+            />
+            <select
+              value={recurrenceValue}
+              onChange={handleRecurrenceChange}
+              className="bg-[var(--zen-surface)] border border-[var(--zen-border)] rounded-md px-3 py-1.5 text-[13px] text-[var(--zen-text)] focus:outline-none focus:border-[var(--zen-accent)]"
+            >
+              <option value="none">Does not repeat</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
           </div>
         </div>
 

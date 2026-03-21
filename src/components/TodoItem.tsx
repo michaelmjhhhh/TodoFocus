@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { motion } from "framer-motion";
 import { toggleTodo, toggleImportant, deleteTodo } from "@/actions/todos";
-import { Star, X, Check, CalendarDays, ListChecks } from "lucide-react";
+import { Star, X, Check, CalendarDays, ListChecks, Repeat } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface Step {
@@ -17,6 +17,7 @@ interface TodoItemProps {
   title: string;
   isCompleted: boolean;
   isImportant: boolean;
+  recurrence: string | null;
   dueDate: Date | null;
   steps: Step[];
   listName?: string;
@@ -52,6 +53,7 @@ export function TodoItem({
   title,
   isCompleted,
   isImportant,
+  recurrence,
   dueDate,
   steps,
   listName,
@@ -140,7 +142,7 @@ export function TodoItem({
         </span>
 
         {/* Metadata row */}
-        {(totalSteps > 0 || dueDateInfo || listName) ? (
+        {(totalSteps > 0 || dueDateInfo || recurrence || listName) ? (
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             {totalSteps > 0 ? (
               <span className="flex items-center gap-1 text-[11px] text-[var(--zen-text-muted)]">
@@ -159,6 +161,18 @@ export function TodoItem({
               >
                 <CalendarDays size={11} strokeWidth={1.5} />
                 {dueDateInfo.text}
+              </span>
+            ) : null}
+            {recurrence ? (
+              <span className="flex items-center gap-1 text-[11px] text-[var(--zen-text-muted)]">
+                <Repeat size={11} strokeWidth={1.5} />
+                {recurrence === "daily"
+                  ? "Daily"
+                  : recurrence === "weekly"
+                    ? "Weekly"
+                    : recurrence === "monthly"
+                      ? "Monthly"
+                      : recurrence}
               </span>
             ) : null}
             {listName ? (

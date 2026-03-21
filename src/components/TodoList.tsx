@@ -21,6 +21,9 @@ export interface TodoData {
   isCompleted: boolean;
   isImportant: boolean;
   isMyDay: boolean;
+  recurrence: string | null;
+  recurrenceInterval: number;
+  lastCompletedAt: Date | null;
   notes: string;
   dueDate: Date | null;
   sortOrder: number;
@@ -65,6 +68,7 @@ export function TodoList({ todos, onSelectTodo, showListBadge }: TodoListProps) 
               title={todo.title}
               isCompleted={todo.isCompleted}
               isImportant={todo.isImportant}
+              recurrence={todo.recurrence}
               dueDate={todo.dueDate}
               steps={todo.steps}
               listName={showListBadge ? todo.list?.name : undefined}
@@ -87,6 +91,7 @@ export function TodoList({ todos, onSelectTodo, showListBadge }: TodoListProps) 
                   title={todo.title}
                   isCompleted={todo.isCompleted}
                   isImportant={todo.isImportant}
+                  recurrence={todo.recurrence}
                   dueDate={todo.dueDate}
                   steps={todo.steps}
                   listName={showListBadge ? todo.list?.name : undefined}

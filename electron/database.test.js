@@ -35,6 +35,9 @@ test("ensureDatabaseAtPath applies all migrations and is idempotent", () => {
   assert.ok(todoColumns.includes("listId"));
   assert.ok(todoColumns.includes("isImportant"));
   assert.ok(todoColumns.includes("isMyDay"));
+  assert.ok(todoColumns.includes("recurrence"));
+  assert.ok(todoColumns.includes("recurrenceInterval"));
+  assert.ok(todoColumns.includes("lastCompletedAt"));
 
   const stepColumns = db
     .prepare("PRAGMA table_info('Step')")
@@ -45,7 +48,7 @@ test("ensureDatabaseAtPath applies all migrations and is idempotent", () => {
   const appliedCount = db
     .prepare("SELECT COUNT(*) AS count FROM _zen_migrations")
     .get().count;
-  assert.equal(appliedCount, 2);
+  assert.equal(appliedCount, 3);
 
   db.close();
 });

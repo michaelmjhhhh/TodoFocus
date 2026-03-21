@@ -23,6 +23,9 @@ model Todo {
   isCompleted Boolean  @default(false)
   isImportant Boolean  @default(false)
   isMyDay     Boolean  @default(false)
+  recurrence  String?
+  recurrenceInterval Int @default(1)
+  lastCompletedAt DateTime?
   notes       String   @default("")
   dueDate     DateTime?
   sortOrder   Int      @default(0)
