@@ -19,9 +19,22 @@ type LaunchpadInvokeResult = {
   reason?: string;
 };
 
+type LaunchpadPickResult =
+  | {
+      ok: true;
+      value: string;
+    }
+  | {
+      ok: false;
+      canceled: boolean;
+      reason: string;
+    };
+
 interface ElectronAPI {
   isElectron: true;
   platform: NodeJS.Platform;
+  pickLaunchFile: () => Promise<LaunchpadPickResult>;
+  pickLaunchApp: () => Promise<LaunchpadPickResult>;
   launchAllForTask: (resources: LaunchpadResource[]) => Promise<LaunchpadInvokeResult>;
 }
 

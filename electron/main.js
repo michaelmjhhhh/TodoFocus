@@ -1,7 +1,12 @@
 const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const path = require("path");
 const net = require("net");
-const { launchAll, MAX_LAUNCH_ITEMS } = require("./launchpad");
+const {
+  launchAll,
+  MAX_LAUNCH_ITEMS,
+  sanitizeFilePath,
+  sanitizeAppTarget,
+} = require("./launchpad");
 
 // Keep a global reference of the window object to prevent GC
 let mainWindow = null;
@@ -47,6 +52,70 @@ function normalizeLaunchResourcesPayload(payload) {
     };
   });
 }
+
+function buildPickerUnavailableResult(reason = "unavailable") {
+  return {
+    ok: false,
+    canceled: false,
+    reason,
+  };
+}
+
+function getPickerWindow(event) {
+  const sourceWindow = BrowserWindow.fromWebContents(event.sender);
+  if (sourceWindow && !sourceWindow.isDestroyed()) {
+    return sourceWindow;
+  }
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    return mainWindow;
+  }
+  return undefined;
+}
+
+ipcMain.handle("launchpad:pick-file", async (event) => {
+  try {
+    const result = await dialog.showOpenDialog(getPickerWindow(event), {
+      properties: ["openFile"],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { ok: false, canceled: true, reason: "canceled" };
+    }
+
+    const selected = result.filePaths[0];
+    const sanitized = sanitizeFilePath(selected);
+    if (!sanitized.ok) {
+      return { ok: false, canceled: false, reason: sanitized.reason };
+    }
+
+    return { ok: true, value: sanitized.value };
+  } catch {
+    return buildPickerUnavailableResult("picker-failed");
+  }
+});
+
+ipcMain.handle("launchpad:pick-app", async (event) => {
+  try {
+    const result = await dialog.showOpenDialog(getPickerWindow(event), {
+      properties: ["openFile"],
+      filters: [{ name: "Applications", extensions: ["app"] }],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { ok: false, canceled: true, reason: "canceled" };
+    }
+
+    const selected = result.filePaths[0];
+    const sanitized = sanitizeAppTarget(selected);
+    if (!sanitized.ok || sanitized.mode !== "path") {
+      return { ok: false, canceled: false, reason: sanitized.reason || "invalid-app-target" };
+    }
+
+    return { ok: true, value: sanitized.value };
+  } catch {
+    return buildPickerUnavailableResult("picker-failed");
+  }
+});
 
 ipcMain.handle("launchpad:launch-all", async (_event, payload) => {
   const resources = normalizeLaunchResourcesPayload(payload);

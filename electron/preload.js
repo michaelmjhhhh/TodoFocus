@@ -4,6 +4,8 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("electronAPI", {
   isElectron: true,
   platform: process.platform,
+  pickLaunchFile: () => ipcRenderer.invoke("launchpad:pick-file"),
+  pickLaunchApp: () => ipcRenderer.invoke("launchpad:pick-app"),
   launchAllForTask: (resources) =>
     ipcRenderer.invoke("launchpad:launch-all", {
       resources,

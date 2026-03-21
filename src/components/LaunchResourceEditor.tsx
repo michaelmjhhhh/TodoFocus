@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
+import { useState } from "react";
 import {
   type LaunchResource,
   type LaunchResourceType,
@@ -51,6 +52,11 @@ export function LaunchResourceEditor({
   onChange,
   disabled = false,
 }: LaunchResourceEditorProps) {
+  const [pickerMessage, setPickerMessage] = useState<string | null>(null);
+  const [pickerBusyId, setPickerBusyId] = useState<string | null>(null);
+
+  const isDesktop = typeof window !== "undefined" && Boolean(window.electronAPI?.isElectron);
+
   function updateResource(index: number, patch: Partial<LaunchResource>) {
     const next = [...resources];
     const current = next[index];
@@ -72,6 +78,43 @@ export function LaunchResourceEditor({
     }
 
     onChange([...resources, buildNewResource()]);
+  }
+
+  async function browseForResource(index: number, type: LaunchResourceType) {
+    if (disabled || !isDesktop) {
+      return;
+    }
+
+    const api = window.electronAPI;
+    if (!api) {
+      setPickerMessage("Desktop picker integration is unavailable.");
+      return;
+    }
+
+    const resource = resources[index];
+    if (!resource) {
+      return;
+    }
+
+    setPickerMessage(null);
+    setPickerBusyId(resource.id);
+
+    try {
+      const result =
+        type === "file" ? await api.pickLaunchFile() : await api.pickLaunchApp();
+      if (!result.ok) {
+        if (!result.canceled) {
+          setPickerMessage("Could not use picker. You can still paste a value manually.");
+        }
+        return;
+      }
+
+      updateResource(index, { value: result.value });
+    } catch {
+      setPickerMessage("Could not use picker. You can still paste a value manually.");
+    } finally {
+      setPickerBusyId(null);
+    }
   }
 
   return (
@@ -104,19 +147,31 @@ export function LaunchResourceEditor({
                 placeholder="Label"
                 className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
               />
-              <input
-                value={resource.value}
-                onChange={(e) => updateResource(index, { value: e.target.value })}
-                disabled={disabled}
-                placeholder={
-                  resource.type === "url"
-                    ? "https://example.com"
-                    : resource.type === "file"
-                      ? "/Users/name/file"
-                      : "obsidian://... or /Applications/App.app"
-                }
-                className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
-              />
+              <div className="flex items-center gap-1.5">
+                <input
+                  value={resource.value}
+                  onChange={(e) => updateResource(index, { value: e.target.value })}
+                  disabled={disabled}
+                  placeholder={
+                    resource.type === "url"
+                      ? "https://example.com"
+                      : resource.type === "file"
+                        ? "/Users/name/file"
+                        : "obsidian://... or /Applications/App.app"
+                  }
+                  className="flex-1 rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
+                />
+                {resource.type === "file" || resource.type === "app" ? (
+                  <button
+                    type="button"
+                    onClick={() => browseForResource(index, resource.type)}
+                    disabled={disabled || !isDesktop || pickerBusyId === resource.id}
+                    className="px-2 py-1.5 rounded-md border border-[var(--zen-border)] text-[11px] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)] transition-colors cursor-pointer disabled:opacity-60"
+                  >
+                    {pickerBusyId === resource.id ? "Browsing..." : "Browse..."}
+                  </button>
+                ) : null}
+              </div>
               <button
                 type="button"
                 onClick={() => removeResource(index)}
@@ -143,6 +198,14 @@ export function LaunchResourceEditor({
         <Plus size={13} strokeWidth={1.5} />
         Add resource
       </button>
+      {!isDesktop ? (
+        <p className="text-[11px] text-[var(--zen-text-muted)]">
+          File and app pickers are available in the desktop app.
+        </p>
+      ) : null}
+      {pickerMessage ? (
+        <p className="text-[11px] text-[var(--zen-text-muted)]">{pickerMessage}</p>
+      ) : null}
     </div>
   );
 }
