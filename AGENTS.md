@@ -11,6 +11,18 @@
 - For new features, follow this flow: issue -> branch -> implement -> PR.
 - For non-trivial feature work, write a plan in `docs/superpowers/plans/` before implementation.
 
+## Product Notes (Current Differentiators)
+
+- Per-view time filtering is available across smart lists and custom lists.
+- Context Launchpad Tasks (MVP): each task can store launch resources (`url`, `file`, `app`) and run Launch All.
+- Launchpad UX includes native desktop pickers for file/app resources and a resizable detail panel for long values.
+
+## Security Guardrails (Launchpad)
+
+- Never add shell/command execution for launch resources.
+- Keep launch operations in Electron main process IPC handlers with strict payload validation.
+- Keep sender trust checks and external URL/navigation restrictions in place when editing `electron/main.js`.
+
 ## Packaging (TodoFocus Electron)
 
 ### Core Packaging Rules (Must Follow)

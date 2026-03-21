@@ -8,10 +8,14 @@ Inspired by Microsoft Todo's feature set and Linear's aesthetic.
 
 - **My Day / Important / Planned** -- smart lists that filter automatically
 - **Smart-list quick add** -- adding inside Important/Planned now preserves the list intent automatically
+- **Per-view time filters** -- filter any list by `Overdue`, `Today`, `Tomorrow`, `Next 7 days`, or `No date`
 - **Custom lists** -- create, rename, delete with color coding
 - **Subtasks (Steps)** -- break tasks into smaller pieces
 - **Due dates** -- with relative display (Today, Tomorrow, Overdue)
 - **Notes** -- per-task free-text notes with auto-save
+- **Context Launchpad Tasks (MVP)** -- attach `URL`, `File`, and `App` resources to a task and launch all in one click
+- **Native file/app pickers** -- pick launch targets from desktop dialogs instead of manually typing paths
+- **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
 - **Dark / Light theme** -- toggle with persistence, dark by default
 - **Smooth animations** -- Framer Motion layout transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
@@ -179,6 +183,12 @@ Use this local DMG path for validation or emergency-only release recovery, not a
 - On first launch, SQL migrations from `prisma/migrations` are applied automatically.
 - Local database path on macOS:
   - `~/Library/Application Support/todofocus/todofocus.db`
+
+### Launchpad Safety Model
+
+- Launch actions are handled in Electron main process via IPC, not by executing shell commands.
+- Resource payloads are validated in both renderer and main process before launch.
+- External window opening is protocol-restricted (allowlisted) and top-level navigation is guarded.
 
 ### Common issue and fix
 
