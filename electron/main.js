@@ -1,7 +1,6 @@
 const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const path = require("path");
 const net = require("net");
-const { ensureDatabaseAtPath } = require("./database");
 const { launchAll, MAX_LAUNCH_ITEMS } = require("./launchpad");
 
 // Keep a global reference of the window object to prevent GC
@@ -207,6 +206,11 @@ async function startNextServer() {
 
 // Ensure the database directory exists and run migrations if needed
 async function ensureDatabase() {
+  if (isDev) {
+    return;
+  }
+
+  const { ensureDatabaseAtPath } = require("./database");
   const fs = require("fs");
   const dbPath = getDbPath();
   const dbDir = path.dirname(dbPath);
