@@ -4,13 +4,15 @@ struct TaskDetailView: View {
     @Bindable var store: TodoAppStore
     let launchpadService: LaunchpadService
     let todo: Todo?
+    let onClose: () -> Void
     @State private var notesText: String = ""
     @State private var dueDate: Date = Date()
 
-    init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?) {
+    init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?, onClose: @escaping () -> Void) {
         self._store = Bindable(store)
         self.launchpadService = launchpadService
         self.todo = todo
+        self.onClose = onClose
     }
 
     static func shouldShowDueDateClearButton(dueDate: Date?) -> Bool {
@@ -18,84 +20,130 @@ struct TaskDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
+        VStack(spacing: 0) {
             if let todo {
-                Text(todo.title)
-                    .font(.title3.weight(.semibold))
+                header(todo: todo)
 
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 8) {
-                        DatePicker(
-                            "Due date",
-                            selection: Binding(
-                                get: { dueDate },
-                                set: { newValue in
-                                    dueDate = newValue
-                                    store.setDueDate(todoId: todo.id, date: newValue)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        section("Schedule") {
+                            HStack(spacing: 8) {
+                                DatePicker(
+                                    "Due date",
+                                    selection: Binding(
+                                        get: { dueDate },
+                                        set: { newValue in
+                                            dueDate = newValue
+                                            store.setDueDate(todoId: todo.id, date: newValue)
+                                        }
+                                    ),
+                                    displayedComponents: [.date]
+                                )
+
+                                if Self.shouldShowDueDateClearButton(dueDate: todo.dueDate) {
+                                    Button("Clear") {
+                                        dueDate = Date()
+                                        store.setDueDate(todoId: todo.id, date: nil)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .foregroundStyle(VisualTokens.mutedText)
                                 }
-                            ),
-                            displayedComponents: [.date]
-                        )
-
-                        if Self.shouldShowDueDateClearButton(dueDate: todo.dueDate) {
-                            Button("Clear") {
-                                store.setDueDate(todoId: todo.id, date: nil)
                             }
-                            .buttonStyle(.borderless)
-                        }
-                    }
-
-                    TextEditor(text: $notesText)
-                        .frame(minHeight: 120)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                        }
-                        .onChange(of: notesText) { _, newValue in
-                            store.updateNotesDebounced(todoId: todo.id, notes: newValue)
                         }
 
-                    StepsEditorView(todoId: todo.id, store: store)
+                        section("Notes") {
+                            TextEditor(text: $notesText)
+                                .frame(minHeight: 120)
+                                .scrollContentBackground(.hidden)
+                                .padding(8)
+                                .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+                                }
+                                .onChange(of: notesText) { _, newValue in
+                                    store.updateNotesDebounced(todoId: todo.id, notes: newValue)
+                                }
+                        }
 
-                    LaunchResourceEditorView(
-                        store: store,
-                        todo: todo,
-                        launchpadService: launchpadService
-                    )
-                }
-                .padding(12)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .onAppear {
-                    notesText = todo.notes
-                    dueDate = todo.dueDate ?? Date()
-                }
-                .onChange(of: todo.id) { _, _ in
-                    notesText = todo.notes
-                    dueDate = todo.dueDate ?? Date()
-                }
-                .onChange(of: todo.notes) { _, newValue in
-                    if newValue != notesText {
-                        notesText = newValue
+                        section("Steps") {
+                            StepsEditorView(todoId: todo.id, store: store)
+                        }
+
+                        section("Launchpad") {
+                            LaunchResourceEditorView(
+                                store: store,
+                                todo: todo,
+                                launchpadService: launchpadService
+                            )
+                        }
+                    }
+                    .padding(12)
+                    .onAppear {
+                        notesText = todo.notes
+                        dueDate = todo.dueDate ?? Date()
+                    }
+                    .onChange(of: todo.id) { _, _ in
+                        notesText = todo.notes
+                        dueDate = todo.dueDate ?? Date()
+                    }
+                    .onChange(of: todo.notes) { _, newValue in
+                        if newValue != notesText {
+                            notesText = newValue
+                        }
+                    }
+                    .onChange(of: todo.dueDate) { _, newValue in
+                        dueDate = newValue ?? Date()
                     }
                 }
-                .onChange(of: todo.dueDate) { _, newValue in
-                    if let newValue {
-                        dueDate = newValue
-                    }
-                }
-                .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .trailing)), removal: .opacity))
             } else {
-                Text("Select a task")
-                    .foregroundStyle(.secondary)
-                    .transition(.opacity)
+                EmptyView()
             }
-            Spacer()
-        }
-        .padding(16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(VisualTokens.panelBackground)
         .animation(.spring(response: 0.26, dampingFraction: 0.88), value: todo?.id)
+    }
+
+    private func header(todo: Todo) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 8) {
+                Text(todo.title)
+                    .font(.headline.weight(.semibold))
+                    .lineLimit(2)
+                Spacer()
+                Button {
+                    onClose()
+                } label: {
+                    Image(systemName: "xmark")
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(VisualTokens.mutedText)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(VisualTokens.sectionBackground)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(VisualTokens.sectionBorder)
+                .frame(height: 1)
+        }
+    }
+
+    private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(VisualTokens.mutedText)
+            content()
+        }
+        .padding(10)
+        .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+        }
     }
 }
 

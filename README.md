@@ -48,7 +48,7 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - Three-panel app shell (lists, tasks, detail)
 - Resizable detail panel for dense task metadata
 - Native file/app picker buttons for launch resources
-- Smooth task/list transitions with Framer Motion
+- Smooth native SwiftUI transitions throughout list and detail interactions
 
 ## Quick Start
 
@@ -167,18 +167,6 @@ Do not manually upload local assets unless CI is unavailable and maintainers app
    - `git tag -d vX.Y.Z`
    - `git push origin :refs/tags/vX.Y.Z`
    - Create correct tag and run `release-macos` again.
-
-### Quick DMG creation (fast path)
-
-When `dist-electron/mac-arm64/TodoFocus.app` already exists and works, create/replace a DMG directly:
-
-```bash
-hdiutil create -volname "TodoFocus" \
-  -srcfolder "dist-electron/mac-arm64/TodoFocus.app" \
-  -ov -format UDZO "dist-electron/TodoFocus-mac-arm64.dmg"
-```
-
-Use local packaging only for validation or emergency-only release recovery, not as the normal release path.
 
 ### Runtime and local data
 

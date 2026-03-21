@@ -27,7 +27,7 @@
 
 ### Core Packaging Rules (Must Follow)
 
-- Treat desktop packaging as a native app flow (not Node/Electron runtime flow).
+- Treat desktop packaging as a native app flow.
 - Always package from **clean, updated main** when preparing release artifacts.
 - Release assets must be produced by CI workflow (`release-macos-native`) by default.
 - Do not manually upload local artifacts unless CI is unavailable and maintainers approve an emergency fallback.

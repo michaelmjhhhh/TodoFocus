@@ -3,12 +3,15 @@ import SwiftUI
 struct TaskListView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
+    @State private var commandText: String = ""
 
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 12) {
+            commandBar
+
             HStack(spacing: 10) {
                 Text(title)
-                    .font(.system(size: 19, weight: .semibold, design: .rounded))
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
                 Spacer()
                 Picker("Filter", selection: Binding(
                     get: { appModel.timeFilter },
@@ -24,10 +27,10 @@ struct TaskListView: View {
                 .pickerStyle(.menu)
 
                 Text("\(store.visibleTodos.count)")
-                    .font(.caption.weight(.semibold))
+                    .font(.caption2.weight(.semibold))
                     .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(.ultraThinMaterial, in: Capsule())
+                    .padding(.vertical, 3)
+                    .background(VisualTokens.sectionBackground, in: Capsule())
             }
 
             QuickAddView { title in
@@ -43,7 +46,11 @@ struct TaskListView: View {
                 }
             }
             .padding(10)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+            }
 
             List(selection: selectedTodoBinding) {
                 ForEach(store.visibleTodos) { todo in
@@ -54,7 +61,8 @@ struct TaskListView: View {
                         },
                         onToggleImportant: {
                             try? store.toggleImportant(todoId: todo.id)
-                        }
+                        },
+                        onDeletePlaceholder: nil
                     )
                     .tag(todo.id)
                     .listRowInsets(EdgeInsets(top: 5, leading: 8, bottom: 5, trailing: 8))
@@ -65,8 +73,57 @@ struct TaskListView: View {
             .listStyle(.plain)
         }
         .padding(16)
+        .foregroundStyle(.primary)
         .animation(.spring(response: 0.24, dampingFraction: 0.86), value: store.visibleTodos.count)
         .animation(.easeInOut(duration: 0.18), value: appModel.timeFilter)
+    }
+
+    private var commandBar: some View {
+        HStack(spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(VisualTokens.mutedText)
+
+                TextField("Search tasks or press ⌘K", text: $commandText)
+                    .textFieldStyle(.plain)
+
+                Text("⌘K")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(VisualTokens.mutedText)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+            }
+
+            Button("New Task", systemImage: "plus") {
+                do {
+                    let created = try store.quickAdd(
+                        title: "New Task",
+                        planned: appModel.selection == .planned,
+                        isImportant: appModel.selection == .important,
+                        isMyDay: appModel.selection == .myDay,
+                        list: selectedList
+                    )
+                    store.selectTodo(todoId: created.id)
+                } catch {
+                }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+
+            Button("New List", systemImage: "list.bullet") {
+                store.createList(name: nextListName())
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
     }
 
     private var title: String {
@@ -102,5 +159,18 @@ struct TaskListView: View {
             return store.lists.first(where: { $0.id == listID })
         }
         return nil
+    }
+
+    private func nextListName() -> String {
+        let existing = Set(store.lists.map { $0.name.lowercased() })
+        if !existing.contains("new list") {
+            return "New List"
+        }
+
+        var index = 2
+        while existing.contains("new list \(index)") {
+            index += 1
+        }
+        return "New List \(index)"
     }
 }

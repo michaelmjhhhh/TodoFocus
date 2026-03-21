@@ -29,25 +29,44 @@ struct RootView: View {
                 TaskListView(appModel: appModel, store: store)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                Rectangle()
-                    .fill(Color.secondary.opacity(0.18))
-                    .frame(width: 6)
-                    .contentShape(Rectangle())
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { value in
-                                let next = appModel.detailPanelWidth - value.translation.width
-                                appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
-                            }
-                    )
+                if store.selectedTodo != nil {
+                    Rectangle()
+                        .fill(Color.secondary.opacity(0.22))
+                        .frame(width: 5)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let next = appModel.detailPanelWidth - value.translation.width
+                                    appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
+                                }
+                        )
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
 
-                TaskDetailView(store: store, launchpadService: launchpadService, todo: store.selectedTodo)
+                    TaskDetailView(
+                        store: store,
+                        launchpadService: launchpadService,
+                        todo: store.selectedTodo,
+                        onClose: {
+                            withAnimation(.spring(response: 0.28, dampingFraction: 0.9)) {
+                                store.clearSelection()
+                            }
+                        }
+                    )
                     .frame(width: appModel.detailPanelWidth)
-                    .background(.regularMaterial)
+                    .background(VisualTokens.panelBackground)
+                    .overlay(alignment: .leading) {
+                        Rectangle()
+                            .fill(VisualTokens.sectionBorder)
+                            .frame(width: 1)
+                    }
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
             }
             .background(
                 VisualTokens.appBackground
             )
+            .animation(.spring(response: 0.3, dampingFraction: 0.9), value: store.selectedTodo?.id)
             .onAppear {
                 containerWidth = proxy.size.width
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
