@@ -172,4 +172,43 @@ final class TodoRepositoryTests: XCTestCase {
         let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
         XCTAssertNil(updated.listId)
     }
+
+    func testDeleteTodoRemovesRecord() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Delete me", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        try repo.deleteTodo(id: created.id)
+
+        XCTAssertNil(try repo.fetchTodo(id: created.id))
+    }
+
+    func testDeleteTodoWithMissingIDThrowsNotFound() throws {
+        let repo = try makeRepository()
+
+        XCTAssertThrowsError(try repo.deleteTodo(id: "missing")) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .notFound)
+        }
+    }
+
+    func testClearCompletedTodosDeletesOnlyCompletedRows() throws {
+        let repo = try makeRepository()
+        let active = try repo.addTodo(
+            AddTodoInput(title: "Keep me", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+        let completed = try repo.addTodo(
+            AddTodoInput(title: "Done", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.isCompleted = true
+        try repo.updateTodo(id: completed.id, input: patch)
+
+        let deletedCount = try repo.clearCompletedTodos()
+
+        XCTAssertEqual(deletedCount, 1)
+        XCTAssertNotNil(try repo.fetchTodo(id: active.id))
+        XCTAssertNil(try repo.fetchTodo(id: completed.id))
+    }
 }

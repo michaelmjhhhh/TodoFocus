@@ -7,6 +7,9 @@ struct TaskDetailView: View {
     let onClose: () -> Void
     @State private var notesText: String = ""
     @State private var dueDate: Date = Date()
+    @State private var titleText: String = ""
+    @State private var titleValidationMessage: String?
+    @FocusState private var isTitleFocused: Bool
 
     init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?, onClose: @escaping () -> Void) {
         self._store = Bindable(store)
@@ -71,6 +74,11 @@ struct TaskDetailView: View {
                         }
 
                         section("Launchpad") {
+                            Text("Add URL, file, or app resources, then use Launch All to open everything in one action.")
+                                .font(.caption)
+                                .foregroundStyle(VisualTokens.mutedText)
+                                .padding(.bottom, 2)
+
                             LaunchResourceEditorView(
                                 store: store,
                                 todo: todo,
@@ -80,12 +88,21 @@ struct TaskDetailView: View {
                     }
                     .padding(12)
                     .onAppear {
+                        titleText = todo.title
                         notesText = todo.notes
                         dueDate = todo.dueDate ?? Date()
                     }
                     .onChange(of: todo.id) { _, _ in
+                        titleText = todo.title
+                        titleValidationMessage = nil
+                        isTitleFocused = false
                         notesText = todo.notes
                         dueDate = todo.dueDate ?? Date()
+                    }
+                    .onChange(of: todo.title) { _, newValue in
+                        if !isTitleFocused, newValue != titleText {
+                            titleText = newValue
+                        }
                     }
                     .onChange(of: todo.notes) { _, newValue in
                         if newValue != notesText {
@@ -103,16 +120,46 @@ struct TaskDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(VisualTokens.panelBackground)
         .animation(.spring(response: 0.26, dampingFraction: 0.88), value: todo?.id)
+        .animation(.easeInOut(duration: 0.18), value: isTitleFocused)
     }
 
     private func header(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(todo.title)
-                    .font(.headline.weight(.semibold))
-                    .lineLimit(2)
+                VStack(alignment: .leading, spacing: 6) {
+                    TextField("Task title", text: $titleText)
+                        .textFieldStyle(.plain)
+                        .font(.headline.weight(.semibold))
+                        .focused($isTitleFocused)
+                        .onSubmit {
+                            commitTitle(todoId: todo.id)
+                        }
+                        .onChange(of: titleText) { _, _ in
+                            if titleValidationMessage != nil {
+                                titleValidationMessage = nil
+                            }
+                        }
+
+                    if let titleValidationMessage {
+                        Text(titleValidationMessage)
+                            .font(.caption)
+                            .foregroundStyle(Color.red.opacity(0.92))
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white.opacity(isTitleFocused ? 0.09 : 0.04))
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(VisualTokens.sectionBorder.opacity(isTitleFocused ? 0.95 : 0.65), lineWidth: 1)
+                }
                 Spacer()
                 Button {
+                    commitTitle(todoId: todo.id)
                     onClose()
                 } label: {
                     Image(systemName: "xmark")
@@ -124,6 +171,7 @@ struct TaskDetailView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(VisualTokens.sectionBackground)
+        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
         .overlay(alignment: .bottom) {
             Rectangle()
                 .fill(VisualTokens.sectionBorder)
@@ -143,6 +191,25 @@ struct TaskDetailView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func commitTitle(todoId: String) {
+        let currentTitle = todo?.title ?? ""
+        if titleText == currentTitle {
+            return
+        }
+
+        switch store.updateTitle(todoId: todoId, title: titleText) {
+        case .success:
+            titleValidationMessage = nil
+        case .failure(.invalidTitle):
+            titleValidationMessage = "Title cannot be empty"
+            titleText = currentTitle
+        case .failure:
+            titleValidationMessage = "Could not save title"
+            titleText = currentTitle
         }
     }
 }

@@ -2,13 +2,24 @@ import SwiftUI
 
 struct TodoRowView: View {
     let todo: Todo
+    let isSelected: Bool
+    let onSelect: () -> Void
     let onToggleComplete: () -> Void
     let onToggleImportant: () -> Void
-    let onDeletePlaceholder: (() -> Void)?
+    let onDelete: () -> Void
     @State private var isHovered: Bool = false
 
     var body: some View {
         HStack(spacing: 10) {
+            Button(action: onToggleComplete) {
+                Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 17, weight: .semibold))
+                    .padding(5)
+                    .background(todo.isCompleted ? Color.green.opacity(0.18) : Color.white.opacity(0.06), in: Circle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(todo.isCompleted ? Color.green : VisualTokens.mutedText)
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(todo.title)
                     .strikethrough(todo.isCompleted)
@@ -33,18 +44,11 @@ struct TodoRowView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(todo.isImportant ? Color.yellow : VisualTokens.mutedText)
 
-                Button(action: onToggleComplete) {
-                    Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(todo.isCompleted ? Color.green : VisualTokens.mutedText)
-
-                Button(action: { onDeletePlaceholder?() }) {
+                Button(action: onDelete) {
                     Image(systemName: "trash")
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(VisualTokens.mutedText)
-                .disabled(onDeletePlaceholder == nil)
             }
             .opacity(isHovered ? 1 : 0)
             .offset(x: isHovered ? 0 : 6)
@@ -53,7 +57,7 @@ struct TodoRowView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
-        .background(Color.white.opacity(isHovered ? 0.08 : 0.04), in: RoundedRectangle(cornerRadius: 8))
+        .background((isSelected ? Color.white.opacity(0.12) : Color.white.opacity(isHovered ? 0.08 : 0.04)), in: RoundedRectangle(cornerRadius: 8))
         .overlay(alignment: .leading) {
             RoundedRectangle(cornerRadius: 8)
                 .fill(VisualTokens.accent)
@@ -65,6 +69,9 @@ struct TodoRowView: View {
                 .stroke(VisualTokens.sectionBorder.opacity(isHovered ? 1 : 0), lineWidth: 1)
         }
         .contentShape(Rectangle())
+        .onTapGesture {
+            onSelect()
+        }
         .onHover { hovering in
             isHovered = hovering
         }

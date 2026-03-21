@@ -131,6 +131,17 @@ struct TodoRepository {
         try updateTodo(id: id, input: patch, now: now)
     }
 
+    func updateTitle(id: String, title: String, now: Date = Date()) throws {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty else {
+            throw TodoRepositoryError.invalidTitle
+        }
+
+        var patch = UpdateTodoInput()
+        patch.title = trimmedTitle
+        try updateTodo(id: id, input: patch, now: now)
+    }
+
     func fetchTodosOrdered() throws -> [TodoRecord] {
         try dbQueue.read { db in
             try TodoRecord
@@ -146,6 +157,22 @@ struct TodoRepository {
     func fetchTodo(id: String) throws -> TodoRecord? {
         try dbQueue.read { db in
             try TodoRecord.fetchOne(db, key: id)
+        }
+    }
+
+    func deleteTodo(id: String) throws {
+        try dbQueue.write { db in
+            let deleted = try TodoRecord.deleteOne(db, key: id)
+            guard deleted else {
+                throw TodoRepositoryError.notFound
+            }
+        }
+    }
+
+    func clearCompletedTodos() throws -> Int {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM todo WHERE isCompleted = 1")
+            return Int(db.changesCount)
         }
     }
 
