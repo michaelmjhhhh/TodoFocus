@@ -97,6 +97,8 @@ npx prisma studio      # Browse database in browser
 - Keep `asar` enabled for smaller artifacts and faster distribution.
 - Unpack only native runtime files (`*.node`, `better-sqlite3`) via `asarUnpack`.
 - Include Prisma SQL migrations in the packaged app (`prisma/migrations/**/*`).
+- Rebuild native dependencies for Electron target before release packaging:
+  - `npx electron-builder install-app-deps`
 - Before packaging, copy static assets into standalone:
   - `.next/static` -> `.next/standalone/.next/static`
   - `public` -> `.next/standalone/public`
@@ -114,6 +116,17 @@ npm run build
 npm run build:electron:assets
 CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never
 ```
+
+### Release Checklist (Recommended)
+
+1. `git checkout main && git pull`
+2. `npm run build`
+3. `npm run build:electron:assets`
+4. `npx electron-builder install-app-deps`
+5. `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never`
+6. Launch and smoke test `dist-electron/mac-arm64/TodoFocus.app`
+7. Build DMG via `hdiutil create ...`
+8. Upload asset with `gh release upload <tag> dist-electron/TodoFocus-mac-arm64.dmg --clobber`
 
 ### Quick DMG creation (fast path)
 
@@ -136,6 +149,8 @@ hdiutil create -volname "TodoFocus" \
 
 - If UI looks unstyled (plain HTML buttons/text), verify CSS endpoint is reachable from the app's internal port.
 - Typical root cause is stale app process/port conflict; restart app after killing old processes.
+- If packaged app fails with `better-sqlite3` `NODE_MODULE_VERSION` mismatch, rebuild Electron native deps (`npx electron-builder install-app-deps`) and repackage.
+- If dev server fails with Prisma `P2022` missing column, apply local schema updates with `npx prisma migrate dev`.
 
 ## License
 
