@@ -96,4 +96,80 @@ final class TodoRepositoryTests: XCTestCase {
         let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
         XCTAssertEqual(updated.launchResources, "[]")
     }
+
+    func testAddTodoWithInvalidTitleThrowsInvalidTitle() throws {
+        let repo = try makeRepository()
+
+        XCTAssertThrowsError(
+            try repo.addTodo(
+                AddTodoInput(title: "   \n\t", listID: nil, isMyDay: false, isImportant: false, planned: false)
+            )
+        ) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .invalidTitle)
+        }
+    }
+
+    func testUpdateTodoRecurrenceIntervalClampsToAtLeastOne() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Clamp", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.recurrenceInterval = 0
+        try repo.updateTodo(id: created.id, input: patch)
+
+        let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
+        XCTAssertEqual(updated.recurrenceInterval, 1)
+    }
+
+    func testUpdateTodoWithMissingIDThrowsNotFound() throws {
+        let repo = try makeRepository()
+
+        XCTAssertThrowsError(try repo.updateTodo(id: "missing", input: UpdateTodoInput())) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .notFound)
+        }
+    }
+
+    func testUpdateTodoWithInvalidLaunchResourcesStringThrowsInvalidLaunchResources() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Launch JSON", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.launchResources = "{not json}"
+
+        XCTAssertThrowsError(try repo.updateTodo(id: created.id, input: patch)) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .invalidLaunchResources)
+        }
+    }
+
+    func testUpdateTodoWithOversizedLaunchResourcesThrowsTooLarge() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Launch size", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.launchResources = String(repeating: "x", count: 16_001)
+
+        XCTAssertThrowsError(try repo.updateTodo(id: created.id, input: patch)) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .launchResourcesTooLarge)
+        }
+    }
+
+    func testUpdateTodoWithEmptyListIDConvertsToNil() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "List", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.listID = ""
+        try repo.updateTodo(id: created.id, input: patch)
+
+        let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
+        XCTAssertNil(updated.listId)
+    }
 }
