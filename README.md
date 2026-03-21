@@ -120,7 +120,7 @@ hdiutil create -volname "TodoFocus" \
 
 ### Runtime and local data
 
-- App starts an internal Next.js server from `.next/standalone/server.js`.
+- App starts the Next.js standalone server in-process from `.next/standalone/server.js` (no separate spawned server child).
 - On first launch, SQL migrations from `prisma/migrations` are applied automatically.
 - Local database path on macOS:
   - `~/Library/Application Support/todofocus/todofocus.db`

@@ -1,12 +1,11 @@
 const { app, BrowserWindow, shell, dialog } = require("electron");
 const path = require("path");
-const { spawn } = require("child_process");
 const net = require("net");
 const { ensureDatabaseAtPath } = require("./database");
 
 // Keep a global reference of the window object to prevent GC
 let mainWindow = null;
-let nextProcess = null;
+let nextServerBootstrapped = false;
 
 const isDev = process.env.NODE_ENV === "development";
 const DEFAULT_PORT = 3000;
@@ -123,6 +122,10 @@ async function startNextServer() {
     return;
   }
 
+  if (nextServerBootstrapped) {
+    return;
+  }
+
   // Use Next standalone server entry.
   const serverPath = app.isPackaged
     ? path.join(process.resourcesPath, "app.asar.unpacked", ".next", "standalone", "server.js")
@@ -132,36 +135,15 @@ async function startNextServer() {
     throw new Error(`Missing Next standalone server: ${serverPath}`);
   }
 
-  console.log("[electron] Starting Next.js from:", serverPath);
+  console.log("[electron] Starting in-process Next.js from:", serverPath);
 
-  nextProcess = spawn(process.execPath, [serverPath], {
-    cwd: path.dirname(serverPath),
-    env: {
-      ...process.env,
-      ELECTRON_RUN_AS_NODE: "1",
-      PORT: String(serverPort),
-      HOSTNAME: "127.0.0.1",
-      NODE_ENV: "production",
-      DATABASE_URL: getDbUrl(),
-    },
-    stdio: "pipe",
-  });
+  process.env.PORT = String(serverPort);
+  process.env.HOSTNAME = "127.0.0.1";
+  process.env.NODE_ENV = "production";
+  process.env.DATABASE_URL = getDbUrl();
 
-  nextProcess.stdout.on("data", (data) => {
-    console.log(`[next] ${data.toString().trim()}`);
-  });
-
-  nextProcess.stderr.on("data", (data) => {
-    console.error(`[next] ${data.toString().trim()}`);
-  });
-
-  nextProcess.on("error", (err) => {
-    console.error("Failed to start Next.js server:", err);
-  });
-
-  nextProcess.on("exit", (code, signal) => {
-    console.error(`[next] exited with code=${code} signal=${signal}`);
-  });
+  require(serverPath);
+  nextServerBootstrapped = true;
 }
 
 // Ensure the database directory exists and run migrations if needed
@@ -214,12 +196,5 @@ app.whenReady().then(async () => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-  }
-});
-
-app.on("before-quit", () => {
-  if (nextProcess) {
-    nextProcess.kill();
-    nextProcess = null;
   }
 });
