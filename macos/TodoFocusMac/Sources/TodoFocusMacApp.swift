@@ -6,15 +6,18 @@ struct TodoFocusMacApp: App {
     @State private var themeStore = ThemeStore()
     @State private var store: TodoAppStore?
     @State private var launchpadService = LaunchpadService()
+    @State private var startupError: String?
     private let databaseManager: DatabaseManager?
 
     init() {
-        databaseManager = try? DatabaseManager()
-        if let databaseManager {
+        do {
+            let manager = try DatabaseManager()
+            databaseManager = manager
+
             let model = AppModel()
-            let listRepository = ListRepository(dbQueue: databaseManager.dbQueue)
-            let todoRepository = TodoRepository(dbQueue: databaseManager.dbQueue)
-            let stepRepository = StepRepository(dbQueue: databaseManager.dbQueue)
+            let listRepository = ListRepository(dbQueue: manager.dbQueue)
+            let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+            let stepRepository = StepRepository(dbQueue: manager.dbQueue)
             _appModel = State(initialValue: model)
             _store = State(
                 initialValue: TodoAppStore(
@@ -24,6 +27,10 @@ struct TodoFocusMacApp: App {
                     stepRepository: stepRepository
                 )
             )
+            _startupError = State(initialValue: nil)
+        } catch {
+            databaseManager = nil
+            _startupError = State(initialValue: String(describing: error))
         }
     }
 
@@ -38,7 +45,15 @@ struct TodoFocusMacApp: App {
                         databasePath: databaseManager?.path ?? "unavailable"
                     )
                 } else {
-                    Text("Database unavailable")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Database unavailable")
+                            .font(.headline)
+                        Text(startupError ?? "unknown startup error")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                    }
+                    .padding(20)
                 }
             }
             .preferredColorScheme(themeStore.preferredColorScheme)

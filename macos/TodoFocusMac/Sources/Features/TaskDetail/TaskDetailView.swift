@@ -18,12 +18,13 @@ struct TaskDetailView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
             if let todo {
                 Text(todo.title)
-                    .font(.headline)
+                    .font(.title3.weight(.semibold))
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 8) {
                         DatePicker(
                             "Due date",
@@ -46,7 +47,7 @@ struct TaskDetailView: View {
                     }
 
                     TextEditor(text: $notesText)
-                        .frame(minHeight: 100)
+                        .frame(minHeight: 120)
                         .overlay {
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
@@ -63,6 +64,8 @@ struct TaskDetailView: View {
                         launchpadService: launchpadService
                     )
                 }
+                .padding(12)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
                 .onAppear {
                     notesText = todo.notes
                     dueDate = todo.dueDate ?? Date()
@@ -87,7 +90,8 @@ struct TaskDetailView: View {
             }
             Spacer()
         }
-        .padding(20)
+        .padding(16)
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }

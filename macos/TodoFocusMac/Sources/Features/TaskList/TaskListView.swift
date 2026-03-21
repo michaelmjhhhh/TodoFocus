@@ -5,7 +5,31 @@ struct TaskListView: View {
     @Bindable var store: TodoAppStore
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 14) {
+            HStack(spacing: 10) {
+                Text(title)
+                    .font(.system(size: 19, weight: .semibold, design: .rounded))
+                Spacer()
+                Picker("Filter", selection: Binding(
+                    get: { appModel.timeFilter },
+                    set: { appModel.timeFilter = $0 }
+                )) {
+                    Text("All").tag(TimeFilter.allDates)
+                    Text("Overdue").tag(TimeFilter.overdue)
+                    Text("Today").tag(TimeFilter.today)
+                    Text("Tomorrow").tag(TimeFilter.tomorrow)
+                    Text("Next 7").tag(TimeFilter.next7Days)
+                    Text("No Date").tag(TimeFilter.noDate)
+                }
+                .pickerStyle(.menu)
+
+                Text("\(store.visibleTodos.count)")
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(.ultraThinMaterial, in: Capsule())
+            }
+
             QuickAddView { title in
                 do {
                     try store.quickAdd(
@@ -18,6 +42,8 @@ struct TaskListView: View {
                 } catch {
                 }
             }
+            .padding(10)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
 
             List(selection: selectedTodoBinding) {
                 ForEach(store.visibleTodos) { todo in
@@ -31,8 +57,28 @@ struct TaskListView: View {
                         }
                     )
                     .tag(todo.id)
+                    .listRowInsets(EdgeInsets(top: 5, leading: 8, bottom: 5, trailing: 8))
+                    .listRowBackground(Color.clear)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+        }
+        .padding(16)
+    }
+
+    private var title: String {
+        switch appModel.selection {
+        case .myDay:
+            return "My Day"
+        case .important:
+            return "Important"
+        case .planned:
+            return "Planned"
+        case .all:
+            return "All Tasks"
+        case let .customList(id):
+            return store.lists.first(where: { $0.id == id })?.name ?? "List"
         }
     }
 

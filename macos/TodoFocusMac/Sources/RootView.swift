@@ -6,6 +6,7 @@ struct RootView: View {
     let launchpadService: LaunchpadService
     let databasePath: String
     @State private var containerWidth: Double = 1200
+    @State private var isSidebarVisible: Bool = true
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String) {
         self._appModel = Bindable(appModel)
@@ -15,51 +16,71 @@ struct RootView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
-            SidebarView(appModel: appModel, lists: store.lists)
-                .navigationSplitViewColumnWidth(min: 220, ideal: 250)
-        } content: {
-            TaskListView(appModel: appModel, store: store)
-                .navigationSplitViewColumnWidth(min: 320, ideal: 420)
-        } detail: {
-            ResizableSplitView(
-                rightWidth: Binding(
-                    get: { appModel.detailPanelWidth },
-                    set: { (value: Double) in
-                        appModel.updateDetailPanelWidth(value, windowWidth: containerWidth)
-                    }
-                )
-            ) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("TodoFocus")
-                        .font(.title2.bold())
-                    Text("SwiftUI rewrite branch")
-                        .foregroundStyle(.secondary)
-                    Text("DB: \(databasePath)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+        GeometryReader { proxy in
+            HStack(spacing: 0) {
+                if isSidebarVisible {
+                    SidebarView(appModel: appModel, store: store, lists: store.lists)
+                        .frame(width: 250)
+                        .background(.ultraThinMaterial)
+
+                    Divider()
                 }
-                .padding(24)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            } right: {
+
+                TaskListView(appModel: appModel, store: store)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                Rectangle()
+                    .fill(Color.secondary.opacity(0.18))
+                    .frame(width: 6)
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                let next = appModel.detailPanelWidth - value.translation.width
+                                appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
+                            }
+                    )
+
                 TaskDetailView(store: store, launchpadService: launchpadService, todo: store.selectedTodo)
+                    .frame(width: appModel.detailPanelWidth)
+                    .background(.regularMaterial)
+            }
+            .background(
+                LinearGradient(
+                    colors: [Color.black.opacity(0.22), Color.black.opacity(0.06)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .onAppear {
+                containerWidth = proxy.size.width
+                appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
+            }
+            .onChange(of: proxy.size.width) { _, newValue in
+                containerWidth = newValue
+                appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: newValue)
             }
         }
-        .background(
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        containerWidth = proxy.size.width
-                        appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
-                    }
-                    .onChange(of: proxy.size.width) { _, newValue in
-                        containerWidth = newValue
-                        appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: newValue)
-                    }
-            }
-        )
         .task {
             try? store.reload()
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isSidebarVisible.toggle()
+                    }
+                } label: {
+                    Image(systemName: "sidebar.leading")
+                }
+            }
+        }
+        .onChange(of: appModel.selectedTodoID) { _, newValue in
+            if newValue != nil {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isSidebarVisible = false
+                }
+            }
         }
     }
 }

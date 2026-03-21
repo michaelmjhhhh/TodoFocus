@@ -2,20 +2,32 @@ import SwiftUI
 
 struct SidebarView: View {
     @Bindable var appModel: AppModel
+    @Bindable var store: TodoAppStore
     let lists: [TodoList]
+    @State private var newListName: String = ""
 
     var body: some View {
         List(selection: selectionBinding) {
             Section("Smart Lists") {
-                smartRow("My Day", selection: .myDay)
-                smartRow("Important", selection: .important)
-                smartRow("Planned", selection: .planned)
-                smartRow("All Tasks", selection: .all)
+                smartRow("My Day", systemImage: "sun.max", selection: .myDay)
+                smartRow("Important", systemImage: "star", selection: .important)
+                smartRow("Planned", systemImage: "calendar", selection: .planned)
+                smartRow("All Tasks", systemImage: "tray.full", selection: .all)
             }
 
             Section("Lists") {
                 ForEach(lists) { list in
-                    smartRow(list.name, selection: .customList(list.id))
+                    smartRow(list.name, systemImage: "circle.fill", selection: .customList(list.id))
+                }
+
+                HStack(spacing: 8) {
+                    TextField("Add list", text: $newListName)
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit(addList)
+                    Button(action: addList) {
+                        Image(systemName: "plus")
+                    }
+                    .buttonStyle(.bordered)
                 }
             }
         }
@@ -55,7 +67,7 @@ struct SidebarView: View {
         )
     }
 
-    private func smartRow(_ title: String, selection: SidebarSelection) -> some View {
+    private func smartRow(_ title: String, systemImage: String, selection: SidebarSelection) -> some View {
         let tag: String
         switch selection {
         case .myDay:
@@ -70,6 +82,14 @@ struct SidebarView: View {
             tag = "list:\(id)"
         }
 
-        return Text(title).tag(tag)
+        return Label(title, systemImage: systemImage)
+            .tag(tag)
+    }
+
+    private func addList() {
+        let trimmed = newListName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        store.createList(name: trimmed)
+        newListName = ""
     }
 }

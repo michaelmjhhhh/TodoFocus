@@ -15,10 +15,15 @@ struct TodoRowView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(todo.title)
                     .strikethrough(todo.isCompleted)
+                    .font(.body.weight(.medium))
                 if let dueDate = todo.dueDate {
-                    Text(dueDate, style: .date)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Label {
+                        Text(dueDate, style: .date)
+                    } icon: {
+                        Image(systemName: "calendar")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
             }
 
@@ -30,6 +35,9 @@ struct TodoRowView: View {
             }
             .buttonStyle(.plain)
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
         .contentShape(Rectangle())
     }
 }

@@ -164,6 +164,13 @@ final class TodoAppStore {
         }
         try? reload()
     }
+
+    func createList(name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        _ = try? listRepository.createList(name: trimmed, now: now())
+        try? reload()
+    }
 }
 
 private extension Todo {
