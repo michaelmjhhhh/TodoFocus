@@ -16,6 +16,28 @@ const isDev = process.env.NODE_ENV === "development";
 const DEFAULT_PORT = 3000;
 let serverPort = DEFAULT_PORT;
 
+function isAllowedExternalUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+function isTrustedSender(event) {
+  const frameUrl = event?.senderFrame?.url;
+  if (!frameUrl || typeof frameUrl !== "string") {
+    return false;
+  }
+
+  if (isDev) {
+    return frameUrl.startsWith("http://127.0.0.1:3000") || frameUrl.startsWith("http://localhost:3000");
+  }
+
+  return frameUrl.startsWith(`http://127.0.0.1:${serverPort}`);
+}
+
 function isPlainObject(value) {
   if (!value || typeof value !== "object") {
     return false;
@@ -73,6 +95,10 @@ function getPickerWindow(event) {
 }
 
 ipcMain.handle("launchpad:pick-file", async (event) => {
+  if (!isTrustedSender(event)) {
+    return buildPickerUnavailableResult("untrusted-sender");
+  }
+
   try {
     const result = await dialog.showOpenDialog(getPickerWindow(event), {
       properties: ["openFile"],
@@ -95,6 +121,10 @@ ipcMain.handle("launchpad:pick-file", async (event) => {
 });
 
 ipcMain.handle("launchpad:pick-app", async (event) => {
+  if (!isTrustedSender(event)) {
+    return buildPickerUnavailableResult("untrusted-sender");
+  }
+
   try {
     const result = await dialog.showOpenDialog(getPickerWindow(event), {
       properties: ["openFile"],
@@ -117,7 +147,11 @@ ipcMain.handle("launchpad:pick-app", async (event) => {
   }
 });
 
-ipcMain.handle("launchpad:launch-all", async (_event, payload) => {
+ipcMain.handle("launchpad:launch-all", async (event, payload) => {
+  if (!isTrustedSender(event)) {
+    return buildInvalidLaunchPayloadResult();
+  }
+
   const resources = normalizeLaunchResourcesPayload(payload);
   if (resources === null) {
     return buildInvalidLaunchPayloadResult();
@@ -234,8 +268,22 @@ function createWindow() {
 
   // Open external links in default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    if (isAllowedExternalUrl(url)) {
+      shell.openExternal(url);
+    }
     return { action: "deny" };
+  });
+
+  mainWindow.webContents.on("will-navigate", (event, url) => {
+    const trustedOrigin = `http://127.0.0.1:${serverPort}`;
+    const trustedDevOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
+    if (
+      url === trustedOrigin ||
+      (isDev && trustedDevOrigins.some((origin) => url.startsWith(origin)))
+    ) {
+      return;
+    }
+    event.preventDefault();
   });
 
   mainWindow.on("closed", () => {

@@ -8,6 +8,10 @@ export type LaunchResource = {
   createdAt: string;
 };
 
+export type LaunchResourceSerializationResult =
+  | { ok: true; value: string }
+  | { ok: false; error: "payload_too_large" };
+
 const MAX_RESOURCES = 12;
 const MAX_PAYLOAD_LENGTH = 16_000;
 const ALLOWED_DEEP_LINK_PROTOCOLS = new Set([
@@ -185,6 +189,13 @@ export function parseLaunchResources(raw: string | null | undefined): LaunchReso
 }
 
 export function serializeLaunchResources(items: LaunchResource[]): string {
+  const result = trySerializeLaunchResources(items);
+  return result.ok ? result.value : JSON.stringify([]);
+}
+
+export function trySerializeLaunchResources(
+  items: LaunchResource[]
+): LaunchResourceSerializationResult {
   const sanitized: LaunchResource[] = [];
 
   for (const item of items) {
@@ -200,8 +211,8 @@ export function serializeLaunchResources(items: LaunchResource[]): string {
 
   const serialized = JSON.stringify(sanitized);
   if (serialized.length > MAX_PAYLOAD_LENGTH) {
-    return JSON.stringify([]);
+    return { ok: false, error: "payload_too_large" };
   }
 
-  return serialized;
+  return { ok: true, value: serialized };
 }

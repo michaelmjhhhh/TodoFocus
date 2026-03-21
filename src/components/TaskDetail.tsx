@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/cn";
 import {
   parseLaunchResources,
-  serializeLaunchResources,
+  trySerializeLaunchResources,
   validateLaunchResource,
   type LaunchResource,
 } from "@/lib/launchResources";
@@ -168,7 +168,18 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
     }
 
     startSavingLaunchResources(async () => {
-      await updateTodo(todo.id, { launchResources: normalized });
+      const result = await updateTodo(todo.id, { launchResources: normalized });
+      if (!result.ok) {
+        if (result.error === "launch_resources_too_large") {
+          setLaunchValidationError("Launch resources are too large. Shorten labels/values.");
+        } else if (result.error === "invalid_launch_resource") {
+          setLaunchValidationError("Fix invalid resource values before saving.");
+        } else {
+          setLaunchValidationError("Could not save launch resources. Please retry.");
+        }
+        return;
+      }
+
       setLaunchResources(normalized);
       setLaunchSummary(
         normalized.length === 0
@@ -182,7 +193,13 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
     setLaunchSummary(null);
     setLaunchValidationError(null);
 
-    const serialized = serializeLaunchResources(launchResources);
+    const serializedResult = trySerializeLaunchResources(launchResources);
+    if (!serializedResult.ok) {
+      setLaunchValidationError("Launch resources are too large. Shorten labels/values.");
+      return;
+    }
+
+    const serialized = serializedResult.value;
 
     startLaunchingResources(async () => {
       const result = await launchAllClient(serialized);
