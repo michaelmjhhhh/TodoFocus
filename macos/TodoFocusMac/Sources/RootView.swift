@@ -2,35 +2,46 @@ import SwiftUI
 
 struct RootView: View {
     @Bindable var appModel: AppModel
+    @Bindable var store: TodoAppStore
     let databasePath: String
 
+    init(appModel: AppModel, store: TodoAppStore, databasePath: String) {
+        self._appModel = Bindable(appModel)
+        self._store = Bindable(store)
+        self.databasePath = databasePath
+    }
+
     var body: some View {
-        ResizableSplitView(
-            rightWidth: Binding(
-                get: { appModel.detailPanelWidth },
-                set: { (value: Double) in appModel.detailPanelWidth = value }
-            )
-        ) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("TodoFocus (SwiftUI Rewrite)")
-                    .font(.title2.bold())
-                Text("Issue #15 branch in progress")
-                    .foregroundStyle(.secondary)
-                Text("DB: \(databasePath)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        NavigationSplitView {
+            SidebarView(appModel: appModel, lists: store.lists)
+                .navigationSplitViewColumnWidth(min: 220, ideal: 250)
+        } content: {
+            TaskListView(appModel: appModel, store: store)
+                .navigationSplitViewColumnWidth(min: 320, ideal: 420)
+        } detail: {
+            ResizableSplitView(
+                rightWidth: Binding(
+                    get: { appModel.detailPanelWidth },
+                    set: { (value: Double) in appModel.detailPanelWidth = value }
+                )
+            ) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("TodoFocus")
+                        .font(.title2.bold())
+                    Text("SwiftUI rewrite branch")
+                        .foregroundStyle(.secondary)
+                    Text("DB: \(databasePath)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            } right: {
+                TaskDetailView(todo: store.selectedTodo)
             }
-            .padding(24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        } right: {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Detail")
-                    .font(.headline)
-                Text("Placeholder panel")
-                    .foregroundStyle(.secondary)
-            }
-            .padding(20)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+        .task {
+            try? store.reload()
         }
     }
 }
