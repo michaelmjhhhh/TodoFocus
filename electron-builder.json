@@ -8,7 +8,8 @@
     "electron/**/*",
     ".next/standalone/**/*",
     "prisma/**/*",
-    "package.json"
+    "package.json",
+    "!/node_modules/**/*"
   ],
   "extraResources": [],
   "mac": {
@@ -30,7 +31,6 @@
   "asar": true,
   "asarUnpack": [
     ".next/standalone/**",
-    "**/*.node",
-    "**/better-sqlite3/**"
+    "**/*.node"
   ]
 }
