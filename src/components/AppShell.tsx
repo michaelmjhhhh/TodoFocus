@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Sidebar, type SmartList } from "./Sidebar";
 import { TodoInput } from "./TodoInput";
 import { TodoList, type TodoData } from "./TodoList";
@@ -20,6 +20,11 @@ interface AppShellProps {
   todos: TodoData[];
   lists: ListItem[];
 }
+
+const DETAIL_PANEL_MIN_WIDTH = 340;
+const DETAIL_PANEL_MAX_WIDTH = 760;
+const DETAIL_PANEL_MIN_MAIN_WIDTH = 460;
+const DETAIL_PANEL_STORAGE_KEY = "todofocus.detailPanelWidth";
 
 const viewConfig: Record<
   SmartList,
@@ -43,6 +48,99 @@ export function AppShell({ todos, lists }: AppShellProps) {
   const [activeView, setActiveView] = useState<SmartList | string>("myday");
   const [activeTimeFilter, setActiveTimeFilter] = useState<TimeFilter>("all-dates");
   const [selectedTodoId, setSelectedTodoId] = useState<string | null>(null);
+  const [detailPanelWidth, setDetailPanelWidth] = useState<number>(() => {
+    if (typeof window === "undefined") {
+      return 380;
+    }
+
+    const stored = window.localStorage.getItem(DETAIL_PANEL_STORAGE_KEY);
+    const parsed = stored ? Number.parseInt(stored, 10) : Number.NaN;
+    return Number.isFinite(parsed) ? parsed : 380;
+  });
+  const [isResizingDetailPanel, setIsResizingDetailPanel] = useState(false);
+
+  const clampDetailPanelWidth = useCallback((candidate: number) => {
+    if (typeof window === "undefined") {
+      return Math.min(Math.max(candidate, DETAIL_PANEL_MIN_WIDTH), DETAIL_PANEL_MAX_WIDTH);
+    }
+
+    const viewportMax = window.innerWidth - DETAIL_PANEL_MIN_MAIN_WIDTH;
+    const dynamicMax = Math.max(
+      DETAIL_PANEL_MIN_WIDTH,
+      Math.min(DETAIL_PANEL_MAX_WIDTH, viewportMax)
+    );
+
+    return Math.min(Math.max(candidate, DETAIL_PANEL_MIN_WIDTH), dynamicMax);
+  }, []);
+
+  const updateDetailPanelWidthFromPointer = useCallback(
+    (clientX: number) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const nextWidth = clampDetailPanelWidth(window.innerWidth - clientX);
+      setDetailPanelWidth(nextWidth);
+    },
+    [clampDetailPanelWidth]
+  );
+
+  useEffect(() => {
+    setDetailPanelWidth((current) => clampDetailPanelWidth(current));
+  }, [clampDetailPanelWidth]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleResize = () => {
+      setDetailPanelWidth((current) => clampDetailPanelWidth(current));
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [clampDetailPanelWidth]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      DETAIL_PANEL_STORAGE_KEY,
+      String(clampDetailPanelWidth(detailPanelWidth))
+    );
+  }, [detailPanelWidth, clampDetailPanelWidth]);
+
+  useEffect(() => {
+    if (!isResizingDetailPanel || typeof window === "undefined") {
+      return;
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      updateDetailPanelWidthFromPointer(event.clientX);
+    };
+
+    const stopResizing = () => {
+      setIsResizingDetailPanel(false);
+    };
+
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "col-resize";
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopResizing);
+    window.addEventListener("pointercancel", stopResizing);
+
+    return () => {
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopResizing);
+      window.removeEventListener("pointercancel", stopResizing);
+    };
+  }, [isResizingDetailPanel, updateDetailPanelWidthFromPointer]);
 
   const filteredTodos = useMemo(() => {
     const viewFilteredTodos = (() => {
@@ -97,7 +195,7 @@ export function AppShell({ todos, lists }: AppShellProps) {
       />
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
         {/* Content header */}
         <header className="px-6 pt-6 pb-4">
           <div className="flex items-center gap-2.5">
@@ -163,11 +261,28 @@ export function AppShell({ todos, lists }: AppShellProps) {
 
       {/* Detail panel */}
       {selectedTodo ? (
-        <TaskDetail
-          key={selectedTodo.id}
-          todo={selectedTodo}
-          onClose={() => setSelectedTodoId(null)}
-        />
+        <div
+          className="relative h-screen flex-shrink-0"
+          style={{ width: clampDetailPanelWidth(detailPanelWidth) }}
+        >
+          <button
+            type="button"
+            onPointerDown={(event) => {
+              event.preventDefault();
+              setIsResizingDetailPanel(true);
+              updateDetailPanelWidthFromPointer(event.clientX);
+            }}
+            className="absolute left-0 top-0 z-20 h-full w-2 -translate-x-1/2 cursor-col-resize group"
+            aria-label="Resize detail panel"
+          >
+            <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-transparent transition-colors group-hover:bg-[var(--zen-accent)] group-active:bg-[var(--zen-accent)]" />
+          </button>
+          <TaskDetail
+            key={selectedTodo.id}
+            todo={selectedTodo}
+            onClose={() => setSelectedTodoId(null)}
+          />
+        </div>
       ) : null}
     </div>
   );

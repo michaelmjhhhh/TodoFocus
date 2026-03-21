@@ -232,7 +232,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 24, opacity: 0 }}
       transition={{ duration: 0.15 }}
-      className="w-[360px] h-screen flex flex-col bg-[var(--zen-bg-secondary)] border-l border-[var(--zen-border)]"
+      className="w-full h-full min-w-0 flex flex-col bg-[var(--zen-bg-secondary)] border-l border-[var(--zen-border)]"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-3">
@@ -316,7 +316,7 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
                   </button>
                   <span
                     className={cn(
-                      "flex-1 text-[13px]",
+                      "flex-1 min-w-0 break-words text-[13px]",
                       step.isCompleted
                         ? "line-through text-[var(--zen-text-muted)]"
                         : "text-[var(--zen-text)]"

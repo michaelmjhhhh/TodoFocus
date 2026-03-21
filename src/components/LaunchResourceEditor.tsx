@@ -127,56 +127,59 @@ export function LaunchResourceEditor({
             key={resource.id}
             className="rounded-lg border border-[var(--zen-border)] bg-[var(--zen-surface)] p-2"
           >
-            <div className="grid grid-cols-[96px_1fr_1fr_auto] gap-2">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-[92px_minmax(0,1fr)_auto]">
               <select
                 value={resource.type}
                 onChange={(e) =>
                   updateResource(index, { type: e.target.value as LaunchResourceType })
                 }
                 disabled={disabled}
-                className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] focus:outline-none focus:border-[var(--zen-accent)]"
+                className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] focus:outline-none focus:border-[var(--zen-accent)] min-w-0"
               >
                 <option value="url">URL</option>
                 <option value="file">File</option>
                 <option value="app">App</option>
               </select>
-              <input
-                value={resource.label}
-                onChange={(e) => updateResource(index, { label: e.target.value })}
-                disabled={disabled}
-                placeholder="Label"
-                className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
-              />
-              <div className="flex items-center gap-1.5">
+              <div className="grid grid-cols-1 gap-2 min-w-0 sm:grid-cols-2">
                 <input
-                  value={resource.value}
-                  onChange={(e) => updateResource(index, { value: e.target.value })}
+                  value={resource.label}
+                  onChange={(e) => updateResource(index, { label: e.target.value })}
                   disabled={disabled}
-                  placeholder={
-                    resource.type === "url"
-                      ? "https://example.com"
-                      : resource.type === "file"
-                        ? "/Users/name/file"
-                        : "obsidian://... or /Applications/App.app"
-                  }
-                  className="flex-1 rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
+                  placeholder="Label"
+                  className="rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)] min-w-0"
                 />
-                {resource.type === "file" || resource.type === "app" ? (
-                  <button
-                    type="button"
-                    onClick={() => browseForResource(index, resource.type)}
-                    disabled={disabled || !isDesktop || pickerBusyId === resource.id}
-                    className="px-2 py-1.5 rounded-md border border-[var(--zen-border)] text-[11px] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)] transition-colors cursor-pointer disabled:opacity-60"
-                  >
-                    {pickerBusyId === resource.id ? "Browsing..." : "Browse..."}
-                  </button>
-                ) : null}
+                <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:flex-nowrap">
+                  <input
+                    value={resource.value}
+                    onChange={(e) => updateResource(index, { value: e.target.value })}
+                    disabled={disabled}
+                    placeholder={
+                      resource.type === "url"
+                        ? "https://example.com"
+                        : resource.type === "file"
+                          ? "/Users/name/file"
+                          : "obsidian://... or /Applications/App.app"
+                    }
+                    title={resource.value}
+                    className="min-w-0 flex-1 rounded-md border border-[var(--zen-border)] bg-[var(--zen-bg-secondary)] px-2 py-1.5 text-[12px] text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)]"
+                  />
+                  {resource.type === "file" || resource.type === "app" ? (
+                    <button
+                      type="button"
+                      onClick={() => browseForResource(index, resource.type)}
+                      disabled={disabled || !isDesktop || pickerBusyId === resource.id}
+                      className="px-2 py-1.5 rounded-md border border-[var(--zen-border)] text-[11px] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)] transition-colors cursor-pointer disabled:opacity-60"
+                    >
+                      {pickerBusyId === resource.id ? "Browsing..." : "Browse..."}
+                    </button>
+                  ) : null}
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => removeResource(index)}
                 disabled={disabled}
-                className="p-1.5 text-[var(--zen-text-muted)] hover:text-[var(--zen-danger)] transition-colors cursor-pointer"
+                className="justify-self-end p-1.5 text-[var(--zen-text-muted)] hover:text-[var(--zen-danger)] transition-colors cursor-pointer"
                 aria-label="Remove launch resource"
               >
                 <X size={14} strokeWidth={1.5} />
