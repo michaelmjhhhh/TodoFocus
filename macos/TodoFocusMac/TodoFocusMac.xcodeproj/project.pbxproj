@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0EDA51E619FC88E2BF87629B /* VisualTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC7B115E98F0487D59FC4C /* VisualTokens.swift */; };
 		0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */; };
 		10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */; };
 		16ACF235ABA07CC911031068 /* LaunchResourceValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD67E5BD83F1A8B609F0661 /* LaunchResourceValidation.swift */; };
@@ -109,6 +110,7 @@
 		74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRepositoryTests.swift; sourceTree = "<group>"; };
 		77780E76FD121D34BF6D7EE3 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadServiceTests.swift; sourceTree = "<group>"; };
+		80CC7B115E98F0487D59FC4C /* VisualTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualTokens.swift; sourceTree = "<group>"; };
 		81F49BBBD3470E39E67D6825 /* AppModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModelTests.swift; sourceTree = "<group>"; };
 		84179A8739D2AB7CE0C44350 /* GRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GRDB.swift; path = ../../vendor/GRDB.swift; sourceTree = SOURCE_ROOT; };
 		8CA53AF462BCDF9BF9DFD547 /* WindowPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistenceTests.swift; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */,
+				80CC7B115E98F0487D59FC4C /* VisualTokens.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -502,6 +505,7 @@
 				67ED88BEBF2651E62E8D23A0 /* TodoRecord.swift in Sources */,
 				268C75C1B8CFC0C6F9D5083B /* TodoRepository.swift in Sources */,
 				CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */,
+				0EDA51E619FC88E2BF87629B /* VisualTokens.swift in Sources */,
 				4E502D71D14C35BD7194756F /* WindowPersistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

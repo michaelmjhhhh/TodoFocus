@@ -84,15 +84,18 @@ struct TaskDetailView: View {
                         dueDate = newValue
                     }
                 }
+                .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .trailing)), removal: .opacity))
             } else {
                 Text("Select a task")
                     .foregroundStyle(.secondary)
+                    .transition(.opacity)
             }
             Spacer()
         }
         .padding(16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .animation(.spring(response: 0.26, dampingFraction: 0.88), value: todo?.id)
     }
 }
 

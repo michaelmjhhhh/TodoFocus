@@ -38,6 +38,13 @@ struct TodoRowView: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+        .overlay(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(VisualTokens.accent)
+                .frame(width: todo.isImportant ? 3 : 0)
+                .animation(.spring(response: 0.24, dampingFraction: 0.85), value: todo.isImportant)
+        }
         .contentShape(Rectangle())
+        .animation(.spring(response: 0.24, dampingFraction: 0.84), value: todo.isCompleted)
     }
 }

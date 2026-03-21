@@ -65,6 +65,8 @@ struct TaskListView: View {
             .listStyle(.plain)
         }
         .padding(16)
+        .animation(.spring(response: 0.24, dampingFraction: 0.86), value: store.visibleTodos.count)
+        .animation(.easeInOut(duration: 0.18), value: appModel.timeFilter)
     }
 
     private var title: String {

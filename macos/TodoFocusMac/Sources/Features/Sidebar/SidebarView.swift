@@ -32,6 +32,8 @@ struct SidebarView: View {
             }
         }
         .listStyle(.sidebar)
+        .animation(.easeInOut(duration: 0.18), value: appModel.selection)
+        .animation(.spring(response: 0.25, dampingFraction: 0.86), value: lists.count)
     }
 
     private var selectionBinding: Binding<String?> {

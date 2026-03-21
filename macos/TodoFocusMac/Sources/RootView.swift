@@ -46,11 +46,7 @@ struct RootView: View {
                     .background(.regularMaterial)
             }
             .background(
-                LinearGradient(
-                    colors: [Color.black.opacity(0.22), Color.black.opacity(0.06)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                VisualTokens.appBackground
             )
             .onAppear {
                 containerWidth = proxy.size.width
