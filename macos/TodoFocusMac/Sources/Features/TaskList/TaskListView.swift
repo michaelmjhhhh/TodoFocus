@@ -4,6 +4,7 @@ struct TaskListView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
     @State private var commandText: String = ""
+    @FocusState private var isCommandFocused: Bool
 
     var body: some View {
         VStack(spacing: 12) {
@@ -86,6 +87,7 @@ struct TaskListView: View {
 
                 TextField("Search tasks or press ⌘K", text: $commandText)
                     .textFieldStyle(.plain)
+                    .focused($isCommandFocused)
 
                 Text("⌘K")
                     .font(.caption2.monospaced())
@@ -123,6 +125,14 @@ struct TaskListView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
+        }
+        .background {
+            Button("") {
+                isCommandFocused = true
+            }
+            .keyboardShortcut("k", modifiers: [.command])
+            .opacity(0)
+            .allowsHitTesting(false)
         }
     }
 
