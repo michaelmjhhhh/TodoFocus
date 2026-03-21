@@ -5,6 +5,7 @@ struct TodoFocusMacApp: App {
     @State private var appModel = AppModel()
     @State private var themeStore = ThemeStore()
     @State private var store: TodoAppStore?
+    @State private var launchpadService = LaunchpadService()
     private let databaseManager: DatabaseManager?
 
     init() {
@@ -30,7 +31,12 @@ struct TodoFocusMacApp: App {
         WindowGroup {
             Group {
                 if let store {
-                    RootView(appModel: appModel, store: store, databasePath: databaseManager?.path ?? "unavailable")
+                    RootView(
+                        appModel: appModel,
+                        store: store,
+                        launchpadService: launchpadService,
+                        databasePath: databaseManager?.path ?? "unavailable"
+                    )
                 } else {
                     Text("Database unavailable")
                 }

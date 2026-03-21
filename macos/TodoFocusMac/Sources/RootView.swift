@@ -3,11 +3,13 @@ import SwiftUI
 struct RootView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
+    let launchpadService: LaunchpadService
     let databasePath: String
 
-    init(appModel: AppModel, store: TodoAppStore, databasePath: String) {
+    init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String) {
         self._appModel = Bindable(appModel)
         self._store = Bindable(store)
+        self.launchpadService = launchpadService
         self.databasePath = databasePath
     }
 
@@ -37,7 +39,7 @@ struct RootView: View {
                 .padding(24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             } right: {
-                TaskDetailView(store: store, todo: store.selectedTodo)
+                TaskDetailView(store: store, launchpadService: launchpadService, todo: store.selectedTodo)
             }
         }
         .task {

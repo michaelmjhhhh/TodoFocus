@@ -6,7 +6,7 @@ enum LaunchResourceType: String, Codable {
     case app
 }
 
-struct LaunchResource: Equatable, Codable {
+struct LaunchResource: Identifiable, Equatable, Codable {
     let id: String
     let type: LaunchResourceType
     let label: String

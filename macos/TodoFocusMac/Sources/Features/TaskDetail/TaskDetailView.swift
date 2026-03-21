@@ -2,12 +2,14 @@ import SwiftUI
 
 struct TaskDetailView: View {
     @Bindable var store: TodoAppStore
+    let launchpadService: LaunchpadService
     let todo: Todo?
     @State private var notesText: String = ""
     @State private var dueDate: Date = Date()
 
-    init(store: TodoAppStore, todo: Todo?) {
+    init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?) {
         self._store = Bindable(store)
+        self.launchpadService = launchpadService
         self.todo = todo
     }
 
@@ -54,6 +56,12 @@ struct TaskDetailView: View {
                         }
 
                     StepsEditorView(todoId: todo.id, store: store)
+
+                    LaunchResourceEditorView(
+                        store: store,
+                        todo: todo,
+                        launchpadService: launchpadService
+                    )
                 }
                 .onAppear {
                     notesText = todo.notes

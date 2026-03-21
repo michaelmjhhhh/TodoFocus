@@ -9,4 +9,5 @@ struct Todo: Identifiable, Equatable {
     var dueDate: Date?
     var notes: String
     var listId: String?
+    var launchResourcesRaw: String
 }

@@ -137,6 +137,25 @@ final class TodoAppStore {
     func loadSteps(todoId: String) -> [TodoStep] {
         (try? stepRepository.fetchSteps(todoID: todoId).map(\.todoStep)) ?? []
     }
+
+    func saveLaunchResources(todoId: String, items: [LaunchResource]) -> Result<Void, TodoRepositoryError> {
+        switch trySerializeLaunchResources(items) {
+        case .payloadTooLarge:
+            return .failure(.launchResourcesTooLarge)
+        case let .ok(serialized):
+            do {
+                var input = UpdateTodoInput()
+                input.launchResources = serialized
+                try todoRepository.updateTodo(id: todoId, input: input, now: now())
+                try reload()
+                return .success(())
+            } catch let error as TodoRepositoryError {
+                return .failure(error)
+            } catch {
+                return .failure(.notFound)
+            }
+        }
+    }
 }
 
 private extension Todo {
@@ -155,7 +174,8 @@ private extension TodoRecord {
             isMyDay: isMyDay,
             dueDate: dueDate,
             notes: notes,
-            listId: listId
+            listId: listId,
+            launchResourcesRaw: launchResources
         )
     }
 }
