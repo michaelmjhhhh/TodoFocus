@@ -21,18 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                var t = localStorage.getItem('todofocus-theme');
-                if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
-              })();
-            `,
-          }}
-        />
-      </head>
+      <head />
       <body className="min-h-screen antialiased">
         <ThemeProvider>{children}</ThemeProvider>
       </body>

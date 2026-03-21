@@ -7,6 +7,7 @@ Inspired by Microsoft Todo's feature set and Linear's aesthetic.
 ## Features
 
 - **My Day / Important / Planned** -- smart lists that filter automatically
+- **Smart-list quick add** -- adding inside Important/Planned now preserves the list intent automatically
 - **Custom lists** -- create, rename, delete with color coding
 - **Subtasks (Steps)** -- break tasks into smaller pieces
 - **Due dates** -- with relative display (Today, Tomorrow, Overdue)
@@ -81,6 +82,12 @@ npm run build          # Production build
 npm run lint           # ESLint
 npx prisma studio      # Browse database in browser
 ```
+
+## Delivery Workflow
+
+- For bugs, follow evidence-first debugging (root cause before code changes).
+- For new features, we use: `issue -> branch -> implement -> PR`.
+- Prefer a short implementation plan for non-trivial features before coding.
 
 ## Desktop Packaging (Electron)
 
