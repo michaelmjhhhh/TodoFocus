@@ -33,6 +33,7 @@
 
 - Node.js 18+ and npm 9+.
 - Install dependencies: `npm install`.
+- If `src/generated/prisma` is missing, run `npm run prisma:generate` before builds.
 - Next standalone build is required for Electron packaging.
 - Packaging config lives in `electron-builder.json` (asar enabled; native modules unpacked via `asarUnpack`).
 

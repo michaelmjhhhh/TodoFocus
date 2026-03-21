@@ -30,6 +30,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 That's it. The `setup` script copies `.env.example` to `.env`, runs the database migration, and generates the Prisma client. The SQLite database file (`dev.db`) is created in the project root.
 
+If Prisma client files are missing (e.g. in fresh CI/workspaces), run:
+
+```bash
+npm run prisma:generate
+```
+
 ## Requirements
 
 - **Node.js** >= 18
