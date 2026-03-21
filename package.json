@@ -11,9 +11,10 @@
     "start": "next start",
     "lint": "eslint",
     "electron:dev": "concurrently -n next,electron -c cyan,yellow \"next dev\" \"wait-on http://127.0.0.1:3000 && NODE_ENV=development electron .\"",
-    "electron:build": "npm run build && npm run build:electron:assets && electron-builder --mac",
-    "electron:build:win": "npm run build && npm run build:electron:assets && electron-builder --win",
-    "electron:build:linux": "npm run build && npm run build:electron:assets && electron-builder --linux"
+    "electron:rebuild-native": "electron-builder install-app-deps",
+    "electron:build": "npm run build && npm run build:electron:assets && npm run electron:rebuild-native && electron-builder --mac",
+    "electron:build:win": "npm run build && npm run build:electron:assets && npm run electron:rebuild-native && electron-builder --win",
+    "electron:build:linux": "npm run build && npm run build:electron:assets && npm run electron:rebuild-native && electron-builder --linux"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0"
