@@ -37,7 +37,7 @@ struct RootView: View {
                 .padding(24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             } right: {
-                TaskDetailView(todo: store.selectedTodo)
+                TaskDetailView(store: store, todo: store.selectedTodo)
             }
         }
         .task {

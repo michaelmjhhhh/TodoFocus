@@ -10,11 +10,13 @@ final class TodoAppStoreSelectionTests: XCTestCase {
         let appModel = AppModel()
         let listRepository = ListRepository(dbQueue: manager.dbQueue)
         let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
 
         let store = TodoAppStore(
             appModel: appModel,
             listRepository: listRepository,
             todoRepository: todoRepository,
+            stepRepository: stepRepository,
             now: { now }
         )
 

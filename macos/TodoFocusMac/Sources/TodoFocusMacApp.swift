@@ -13,12 +13,14 @@ struct TodoFocusMacApp: App {
             let model = AppModel()
             let listRepository = ListRepository(dbQueue: databaseManager.dbQueue)
             let todoRepository = TodoRepository(dbQueue: databaseManager.dbQueue)
+            let stepRepository = StepRepository(dbQueue: databaseManager.dbQueue)
             _appModel = State(initialValue: model)
             _store = State(
                 initialValue: TodoAppStore(
                     appModel: model,
                     listRepository: listRepository,
-                    todoRepository: todoRepository
+                    todoRepository: todoRepository,
+                    stepRepository: stepRepository
                 )
             )
         }

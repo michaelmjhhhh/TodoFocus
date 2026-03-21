@@ -6,7 +6,9 @@ final class TodoAppStore {
     private let appModel: AppModel
     private let listRepository: ListRepository
     private let todoRepository: TodoRepository
+    private let stepRepository: StepRepository
     private let now: () -> Date
+    private var notesUpdateWorkItems: [String: DispatchWorkItem] = [:]
 
     var lists: [TodoList] = []
     var todos: [Todo] = []
@@ -15,11 +17,13 @@ final class TodoAppStore {
         appModel: AppModel,
         listRepository: ListRepository,
         todoRepository: TodoRepository,
+        stepRepository: StepRepository,
         now: @escaping () -> Date = Date.init
     ) {
         self.appModel = appModel
         self.listRepository = listRepository
         self.todoRepository = todoRepository
+        self.stepRepository = stepRepository
         self.now = now
     }
 
@@ -90,6 +94,49 @@ final class TodoAppStore {
     func clearSelection() {
         appModel.selectedTodoID = nil
     }
+
+    func updateNotesDebounced(todoId: String, notes: String) {
+        notesUpdateWorkItems[todoId]?.cancel()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            var input = UpdateTodoInput()
+            input.notes = notes
+            try? self.todoRepository.updateTodo(id: todoId, input: input, now: self.now())
+            try? self.reload()
+            self.notesUpdateWorkItems[todoId] = nil
+        }
+
+        notesUpdateWorkItems[todoId] = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
+
+    func setDueDate(todoId: String, date: Date?) {
+        var input = UpdateTodoInput()
+        input.dueDate = date
+        try? todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try? reload()
+    }
+
+    func addStep(todoId: String, title: String) {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty else {
+            return
+        }
+        _ = try? stepRepository.addStep(todoID: todoId, title: trimmedTitle)
+    }
+
+    func toggleStep(stepId: String, isCompleted: Bool) {
+        try? stepRepository.toggleStep(id: stepId, isCompleted: isCompleted)
+    }
+
+    func deleteStep(stepId: String) {
+        try? stepRepository.deleteStep(id: stepId)
+    }
+
+    func loadSteps(todoId: String) -> [TodoStep] {
+        (try? stepRepository.fetchSteps(todoID: todoId).map(\.todoStep)) ?? []
+    }
 }
 
 private extension Todo {
@@ -116,5 +163,11 @@ private extension TodoRecord {
 private extension ListRecord {
     var todoList: TodoList {
         TodoList(id: id, name: name, color: color, sortOrder: sortOrder)
+    }
+}
+
+private extension StepRecord {
+    var todoStep: TodoStep {
+        TodoStep(id: id, title: title, isCompleted: isCompleted, sortOrder: sortOrder, todoId: todoId)
     }
 }

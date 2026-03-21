@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */; };
 		16ACF235ABA07CC911031068 /* LaunchResourceValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD67E5BD83F1A8B609F0661 /* LaunchResourceValidation.swift */; };
 		17B573B6B5E9AC9AE93BDF39 /* TodoAppStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C4E9EB9EEDE55EC25A2997 /* TodoAppStoreTests.swift */; };
 		1B29CD200852FFA0C2032B8F /* ListRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9E972A5D6A75831750C718 /* ListRepository.swift */; };
@@ -46,6 +47,7 @@
 		CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */; };
 		E63935763D57E7925754DA11 /* StepRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7843ACD1FCEFBCAE938562 /* StepRecord.swift */; };
 		E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77780E76FD121D34BF6D7EE3 /* AppModel.swift */; };
+		F29884FDFC44D04D39363CDF /* TodoDetailMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0047BD03BFF1CB3B2F5A5143 /* TodoDetailMutationTests.swift */; };
 		F59D8952A68ECA7794710C19 /* SmartList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2206266636D0C567F9A8BC5 /* SmartList.swift */; };
 		F6B9E9BCFE7CDC43C8016C89 /* TodoQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49658E6F7D71CC961B6F7F1 /* TodoQueryTests.swift */; };
 /* End PBXBuildFile section */
@@ -68,6 +70,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0047BD03BFF1CB3B2F5A5143 /* TodoDetailMutationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoDetailMutationTests.swift; sourceTree = "<group>"; };
 		03542634FD66D0DA72745A3B /* TodoQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoQuery.swift; sourceTree = "<group>"; };
 		06E0C999AE4AD500458E154A /* CoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableSplitView.swift; sourceTree = "<group>"; };
@@ -95,6 +98,7 @@
 		6B9E972A5D6A75831750C718 /* ListRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRepository.swift; sourceTree = "<group>"; };
 		6D4D9C369AC0CDDFE5E2A4A6 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
 		6EDF00C67B73AFD0EEAD7E8C /* TimeFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFilterTests.swift; sourceTree = "<group>"; };
+		74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRepositoryTests.swift; sourceTree = "<group>"; };
 		77780E76FD121D34BF6D7EE3 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		81F49BBBD3470E39E67D6825 /* AppModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModelTests.swift; sourceTree = "<group>"; };
 		84179A8739D2AB7CE0C44350 /* GRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GRDB.swift; path = ../../vendor/GRDB.swift; sourceTree = SOURCE_ROOT; };
@@ -299,6 +303,8 @@
 			isa = PBXGroup;
 			children = (
 				3AB414833F47C20B5284EA0B /* MigrationTests.swift */,
+				74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */,
+				0047BD03BFF1CB3B2F5A5143 /* TodoDetailMutationTests.swift */,
 				A7AF6A4A3CE241E3341FE30A /* TodoRepositoryTests.swift */,
 			);
 			name = DataTests;
@@ -437,6 +443,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B657D8D1A98A8F91A6CBBB5 /* MigrationTests.swift in Sources */,
+				10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */,
+				F29884FDFC44D04D39363CDF /* TodoDetailMutationTests.swift in Sources */,
 				A6567251923E066DBC16F466 /* TodoRepositoryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

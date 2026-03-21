@@ -119,6 +119,18 @@ struct TodoRepository {
         }
     }
 
+    func updateNotes(id: String, notes: String, now: Date = Date()) throws {
+        var patch = UpdateTodoInput()
+        patch.notes = notes
+        try updateTodo(id: id, input: patch, now: now)
+    }
+
+    func setDueDate(id: String, dueDate: Date?, now: Date = Date()) throws {
+        var patch = UpdateTodoInput()
+        patch.dueDate = .some(dueDate)
+        try updateTodo(id: id, input: patch, now: now)
+    }
+
     func fetchTodosOrdered() throws -> [TodoRecord] {
         try dbQueue.read { db in
             try TodoRecord

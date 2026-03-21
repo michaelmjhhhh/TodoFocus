@@ -8,11 +8,13 @@ final class TodoAppStoreTests: XCTestCase {
         let manager = try DatabaseManager(databasePath: path)
         let listRepository = ListRepository(dbQueue: manager.dbQueue)
         let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
         let appModel = AppModel()
         let store = TodoAppStore(
             appModel: appModel,
             listRepository: listRepository,
             todoRepository: todoRepository,
+            stepRepository: stepRepository,
             now: { now }
         )
         return (store, appModel, listRepository, todoRepository)
@@ -69,5 +71,34 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertTrue(persisted.isMyDay)
         XCTAssertEqual(persisted.listId, list.id)
         XCTAssertEqual(persisted.dueDate, now)
+    }
+
+    func testUpdateNotesDebouncedPersistsLatestValue() throws {
+        let now = Date(timeIntervalSince1970: 1_763_520_000)
+        let (store, _, _, todoRepository) = try makeStore(now: now)
+        let created = try store.quickAdd(
+            title: "Debounce target",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        store.updateNotesDebounced(todoId: created.id, notes: "first")
+        store.updateNotesDebounced(todoId: created.id, notes: "second")
+
+        let debounceFinished = expectation(description: "Debounced notes update executes")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            debounceFinished.fulfill()
+        }
+        wait(for: [debounceFinished], timeout: 1.5)
+
+        let persisted = try XCTUnwrap(todoRepository.fetchTodo(id: created.id))
+        XCTAssertEqual(persisted.notes, "second")
+    }
+
+    func testDueDateClearButtonVisibilityHelper() {
+        XCTAssertFalse(TaskDetailView.shouldShowDueDateClearButton(dueDate: nil))
+        XCTAssertTrue(TaskDetailView.shouldShowDueDateClearButton(dueDate: Date(timeIntervalSince1970: 1_763_520_000)))
     }
 }
