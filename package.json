@@ -16,31 +16,32 @@
     "electron:build:linux": "npm run build && npm run build:electron:assets && electron-builder --linux"
   },
   "dependencies": {
+    "better-sqlite3": "^12.8.0"
+  },
+  "devDependencies": {
     "@electron/get": "^4.0.2",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
-    "clsx": "^2.1.1",
-    "dotenv": "^17.3.1",
-    "framer-motion": "^12.38.0",
-    "lucide-react": "^0.577.0",
-    "next": "16.2.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "tailwind-merge": "^3.5.0"
-  },
-  "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "clsx": "^2.1.1",
     "concurrently": "^9.2.1",
+    "dotenv": "^17.3.1",
     "electron": "^35.2.1",
     "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0",
+    "next": "16.2.0",
     "prisma": "^7.5.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "tailwindcss": "^4",
+    "tailwind-merge": "^3.5.0",
     "typescript": "^5",
     "wait-on": "^9.0.4"
   }

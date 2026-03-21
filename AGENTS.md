@@ -39,6 +39,7 @@
 
 - macOS app data directory: `~/Library/Application Support/todofocus/`
 - SQLite database file: `~/Library/Application Support/todofocus/todofocus.db`
+- Next standalone server is started in-process by Electron main (no separate spawned server child process).
 
 ### Common Troubleshooting
 
