@@ -7,6 +7,9 @@
 - Run checks before opening a PR: `npm run lint` and a quick local run (`npm run dev` or `npm run electron:dev` for desktop work).
 - Do not commit secrets (`.env`, local DB files, signing credentials).
 - For data model changes, include Prisma migration files and verify app startup still applies migrations.
+- For bug fixes, follow systematic debugging: reproduce -> collect evidence -> identify root cause -> then implement.
+- For new features, follow this flow: issue -> branch -> implement -> PR.
+- For non-trivial feature work, write a plan in `docs/superpowers/plans/` before implementation.
 
 ## Packaging (TodoFocus Electron)
 
