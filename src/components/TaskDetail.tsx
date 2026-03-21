@@ -11,6 +11,7 @@ import {
   Sun,
   Star,
   Trash2,
+  Rocket,
 } from "lucide-react";
 import {
   updateTodo,
@@ -22,6 +23,14 @@ import {
   toggleMyDay,
 } from "@/actions/todos";
 import { cn } from "@/lib/cn";
+import {
+  parseLaunchResources,
+  serializeLaunchResources,
+  validateLaunchResource,
+  type LaunchResource,
+} from "@/lib/launchResources";
+import { launchAllClient } from "@/lib/launchAllClient";
+import { LaunchResourceEditor } from "@/components/LaunchResourceEditor";
 
 interface Step {
   id: string;
@@ -59,12 +68,25 @@ interface TaskDetailProps {
 export function TaskDetail({ todo, onClose }: TaskDetailProps) {
   const [notes, setNotes] = useState(todo.notes);
   const [isPending, startTransition] = useTransition();
+  const [isSavingLaunchResources, startSavingLaunchResources] = useTransition();
+  const [isLaunchingResources, startLaunchingResources] = useTransition();
+  const [launchResources, setLaunchResources] = useState<LaunchResource[]>(
+    parseLaunchResources(todo.launchResources)
+  );
+  const [launchValidationError, setLaunchValidationError] = useState<string | null>(null);
+  const [launchSummary, setLaunchSummary] = useState<string | null>(null);
   const stepInputRef = useRef<HTMLInputElement>(null);
   const notesTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
     setNotes(todo.notes);
   }, [todo.notes]);
+
+  useEffect(() => {
+    setLaunchResources(parseLaunchResources(todo.launchResources));
+    setLaunchValidationError(null);
+    setLaunchSummary(null);
+  }, [todo.id, todo.launchResources]);
 
   function handleNotesChange(value: string) {
     setNotes(value);
@@ -128,6 +150,74 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
     startTransition(async () => {
       await deleteTodo(todo.id);
       onClose();
+    });
+  }
+
+  function handleSaveLaunchResources() {
+    setLaunchValidationError(null);
+    setLaunchSummary(null);
+
+    const normalized: LaunchResource[] = [];
+    for (const item of launchResources) {
+      const result = validateLaunchResource(item);
+      if (!result.ok) {
+        setLaunchValidationError("Fix invalid resource values before saving.");
+        return;
+      }
+      normalized.push(result.value);
+    }
+
+    startSavingLaunchResources(async () => {
+      await updateTodo(todo.id, { launchResources: normalized });
+      setLaunchResources(normalized);
+      setLaunchSummary(
+        normalized.length === 0
+          ? "Launch resources cleared."
+          : `Saved ${normalized.length} launch ${normalized.length === 1 ? "resource" : "resources"}.`
+      );
+    });
+  }
+
+  function handleLaunchAll() {
+    setLaunchSummary(null);
+    setLaunchValidationError(null);
+
+    const serialized = serializeLaunchResources(launchResources);
+
+    startLaunchingResources(async () => {
+      const result = await launchAllClient(serialized);
+
+      if (!result.ok) {
+        if (result.reason === "desktop_only") {
+          setLaunchSummary("Launch All is available in the desktop app only.");
+          return;
+        }
+        if (result.reason === "empty") {
+          setLaunchSummary("No valid launch resources to open.");
+          return;
+        }
+        if (result.reason === "unavailable") {
+          setLaunchSummary("Desktop launch integration is unavailable.");
+          return;
+        }
+
+        const failedCount = result.results.filter((item) => item.status !== "launched").length;
+        setLaunchSummary(
+          `Launched ${result.launchedCount}. ${failedCount} ${failedCount === 1 ? "item" : "items"} failed.`
+        );
+        return;
+      }
+
+      const failedCount = result.results.filter((item) => item.status !== "launched").length;
+      if (failedCount > 0) {
+        setLaunchSummary(
+          `Launched ${result.launchedCount}. ${failedCount} ${failedCount === 1 ? "item" : "items"} failed.`
+        );
+      } else {
+        setLaunchSummary(
+          `Launched ${result.launchedCount} ${result.launchedCount === 1 ? "resource" : "resources"}.`
+        );
+      }
     });
   }
 
@@ -332,6 +422,46 @@ export function TaskDetail({ todo, onClose }: TaskDetailProps) {
             rows={4}
             className="w-full bg-[var(--zen-surface)] border border-[var(--zen-border)] rounded-lg px-3 py-2 text-[13px] leading-relaxed text-[var(--zen-text)] placeholder:text-[var(--zen-text-muted)] focus:outline-none focus:border-[var(--zen-accent)] resize-none"
           />
+        </div>
+
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--zen-text-muted)] mb-2">
+            Launch Resources
+          </p>
+          <LaunchResourceEditor
+            resources={launchResources}
+            onChange={(next) => {
+              setLaunchResources(next);
+              setLaunchValidationError(null);
+              setLaunchSummary(null);
+            }}
+            disabled={isSavingLaunchResources || isLaunchingResources}
+          />
+          {launchValidationError ? (
+            <p className="mt-2 text-[11px] text-[var(--zen-danger)]">{launchValidationError}</p>
+          ) : null}
+          {launchSummary ? (
+            <p className="mt-2 text-[11px] text-[var(--zen-text-muted)]">{launchSummary}</p>
+          ) : null}
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSaveLaunchResources}
+              disabled={isSavingLaunchResources || isLaunchingResources}
+              className="px-3 py-1.5 rounded-md text-xs border border-[var(--zen-border)] text-[var(--zen-text-secondary)] hover:bg-[var(--zen-surface-hover)] transition-colors cursor-pointer disabled:opacity-60"
+            >
+              {isSavingLaunchResources ? "Saving..." : "Save resources"}
+            </button>
+            <button
+              type="button"
+              onClick={handleLaunchAll}
+              disabled={isSavingLaunchResources || isLaunchingResources}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs border border-[var(--zen-accent)] text-[var(--zen-accent)] bg-[var(--zen-accent-soft)] hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-60"
+            >
+              <Rocket size={12} strokeWidth={1.5} />
+              {isLaunchingResources ? "Launching..." : "Launch All"}
+            </button>
+          </div>
         </div>
       </div>
 

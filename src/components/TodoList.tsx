@@ -72,6 +72,7 @@ export function TodoList({ todos, onSelectTodo, showListBadge }: TodoListProps) 
               recurrence={todo.recurrence}
               dueDate={todo.dueDate}
               steps={todo.steps}
+              launchResources={todo.launchResources}
               listName={showListBadge ? todo.list?.name : undefined}
               listColor={showListBadge ? todo.list?.color : undefined}
               onSelect={onSelectTodo}
@@ -95,6 +96,7 @@ export function TodoList({ todos, onSelectTodo, showListBadge }: TodoListProps) 
                   recurrence={todo.recurrence}
                   dueDate={todo.dueDate}
                   steps={todo.steps}
+                  launchResources={todo.launchResources}
                   listName={showListBadge ? todo.list?.name : undefined}
                   listColor={showListBadge ? todo.list?.color : undefined}
                   onSelect={onSelectTodo}
