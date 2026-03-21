@@ -119,6 +119,8 @@ export function AppShell({ todos, lists }: AppShellProps) {
           <TodoInput
             listId={!isSmartList ? activeView : undefined}
             isMyDay={activeView === "myday"}
+            isImportant={activeView === "important"}
+            planned={activeView === "planned"}
             placeholder={
               activeView === "myday"
                 ? "What will you focus on today?"

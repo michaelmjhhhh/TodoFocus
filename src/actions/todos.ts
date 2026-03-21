@@ -46,6 +46,8 @@ export async function addTodo(formData: FormData) {
   const title = formData.get("title");
   const listId = formData.get("listId") as string | null;
   const isMyDay = formData.get("isMyDay") === "true";
+  const isImportant = formData.get("isImportant") === "true";
+  const planned = formData.get("planned") === "true";
 
   if (!title || typeof title !== "string" || title.trim().length === 0) {
     return;
@@ -56,6 +58,8 @@ export async function addTodo(formData: FormData) {
       title: title.trim(),
       listId: listId || null,
       isMyDay,
+      isImportant,
+      dueDate: planned ? new Date() : null,
     },
   });
 

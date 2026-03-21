@@ -7,12 +7,16 @@ import { Plus } from "lucide-react";
 interface TodoInputProps {
   listId?: string;
   isMyDay?: boolean;
+  isImportant?: boolean;
+  planned?: boolean;
   placeholder?: string;
 }
 
 export function TodoInput({
   listId,
   isMyDay,
+  isImportant,
+  planned,
   placeholder = "Add a task...",
 }: TodoInputProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -53,6 +57,10 @@ export function TodoInput({
         {isMyDay ? (
           <input type="hidden" name="isMyDay" value="true" />
         ) : null}
+        {isImportant ? (
+          <input type="hidden" name="isImportant" value="true" />
+        ) : null}
+        {planned ? <input type="hidden" name="planned" value="true" /> : null}
       </div>
     </form>
   );
