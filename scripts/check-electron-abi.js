@@ -19,12 +19,21 @@ const nativeModulePath = path.resolve(
     "dist-electron/mac-arm64/TodoFocus.app/Contents/Resources/app.asar.unpacked/node_modules/better-sqlite3/build/Release/better_sqlite3.node"
 );
 
+const standaloneNativeModulePath = path.resolve(
+  process.env.TODOFOCUS_STANDALONE_NATIVE_MODULE_PATH ||
+    "dist-electron/mac-arm64/TodoFocus.app/Contents/Resources/app.asar.unpacked/.next/standalone/node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+);
+
 if (!existsSync(appPath)) {
   fail(`App binary not found at ${appPath}`);
 }
 
 if (!existsSync(nativeModulePath)) {
   fail(`Native module not found at ${nativeModulePath}`);
+}
+
+if (!existsSync(standaloneNativeModulePath)) {
+  fail(`Standalone native module not found at ${standaloneNativeModulePath}`);
 }
 
 const electronAbi = spawnSync(
@@ -62,6 +71,32 @@ if (loadResult.status !== 0 || !loadResult.stdout.includes("ABI_OK")) {
     [
       `Native module failed to load with Electron ABI ${abi}.`,
       loadResult.stderr || loadResult.stdout,
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+}
+
+const standaloneLoadResult = spawnSync(
+  appPath,
+  [
+    "-e",
+    `require(${JSON.stringify(standaloneNativeModulePath)}); console.log('STANDALONE_ABI_OK')`,
+  ],
+  {
+    env: { ...process.env, ELECTRON_RUN_AS_NODE: "1" },
+    encoding: "utf8",
+  }
+);
+
+if (
+  standaloneLoadResult.status !== 0 ||
+  !standaloneLoadResult.stdout.includes("STANDALONE_ABI_OK")
+) {
+  fail(
+    [
+      `Standalone native module failed to load with Electron ABI ${abi}.`,
+      standaloneLoadResult.stderr || standaloneLoadResult.stdout,
     ]
       .filter(Boolean)
       .join("\n")
