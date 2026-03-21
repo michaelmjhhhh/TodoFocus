@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import UniformTypeIdentifiers
 
 struct LaunchResourceEditorView: View {
@@ -84,6 +85,10 @@ struct LaunchResourceEditorView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            Text("Desktop launch uses native macOS integration")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
         }
         .onAppear {
             draft = parseLaunchResources(raw: todo.launchResourcesRaw)
@@ -120,7 +125,7 @@ struct LaunchResourceEditorView: View {
         let result = store.saveLaunchResources(todoId: todo.id, items: draft)
         switch result {
         case .success:
-            statusText = draft.isEmpty ? "Cleared" : "Saved \(draft.count)"
+            statusText = draft.isEmpty ? "cleared" : "saved \(draft.count)"
         case .failure(.launchResourcesTooLarge):
             statusText = "Payload too large"
         case .failure:

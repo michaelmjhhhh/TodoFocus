@@ -156,6 +156,14 @@ final class TodoAppStore {
             }
         }
     }
+
+    func deleteList(listId: String) {
+        try? listRepository.deleteList(id: listId)
+        if case let .customList(current) = appModel.selection, current == listId {
+            appModel.selectSidebar(.all)
+        }
+        try? reload()
+    }
 }
 
 private extension Todo {

@@ -101,4 +101,14 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertFalse(TaskDetailView.shouldShowDueDateClearButton(dueDate: nil))
         XCTAssertTrue(TaskDetailView.shouldShowDueDateClearButton(dueDate: Date(timeIntervalSince1970: 1_763_520_000)))
     }
+
+    func testDeleteActiveCustomListRoutesSelectionToAll() throws {
+        let (store, appModel, listRepository, _) = try makeStore()
+        let list = try listRepository.createList(name: "Temp")
+        appModel.selectSidebar(.customList(list.id))
+
+        store.deleteList(listId: list.id)
+
+        XCTAssertEqual(appModel.selection, .all)
+    }
 }
