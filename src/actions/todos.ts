@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import {
   parseLaunchResources,
   serializeLaunchResources,
+  trySerializeLaunchResources,
   validateLaunchResource,
   type LaunchResource,
 } from "@/lib/launchResources";
@@ -183,7 +184,17 @@ export async function updateTodo(
     listId?: string | null;
     launchResources?: LaunchResource[] | string | null;
   }
-) {
+ ): Promise<
+  | { ok: true }
+  | {
+      ok: false;
+      error:
+        | "invalid_launch_resource"
+        | "launch_resources_too_large"
+        | "todo_not_found"
+        | "unknown";
+    }
+> {
   const updateData: Record<string, unknown> = {};
   if (data.title !== undefined) updateData.title = data.title;
   if (data.notes !== undefined) updateData.notes = data.notes;
@@ -207,24 +218,40 @@ export async function updateTodo(
     if (data.launchResources === null) {
       updateData.launchResources = "[]";
     } else if (typeof data.launchResources === "string") {
-      updateData.launchResources = serializeLaunchResources(
+      const serialized = trySerializeLaunchResources(
         parseLaunchResources(data.launchResources)
       );
+      if (!serialized.ok) {
+        return { ok: false, error: "launch_resources_too_large" };
+      }
+      updateData.launchResources = serialized.value;
     } else {
       const normalized: LaunchResource[] = [];
       for (const item of data.launchResources) {
         const result = validateLaunchResource(item);
         if (!result.ok) {
-          return;
+          return { ok: false, error: "invalid_launch_resource" };
         }
         normalized.push(result.value);
       }
-      updateData.launchResources = serializeLaunchResources(normalized);
+      const serialized = trySerializeLaunchResources(normalized);
+      if (!serialized.ok) {
+        return { ok: false, error: "launch_resources_too_large" };
+      }
+      updateData.launchResources = serialized.value;
     }
   }
 
-  await prisma.todo.update({ where: { id }, data: updateData });
-  revalidatePath("/");
+  try {
+    await prisma.todo.update({ where: { id }, data: updateData });
+    revalidatePath("/");
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Record to update not found")) {
+      return { ok: false, error: "todo_not_found" };
+    }
+    return { ok: false, error: "unknown" };
+  }
 }
 
 export async function deleteTodo(id: string) {

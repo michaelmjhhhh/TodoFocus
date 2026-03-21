@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   parseLaunchResources,
   serializeLaunchResources,
+  trySerializeLaunchResources,
   validateLaunchResource,
 } from "./launchResources.ts";
 
@@ -81,4 +82,27 @@ test("serializes and re-parses valid resources", () => {
 
   assert.equal(parsed.length, 1);
   assert.equal(parsed[0]?.type, "app");
+});
+
+test("returns explicit error when serialized payload exceeds limit", () => {
+  const veryLongValue = `https://example.com/${"a".repeat(5000)}`;
+  const items = Array.from({ length: 12 }, (_, index) => {
+    const result = validateLaunchResource({
+      type: "url",
+      label: `Very Long Link ${index + 1}`,
+      value: veryLongValue,
+    });
+
+    if (!result.ok) {
+      throw new Error("Failed to construct valid launch resource for overflow test");
+    }
+
+    return result.value;
+  });
+
+  const serializationResult = trySerializeLaunchResources(items);
+  assert.equal(serializationResult.ok, false);
+  if (!serializationResult.ok) {
+    assert.equal(serializationResult.error, "payload_too_large");
+  }
 });
