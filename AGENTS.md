@@ -25,6 +25,8 @@
   - `public` -> `.next/standalone/public`
 - Rebuild native modules for Electron target before or during packaging:
   - `npx electron-builder install-app-deps`
+- After native rebuild, sync standalone native artifacts from root `node_modules`:
+  - `npm run sync:standalone:native`
 - Gate release upload with both checks:
   - ABI check (`npm run verify:electron:abi`)
   - Packaged app smoke check (`npm run verify:electron:smoke`)

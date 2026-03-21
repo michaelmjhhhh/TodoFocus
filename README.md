@@ -105,6 +105,8 @@ npx prisma studio      # Browse database in browser
 - Include Prisma SQL migrations in the packaged app (`prisma/migrations/**/*`).
 - Rebuild native dependencies for Electron target before release packaging:
   - `npx electron-builder install-app-deps`
+- Sync rebuilt native binary into standalone output before packaging:
+  - `npm run sync:standalone:native`
 - Gate release uploads on:
   - ABI check (`npm run verify:electron:abi`)
   - Smoke check (`npm run verify:electron:smoke`)
