@@ -131,29 +131,35 @@ CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never
 npm run electron:ci:package
 ```
 
-### CI Release (Recommended)
+### CI Release (Required, CI-first)
 
-Use GitHub Actions workflow `release-macos` to publish release artifacts from a clean environment:
+Release artifacts should come from GitHub Actions workflow `release-macos`.
+Do not manually upload local DMG/ZIP files unless CI is unavailable and maintainers approve an emergency fallback.
 
-1. Ensure target tag exists (e.g. `v0.1.0`).
-2. Run workflow `release-macos` with input `tag`.
-3. Workflow performs:
-   - `npm ci`
-   - package build
-   - ABI gate
-   - smoke gate
-   - DMG upload to release via `gh release upload --clobber`
+1. Start from clean, updated `main`:
+   - `git checkout main && git pull`
+2. Create and push the release tag:
+   - `git tag vX.Y.Z`
+   - `git push origin vX.Y.Z`
+3. Trigger release workflow for that tag:
+   - `gh workflow run release-macos -f tag=vX.Y.Z`
+4. Monitor the run:
+   - `gh run list --workflow release-macos --limit 5`
+   - `gh run watch <run-id>`
+5. Verify assets on the release page:
+   - `gh release view vX.Y.Z --json assets,url`
+   - Confirm expected files are attached (typically macOS `.dmg` and `.zip`).
 
-### Release Checklist (Recommended)
+### If Workflow Fails (Retry / Rollback)
 
-1. `git checkout main && git pull`
-2. `npm run build`
-3. `npm run build:electron:assets`
-4. `npx electron-builder install-app-deps`
-5. `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never`
-6. Launch and smoke test `dist-electron/mac-arm64/TodoFocus.app`
-7. Build DMG via `hdiutil create ...`
-8. Upload asset with `gh release upload <tag> dist-electron/TodoFocus-mac-arm64.dmg --clobber`
+1. Inspect logs: `gh run view <run-id> --log`.
+2. Retry workflow for transient failures (runner/network/signing issues).
+3. If assets are bad, remove only broken assets and rerun:
+   - `gh release delete-asset vX.Y.Z <asset-name> -y`
+4. If tag was incorrect, recreate it:
+   - `git tag -d vX.Y.Z`
+   - `git push origin :refs/tags/vX.Y.Z`
+   - Create correct tag and run `release-macos` again.
 
 ### Quick DMG creation (fast path)
 
@@ -164,6 +170,8 @@ hdiutil create -volname "TodoFocus" \
   -srcfolder "dist-electron/mac-arm64/TodoFocus.app" \
   -ov -format UDZO "dist-electron/TodoFocus-mac-arm64.dmg"
 ```
+
+Use this local DMG path for validation or emergency-only release recovery, not as the normal release path.
 
 ### Runtime and local data
 
