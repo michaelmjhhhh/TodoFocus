@@ -1,6 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import {
+  parseLaunchResources,
+  serializeLaunchResources,
+  validateLaunchResource,
+  type LaunchResource,
+} from "@/lib/launchResources";
 import { revalidatePath } from "next/cache";
 
 // ── Todos ──
@@ -175,6 +181,7 @@ export async function updateTodo(
     recurrence?: string | null;
     recurrenceInterval?: number;
     listId?: string | null;
+    launchResources?: LaunchResource[] | string | null;
   }
 ) {
   const updateData: Record<string, unknown> = {};
@@ -196,6 +203,25 @@ export async function updateTodo(
     updateData.recurrenceInterval = Math.max(1, Math.floor(data.recurrenceInterval));
   }
   if (data.listId !== undefined) updateData.listId = data.listId || null;
+  if (data.launchResources !== undefined) {
+    if (data.launchResources === null) {
+      updateData.launchResources = "[]";
+    } else if (typeof data.launchResources === "string") {
+      updateData.launchResources = serializeLaunchResources(
+        parseLaunchResources(data.launchResources)
+      );
+    } else {
+      const normalized: LaunchResource[] = [];
+      for (const item of data.launchResources) {
+        const result = validateLaunchResource(item);
+        if (!result.ok) {
+          return;
+        }
+        normalized.push(result.value);
+      }
+      updateData.launchResources = serializeLaunchResources(normalized);
+    }
+  }
 
   await prisma.todo.update({ where: { id }, data: updateData });
   revalidatePath("/");

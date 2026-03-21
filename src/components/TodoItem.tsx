@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { toggleTodo, toggleImportant, deleteTodo } from "@/actions/todos";
 import { Star, X, Check, CalendarDays, ListChecks, Repeat } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { parseLaunchResources } from "@/lib/launchResources";
 
 interface Step {
   id: string;
@@ -20,6 +21,7 @@ interface TodoItemProps {
   recurrence: string | null;
   dueDate: Date | null;
   steps: Step[];
+  launchResources: string;
   listName?: string;
   listColor?: string;
   onSelect: (id: string) => void;
@@ -56,6 +58,7 @@ export function TodoItem({
   recurrence,
   dueDate,
   steps,
+  launchResources,
   listName,
   listColor,
   onSelect,
@@ -67,6 +70,7 @@ export function TodoItem({
   const isPending = isToggling || isStarring || isDeleting;
   const completedSteps = steps.filter((s) => s.isCompleted).length;
   const totalSteps = steps.length;
+  const launchCount = parseLaunchResources(launchResources).length;
   const dueDateInfo = dueDate ? formatDueDate(new Date(dueDate)) : null;
 
   function handleToggle(e: React.MouseEvent) {
@@ -142,12 +146,17 @@ export function TodoItem({
         </span>
 
         {/* Metadata row */}
-        {(totalSteps > 0 || dueDateInfo || recurrence || listName) ? (
+        {(totalSteps > 0 || launchCount > 0 || dueDateInfo || recurrence || listName) ? (
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             {totalSteps > 0 ? (
               <span className="flex items-center gap-1 text-[11px] text-[var(--zen-text-muted)]">
                 <ListChecks size={11} strokeWidth={1.5} />
                 {completedSteps}/{totalSteps}
+              </span>
+            ) : null}
+            {launchCount > 0 ? (
+              <span className="inline-flex items-center rounded-full border border-[var(--zen-border)] px-1.5 py-0.5 text-[10px] text-[var(--zen-text-muted)]">
+                Launch {launchCount}
               </span>
             ) : null}
             {dueDateInfo ? (

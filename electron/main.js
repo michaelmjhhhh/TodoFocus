@@ -1,7 +1,12 @@
-const { app, BrowserWindow, shell, dialog } = require("electron");
+const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const path = require("path");
 const net = require("net");
-const { ensureDatabaseAtPath } = require("./database");
+const {
+  launchAll,
+  MAX_LAUNCH_ITEMS,
+  sanitizeFilePath,
+  sanitizeAppTarget,
+} = require("./launchpad");
 
 // Keep a global reference of the window object to prevent GC
 let mainWindow = null;
@@ -10,6 +15,128 @@ let nextServerBootstrapped = false;
 const isDev = process.env.NODE_ENV === "development";
 const DEFAULT_PORT = 3000;
 let serverPort = DEFAULT_PORT;
+
+function isPlainObject(value) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function buildInvalidLaunchPayloadResult() {
+  return {
+    ok: false,
+    launchedCount: 0,
+    results: [],
+    reason: "invalid-payload",
+  };
+}
+
+function normalizeLaunchResourcesPayload(payload) {
+  if (!isPlainObject(payload) || !Array.isArray(payload.resources)) {
+    return null;
+  }
+
+  const boundedResources = payload.resources.slice(0, MAX_LAUNCH_ITEMS);
+  return boundedResources.map((resource) => {
+    if (!isPlainObject(resource)) {
+      return {};
+    }
+
+    return {
+      id: resource.id,
+      type: resource.type,
+      value: resource.value,
+    };
+  });
+}
+
+function buildPickerUnavailableResult(reason = "unavailable") {
+  return {
+    ok: false,
+    canceled: false,
+    reason,
+  };
+}
+
+function getPickerWindow(event) {
+  const sourceWindow = BrowserWindow.fromWebContents(event.sender);
+  if (sourceWindow && !sourceWindow.isDestroyed()) {
+    return sourceWindow;
+  }
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    return mainWindow;
+  }
+  return undefined;
+}
+
+ipcMain.handle("launchpad:pick-file", async (event) => {
+  try {
+    const result = await dialog.showOpenDialog(getPickerWindow(event), {
+      properties: ["openFile"],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { ok: false, canceled: true, reason: "canceled" };
+    }
+
+    const selected = result.filePaths[0];
+    const sanitized = sanitizeFilePath(selected);
+    if (!sanitized.ok) {
+      return { ok: false, canceled: false, reason: sanitized.reason };
+    }
+
+    return { ok: true, value: sanitized.value };
+  } catch {
+    return buildPickerUnavailableResult("picker-failed");
+  }
+});
+
+ipcMain.handle("launchpad:pick-app", async (event) => {
+  try {
+    const result = await dialog.showOpenDialog(getPickerWindow(event), {
+      properties: ["openFile"],
+      filters: [{ name: "Applications", extensions: ["app"] }],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { ok: false, canceled: true, reason: "canceled" };
+    }
+
+    const selected = result.filePaths[0];
+    const sanitized = sanitizeAppTarget(selected);
+    if (!sanitized.ok || sanitized.mode !== "path") {
+      return { ok: false, canceled: false, reason: sanitized.reason || "invalid-app-target" };
+    }
+
+    return { ok: true, value: sanitized.value };
+  } catch {
+    return buildPickerUnavailableResult("picker-failed");
+  }
+});
+
+ipcMain.handle("launchpad:launch-all", async (_event, payload) => {
+  const resources = normalizeLaunchResourcesPayload(payload);
+  if (resources === null) {
+    return buildInvalidLaunchPayloadResult();
+  }
+
+  try {
+    return await launchAll(resources, {
+      openExternal: (target) => shell.openExternal(target),
+      openPath: (target) => shell.openPath(target),
+    });
+  } catch {
+    return {
+      ok: false,
+      launchedCount: 0,
+      results: [],
+      reason: "launch-handler-failed",
+    };
+  }
+});
 
 // SQLite database path: use app's userData directory so it persists
 // across updates and is specific to this app
@@ -148,6 +275,11 @@ async function startNextServer() {
 
 // Ensure the database directory exists and run migrations if needed
 async function ensureDatabase() {
+  if (isDev) {
+    return;
+  }
+
+  const { ensureDatabaseAtPath } = require("./database");
   const fs = require("fs");
   const dbPath = getDbPath();
   const dbDir = path.dirname(dbPath);

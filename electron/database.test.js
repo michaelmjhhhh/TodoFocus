@@ -48,7 +48,12 @@ test("ensureDatabaseAtPath applies all migrations and is idempotent", () => {
   const appliedCount = db
     .prepare("SELECT COUNT(*) AS count FROM _zen_migrations")
     .get().count;
-  assert.equal(appliedCount, 3);
+  const migrationDirs = fs
+    .readdirSync(migrationsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((name) => /^\d+_/.test(name));
+  assert.equal(appliedCount, migrationDirs.length);
 
   db.close();
 });
