@@ -1,6 +1,6 @@
 # TodoFocus
 
-Local-first desktop todo app for focused execution, not just list keeping.
+Local-first native macOS todo app for focused execution, not just list keeping.
 
 TodoFocus combines familiar task management with a launch-oriented workflow:
 - capture and organize tasks quickly
@@ -12,7 +12,7 @@ TodoFocus combines familiar task management with a launch-oriented workflow:
 Most todo apps stop at "remember this." TodoFocus helps you "start now."
 
 - Local-first by default (SQLite, no account required)
-- Fast desktop workflow with Electron + native pickers
+- Fast desktop workflow with SwiftUI + native pickers
 - Context Launchpad Tasks: one task can launch all related resources
 - Clean focus-oriented UI with animated interactions
 
@@ -40,7 +40,7 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - **Native file/app pickers** -- pick launch targets from desktop dialogs instead of manually typing paths
 - **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
 - **Dark / Light theme** -- toggle with persistence, dark by default
-- **Smooth animations** -- Framer Motion layout transitions throughout
+- **Smooth native animations** -- SwiftUI transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
 
 ## Screens and UX
@@ -54,32 +54,23 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 
 ```bash
 git clone https://github.com/michaelmjhhhh/TodoFocus.git
-cd TodoFocus
-npm install
-npm run setup
-npm run dev
+cd TodoFocus/macos/TodoFocusMac
+brew install xcodegen
+xcodegen generate
+xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-That's it. The `setup` script copies `.env.example` to `.env`, runs the database migration, and generates the Prisma client. The SQLite database file (`dev.db`) is created in the project root.
-
-If Prisma client files are missing (e.g. in fresh CI/workspaces), run:
+For tests:
 
 ```bash
-npm run prisma:generate
-```
-
-For desktop behavior (launch resources, native pickers), use:
-
-```bash
-npm run electron:dev
+xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
 ## Requirements
 
-- **Node.js** >= 18
-- **npm** >= 9
+- **Xcode** 16+
+- **macOS** 14+
+- **xcodegen**
 
 No external database needed. No API keys. No accounts.
 
@@ -87,53 +78,32 @@ No external database needed. No API keys. No accounts.
 
 | Layer | Tech |
 |-------|------|
-| Framework | Next.js 16 (App Router, Server Actions) |
-| Styling | Tailwind CSS v4 |
-| Animation | Framer Motion |
-| Database | SQLite via Prisma v7 + better-sqlite3 |
-| Icons | Lucide React |
-| Font | Inter (via next/font) |
+| App Framework | SwiftUI |
+| State | Observation (`@Observable`) |
+| Database | SQLite via GRDB |
+| Build | Xcode + xcodebuild |
+| Packaging | zipped `.app` in GitHub Releases |
 
 ## Project Structure
 
 ```
-src/
-  app/
-    globals.css        # Design tokens, dark/light theme
-    layout.tsx         # Root layout with ThemeProvider
-    page.tsx           # Server component, data fetching
-  actions/
-    todos.ts           # Server actions (all CRUD)
-  components/
-    AppShell.tsx        # 3-panel layout orchestrator
-    Sidebar.tsx         # Navigation (smart + custom lists)
-    TodoInput.tsx       # Task creation input
-    TodoList.tsx        # Animated task list
-    TodoItem.tsx        # Individual task row
-    TaskDetail.tsx      # Right panel (steps, notes, due date)
-    LaunchResourceEditor.tsx # Launch resource management UI
-    ThemeProvider.tsx    # Dark/light theme context
-    ThemeToggle.tsx     # Theme switch button
-  lib/
-    cn.ts              # clsx + tailwind-merge utility
-    db.ts              # Prisma client singleton
-    launchResources.ts # Launch resource validation/serialization
-    launchAllClient.ts # Renderer launch orchestration
-electron/
-  main.js              # App bootstrap, secure IPC handlers
-  preload.js           # Safe API bridge to renderer
-  launchpad.js         # Launch resource runtime validation + launch logic
-prisma/
-  schema.prisma        # Data model (Todo, List, Step)
+macos/TodoFocusMac/
+  Sources/
+    App/                # app model, stores, launch services
+    Core/               # pure domain models and filters
+    Data/               # GRDB migrations and repositories
+    Features/           # Sidebar, TaskList, TaskDetail
+  Tests/
+    CoreTests/          # domain and behavior tests
+    DataTests/          # migration and repository tests
 ```
 
 ## Development
 
 ```bash
-npm run dev            # Start dev server (localhost:3000)
-npm run build          # Production build
-npm run lint           # ESLint
-npx prisma studio      # Browse database in browser
+xcodegen generate
+xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
 ## Delivery Workflow
@@ -146,48 +116,32 @@ npx prisma studio      # Browse database in browser
 
 - License: MIT
 - Contributions: Issues and PRs are welcome
-- Security baseline: launch actions are IPC-based and validated in Electron main process
+- Security baseline: launch actions are validated and executed via native macOS APIs (no shell execution)
 
-## Desktop Packaging (Electron)
+## Desktop Packaging (Native macOS)
 
 ### Build rules we follow
 
-- Use **Next standalone output** only for packaging.
-- Keep `asar` enabled for smaller artifacts and faster distribution.
-- Unpack only native runtime files (`*.node`, `better-sqlite3`) via `asarUnpack`.
-- Include Prisma SQL migrations in the packaged app (`prisma/migrations/**/*`).
-- Rebuild native dependencies for Electron target before release packaging:
-  - `npx electron-builder install-app-deps`
-- Sync rebuilt native binary into standalone output before packaging:
-  - `npm run sync:standalone:native`
-- Gate release uploads on:
-  - ABI check (`npm run verify:electron:abi`)
-  - Smoke check (`npm run verify:electron:smoke`)
-- Before packaging, copy static assets into standalone:
-  - `.next/static` -> `.next/standalone/.next/static`
-  - `public` -> `.next/standalone/public`
-
-These rules are encoded in `package.json` scripts and `electron-builder.json`.
+- Release artifact is zipped `.app` uploaded to GitHub Releases.
+- App Store distribution is out of scope.
+- Build and test from a clean, updated `main`.
+- Generate checksum (`sha256`) for each uploaded zip.
 
 ### Commands
 
 ```bash
-# Full build (mac targets configured in electron-builder)
-npm run electron:build
-
-# Fast local validation build (no full release workflow)
-npm run build
-npm run build:electron:assets
-CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never
-
-# CI-equivalent guarded local packaging
-npm run electron:ci:package
+xcodegen generate
+xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -configuration Release -derivedDataPath "macos/TodoFocusMac/build/DerivedData" -destination "platform=macOS"
+APP_PATH="macos/TodoFocusMac/build/DerivedData/Build/Products/Release/TodoFocusMac.app"
+ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "dist-native/TodoFocus-macos-universal.zip"
+shasum -a 256 "dist-native/TodoFocus-macos-universal.zip" > "dist-native/TodoFocus-macos-universal.zip.sha256"
 ```
 
 ### CI Release (Required, CI-first)
 
-Release artifacts should come from GitHub Actions workflow `release-macos`.
-Do not manually upload local DMG/ZIP files unless CI is unavailable and maintainers approve an emergency fallback.
+Release artifacts should come from GitHub Actions workflow `release-macos-native`.
+Do not manually upload local assets unless CI is unavailable and maintainers approve an emergency fallback.
 
 1. Start from clean, updated `main`:
    - `git checkout main && git pull`
@@ -195,13 +149,13 @@ Do not manually upload local DMG/ZIP files unless CI is unavailable and maintain
    - `git tag vX.Y.Z`
    - `git push origin vX.Y.Z`
 3. Trigger release workflow for that tag:
-   - `gh workflow run release-macos -f tag=vX.Y.Z`
+   - `gh workflow run release-macos-native -f tag=vX.Y.Z`
 4. Monitor the run:
-   - `gh run list --workflow release-macos --limit 5`
+   - `gh run list --workflow release-macos-native --limit 5`
    - `gh run watch <run-id>`
 5. Verify assets on the release page:
    - `gh release view vX.Y.Z --json assets,url`
-   - Confirm expected files are attached (typically macOS `.dmg` and `.zip`).
+    - Confirm expected files are attached (`TodoFocus-macos-universal.zip` and checksum file).
 
 ### If Workflow Fails (Retry / Rollback)
 
@@ -224,27 +178,26 @@ hdiutil create -volname "TodoFocus" \
   -ov -format UDZO "dist-electron/TodoFocus-mac-arm64.dmg"
 ```
 
-Use this local DMG path for validation or emergency-only release recovery, not as the normal release path.
+Use local packaging only for validation or emergency-only release recovery, not as the normal release path.
 
 ### Runtime and local data
 
-- App starts the Next.js standalone server in-process from `.next/standalone/server.js` (no separate spawned server child).
-- On first launch, SQL migrations from `prisma/migrations` are applied automatically.
+- App is native SwiftUI and uses GRDB-backed SQLite locally.
+- On first launch, GRDB migrations are applied automatically.
 - Local database path on macOS:
   - `~/Library/Application Support/todofocus/todofocus.db`
 
 ### Launchpad Safety Model
 
-- Launch actions are handled in Electron main process via IPC, not by executing shell commands.
-- Resource payloads are validated in both renderer and main process before launch.
-- External window opening is protocol-restricted (allowlisted) and top-level navigation is guarded.
+- Launch actions are executed with native macOS APIs (`NSWorkspace`), not shell commands.
+- Resource payloads are validated before persistence and before launch.
+- URL schemes are allowlisted and invalid payloads are rejected.
 
 ### Common issue and fix
 
-- If UI looks unstyled (plain HTML buttons/text), verify CSS endpoint is reachable from the app's internal port.
-- Typical root cause is stale app process/port conflict; restart app after killing old processes.
-- If packaged app fails with `better-sqlite3` `NODE_MODULE_VERSION` mismatch, rebuild Electron native deps (`npx electron-builder install-app-deps`) and repackage.
-- If dev server fails with Prisma `P2022` missing column, apply local schema updates with `npx prisma migrate dev`.
+- If build fails after file moves, run `xcodegen generate` and rebuild.
+- If app data looks stale, remove `~/Library/Application Support/todofocus/todofocus.db` for a clean local reset.
+- If picker/launch behavior fails, verify app has macOS file access permissions.
 
 ## License
 

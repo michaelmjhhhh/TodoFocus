@@ -3,10 +3,10 @@
 ## Contributor Guidelines
 
 - Keep changes focused and small; avoid unrelated refactors in the same PR.
-- Follow existing stack and patterns: Next.js App Router, Server Actions, Prisma + SQLite, Tailwind, Framer Motion, Electron.
-- Run checks before opening a PR: `npm run lint` and a quick local run (`npm run dev` or `npm run electron:dev` for desktop work).
+- Follow existing stack and patterns: SwiftUI + Observation, GRDB + SQLite, native macOS APIs.
+- Run checks before opening a PR: `xcodebuild test -project \"macos/TodoFocusMac/TodoFocusMac.xcodeproj\" -scheme \"TodoFocusMac\" -destination \"platform=macOS\"` and a quick local build.
 - Do not commit secrets (`.env`, local DB files, signing credentials).
-- For data model changes, include Prisma migration files and verify app startup still applies migrations.
+- For data model changes, include GRDB migration updates and verify app startup still applies migrations.
 - For bug fixes, follow systematic debugging: reproduce -> collect evidence -> identify root cause -> then implement.
 - For new features, follow this flow: issue -> branch -> implement -> PR.
 - For non-trivial feature work, write a plan in `docs/superpowers/plans/` before implementation.
@@ -20,61 +20,43 @@
 ## Security Guardrails (Launchpad)
 
 - Never add shell/command execution for launch resources.
-- Keep launch operations in Electron main process IPC handlers with strict payload validation.
-- Keep sender trust checks and external URL/navigation restrictions in place when editing `electron/main.js`.
+- Keep launch operations in native macOS service (`NSWorkspace`) with strict payload validation.
+- Keep URL scheme allowlist restrictions and reject unsupported payloads.
 
-## Packaging (TodoFocus Electron)
+## Packaging (TodoFocus Native macOS)
 
 ### Core Packaging Rules (Must Follow)
 
-- Treat desktop packaging as a **standalone runtime** flow (not the same as `npm run dev`).
+- Treat desktop packaging as a native app flow (not Node/Electron runtime flow).
 - Always package from **clean, updated main** when preparing release artifacts.
-- Release assets must be produced by CI workflow (`release-macos`) by default.
-- Do not manually upload a local DMG/ZIP unless CI is unavailable and maintainers approve an emergency fallback.
-- Keep `asar` enabled; only unpack what is required at runtime.
-- Include `prisma/migrations/**/*` in packaged files; missing migrations break first-run DB setup.
-- Keep static copy step before packaging:
-  - `.next/static` -> `.next/standalone/.next/static`
-  - `public` -> `.next/standalone/public`
-- Rebuild native modules for Electron target before or during packaging:
-  - `npx electron-builder install-app-deps`
-- After native rebuild, sync standalone native artifacts from root `node_modules`:
-  - `npm run sync:standalone:native`
-- Gate release upload with both checks:
-  - ABI check (`npm run verify:electron:abi`)
-  - Packaged app smoke check (`npm run verify:electron:smoke`)
+- Release assets must be produced by CI workflow (`release-macos-native`) by default.
+- Do not manually upload local artifacts unless CI is unavailable and maintainers approve an emergency fallback.
+- Primary release artifact is zipped `.app` plus SHA256 checksum.
+- App Store distribution is out of scope.
 
 ### Build Requirements
 
-- Node.js 18+ and npm 9+.
-- Install dependencies: `npm install`.
-- If `src/generated/prisma` is missing, run `npm run prisma:generate` before builds.
-- Next standalone build is required for Electron packaging.
-- Packaging config lives in `electron-builder.json` (asar enabled; native modules unpacked via `asarUnpack`).
+- Xcode 16+ and macOS 14+.
+- Install `xcodegen`.
+- Generate project before build/test: `xcodegen generate` in `macos/TodoFocusMac`.
 
-### Preflight Checklist (Before Creating DMG)
+### Preflight Checklist (Before Release Upload)
 
 1. Verify branch and workspace are correct (`main`, no accidental local-only changes).
 2. Run:
-   1. `npm run build`
-   2. `npm run build:electron:assets`
-   3. `npx electron-builder install-app-deps`
-3. Package app directory build:
-   - `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never`
-4. Smoke test packaged app from `dist-electron/mac-arm64/TodoFocus.app`.
-5. Only after smoke passes, generate/refresh DMG.
+   1. `xcodegen generate`
+   2. `xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"`
+3. Build release app:
+   - `xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -configuration Release -derivedDataPath "macos/TodoFocusMac/build/DerivedData" -destination "platform=macOS"`
+4. Package zip and checksum:
+   - `ditto -c -k --sequesterRsrc --keepParent "macos/TodoFocusMac/build/DerivedData/Build/Products/Release/TodoFocusMac.app" "dist-native/TodoFocus-macos-universal.zip"`
+   - `shasum -a 256 "dist-native/TodoFocus-macos-universal.zip" > "dist-native/TodoFocus-macos-universal.zip.sha256"`
 
 ### Build Commands
 
-- macOS release build: `npm run electron:build`
-- Windows build: `npm run electron:build:win`
-- Linux build: `npm run electron:build:linux`
-- Fast local validation (no publish):
-  1. `npm run build`
-  2. `npm run build:electron:assets`
-  3. `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --publish never`
-- CI-equivalent guarded local packaging:
-  - `npm run electron:ci:package`
+- Generate project: `xcodegen generate`
+- Run tests: `xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"`
+- Build Release: `xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -configuration Release -derivedDataPath "macos/TodoFocusMac/build/DerivedData" -destination "platform=macOS"`
 
 ### CI-First Release Flow (Required)
 
@@ -84,13 +66,13 @@
    - `git tag vX.Y.Z`
    - `git push origin vX.Y.Z`
 3. Trigger the workflow with the same tag:
-   - `gh workflow run release-macos -f tag=vX.Y.Z`
+   - `gh workflow run release-macos-native -f tag=vX.Y.Z`
 4. Monitor until completion:
-   - `gh run list --workflow release-macos --limit 5`
+   - `gh run list --workflow release-macos-native --limit 5`
    - `gh run watch <run-id>`
 5. Verify release assets were published:
    - `gh release view vX.Y.Z --json assets,url`
-   - Confirm expected files (for example macOS `.dmg` and `.zip`) are attached.
+   - Confirm expected files are attached (`TodoFocus-macos-universal.zip` and checksum).
 
 ### Workflow Failure: Retry / Rollback
 
@@ -106,20 +88,17 @@
 ### Emergency-Only Manual Upload (Exception)
 
 - Use only when CI is unavailable and maintainers explicitly approve bypassing CI.
-- Before upload, run local guarded packaging (`npm run electron:ci:package`) and smoke test.
+- Before upload, run local native build + test + zip/checksum and smoke test.
 - Upload with: `gh release upload <tag> <file> --clobber`.
 
 ### Local Data Path
 
 - macOS app data directory: `~/Library/Application Support/todofocus/`
 - SQLite database file: `~/Library/Application Support/todofocus/todofocus.db`
-- Next standalone server is started in-process by Electron main (no separate spawned server child process).
+- App is native SwiftUI and uses GRDB-backed SQLite in-process.
 
 ### Common Troubleshooting
 
-- Unstyled UI in packaged app: usually stale internal server/port conflict; fully quit old app processes and relaunch.
-- Packaging fails with missing standalone server/static assets: rerun `npm run build` then `npm run build:electron:assets`.
-- Runtime DB/migration issues: confirm `prisma/migrations` is included in package and migration SQL files exist.
-- Native module errors (`better-sqlite3`): ensure `asarUnpack` settings in `electron-builder.json` remain intact.
-- `better-sqlite3` ABI mismatch (`NODE_MODULE_VERSION` error): run `npx electron-builder install-app-deps`, then rebuild package artifacts.
-- `P2022 column does not exist` in dev: local `dev.db` is behind schema; run `npx prisma migrate dev`.
+- If build fails after file changes, rerun `xcodegen generate`.
+- If runtime DB state is stale, remove `~/Library/Application Support/todofocus/todofocus.db` for clean local reset.
+- If launch picker behavior fails, check macOS file access permissions.

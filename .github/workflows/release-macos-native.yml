@@ -1,0 +1,75 @@
+name: release-macos-native
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  build-and-upload:
+    runs-on: macos-14
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install XcodeGen
+        run: |
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew update
+            brew install xcodegen
+          fi
+
+      - name: Generate project
+        run: xcodegen generate
+        working-directory: macos/TodoFocusMac
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -project "TodoFocusMac.xcodeproj" \
+            -scheme "TodoFocusMac" \
+            -destination "platform=macOS"
+        working-directory: macos/TodoFocusMac
+
+      - name: Build release app
+        run: |
+          xcodebuild build \
+            -project "TodoFocusMac.xcodeproj" \
+            -scheme "TodoFocusMac" \
+            -configuration Release \
+            -derivedDataPath "build/DerivedData" \
+            -destination "platform=macOS"
+        working-directory: macos/TodoFocusMac
+
+      - name: Package zipped app + checksum
+        run: |
+          mkdir -p dist-native
+          APP_PATH="macos/TodoFocusMac/build/DerivedData/Build/Products/Release/TodoFocusMac.app"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "dist-native/TodoFocus-macos-universal.zip"
+          shasum -a 256 "dist-native/TodoFocus-macos-universal.zip" > "dist-native/TodoFocus-macos-universal.zip.sha256"
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ inputs.tag }}" \
+            "dist-native/TodoFocus-macos-universal.zip" \
+            "dist-native/TodoFocus-macos-universal.zip.sha256" \
+            --clobber
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: TodoFocus-macos-native
+          path: |
+            dist-native/TodoFocus-macos-universal.zip
+            dist-native/TodoFocus-macos-universal.zip.sha256
