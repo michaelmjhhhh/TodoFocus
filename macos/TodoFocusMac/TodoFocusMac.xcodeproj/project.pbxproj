@@ -11,13 +11,17 @@
 		1B657D8D1A98A8F91A6CBBB5 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB414833F47C20B5284EA0B /* MigrationTests.swift */; };
 		243B5B18ADC816895A198044 /* ThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0EACE45650F8B34190D4A3 /* ThemeStore.swift */; };
 		2478E09007414B82EC20501B /* TodoFocusMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */; };
+		2488D4F86087E1711676B089 /* TimeFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDF00C67B73AFD0EEAD7E8C /* TimeFilterTests.swift */; };
 		268C75C1B8CFC0C6F9D5083B /* TodoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2D82AE6A92695B56A24B3 /* TodoRepository.swift */; };
+		2C0D092C397234106188359E /* TimeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00F7F32AC8B9D5FF79A2F67 /* TimeFilter.swift */; };
 		2C474F67BB3ADD3769E126E3 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 3C14523A1F60CB034FBD9527 /* GRDB */; };
 		2D6BE558DD2AB44D6424DDD7 /* StepRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988EA3A536904886FAC704C1 /* StepRepository.swift */; };
 		49C094D18BEB5BD380E70B5B /* ResizableSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */; };
 		639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F49BBBD3470E39E67D6825 /* AppModelTests.swift */; };
+		64CAC0EE2BA2F5B20FAEB504 /* SmartListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */; };
 		67ED88BEBF2651E62E8D23A0 /* TodoRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC15A3652F4971562B5E623 /* TodoRecord.swift */; };
 		7727A349868810A7561C3E6D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 37296F1B51752E30FD8B0936 /* GRDB */; };
+		91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B7FBF596FE48369C865FF /* CoreTodo.swift */; };
 		98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCE7E86937A152A989DCFCD /* RootView.swift */; };
 		A0FBDFF3B725B51B7F153995 /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C2B13C8E141A41A721EB9 /* Migrations.swift */; };
 		A253EF4EAE3275AFB724ABB0 /* ListRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515BEFC0401BABD096FDF98D /* ListRecord.swift */; };
@@ -25,6 +29,7 @@
 		AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */; };
 		E63935763D57E7925754DA11 /* StepRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7843ACD1FCEFBCAE938562 /* StepRecord.swift */; };
 		E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77780E76FD121D34BF6D7EE3 /* AppModel.swift */; };
+		F59D8952A68ECA7794710C19 /* SmartList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2206266636D0C567F9A8BC5 /* SmartList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,8 +53,10 @@
 		06E0C999AE4AD500458E154A /* CoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableSplitView.swift; sourceTree = "<group>"; };
 		0CBB93E177F1BAE2BD678353 /* TodoFocusMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoFocusMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
 		3AB414833F47C20B5284EA0B /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		3CCE7E86937A152A989DCFCD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		515BEFC0401BABD096FDF98D /* ListRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRecord.swift; sourceTree = "<group>"; };
@@ -57,6 +64,7 @@
 		6A0EACE45650F8B34190D4A3 /* ThemeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeStore.swift; sourceTree = "<group>"; };
 		6A7843ACD1FCEFBCAE938562 /* StepRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRecord.swift; sourceTree = "<group>"; };
 		6B9E972A5D6A75831750C718 /* ListRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRepository.swift; sourceTree = "<group>"; };
+		6EDF00C67B73AFD0EEAD7E8C /* TimeFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFilterTests.swift; sourceTree = "<group>"; };
 		77780E76FD121D34BF6D7EE3 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		81F49BBBD3470E39E67D6825 /* AppModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModelTests.swift; sourceTree = "<group>"; };
 		84179A8739D2AB7CE0C44350 /* GRDB.swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GRDB.swift; path = ../../vendor/GRDB.swift; sourceTree = SOURCE_ROOT; };
@@ -64,7 +72,9 @@
 		9BC2D82AE6A92695B56A24B3 /* TodoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepository.swift; sourceTree = "<group>"; };
 		A7AF6A4A3CE241E3341FE30A /* TodoRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepositoryTests.swift; sourceTree = "<group>"; };
 		AE6C2B13C8E141A41A721EB9 /* Migrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrations.swift; sourceTree = "<group>"; };
+		B00F7F32AC8B9D5FF79A2F67 /* TimeFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFilter.swift; sourceTree = "<group>"; };
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
+		D2206266636D0C567F9A8BC5 /* SmartList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +111,7 @@
 				3CCE7E86937A152A989DCFCD /* RootView.swift */,
 				C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */,
 				9F6A94A4BBD57A4DB88AB04C /* App */,
+				AB4A0BD162BE123196C969EA /* Core */,
 				515A950DC34997C73DE643B4 /* Data */,
 				565EAD6DB68A33DB982AF0BA /* Features */,
 			);
@@ -140,6 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				81F49BBBD3470E39E67D6825 /* AppModelTests.swift */,
+				2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */,
+				6EDF00C67B73AFD0EEAD7E8C /* TimeFilterTests.swift */,
 			);
 			name = CoreTests;
 			path = Tests/CoreTests;
@@ -171,6 +184,23 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		6CC9651D74102E8670A2EC27 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				D2206266636D0C567F9A8BC5 /* SmartList.swift */,
+				B00F7F32AC8B9D5FF79A2F67 /* TimeFilter.swift */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
+		7CEC94582616D54CBF7A98BB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				173B7FBF596FE48369C865FF /* CoreTodo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		9F6A94A4BBD57A4DB88AB04C /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +218,15 @@
 			);
 			name = DataTests;
 			path = Tests/DataTests;
+			sourceTree = "<group>";
+		};
+		AB4A0BD162BE123196C969EA /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				6CC9651D74102E8670A2EC27 /* Filters */,
+				7CEC94582616D54CBF7A98BB /* Models */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 		B416645E60BA6666966FAE73 = {
@@ -321,15 +360,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */,
+				91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */,
 				AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */,
 				A253EF4EAE3275AFB724ABB0 /* ListRecord.swift in Sources */,
 				1B29CD200852FFA0C2032B8F /* ListRepository.swift in Sources */,
 				A0FBDFF3B725B51B7F153995 /* Migrations.swift in Sources */,
 				49C094D18BEB5BD380E70B5B /* ResizableSplitView.swift in Sources */,
 				98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */,
+				F59D8952A68ECA7794710C19 /* SmartList.swift in Sources */,
 				E63935763D57E7925754DA11 /* StepRecord.swift in Sources */,
 				2D6BE558DD2AB44D6424DDD7 /* StepRepository.swift in Sources */,
 				243B5B18ADC816895A198044 /* ThemeStore.swift in Sources */,
+				2C0D092C397234106188359E /* TimeFilter.swift in Sources */,
 				2478E09007414B82EC20501B /* TodoFocusMacApp.swift in Sources */,
 				67ED88BEBF2651E62E8D23A0 /* TodoRecord.swift in Sources */,
 				268C75C1B8CFC0C6F9D5083B /* TodoRepository.swift in Sources */,
@@ -341,6 +383,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */,
+				64CAC0EE2BA2F5B20FAEB504 /* SmartListFilterTests.swift in Sources */,
+				2488D4F86087E1711676B089 /* TimeFilterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
