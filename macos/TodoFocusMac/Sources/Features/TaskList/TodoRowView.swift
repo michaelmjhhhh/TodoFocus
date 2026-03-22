@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TodoRowView: View {
     let todo: Todo
+    let listColor: Color?
     let isSelected: Bool
     let onSelect: () -> Void
     let onToggleComplete: () -> Void
@@ -15,6 +16,17 @@ struct TodoRowView: View {
 
     private var isSecondaryControlsVisible: Bool {
         Self.shouldShowSecondaryControls(isHovered: isHovered, isSelected: isSelected)
+    }
+
+    private var indicatorColor: Color {
+        if todo.isImportant {
+            return .yellow
+        }
+        return listColor ?? VisualTokens.accentTerracotta
+    }
+
+    private var showIndicator: Bool {
+        todo.isImportant || listColor != nil
     }
 
     var body: some View {
@@ -75,10 +87,11 @@ struct TodoRowView: View {
         .padding(.vertical, 7)
         .appRowState(isHovered: isHovered, isSelected: isSelected)
         .overlay(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(VisualTokens.accent)
-                .frame(width: todo.isImportant ? 3 : 0)
-                .animation(MotionTokens.interactiveSpring, value: todo.isImportant)
+            if showIndicator {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(indicatorColor)
+                    .frame(width: 3)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture {

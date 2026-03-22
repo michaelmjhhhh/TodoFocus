@@ -194,10 +194,21 @@ final class TodoAppStore {
         try? reload()
     }
 
-    func createList(name: String) {
+    func createList(name: String, color: String = "#6366F1") {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        _ = try? listRepository.createList(name: trimmed, now: now())
+        _ = try? listRepository.createList(name: trimmed, color: color, now: now())
+        try? reload()
+    }
+
+    func renameList(listId: String, newName: String, color: String? = nil) {
+        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        if let color {
+            try? listRepository.renameList(id: listId, name: trimmed, color: color, now: now())
+        } else {
+            try? listRepository.renameList(id: listId, name: trimmed, now: now())
+        }
         try? reload()
     }
 }

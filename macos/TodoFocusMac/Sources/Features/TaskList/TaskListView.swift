@@ -68,8 +68,15 @@ struct TaskListView: View {
 
             HStack(spacing: 12) {
                 todoColumn(title: "Active", todos: activeTodos)
-                completedColumn
+                    .frame(maxWidth: .infinity)
+
+                if !isCompletedCollapsed {
+                    completedColumn
+                        .frame(width: 260)
+                        .transition(.opacity.combined(with: .move(edge: .trailing)))
+                }
             }
+            .animation(.easeInOut(duration: 0.2), value: isCompletedCollapsed)
         }
         .padding(16)
         .foregroundStyle(.primary)
@@ -184,6 +191,7 @@ struct TaskListView: View {
                     ForEach(todos) { todo in
                         TodoRowView(
                             todo: todo,
+                            listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
@@ -258,6 +266,7 @@ struct TaskListView: View {
                     ForEach(completedTodos) { todo in
                         TodoRowView(
                             todo: todo,
+                            listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
@@ -285,5 +294,26 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
         }
+    }
+
+    private func colorForList(listId: String?) -> Color? {
+        guard let listId else { return nil }
+        guard let list = store.lists.first(where: { $0.id == listId }) else { return nil }
+        return Color(hex: list.color)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let r, g, b: UInt64
+        (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
+        self.init(
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255
+        )
     }
 }

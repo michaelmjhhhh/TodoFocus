@@ -7,19 +7,18 @@ enum ListRepositoryError: Error {
 
 struct ListRepository {
     private let dbQueue: DatabaseQueue
-    private let colors = ["#6366F1", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#3B82F6", "#EF4444"]
 
     init(dbQueue: DatabaseQueue) {
         self.dbQueue = dbQueue
     }
 
-    func createList(name: String, now: Date = Date()) throws -> ListRecord {
+    func createList(name: String, color: String = "#6366F1", now: Date = Date()) throws -> ListRecord {
         try dbQueue.write { db in
             let count = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM list") ?? 0
             var record = ListRecord(
                 id: UUID().uuidString,
                 name: name,
-                color: colors[count % colors.count],
+                color: color,
                 sortOrder: count,
                 createdAt: now,
                 updatedAt: now
@@ -29,12 +28,15 @@ struct ListRepository {
         }
     }
 
-    func renameList(id: String, name: String, now: Date = Date()) throws {
+    func renameList(id: String, name: String, color: String? = nil, now: Date = Date()) throws {
         try dbQueue.write { db in
             guard var record = try ListRecord.fetchOne(db, key: id) else {
                 throw ListRepositoryError.notFound
             }
             record.name = name
+            if let color {
+                record.color = color
+            }
             record.updatedAt = now
             try record.update(db)
         }
