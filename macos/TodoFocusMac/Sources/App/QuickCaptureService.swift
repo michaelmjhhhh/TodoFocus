@@ -6,6 +6,7 @@ import Observation
 final class QuickCaptureService {
     var isVisible: Bool = false
     var needsAccessibilityPermission: Bool = false
+    var isHotkeyReady: Bool = false
     private var panel: QuickCapturePanel?
     private var hostingView: QuickCaptureHostingView?
     

@@ -235,12 +235,23 @@ final class TodoAppStore {
     }
 
     func appendToFocusTaskNotes(_ text: String) {
-        guard let focusTaskId = appModel.deepFocusService.currentFocusTaskId else { return }
-        guard let todo = todos.first(where: { $0.id == focusTaskId }) else { return }
-        
-        let currentNotes = todo.notes
-        let newNotes = currentNotes.isEmpty ? text : currentNotes + text
-        updateNotesDebounced(todoId: focusTaskId, notes: newNotes)
+        if let focusTaskId = appModel.deepFocusService.currentFocusTaskId,
+           let todo = todos.first(where: { $0.id == focusTaskId }) {
+            let currentNotes = todo.notes
+            let newNotes = currentNotes.isEmpty ? text : currentNotes + text
+            updateNotesDebounced(todoId: focusTaskId, notes: newNotes)
+        } else {
+            let captureText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            let title = captureText.components(separatedBy: .newlines).first ?? captureText
+            
+            try? quickAdd(
+                title: title,
+                planned: false,
+                isImportant: false,
+                isMyDay: false,
+                list: nil
+            )
+        }
     }
 }
 

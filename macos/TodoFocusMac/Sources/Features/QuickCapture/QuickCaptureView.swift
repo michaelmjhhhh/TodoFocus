@@ -86,7 +86,6 @@ struct QuickCaptureView: View {
 class QuickCaptureHostingView: NSHostingView<QuickCaptureView> {
     private let onSubmit: (String) -> Void
     private let onCancel: () -> Void
-    private var capturedText: String = ""
     
     required init(rootView: QuickCaptureView) {
         self.onSubmit = { _ in }
@@ -97,10 +96,19 @@ class QuickCaptureHostingView: NSHostingView<QuickCaptureView> {
     init(onSubmit: @escaping (String) -> Void, onCancel: @escaping () -> Void, targetInfo: String) {
         self.onSubmit = onSubmit
         self.onCancel = onCancel
+        
+        var textValue: String = ""
+        let textBinding = Binding<String>(
+            get: { textValue },
+            set: { textValue = $0 }
+        )
+        
         let view = QuickCaptureView(
-            text: .constant(""),
-            onSubmit: { },
-            onCancel: { },
+            text: textBinding,
+            onSubmit: {
+                onSubmit(textValue)
+            },
+            onCancel: onCancel,
             targetInfo: targetInfo
         )
         super.init(rootView: view)
