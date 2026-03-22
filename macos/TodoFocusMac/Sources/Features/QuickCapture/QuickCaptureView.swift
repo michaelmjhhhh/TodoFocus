@@ -6,6 +6,7 @@ struct QuickCaptureView: View {
     let onCancel: () -> Void
     let targetInfo: String
     @State private var isSubmitting = false
+    @State private var showSuccess = false
     
     var body: some View {
         VStack(spacing: 12) {
@@ -22,15 +23,26 @@ struct QuickCaptureView: View {
                     .foregroundColor(.white.opacity(0.6))
             }
             
-            TextField("Capture a thought...", text: $text)
-                .textFieldStyle(.plain)
-                .padding(10)
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(8)
-                .foregroundColor(.white)
-                .onSubmit {
-                    handleSubmit()
+            HStack {
+                TextField("Capture a thought...", text: $text)
+                    .textFieldStyle(.plain)
+                    .padding(10)
+                    .background(Color.white.opacity(0.1))
+                    .cornerRadius(8)
+                    .foregroundColor(.white)
+                    .scaleEffect(isSubmitting ? 0.98 : 1.0)
+                    .animation(.easeInOut(duration: 0.1), value: isSubmitting)
+                    .onSubmit {
+                        handleSubmit()
+                    }
+                
+                if showSuccess {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                        .font(.system(size: 20))
+                        .transition(.scale.combined(with: .opacity))
                 }
+            }
             
             HStack {
                 Spacer()
@@ -52,6 +64,7 @@ struct QuickCaptureView: View {
         .padding(16)
         .frame(width: 400, height: 140)
         .background(Color.clear)
+        .animation(.easeInOut(duration: 0.2), value: showSuccess)
     }
     
     private func handleSubmit() {
@@ -61,6 +74,12 @@ struct QuickCaptureView: View {
         }
         isSubmitting = true
         onSubmit()
+        withAnimation {
+            showSuccess = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            showSuccess = false
+        }
     }
 }
 
