@@ -14,11 +14,12 @@ struct TaskListView: View {
             commandBar
 
             if !appModel.selectedTodoIDs.isEmpty {
+                let hasCompleted = store.todos.contains { $0.isCompleted && appModel.selectedTodoIDs.contains($0.id) }
                 HStack {
                     Text("\(appModel.selectedTodoIDs.count) selected")
                         .font(.caption)
                     Spacer()
-                    Button("Complete") {
+                    Button(hasCompleted ? "Activate" : "Complete") {
                         appModel.selectedTodoIDs.forEach { id in
                             try? store.toggleComplete(todoId: id)
                         }
