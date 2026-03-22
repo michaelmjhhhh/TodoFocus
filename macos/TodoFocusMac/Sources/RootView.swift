@@ -7,6 +7,7 @@ struct RootView: View {
     let databasePath: String
     @State private var containerWidth: Double = 1200
     @State private var isSidebarVisible: Bool = true
+    @State private var isHeaderExpanded: Bool = true
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String) {
         self._appModel = Bindable(appModel)
@@ -86,23 +87,6 @@ struct RootView: View {
         .task {
             try? store.reload()
         }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isSidebarVisible.toggle()
-                    }
-                } label: {
-                    Image(systemName: "sidebar.leading")
-                }
-            }
-        }
-        .onChange(of: appModel.selectedTodoID) { _, newValue in
-            if newValue != nil {
-                withAnimation(MotionTokens.focusEase) {
-                    isSidebarVisible = false
-                }
-            }
-        }
+        .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
     }
 }

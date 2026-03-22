@@ -31,70 +31,13 @@ struct TaskDetailView: View {
                 header(todo: todo)
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        section("Schedule") {
-                            HStack(spacing: 8) {
-                                DatePicker(
-                                    "Due date",
-                                    selection: Binding(
-                                        get: { dueDate },
-                                        set: { newValue in
-                                            dueDate = newValue
-                                            store.setDueDate(todoId: todo.id, date: newValue)
-                                        }
-                                    ),
-                                    displayedComponents: [.date]
-                                )
-
-                                if Self.shouldShowDueDateClearButton(dueDate: todo.dueDate) {
-                                    Button("Clear") {
-                                        dueDate = Date()
-                                        store.setDueDate(todoId: todo.id, date: nil)
-                                    }
-                                    .buttonStyle(.plain)
-                                    .foregroundStyle(VisualTokens.mutedText)
-                                }
-                            }
-                        }
-
-                        section("Notes") {
-                            TextEditor(text: $notesText)
-                                .frame(minHeight: 120)
-                                .scrollContentBackground(.hidden)
-                                .padding(8)
-                                .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(VisualTokens.sectionBorder, lineWidth: 1)
-                                }
-                                .onChange(of: notesText) { _, newValue in
-                                    store.updateNotesDebounced(todoId: todo.id, notes: newValue)
-                                }
-                        }
-
-                        section("Steps") {
-                            StepsEditorView(todoId: todo.id, store: store)
-                        }
-
-                        section("Launchpad") {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(Self.launchpadHintTitle)
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.primary)
-                                Text(Self.launchpadHintSubtitle)
-                                    .font(.caption)
-                                    .foregroundStyle(VisualTokens.mutedText)
-                            }
-                            .padding(.bottom, 4)
-
-                            LaunchResourceEditorView(
-                                store: store,
-                                todo: todo,
-                                launchpadService: launchpadService
-                            )
-                        }
+                    VStack(alignment: .leading, spacing: 16) {
+                        dateSection(todo: todo)
+                        notesSection(todo: todo)
+                        stepsSection(todo: todo)
+                        launchpadSection(todo: todo)
                     }
-                    .padding(12)
+                    .padding(16)
                     .onAppear {
                         titleText = todo.title
                         notesText = todo.notes
@@ -201,7 +144,6 @@ struct TaskDetailView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(VisualTokens.sectionBackground)
-        .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
         .overlay(alignment: .bottom) {
             Rectangle()
                 .fill(VisualTokens.sectionBorder)
@@ -209,21 +151,68 @@ struct TaskDetailView: View {
         }
     }
 
-    private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func dateSection(todo: Todo) -> some View {
+        InlineDatePicker(
+            title: "Schedule",
+            date: Binding(
+                get: { dueDate },
+                set: { newValue in
+                    dueDate = newValue
+                    store.setDueDate(todoId: todo.id, date: newValue)
+                }
+            ),
+            dueDate: todo.dueDate,
+            onClear: {
+                dueDate = Date()
+                store.setDueDate(todoId: todo.id, date: nil)
+            }
+        )
+    }
+
+    private func notesSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.caption.weight(.semibold))
+            Text("Notes")
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(VisualTokens.mutedText)
-            content()
+
+            TextEditor(text: $notesText)
+                .frame(minHeight: 100)
+                .scrollContentBackground(.hidden)
+                .padding(10)
+                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(VisualTokens.textPrimary)
+                .onChange(of: notesText) { _, newValue in
+                    store.updateNotesDebounced(todoId: todo.id, notes: newValue)
+                }
         }
-        .padding(12)
-        .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
-        .overlay {
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(VisualTokens.sectionBorder.opacity(0.92), lineWidth: 1)
+    }
+
+    private func stepsSection(todo: Todo) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Steps")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(VisualTokens.mutedText)
+
+            StepsEditorView(todoId: todo.id, store: store)
         }
-        .shadow(color: Color.black.opacity(0.10), radius: 5, y: 2)
-        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func launchpadSection(todo: Todo) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Launchpad")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(VisualTokens.mutedText)
+
+            Text(Self.launchpadHintTitle)
+                .font(.caption)
+                .foregroundStyle(VisualTokens.textSecondary)
+
+            LaunchResourceEditorView(
+                store: store,
+                todo: todo,
+                launchpadService: launchpadService
+            )
+        }
     }
 
     private func commitTitle(todoId: String) {
@@ -245,6 +234,80 @@ struct TaskDetailView: View {
     }
 }
 
+struct InlineDatePicker: View {
+    let title: String
+    @Binding var date: Date
+    let dueDate: Date?
+    let onClear: () -> Void
+    @State private var isPickerPresented = false
+
+    private var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        if let dueDate, Calendar.current.isDateInToday(dueDate) {
+            return "Today"
+        } else if let dueDate, Calendar.current.isDateInTomorrow(dueDate) {
+            return "Tomorrow"
+        }
+        return formatter.string(from: dueDate ?? date)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(VisualTokens.mutedText)
+
+            HStack(spacing: 8) {
+                Button {
+                    isPickerPresented = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(VisualTokens.accentTerracotta)
+                        Text(formattedDate)
+                            .foregroundStyle(VisualTokens.textPrimary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isPickerPresented, arrowEdge: .top) {
+                    VStack(spacing: 0) {
+                        DatePicker(
+                            "",
+                            selection: $date,
+                            displayedComponents: [.date]
+                        )
+                        .datePickerStyle(.graphical)
+                        .padding(12)
+                        .onChange(of: date) { _, newValue in
+                            isPickerPresented = false
+                        }
+
+                        if dueDate != nil {
+                            Divider()
+                                .padding(.horizontal, 8)
+                            Button("Clear date") {
+                                onClear()
+                                isPickerPresented = false
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(VisualTokens.danger)
+                            .padding(12)
+                        }
+                    }
+                    .background(VisualTokens.bgElevated)
+                }
+
+                Spacer()
+            }
+        }
+    }
+}
+
 struct StepsEditorView: View {
     let todoId: String
     @Bindable var store: TodoAppStore
@@ -258,45 +321,35 @@ struct StepsEditorView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Steps")
-                .font(.subheadline.weight(.semibold))
-
             HStack(spacing: 8) {
-                TextField("Add step", text: $newStepTitle)
-                    .textFieldStyle(.roundedBorder)
+                TextField("Add a step", text: $newStepTitle)
+                    .textFieldStyle(.plain)
+                    .padding(10)
+                    .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .foregroundStyle(VisualTokens.textPrimary)
                     .onSubmit(addStep)
 
-                Button("Add", action: addStep)
-                    .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                Button("Add") {
+                    addStep()
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(VisualTokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.white)
+                .opacity(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
+                .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
 
             if steps.isEmpty {
                 Text("No steps yet")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(VisualTokens.textTertiary)
+                    .padding(.top, 4)
             } else {
-                ForEach(steps) { step in
-                    HStack(spacing: 8) {
-                        Button {
-                            store.toggleStep(stepId: step.id, isCompleted: !step.isCompleted)
-                            reloadSteps()
-                        } label: {
-                            Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
-                        }
-                        .buttonStyle(.plain)
-
-                        Text(step.title)
-                            .strikethrough(step.isCompleted)
-
-                        Spacer()
-
-                        Button {
-                            store.deleteStep(stepId: step.id)
-                            reloadSteps()
-                        } label: {
-                            Image(systemName: "trash")
-                        }
-                        .buttonStyle(.plain)
+                VStack(spacing: 4) {
+                    ForEach(steps) { step in
+                        stepRow(step: step)
                     }
                 }
             }
@@ -305,6 +358,38 @@ struct StepsEditorView: View {
         .onChange(of: todoId) { _, _ in
             reloadSteps()
         }
+    }
+
+    private func stepRow(step: TodoStep) -> some View {
+        HStack(spacing: 10) {
+            Button {
+                store.toggleStep(stepId: step.id, isCompleted: !step.isCompleted)
+                reloadSteps()
+            } label: {
+                Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(step.isCompleted ? VisualTokens.success : VisualTokens.textTertiary)
+            }
+            .buttonStyle(.plain)
+
+            Text(step.title)
+                .foregroundStyle(step.isCompleted ? VisualTokens.textTertiary : VisualTokens.textPrimary)
+                .strikethrough(step.isCompleted)
+
+            Spacer()
+
+            Button {
+                store.deleteStep(stepId: step.id)
+                reloadSteps()
+            } label: {
+                Image(systemName: "trash")
+                    .foregroundStyle(VisualTokens.textTertiary)
+                    .font(.caption)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 10)
+        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
     }
 
     private func addStep() {
