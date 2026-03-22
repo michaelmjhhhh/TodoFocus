@@ -20,6 +20,14 @@
 # production
 /build
 
+# macOS build
+macos/**/build/
+DerivedData/
+*.app
+
+# dist-native (release artifacts)
+dist-native/
+
 # misc
 .DS_Store
 *.pem
