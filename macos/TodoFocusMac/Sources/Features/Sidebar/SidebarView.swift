@@ -292,8 +292,7 @@ private struct SidebarRowButton: View {
             HStack(spacing: 10) {
                 Capsule()
                     .fill(listColor ?? VisualTokens.accentTerracotta)
-                    .frame(width: 3, height: 16)
-                    .opacity(isSelected ? 1 : (listColor != nil ? 0.7 : 0))
+                    .frame(width: listColor != nil || isSelected ? 3 : 0, height: listColor != nil || isSelected ? 16 : 0)
 
                 Image(systemName: systemImage)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
