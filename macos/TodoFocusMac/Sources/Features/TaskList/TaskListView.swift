@@ -7,7 +7,6 @@ struct TaskListView: View {
     @State private var isCompletedCollapsed: Bool = false
     @State private var isCompletedPanelVisible: Bool = true
     @State private var showClearCompletedConfirmation: Bool = false
-    @State private var focusedTaskId: String?
     @FocusState private var isCommandFocused: Bool
 
     var body: some View {
@@ -67,7 +66,6 @@ struct TaskListView: View {
                     .stroke(VisualTokens.sectionBorder, lineWidth: 1)
             }
             .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
-            .keyboardShortcut("n", modifiers: .command)
 
             HStack(spacing: 12) {
                 todoColumn(title: "Active", todos: activeTodos)
@@ -81,27 +79,7 @@ struct TaskListView: View {
             }
             .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
         }
-        .onKeyPress(.upArrow) {
-            navigateUp()
-            return .handled
-        }
-        .onKeyPress(.downArrow) {
-            navigateDown()
-            return .handled
-        }
-        .onKeyPress(.return) {
-            if let focusedTaskId {
-                try? store.toggleComplete(todoId: focusedTaskId)
-            }
-            return .handled
-        }
-        .onKeyPress(.delete) {
-            if let focusedTaskId {
-                try? store.deleteTodo(todoId: focusedTaskId)
-                self.focusedTaskId = nil
-            }
-            return .handled
-        }
+        .shortcutHintBar()
         .padding(16)
         .foregroundStyle(.primary)
         .animation(MotionTokens.interactiveSpring, value: filteredVisibleTodos.count)
@@ -122,7 +100,7 @@ struct TaskListView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(isCommandFocused ? Color.white.opacity(0.92) : VisualTokens.mutedText)
 
-                TextField("Search tasks", text: $commandText)
+                TextField("Search tasks (⌘K)", text: $commandText)
                     .textFieldStyle(.plain)
                     .focused($isCommandFocused)
             }
@@ -217,7 +195,6 @@ struct TaskListView: View {
                             todo: todo,
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
-                            isFocused: todo.id == focusedTaskId,
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
                             },
@@ -293,7 +270,6 @@ struct TaskListView: View {
                             todo: todo,
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
-                            isFocused: todo.id == focusedTaskId,
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
                             },
@@ -342,26 +318,6 @@ struct TaskListView: View {
         }
         .padding(3)
         .background(VisualTokens.bgBase.opacity(0.5), in: Capsule())
-    }
-
-    private func navigateUp() {
-        let allTodos = filteredVisibleTodos
-        guard !allTodos.isEmpty else { return }
-        if let current = focusedTaskId, let idx = allTodos.firstIndex(where: { $0.id == current }), idx > 0 {
-            focusedTaskId = allTodos[idx - 1].id
-        } else {
-            focusedTaskId = allTodos.last?.id
-        }
-    }
-
-    private func navigateDown() {
-        let allTodos = filteredVisibleTodos
-        guard !allTodos.isEmpty else { return }
-        if let current = focusedTaskId, let idx = allTodos.firstIndex(where: { $0.id == current }), idx < allTodos.count - 1 {
-            focusedTaskId = allTodos[idx + 1].id
-        } else {
-            focusedTaskId = allTodos.first?.id
-        }
     }
 
     private func colorForList(listId: String?) -> Color? {

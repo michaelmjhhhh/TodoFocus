@@ -4,7 +4,6 @@ struct TodoRowView: View {
     let todo: Todo
     let listColor: Color?
     let isSelected: Bool
-    let isFocused: Bool
     let onSelect: () -> Void
     let onToggleComplete: () -> Void
     let onToggleImportant: () -> Void
@@ -38,7 +37,6 @@ struct TodoRowView: View {
                     .padding(5)
                     .background(todo.isCompleted ? Color.green.opacity(0.22) : Color.white.opacity(0.12), in: Circle())
             }
-            .keyboardShortcut("d", modifiers: .command)
             .buttonStyle(.plain)
             .foregroundStyle(todo.isCompleted ? Color.green : Color.white.opacity(0.94))
             .overlay {
@@ -93,12 +91,6 @@ struct TodoRowView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(indicatorColor)
                     .frame(width: 3)
-            }
-        }
-        .overlay {
-            if isFocused {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.blue.opacity(0.5), lineWidth: 2)
             }
         }
         .contentShape(Rectangle())
