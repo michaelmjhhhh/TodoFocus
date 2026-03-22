@@ -4,22 +4,22 @@ import XCTest
 final class AppSelectionStateTests: XCTestCase {
     func testSidebarSelectionChangeClearsSelectedTodo() {
         let model = AppModel()
-        model.selectedTodoID = "todo-1"
+        model.selectedTodoIDs = ["todo-1"]
 
         model.selectSidebar(.important)
 
         XCTAssertEqual(model.selection, .important)
-        XCTAssertNil(model.selectedTodoID)
+        XCTAssertTrue(model.selectedTodoIDs.isEmpty)
     }
 
     func testSidebarSelectionSameValueKeepsSelectedTodo() {
         let model = AppModel()
-        model.selectedTodoID = "todo-1"
+        model.selectedTodoIDs = ["todo-1"]
 
         model.selectSidebar(.myDay)
 
         XCTAssertEqual(model.selection, .myDay)
-        XCTAssertEqual(model.selectedTodoID, "todo-1")
+        XCTAssertEqual(model.selectedTodoIDs, ["todo-1"])
     }
 
     func testQueryUsesSelectionAndTimeFilter() {

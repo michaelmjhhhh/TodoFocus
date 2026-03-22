@@ -45,7 +45,7 @@ final class TodoAppStore {
     }
 
     var selectedTodo: Todo? {
-        guard let id = appModel.selectedTodoID else {
+        guard let id = appModel.selectedTodoIDs.first else {
             return nil
         }
         return todos.first(where: { $0.id == id })
@@ -100,27 +100,25 @@ final class TodoAppStore {
 
     func deleteTodo(todoId: String) throws {
         try todoRepository.deleteTodo(id: todoId)
-        if appModel.selectedTodoID == todoId {
-            appModel.selectedTodoID = nil
-        }
+        appModel.selectedTodoIDs.remove(todoId)
         try reload()
     }
 
     func clearCompletedTodos() throws {
-        let selectedTodoWasRemoved = selectedTodo?.isCompleted ?? false
+        let selectedCompletedIds = Set(appModel.selectedTodoIDs.filter { id in
+            todos.first(where: { $0.id == id })?.isCompleted ?? false
+        })
         _ = try todoRepository.clearCompletedTodos()
-        if selectedTodoWasRemoved {
-            appModel.selectedTodoID = nil
-        }
+        selectedCompletedIds.forEach { appModel.selectedTodoIDs.remove($0) }
         try reload()
     }
 
     func selectTodo(todoId: String) {
-        appModel.selectedTodoID = todoId
+        appModel.selectTodo(todoId: todoId, exclusive: true)
     }
 
     func clearSelection() {
-        appModel.selectedTodoID = nil
+        appModel.clearSelection()
     }
 
     func updateNotesDebounced(todoId: String, notes: String) {

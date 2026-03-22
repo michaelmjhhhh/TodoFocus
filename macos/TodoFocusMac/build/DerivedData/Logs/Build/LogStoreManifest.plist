@@ -6,7 +6,7 @@
 	<integer>12</integer>
 	<key>logs</key>
 	<dict>
-		<key>3D833232-0BC0-44E8-8182-4633A8A13EB8</key>
+		<key>2A93969F-CE76-45A1-A6C7-466A43D85B39</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>3D833232-0BC0-44E8-8182-4633A8A13EB8.xcactivitylog</string>
+			<string>2A93969F-CE76-45A1-A6C7-466A43D85B39.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -25,53 +25,11 @@
 				<key>totalNumberOfAnalyzerIssues</key>
 				<integer>0</integer>
 				<key>totalNumberOfErrors</key>
-				<integer>2</integer>
+				<integer>6</integer>
 				<key>totalNumberOfTestFailures</key>
 				<integer>0</integer>
 				<key>totalNumberOfWarnings</key>
-				<integer>4</integer>
-			</dict>
-			<key>schemeIdentifier-containerName</key>
-			<string>TodoFocusMac project</string>
-			<key>schemeIdentifier-schemeName</key>
-			<string>TodoFocusMac</string>
-			<key>schemeIdentifier-sharedScheme</key>
-			<integer>1</integer>
-			<key>signature</key>
-			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Release</string>
-			<key>timeStartedRecording</key>
-			<real>795848686.16641104</real>
-			<key>timeStoppedRecording</key>
-			<real>795848688.22653198</real>
-			<key>title</key>
-			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Release</string>
-			<key>uniqueIdentifier</key>
-			<string>3D833232-0BC0-44E8-8182-4633A8A13EB8</string>
-		</dict>
-		<key>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA</key>
-		<dict>
-			<key>className</key>
-			<string>IDECommandLineBuildLog</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
-			<key>fileName</key>
-			<string>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA.xcactivitylog</string>
-			<key>hasPrimaryLog</key>
-			<true/>
-			<key>primaryObservable</key>
-			<dict>
-				<key>highLevelStatus</key>
-				<string>W</string>
-				<key>totalNumberOfAnalyzerIssues</key>
 				<integer>0</integer>
-				<key>totalNumberOfErrors</key>
-				<integer>0</integer>
-				<key>totalNumberOfTestFailures</key>
-				<integer>0</integer>
-				<key>totalNumberOfWarnings</key>
-				<integer>1</integer>
 			</dict>
 			<key>schemeIdentifier-containerName</key>
 			<string>TodoFocusMac project</string>
@@ -82,13 +40,13 @@
 			<key>signature</key>
 			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>795849219.75970697</real>
+			<real>795854077.45944297</real>
 			<key>timeStoppedRecording</key>
-			<real>795849222.42731798</real>
+			<real>795854078.79182398</real>
 			<key>title</key>
 			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA</string>
+			<string>2A93969F-CE76-45A1-A6C7-466A43D85B39</string>
 		</dict>
 	</dict>
 </dict>

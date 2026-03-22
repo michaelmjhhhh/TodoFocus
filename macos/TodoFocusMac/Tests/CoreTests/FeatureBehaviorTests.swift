@@ -5,11 +5,11 @@ import XCTest
 final class FeatureBehaviorTests: XCTestCase {
     func testSelectingSidebarClearsSelectedTask() {
         let model = AppModel()
-        model.selectedTodoID = "todo-1"
+        model.selectedTodoIDs = ["todo-1"]
 
         model.selectSidebar(.important)
 
-        XCTAssertNil(model.selectedTodoID)
+        XCTAssertTrue(model.selectedTodoIDs.isEmpty)
     }
 
     func testDetailPanelWidthPersistenceClampBehavior() {

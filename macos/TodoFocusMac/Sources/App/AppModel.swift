@@ -5,14 +5,30 @@ import Observation
 final class AppModel {
     var selection: SidebarSelection = .myDay
     var timeFilter: TimeFilter = .allDates
-    var selectedTodoID: String?
+    var selectedTodoIDs: Set<String> = []
     var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {
             selection = next
-            selectedTodoID = nil
+            selectedTodoIDs = []
         }
+    }
+
+    func selectTodo(todoId: String, exclusive: Bool = true) {
+        if exclusive {
+            selectedTodoIDs = [todoId]
+        } else {
+            if selectedTodoIDs.contains(todoId) {
+                selectedTodoIDs.remove(todoId)
+            } else {
+                selectedTodoIDs.insert(todoId)
+            }
+        }
+    }
+
+    func clearSelection() {
+        selectedTodoIDs = []
     }
 
     func query() -> TodoQuery {

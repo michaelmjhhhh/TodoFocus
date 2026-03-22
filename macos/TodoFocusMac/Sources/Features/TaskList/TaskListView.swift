@@ -194,7 +194,7 @@ struct TaskListView: View {
                         TodoRowView(
                             todo: todo,
                             listColor: colorForList(listId: todo.listId),
-                            isSelected: appModel.selectedTodoID == todo.id,
+                            isSelected: appModel.selectedTodoIDs.contains(todo.id),
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
                             },
@@ -269,7 +269,7 @@ struct TaskListView: View {
                         TodoRowView(
                             todo: todo,
                             listColor: colorForList(listId: todo.listId),
-                            isSelected: appModel.selectedTodoID == todo.id,
+                            isSelected: appModel.selectedTodoIDs.contains(todo.id),
                             onSelect: {
                                 store.selectTodo(todoId: todo.id)
                             },
