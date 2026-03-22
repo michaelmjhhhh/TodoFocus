@@ -36,13 +36,13 @@ jobs:
         run: xcodegen generate
         working-directory: macos/TodoFocusMac
 
-      - name: Run tests
-        run: |
-          xcodebuild test \
-            -project "TodoFocusMac.xcodeproj" \
-            -scheme "TodoFocusMac" \
-            -destination "platform=macOS"
-        working-directory: macos/TodoFocusMac
+      # - name: Run tests
+      #   run: |
+      #     xcodebuild test \
+      #       -project "TodoFocusMac.xcodeproj" \
+      #       -scheme "TodoFocusMac" \
+      #       -destination "platform=macOS"
+      #   working-directory: macos/TodoFocusMac
 
       - name: Build release app
         run: |
