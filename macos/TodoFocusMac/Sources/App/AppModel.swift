@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class AppModel {
     var selection: SidebarSelection = .myDay
     var timeFilter: TimeFilter = .allDates

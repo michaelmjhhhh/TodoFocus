@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class TodoAppStore {
     private let appModel: AppModel
     private let listRepository: ListRepository
