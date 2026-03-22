@@ -4,6 +4,15 @@
 
 **Goal:** Upgrade TodoFocus macOS UI to feel materially more polished by improving interaction fidelity (press/hover/focus/motion), expanding color richness with accessible contrast, and refining sidebar/list/detail visual hierarchy while preserving existing behavior.
 
+> ✅ **COMPLETED** - All items implemented in sessions through 2026-03-22:
+> - Claude Code dark theme palette (bgBase #0a0a0a, terracotta accent #C46849)
+> - ImmersiveHeaderView with minimalist topbar
+> - List color customization with color picker
+> - Task row list color indicators
+> - Collapsible completed panel with eye toggle
+> - Sidebar rename/edit UX improvements
+> - TaskDetailView inline date picker redesign
+
 **Architecture:** Keep existing SwiftUI feature modules and data logic intact, and add a thin visual system layer (tokens + motion + state styles). Implement changes in three passes: interaction primitives first, color/theme system second, then component-level composition polish (sidebar, task columns, detail panel, launchpad messaging).
 
 **Tech Stack:** SwiftUI, Observation (`@Observable`), XCTest, xcodebuild, @ui-ux-pro-max guidance, @swiftui-expert-skill guidelines.
