@@ -79,8 +79,7 @@ jobs:
           gh release create "$TAG" \
             "dist-native/TodoFocus-macos-universal.zip" \
             "dist-native/TodoFocus-macos-universal.zip.sha256" \
-            --title "$TAG" \
-            --clobber || \
+            --title "$TAG" || \
           gh release upload "$TAG" \
             "dist-native/TodoFocus-macos-universal.zip" \
             "dist-native/TodoFocus-macos-universal.zip.sha256" \
