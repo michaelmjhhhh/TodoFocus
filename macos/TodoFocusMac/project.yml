@@ -16,10 +16,12 @@ targets:
     platform: macOS
     sources:
       - Sources
+      - path: Assets.xcassets
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: TodoFocusMac
-        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: Info.plist
         MACOSX_DEPLOYMENT_TARGET: "14.0"
     dependencies:
       - package: GRDB

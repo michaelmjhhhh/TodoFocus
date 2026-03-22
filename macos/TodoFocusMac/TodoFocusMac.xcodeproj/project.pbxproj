@@ -53,6 +53,7 @@
 		B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */; };
 		C2FEA8790A8A2C89D8C58905 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */; };
 		CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */; };
+		D2DE83D790E60752968ACD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */; };
 		D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */; };
 		DCB7C1425FC4D7CA492383F8 /* ShortcutHintBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */; };
 		E63935763D57E7925754DA11 /* StepRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7843ACD1FCEFBCAE938562 /* StepRecord.swift */; };
@@ -103,6 +104,7 @@
 		3CCE7E86937A152A989DCFCD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3D33F3EBD610561E79741C23 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceValidationTests.swift; sourceTree = "<group>"; };
+		3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		417BF9D384CB7E95497290B3 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureBehaviorTests.swift; sourceTree = "<group>"; };
 		4BC65359FCD8A661E494F8E6 /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 		B416645E60BA6666966FAE73 = {
 			isa = PBXGroup;
 			children = (
+				3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */,
 				4B473D08ED26EFBF91A986EF /* CoreTests */,
 				A29BB202735C481BF200FD70 /* DataTests */,
 				12A54842B556342D4BD867FD /* Packages */,
@@ -424,6 +427,7 @@
 			buildConfigurationList = D9B6D0C786F41C2E36160ECC /* Build configuration list for PBXNativeTarget "TodoFocusMac" */;
 			buildPhases = (
 				9222F8F87E4C6DB768060568 /* Sources */,
+				B77BEBDD54D223867E7823BE /* Resources */,
 				4C4E541DD5498A508B219E78 /* Frameworks */,
 			);
 			buildRules = (
@@ -472,6 +476,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B77BEBDD54D223867E7823BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2DE83D790E60752968ACD55 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D8A86C68AE5536EDF092A42 /* Sources */ = {
@@ -722,7 +737,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -754,7 +769,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
