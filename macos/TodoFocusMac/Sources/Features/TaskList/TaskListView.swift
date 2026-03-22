@@ -13,6 +13,33 @@ struct TaskListView: View {
         VStack(spacing: 12) {
             commandBar
 
+            if !appModel.selectedTodoIDs.isEmpty {
+                HStack {
+                    Text("\(appModel.selectedTodoIDs.count) selected")
+                        .font(.caption)
+                    Spacer()
+                    Button("Complete") {
+                        appModel.selectedTodoIDs.forEach { id in
+                            try? store.toggleComplete(todoId: id)
+                        }
+                        appModel.clearSelection()
+                    }
+                    Button(role: .destructive, action: {
+                        appModel.selectedTodoIDs.forEach { id in
+                            try? store.deleteTodo(todoId: id)
+                        }
+                        appModel.clearSelection()
+                    }) {
+                        Text("Delete")
+                    }
+                    Button("Cancel") {
+                        appModel.clearSelection()
+                    }
+                }
+                .padding(8)
+                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+            }
+
             HStack(spacing: 10) {
                 Text(title)
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
