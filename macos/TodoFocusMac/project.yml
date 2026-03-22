@@ -23,9 +23,6 @@ targets:
         PRODUCT_NAME: TodoFocusMac
         INFOPLIST_FILE: Info.plist
         MACOSX_DEPLOYMENT_TARGET: "14.0"
-        CODE_SIGN_IDENTITY: "Apple Development: mjh5311@qq.com (29GMPG4CQB)"
-        DEVELOPMENT_TEAM: ""
-        CODE_SIGN_STYLE: Manual
     dependencies:
       - package: GRDB
     scheme:
