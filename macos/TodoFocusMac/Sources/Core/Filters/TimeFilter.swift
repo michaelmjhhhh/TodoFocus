@@ -1,12 +1,25 @@
 import Foundation
 
-enum TimeFilter: String, CaseIterable {
+enum TimeFilter: String, CaseIterable, Identifiable {
     case allDates = "all-dates"
     case overdue = "overdue"
     case today = "today"
     case tomorrow = "tomorrow"
     case next7Days = "next-7-days"
     case noDate = "no-date"
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .allDates: return "All"
+        case .overdue: return "Overdue"
+        case .today: return "Today"
+        case .tomorrow: return "Tomorrow"
+        case .next7Days: return "Next 7"
+        case .noDate: return "No Date"
+        }
+    }
 }
 
 private func startOfLocalDay(_ date: Date, calendar: Calendar) -> Date {

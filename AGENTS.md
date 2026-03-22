@@ -16,6 +16,9 @@
 - Per-view time filtering is available across smart lists and custom lists.
 - Context Launchpad Tasks (MVP): each task can store launch resources (`url`, `file`, `app`) and run Launch All.
 - Launchpad UX includes native desktop pickers for file/app resources and a resizable detail panel for long values.
+- Custom list colors: each list can have a user-selected color that appears as a left indicator on tasks.
+- Collapsible completed panel: toggle to show/hide the completed tasks panel for full-screen active task view.
+- Minimalist dark UI: Claude Code-inspired dark theme with terracotta accent (#C46849).
 
 ## Security Guardrails (Launchpad)
 
@@ -65,14 +68,15 @@
    - `git checkout main && git pull`
    - `git tag vX.Y.Z`
    - `git push origin vX.Y.Z`
-3. Trigger the workflow with the same tag:
-   - `gh workflow run release-macos-native -f tag=vX.Y.Z`
+3. The workflow `release-macos-native` triggers automatically on tag push (`v*`).
 4. Monitor until completion:
    - `gh run list --workflow release-macos-native --limit 5`
    - `gh run watch <run-id>`
 5. Verify release assets were published:
    - `gh release view vX.Y.Z --json assets,url`
    - Confirm expected files are attached (`TodoFocus-macos-universal.zip` and checksum).
+
+**Manual trigger (fallback):** `gh workflow run release-macos-native -f tag=vX.Y.Z`
 
 ### Workflow Failure: Retry / Rollback
 

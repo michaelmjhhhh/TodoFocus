@@ -32,13 +32,14 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - **My Day / Important / Planned** -- smart lists that filter automatically
 - **Smart-list quick add** -- adding inside Important/Planned now preserves the list intent automatically
 - **Per-view time filters** -- filter any list by `Overdue`, `Today`, `Tomorrow`, `Next 7 days`, or `No date`
-- **Custom lists** -- create, rename, delete with color coding
+- **Custom lists with colors** -- create, rename, delete with 10 color options; color appears as left indicator on tasks
 - **Subtasks (Steps)** -- break tasks into smaller pieces
 - **Due dates** -- with relative display (Today, Tomorrow, Overdue)
 - **Notes** -- per-task free-text notes with auto-save
 - **Context Launchpad Tasks (MVP)** -- attach `URL`, `File`, and `App` resources to a task and launch all in one click
 - **Native file/app pickers** -- pick launch targets from desktop dialogs instead of manually typing paths
 - **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
+- **Collapsible completed panel** -- hide completed tasks to focus on active work
 - **Dark / Light theme** -- toggle with persistence, dark by default
 - **Smooth native animations** -- SwiftUI transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency

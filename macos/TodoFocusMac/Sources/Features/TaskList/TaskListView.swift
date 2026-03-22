@@ -17,18 +17,7 @@ struct TaskListView: View {
                 Text(title)
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                 Spacer()
-                Picker("Filter", selection: Binding(
-                    get: { appModel.timeFilter },
-                    set: { appModel.timeFilter = $0 }
-                )) {
-                    Text("All").tag(TimeFilter.allDates)
-                    Text("Overdue").tag(TimeFilter.overdue)
-                    Text("Today").tag(TimeFilter.today)
-                    Text("Tomorrow").tag(TimeFilter.tomorrow)
-                    Text("Next 7").tag(TimeFilter.next7Days)
-                    Text("No Date").tag(TimeFilter.noDate)
-                }
-                .pickerStyle(.menu)
+                filterPicker
 
                 Text("\(filteredVisibleTodos.count)")
                     .font(.caption2.weight(.semibold))
@@ -306,6 +295,28 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
         }
+    }
+
+    private var filterPicker: some View {
+        HStack(spacing: 2) {
+            ForEach(TimeFilter.allCases) { filter in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        appModel.timeFilter = filter
+                    }
+                } label: {
+                    Text(filter.label)
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(appModel.timeFilter == filter ? VisualTokens.textPrimary : VisualTokens.textTertiary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(appModel.timeFilter == filter ? VisualTokens.bgFloating : Color.clear, in: Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(3)
+        .background(VisualTokens.bgBase.opacity(0.5), in: Capsule())
     }
 
     private func colorForList(listId: String?) -> Color? {
