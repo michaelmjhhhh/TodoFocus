@@ -20,6 +20,7 @@
 - Collapsible completed panel: toggle to show/hide the completed tasks panel for full-screen active task view.
 - Minimalist dark UI: Claude Code-inspired dark theme with terracotta accent (#C46849).
 - Quick Capture (⌘⇧T): global hotkey for capturing thoughts; appends to Deep Focus task notes with timestamp, or creates new task in Inbox when no Deep Focus active.
+- Deep Focus Stats: tracks cumulative focus time, session count, and distraction count from blocked app attempts.
 
 ## Quick Capture Feature
 

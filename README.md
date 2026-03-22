@@ -41,6 +41,7 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
 - **Collapsible completed panel** -- hide completed tasks to focus on active work
 - **Quick Capture (⌘⇧T)** -- global hotkey to capture thoughts anywhere; appends to Deep Focus task notes or creates Inbox task
+- **Deep Focus Stats** -- tracks cumulative focus time, session count, and distraction count from blocked app attempts
 - **Dark / Light theme** -- toggle with persistence, dark by default
 - **Smooth native animations** -- SwiftUI transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
