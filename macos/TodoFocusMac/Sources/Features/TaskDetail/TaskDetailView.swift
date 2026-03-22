@@ -170,10 +170,17 @@ struct TaskDetailView: View {
                 Button {
                     showDeepFocusSheet = true
                 } label: {
-                    Image(systemName: "flame")
+                    HStack(spacing: 6) {
+                        Image(systemName: "flame.fill")
+                        Text("Deep Focus")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(VisualTokens.accentTerracotta, in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(VisualTokens.accentTerracotta)
 
                 Button {
                     commitTitle(todoId: todo.id)
