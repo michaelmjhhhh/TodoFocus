@@ -28,6 +28,7 @@ struct DeepFocusStats: Codable {
 final class DeepFocusService {
     private var stats: DeepFocusStats = DeepFocusStats()
     var isActive: Bool = false
+    var lastReport: DeepFocusReport?
     var currentSessionId: String?
     var currentFocusTaskId: String?
     var blockedApps: Set<String> = []
@@ -68,6 +69,7 @@ final class DeepFocusService {
             focusTaskTitle: nil,
             stats: stats
         )
+        lastReport = report
 
         hideOverlay()
         reset()
