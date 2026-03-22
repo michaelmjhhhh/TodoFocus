@@ -9,6 +9,7 @@ final class DeepFocusService {
     var currentSessionId: String?
     var blockedApps: Set<String> = []
     var distractionAttempts: [String: Int] = [:]
+    var distractionAppNames: [String: String] = [:]
     var onEndFocusSession: ((DeepFocusReport?) -> Void)?
 
     private var sessionStartTime: Date?
@@ -32,6 +33,7 @@ final class DeepFocusService {
             sessionId: sessionId,
             blockedApps: Array(blockedApps),
             distractionAttempts: distractionAttempts,
+            distractionAppNames: distractionAppNames,
             startTime: startTime...Date(),
             completed: true
         )
@@ -42,9 +44,10 @@ final class DeepFocusService {
         return report
     }
 
-    func recordDistraction(appBundleId: String) {
+    func recordDistraction(appBundleId: String, appName: String) {
         guard isActive else { return }
         distractionAttempts[appBundleId, default: 0] += 1
+        distractionAppNames[appBundleId] = appName
     }
 
     private func startMonitoring() {
@@ -83,7 +86,7 @@ final class DeepFocusService {
                 lastShownOverlayBundleId = bundleId
                 lastShownOverlayTime = now
             }
-            recordDistraction(appBundleId: bundleId)
+            recordDistraction(appBundleId: bundleId, appName: app.localizedName ?? bundleId)
             if shouldShowOverlay {
                 showOverlay(for: app.localizedName ?? bundleId, bundleId: bundleId)
             }
@@ -155,6 +158,7 @@ final class DeepFocusService {
         currentSessionId = nil
         blockedApps = []
         distractionAttempts = [:]
+        distractionAppNames = [:]
         sessionStartTime = nil
         lastShownOverlayBundleId = nil
         lastShownOverlayTime = nil
@@ -166,9 +170,10 @@ struct DeepFocusReport {
     let sessionId: String
     let blockedApps: [String]
     let distractionAttempts: [String: Int]
+    let distractionAppNames: [String: String]
     let startTime: ClosedRange<Date>
     let completed: Bool
-
+    
     var totalDistractionAttempts: Int {
         distractionAttempts.values.reduce(0, +)
     }
