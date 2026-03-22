@@ -79,6 +79,7 @@ struct TaskListView: View {
             }
             .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
         }
+        .shortcutHintBar()
         .padding(16)
         .foregroundStyle(.primary)
         .animation(MotionTokens.interactiveSpring, value: filteredVisibleTodos.count)
@@ -99,7 +100,7 @@ struct TaskListView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(isCommandFocused ? Color.white.opacity(0.92) : VisualTokens.mutedText)
 
-                TextField("Search tasks", text: $commandText)
+                TextField("Search tasks (⌘K)", text: $commandText)
                     .textFieldStyle(.plain)
                     .focused($isCommandFocused)
             }

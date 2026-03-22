@@ -7,7 +7,7 @@ struct QuickAddView: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            TextField("Add a task", text: $text)
+            TextField("Add a task (⌘⇧N)", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .focused($isInputFocused)
                 .onSubmit(submit)
@@ -17,8 +17,13 @@ struct QuickAddView: View {
             }
             .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
-        .onAppear {
-            isInputFocused = true
+        .background {
+            Button("") {
+                isInputFocused = true
+            }
+            .keyboardShortcut("n", modifiers: [.command, .shift])
+            .opacity(0)
+            .allowsHitTesting(false)
         }
     }
 

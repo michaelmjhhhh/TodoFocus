@@ -54,6 +54,7 @@
 		C2FEA8790A8A2C89D8C58905 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */; };
 		CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */; };
 		D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */; };
+		DCB7C1425FC4D7CA492383F8 /* ShortcutHintBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */; };
 		E63935763D57E7925754DA11 /* StepRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7843ACD1FCEFBCAE938562 /* StepRecord.swift */; };
 		E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77780E76FD121D34BF6D7EE3 /* AppModel.swift */; };
 		EE4B6195129CF4C3EF7E3DF8 /* LaunchpadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC90DAB9D3BCB9A0A483E24 /* LaunchpadService.swift */; };
@@ -93,6 +94,7 @@
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistence.swift; sourceTree = "<group>"; };
+		2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutHintBar.swift; sourceTree = "<group>"; };
 		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
 		2F3E319E19EF05FA501E7B85 /* SelectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionState.swift; sourceTree = "<group>"; };
 		30D5FE3587E551AA2AF551C4 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				69D7E8E5ABB00A1C6EC8B171 /* InteractiveStyles.swift */,
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
 				085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */,
+				2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */,
 				80CC7B115E98F0487D59FC4C /* VisualTokens.swift */,
 			);
 			path = Common;
@@ -504,6 +507,7 @@
 				49C094D18BEB5BD380E70B5B /* ResizableSplitView.swift in Sources */,
 				98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */,
 				A07A6F7772AE2B855A31DB11 /* SelectionState.swift in Sources */,
+				DCB7C1425FC4D7CA492383F8 /* ShortcutHintBar.swift in Sources */,
 				47F5DFB75F5754B0E0DACAFB /* SidebarView.swift in Sources */,
 				F59D8952A68ECA7794710C19 /* SmartList.swift in Sources */,
 				90D943479B3C84C14E3B8F4C /* Step.swift in Sources */,
