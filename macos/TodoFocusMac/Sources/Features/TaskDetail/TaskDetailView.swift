@@ -34,6 +34,10 @@ struct TaskDetailView: View {
             if let todo {
                 header(todo: todo)
 
+                if store.deepFocusService.isActive {
+                    deepFocusActiveBar
+                }
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         dateSection(todo: todo)
@@ -253,6 +257,27 @@ struct TaskDetailView: View {
                 launchpadService: launchpadService
             )
         }
+    }
+
+    private var deepFocusActiveBar: some View {
+        HStack {
+            Image(systemName: "flame.fill")
+                .foregroundColor(Color(hex: "C46849"))
+            Text("Deep Focus Active")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Spacer()
+            Button("End") {
+                if let report = store.endDeepFocus() {
+                    focusReport = report
+                    showFocusReport = true
+                }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+        .padding(.horizontal)
+        .background(Color.secondary.opacity(0.1))
     }
 
     private func commitTitle(todoId: String) {
