@@ -7,7 +7,7 @@ struct SidebarView: View {
     @State private var newListName: String = ""
 
     var body: some View {
-        List(selection: selectionBinding) {
+        List {
             Section("Smart Lists") {
                 smartRow("My Day", systemImage: "sun.max", selection: .myDay)
                 smartRow("Important", systemImage: "star", selection: .important)
@@ -22,70 +22,42 @@ struct SidebarView: View {
 
                 HStack(spacing: 8) {
                     TextField("Add list", text: $newListName)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.plain)
                         .onSubmit(addList)
+                        .foregroundStyle(VisualTokens.textPrimary)
                     Button(action: addList) {
                         Image(systemName: "plus")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(AppIconButtonStyle(isEmphasized: true))
+                    .foregroundStyle(VisualTokens.textPrimary)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(VisualTokens.sectionBorder.opacity(0.9), lineWidth: 1)
                 }
             }
         }
         .listStyle(.sidebar)
-        .animation(.easeInOut(duration: 0.18), value: appModel.selection)
-        .animation(.spring(response: 0.25, dampingFraction: 0.86), value: lists.count)
-    }
-
-    private var selectionBinding: Binding<String?> {
-        Binding(
-            get: {
-                switch appModel.selection {
-                case .myDay:
-                    return "smart:myday"
-                case .important:
-                    return "smart:important"
-                case .planned:
-                    return "smart:planned"
-                case .all:
-                    return "smart:all"
-                case let .customList(id):
-                    return "list:\(id)"
-                }
-            },
-            set: { raw in
-                guard let raw else { return }
-                if raw == "smart:myday" {
-                    appModel.selectSidebar(.myDay)
-                } else if raw == "smart:important" {
-                    appModel.selectSidebar(.important)
-                } else if raw == "smart:planned" {
-                    appModel.selectSidebar(.planned)
-                } else if raw == "smart:all" {
-                    appModel.selectSidebar(.all)
-                } else if raw.hasPrefix("list:") {
-                    appModel.selectSidebar(.customList(String(raw.dropFirst(5))))
-                }
-            }
-        )
+        .scrollContentBackground(.hidden)
+        .background(VisualTokens.bgElevated)
+        .animation(MotionTokens.focusEase, value: appModel.selection)
+        .animation(MotionTokens.interactiveSpring, value: lists.count)
     }
 
     private func smartRow(_ title: String, systemImage: String, selection: SidebarSelection) -> some View {
-        let tag: String
-        switch selection {
-        case .myDay:
-            tag = "smart:myday"
-        case .important:
-            tag = "smart:important"
-        case .planned:
-            tag = "smart:planned"
-        case .all:
-            tag = "smart:all"
-        case let .customList(id):
-            tag = "list:\(id)"
-        }
-
-        return Label(title, systemImage: systemImage)
-            .tag(tag)
+        SidebarRowButton(
+            title: title,
+            systemImage: systemImage,
+            isSelected: appModel.selection == selection,
+            action: {
+                withAnimation(MotionTokens.focusEase) {
+                    appModel.selectSidebar(selection)
+                }
+            }
+        )
     }
 
     private func addList() {
@@ -93,5 +65,69 @@ struct SidebarView: View {
         guard !trimmed.isEmpty else { return }
         store.createList(name: trimmed)
         newListName = ""
+    }
+}
+
+private struct SidebarRowButton: View {
+    let title: String
+    let systemImage: String
+    let isSelected: Bool
+    let action: () -> Void
+    @State private var isHovered: Bool = false
+
+    private var rowBackground: Color {
+        if isSelected {
+            return VisualTokens.bgFloating
+        }
+        return isHovered ? VisualTokens.bgFloating.opacity(0.72) : Color.clear
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Capsule()
+                    .fill(VisualTokens.accentBlue)
+                    .frame(width: 3, height: 16)
+                    .opacity(isSelected ? 1 : 0)
+
+                Image(systemName: systemImage)
+                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? VisualTokens.textPrimary : VisualTokens.textSecondary)
+
+                Text(title)
+                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? VisualTokens.textPrimary : VisualTokens.textSecondary)
+
+                Spacer(minLength: 0)
+
+                Image(systemName: "checkmark")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(VisualTokens.accentBlue)
+                    .opacity(isSelected ? 1 : 0)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .background(rowBackground, in: RoundedRectangle(cornerRadius: 9))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9)
+                    .stroke(isSelected ? VisualTokens.accentBlue.opacity(0.55) : VisualTokens.sectionBorder.opacity(isHovered ? 0.55 : 0), lineWidth: 1)
+            }
+            .contentShape(RoundedRectangle(cornerRadius: 9))
+        }
+        .buttonStyle(SidebarRowButtonStyle())
+        .onHover { hovering in
+            withAnimation(MotionTokens.hoverEase) {
+                isHovered = hovering
+            }
+        }
+    }
+}
+
+private struct SidebarRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.986 : 1.0)
+            .opacity(configuration.isPressed ? 0.95 : 1.0)
+            .animation(MotionTokens.quickDuration == 0 ? .none : MotionTokens.hoverEase, value: configuration.isPressed)
     }
 }
