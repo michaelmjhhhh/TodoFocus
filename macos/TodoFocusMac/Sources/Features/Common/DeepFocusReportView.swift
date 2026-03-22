@@ -15,19 +15,10 @@ struct DeepFocusReportView: View {
                 .fontWeight(.semibold)
             
             VStack(alignment: .leading, spacing: 12) {
-                LabeledContent("Total distractions", value: "\(report.totalDistractionAttempts)")
-                
-                ForEach(report.distractionAttempts.sorted(by: { $0.value > $1.value }), id: \.key) { bundleId, count in
-                    let displayName = report.distractionAppNames[bundleId] ?? bundleId
-                    HStack {
-                        Text(displayName)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                        Spacer()
-                        Text("\(count)")
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                LabeledContent("Duration", value: formatDuration(report.duration))
+                LabeledContent("Interruptions", value: "\(report.interruptionCount)")
+                LabeledContent("Total focus time", value: formatDuration(report.stats.totalFocusTime))
+                LabeledContent("Total sessions", value: "\(report.stats.sessionCount)")
             }
             .padding()
             .background(Color.secondary.opacity(0.1))
@@ -38,5 +29,11 @@ struct DeepFocusReportView: View {
         }
         .padding(32)
         .frame(width: 320)
+    }
+    
+    private func formatDuration(_ interval: TimeInterval) -> String {
+        let minutes = Int(interval) / 60
+        let seconds = Int(interval) % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }

@@ -2,9 +2,31 @@ import Foundation
 import AppKit
 import Observation
 
+struct DeepFocusStats: Codable {
+    var totalFocusTime: TimeInterval = 0
+    var sessionCount: Int = 0
+    var interruptionCount: Int = 0
+    
+    static let key = "deepFocusStats"
+    
+    static func load() -> DeepFocusStats {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let stats = try? JSONDecoder().decode(DeepFocusStats.self, from: data) 
+        else { return DeepFocusStats() }
+        return stats
+    }
+    
+    func save() {
+        if let data = try? JSONEncoder().encode(self) {
+            UserDefaults.standard.set(data, forKey: DeepFocusStats.key)
+        }
+    }
+}
+
 @Observable
 @MainActor
 final class DeepFocusService {
+    private var stats: DeepFocusStats = DeepFocusStats()
     var isActive: Bool = false
     var currentSessionId: String?
     var currentFocusTaskId: String?
@@ -16,12 +38,14 @@ final class DeepFocusService {
     private var sessionStartTime: Date?
     private var overlayWindow: NSWindow?
     private var appMonitor: NSObjectProtocol?
+    private var interruptionCount: Int = 0
 
     func startSession(blockedApps: [String], focusTaskId: String) {
         self.blockedApps = Set(blockedApps)
         self.currentFocusTaskId = focusTaskId
         self.currentSessionId = UUID().uuidString
         self.sessionStartTime = Date()
+        self.interruptionCount = 0
         self.isActive = true
         startMonitoring()
     }
@@ -31,13 +55,18 @@ final class DeepFocusService {
             return nil
         }
 
+        let duration = Date().timeIntervalSince(startTime)
+        stats.totalFocusTime += duration
+        stats.sessionCount += 1
+        stats.interruptionCount += interruptionCount
+        stats.save()
+        
         let report = DeepFocusReport(
-            sessionId: sessionId,
+            duration: duration,
+            interruptionCount: interruptionCount,
             blockedApps: Array(blockedApps),
-            distractionAttempts: distractionAttempts,
-            distractionAppNames: distractionAppNames,
-            startTime: startTime...Date(),
-            completed: true
+            focusTaskTitle: nil,
+            stats: stats
         )
 
         hideOverlay()
@@ -50,6 +79,10 @@ final class DeepFocusService {
         guard isActive else { return }
         distractionAttempts[appBundleId, default: 0] += 1
         distractionAppNames[appBundleId] = appName
+    }
+    
+    func recordInterruption() {
+        interruptionCount += 1
     }
 
     private func startMonitoring() {
@@ -170,14 +203,9 @@ final class DeepFocusService {
 }
 
 struct DeepFocusReport {
-    let sessionId: String
+    let duration: TimeInterval
+    let interruptionCount: Int
     let blockedApps: [String]
-    let distractionAttempts: [String: Int]
-    let distractionAppNames: [String: String]
-    let startTime: ClosedRange<Date>
-    let completed: Bool
-    
-    var totalDistractionAttempts: Int {
-        distractionAttempts.values.reduce(0, +)
-    }
+    let focusTaskTitle: String?
+    let stats: DeepFocusStats
 }
