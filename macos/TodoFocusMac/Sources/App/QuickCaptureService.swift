@@ -29,8 +29,9 @@ final class QuickCaptureService {
     }
     
     func requestAccessibilityPermission() {
-        let options = ["AXIsProcessTrustedOptionPrompt" as CFString: true] as CFDictionary
-        _ = AXIsProcessTrustedWithOptions(options)
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
+        }
     }
     
     private func setupGlobalHotkey() {
