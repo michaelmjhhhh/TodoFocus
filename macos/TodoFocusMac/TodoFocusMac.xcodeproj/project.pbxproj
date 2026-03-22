@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E12C0E0B5C03FC82CAA763 /* DeepFocusStatsReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */; };
 		087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */; };
 		0EDA51E619FC88E2BF87629B /* VisualTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC7B115E98F0487D59FC4C /* VisualTokens.swift */; };
 		0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */; };
@@ -153,6 +154,7 @@
 		DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectionStateTests.swift; sourceTree = "<group>"; };
 		EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRowView.swift; sourceTree = "<group>"; };
 		EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
+		F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusStatsReportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -297,6 +299,7 @@
 			children = (
 				3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */,
 				2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */,
+				F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */,
 				4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */,
 				69D7E8E5ABB00A1C6EC8B171 /* InteractiveStyles.swift */,
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
@@ -536,6 +539,7 @@
 				9199B9A57495CE73F7B12A00 /* DeepFocusOverlayView.swift in Sources */,
 				087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */,
 				C27609899EAE9347733CBD7D /* DeepFocusService.swift in Sources */,
+				00E12C0E0B5C03FC82CAA763 /* DeepFocusStatsReportView.swift in Sources */,
 				D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */,
 				82D99CCE3720B8974B8FD9AE /* InteractiveStyles.swift in Sources */,
 				7888AA64CCB1C0DAB036F4F1 /* LaunchResource.swift in Sources */,
