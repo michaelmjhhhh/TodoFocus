@@ -78,6 +78,11 @@ struct RootView: View {
             .onAppear {
                 containerWidth = proxy.size.width
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
+                appModel.quickCaptureService.deepFocusService = appModel.deepFocusService
+                appModel.quickCaptureService.onCapture = { [weak store] text in
+                    store?.appendToFocusTaskNotes(text)
+                }
+                appModel.quickCaptureService.setup()
             }
             .onChange(of: proxy.size.width) { _, newValue in
                 containerWidth = newValue

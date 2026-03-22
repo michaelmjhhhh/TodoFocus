@@ -226,12 +226,32 @@ final class TodoAppStore {
         try? reload()
     }
 
-    func startDeepFocus(blockedApps: [String]) {
-        appModel.deepFocusService.startSession(blockedApps: blockedApps)
+    func startDeepFocus(blockedApps: [String], focusTaskId: String) {
+        appModel.deepFocusService.startSession(blockedApps: blockedApps, focusTaskId: focusTaskId)
     }
 
     func endDeepFocus() -> DeepFocusReport? {
         appModel.deepFocusService.endSession()
+    }
+
+    func appendToFocusTaskNotes(_ text: String) {
+        if let focusTaskId = appModel.deepFocusService.currentFocusTaskId,
+           let todo = todos.first(where: { $0.id == focusTaskId }) {
+            let currentNotes = todo.notes
+            let newNotes = currentNotes.isEmpty ? text : currentNotes + text
+            updateNotesDebounced(todoId: focusTaskId, notes: newNotes)
+        } else {
+            let captureText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            let title = captureText.components(separatedBy: .newlines).first ?? captureText
+            
+            try? quickAdd(
+                title: title,
+                planned: false,
+                isImportant: false,
+                isMyDay: false,
+                list: nil
+            )
+        }
     }
 }
 

@@ -79,7 +79,12 @@ struct TaskListView: View {
             }
             .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
         }
-        .shortcutHintBar()
+        .shortcutHintBar(
+            needsAccessibilityPermission: appModel.quickCaptureService.needsAccessibilityPermission,
+            onRequestPermission: {
+                appModel.quickCaptureService.requestAccessibilityPermission()
+            }
+        )
         .padding(16)
         .foregroundStyle(.primary)
         .animation(MotionTokens.interactiveSpring, value: filteredVisibleTodos.count)

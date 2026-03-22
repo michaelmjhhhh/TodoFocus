@@ -85,7 +85,9 @@ struct TaskDetailView: View {
             DeepFocusSetupSheet(
                 selectedApps: $selectedBlockedApps,
                 onStart: {
-                    store.startDeepFocus(blockedApps: Array(selectedBlockedApps))
+                    if let focusTaskId = todo?.id {
+                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), focusTaskId: focusTaskId)
+                    }
                     showDeepFocusSheet = false
                 },
                 onCancel: {
