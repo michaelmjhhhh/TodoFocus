@@ -9,6 +9,7 @@ final class AppModel {
     var selectedTodoID: String?
     var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
     var deepFocusService: DeepFocusService = DeepFocusService()
+    var quickCaptureService: QuickCaptureService = QuickCaptureService()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {

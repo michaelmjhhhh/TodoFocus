@@ -6,6 +6,7 @@ struct ShortcutHintBar: View {
             Spacer()
 
             HStack(spacing: 12) {
+                shortcutPill("⌘⇧T", "Quick Capture")
                 shortcutPill("⌘⇧F", "Focus")
                 shortcutPill("⌘K", "Search")
                 shortcutPill("⌘⇧N", "Add")

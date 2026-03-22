@@ -7,6 +7,7 @@ import Observation
 final class DeepFocusService {
     var isActive: Bool = false
     var currentSessionId: String?
+    var currentFocusTaskId: String?
     var blockedApps: Set<String> = []
     var distractionAttempts: [String: Int] = [:]
     var distractionAppNames: [String: String] = [:]
@@ -16,8 +17,9 @@ final class DeepFocusService {
     private var overlayWindow: NSWindow?
     private var appMonitor: NSObjectProtocol?
 
-    func startSession(blockedApps: [String]) {
+    func startSession(blockedApps: [String], focusTaskId: String) {
         self.blockedApps = Set(blockedApps)
+        self.currentFocusTaskId = focusTaskId
         self.currentSessionId = UUID().uuidString
         self.sessionStartTime = Date()
         self.isActive = true
@@ -156,6 +158,7 @@ final class DeepFocusService {
     private func reset() {
         isActive = false
         currentSessionId = nil
+        currentFocusTaskId = nil
         blockedApps = []
         distractionAttempts = [:]
         distractionAppNames = [:]

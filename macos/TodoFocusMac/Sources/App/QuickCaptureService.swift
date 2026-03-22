@@ -6,7 +6,7 @@ import Observation
 final class QuickCaptureService {
     var isVisible: Bool = false
     private var panel: QuickCapturePanel?
-    private nonisolated var globalMonitor: Any?
+    private nonisolated(unsafe) var globalMonitor: Any?
     private var hostingView: QuickCaptureHostingView?
     
     var deepFocusService: DeepFocusService?
