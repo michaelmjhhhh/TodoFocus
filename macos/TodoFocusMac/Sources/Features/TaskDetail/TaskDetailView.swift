@@ -11,6 +11,8 @@ struct TaskDetailView: View {
     @State private var titleValidationMessage: String?
     @FocusState private var isTitleFocused: Bool
     @State private var showDeepFocusSheet = false
+    @State private var showFocusReport = false
+    @State private var focusReport: DeepFocusReport?
     @State private var selectedBlockedApps: Set<String> = []
 
     init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?, onClose: @escaping () -> Void) {
@@ -86,6 +88,22 @@ struct TaskDetailView: View {
                     showDeepFocusSheet = false
                 }
             )
+        }
+        .sheet(isPresented: $showFocusReport) {
+            if let report = focusReport {
+                DeepFocusReportView(report: report) {
+                    showFocusReport = false
+                    focusReport = nil
+                }
+            }
+        }
+        .onAppear {
+            store.deepFocusService.onEndFocusSession = { report in
+                if let report = report {
+                    self.focusReport = report
+                    self.showFocusReport = true
+                }
+            }
         }
     }
 

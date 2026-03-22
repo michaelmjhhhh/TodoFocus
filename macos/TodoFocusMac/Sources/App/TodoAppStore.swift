@@ -14,6 +14,8 @@ final class TodoAppStore {
     var lists: [TodoList] = []
     var todos: [Todo] = []
 
+    var deepFocusService: DeepFocusService { appModel.deepFocusService }
+
     var todoCount: Int { todos.count }
     var completedCount: Int { todos.filter { $0.isCompleted }.count }
     var importantCount: Int { todos.filter { $0.isImportant }.count }

@@ -9,6 +9,7 @@ final class DeepFocusService {
     var currentSessionId: String?
     var blockedApps: Set<String> = []
     var distractionAttempts: [String: Int] = [:]
+    var onEndFocusSession: ((DeepFocusReport?) -> Void)?
 
     private var sessionStartTime: Date?
     private var overlayWindow: NSWindow?
@@ -37,6 +38,7 @@ final class DeepFocusService {
 
         hideOverlay()
         reset()
+        onEndFocusSession?(report)
         return report
     }
 
