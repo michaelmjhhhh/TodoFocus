@@ -40,6 +40,7 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - **Native file/app pickers** -- pick launch targets from desktop dialogs instead of manually typing paths
 - **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
 - **Collapsible completed panel** -- hide completed tasks to focus on active work
+- **Quick Capture (⌘⇧T)** -- global hotkey to capture thoughts anywhere; appends to Deep Focus task notes or creates Inbox task
 - **Dark / Light theme** -- toggle with persistence, dark by default
 - **Smooth native animations** -- SwiftUI transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
@@ -72,6 +73,7 @@ xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destin
 - **Xcode** 16+
 - **macOS** 14+
 - **xcodegen**
+- **Accessibility permission** (for Quick Capture global hotkey): first launch will prompt to enable in System Settings > Privacy & Security > Accessibility
 
 No external database needed. No API keys. No accounts.
 

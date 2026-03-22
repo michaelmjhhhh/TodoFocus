@@ -19,6 +19,17 @@
 - Custom list colors: each list can have a user-selected color that appears as a left indicator on tasks.
 - Collapsible completed panel: toggle to show/hide the completed tasks panel for full-screen active task view.
 - Minimalist dark UI: Claude Code-inspired dark theme with terracotta accent (#C46849).
+- Quick Capture (⌘⇧T): global hotkey for capturing thoughts; appends to Deep Focus task notes with timestamp, or creates new task in Inbox when no Deep Focus active.
+
+## Quick Capture Feature
+
+- **Global hotkey**: ⌘⇧T works system-wide when app is running
+- **Requires Accessibility permission**: On first use, macOS will prompt for Accessibility permission in System Settings > Privacy & Security > Accessibility
+- **Behavior**: 
+  - If Deep Focus is active: appends capture with timestamp to focus task's notes
+  - If no Deep Focus: creates new task in Inbox (no list assigned)
+- **Permission handling**: App shows orange warning in shortcut bar when permission not granted; clicking opens System Settings directly
+- **Important**: Accessibility permission is tied to code signature; if app is rebuilt and re-signed, permission must be re-granted
 
 ## Security Guardrails (Launchpad)
 
