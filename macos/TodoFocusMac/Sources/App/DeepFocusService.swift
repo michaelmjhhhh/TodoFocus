@@ -65,10 +65,22 @@ final class DeepFocusService {
         }
     }
 
+    private var lastShownOverlayBundleId: String?
+    private var lastShownOverlayTime: Date?
+
     private func handleAppActivationForApp(app: NSRunningApplication, bundleId: String) {
         guard isActive else { return }
 
         if blockedApps.contains(bundleId) {
+            let now = Date()
+            if lastShownOverlayBundleId == bundleId,
+               let lastTime = lastShownOverlayTime,
+               now.timeIntervalSince(lastTime) < 3 {
+                recordDistraction(appBundleId: bundleId)
+                return
+            }
+            lastShownOverlayBundleId = bundleId
+            lastShownOverlayTime = now
             recordDistraction(appBundleId: bundleId)
             showOverlay(for: app.localizedName ?? bundleId, bundleId: bundleId)
         }
@@ -78,17 +90,6 @@ final class DeepFocusService {
         if let monitor = appMonitor {
             NSWorkspace.shared.notificationCenter.removeObserver(monitor)
             appMonitor = nil
-        }
-    }
-
-    private func handleAppActivation(_ notification: Notification) {
-        guard isActive,
-              let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
-              let bundleId = app.bundleIdentifier else { return }
-
-        if blockedApps.contains(bundleId) {
-            recordDistraction(appBundleId: bundleId)
-            showOverlay(for: app.localizedName ?? bundleId, bundleId: bundleId)
         }
     }
 
@@ -151,6 +152,8 @@ final class DeepFocusService {
         blockedApps = []
         distractionAttempts = [:]
         sessionStartTime = nil
+        lastShownOverlayBundleId = nil
+        lastShownOverlayTime = nil
         stopMonitoring()
     }
 }

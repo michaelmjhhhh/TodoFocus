@@ -260,24 +260,53 @@ struct TaskDetailView: View {
     }
 
     private var deepFocusActiveBar: some View {
-        HStack {
-            Image(systemName: "flame.fill")
-                .foregroundColor(Color(hex: "C46849"))
-            Text("Deep Focus Active")
-                .font(.caption)
-                .foregroundColor(.secondary)
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(VisualTokens.accentTerracotta.opacity(0.2))
+                    .frame(width: 32, height: 32)
+                Image(systemName: "flame.fill")
+                    .foregroundColor(VisualTokens.accentTerracotta)
+            }
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Deep Focus Active")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(VisualTokens.textPrimary)
+                Text("Blocking \(store.deepFocusService.blockedApps.count) apps")
+                    .font(.caption)
+                    .foregroundColor(VisualTokens.textSecondary)
+            }
+            
             Spacer()
-            Button("End") {
+            
+            Button {
                 if let report = store.endDeepFocus() {
                     focusReport = report
                     showFocusReport = true
                 }
+            } label: {
+                Text("End Focus")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(VisualTokens.accentTerracotta, in: Capsule())
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
+            .buttonStyle(.plain)
         }
-        .padding(.horizontal)
-        .background(Color.secondary.opacity(0.1))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(VisualTokens.accentTerracotta.opacity(0.12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(VisualTokens.accentTerracotta.opacity(0.3), lineWidth: 1)
+                )
+        )
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
 
     private func commitTitle(todoId: String) {
