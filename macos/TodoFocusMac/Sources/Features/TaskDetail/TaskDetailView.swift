@@ -505,6 +505,7 @@ struct DeepFocusSetupSheet: View {
     @Binding var selectedApps: Set<String>
     let onStart: () -> Void
     let onCancel: () -> Void
+    @State private var customApps: [(name: String, bundleId: String)] = []
 
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),
@@ -517,6 +518,33 @@ struct DeepFocusSetupSheet: View {
         ("Spotify", "com.spotify.client")
     ]
 
+    private func getBundleIdentifier(from appURL: URL) -> String? {
+        if let bundle = Bundle(url: appURL),
+           let bundleId = bundle.bundleIdentifier {
+            return bundleId
+        }
+        return appURL.deletingPathExtension().lastPathComponent
+    }
+
+    private func addCustomApp() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.application]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.message = "Select an app to block"
+
+        if panel.runModal() == .OK, let url = panel.url {
+            if let bundleId = getBundleIdentifier(from: url) {
+                let name = url.deletingPathExtension().lastPathComponent
+                if !customApps.contains(where: { $0.bundleId == bundleId }) && !availableApps.contains(where: { $0.bundleId == bundleId }) {
+                    customApps.append((name: name, bundleId: bundleId))
+                }
+            }
+        }
+    }
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Start Deep Focus")
@@ -527,36 +555,42 @@ struct DeepFocusSetupSheet: View {
                 .font(.subheadline)
                 .foregroundStyle(VisualTokens.textSecondary)
 
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(availableApps, id: \.bundleId) { app in
-                    HStack {
-                        Image(systemName: selectedApps.contains(app.bundleId) ? "checkmark.square.fill" : "square")
-                            .foregroundStyle(selectedApps.contains(app.bundleId) ? VisualTokens.accentTerracotta : VisualTokens.textTertiary)
-                            .onTapGesture {
-                                if selectedApps.contains(app.bundleId) {
-                                    selectedApps.remove(app.bundleId)
-                                } else {
-                                    selectedApps.insert(app.bundleId)
-                                }
-                            }
-
-                        Text(app.name)
-                            .foregroundStyle(VisualTokens.textPrimary)
-
-                        Spacer()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(availableApps, id: \.bundleId) { app in
+                        appRow(name: app.name, bundleId: app.bundleId)
                     }
-                    .padding(.vertical, 4)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        if selectedApps.contains(app.bundleId) {
-                            selectedApps.remove(app.bundleId)
-                        } else {
-                            selectedApps.insert(app.bundleId)
+
+                    if !customApps.isEmpty {
+                        Divider()
+                            .padding(.vertical, 4)
+
+                        ForEach(customApps, id: \.bundleId) { app in
+                            appRow(name: app.name, bundleId: app.bundleId)
+                                .contextMenu {
+                                    Button("Remove") {
+                                        customApps.removeAll { $0.bundleId == app.bundleId }
+                                        selectedApps.remove(app.bundleId)
+                                    }
+                                }
                         }
                     }
+
+                    Button {
+                        addCustomApp()
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add Custom App")
+                        }
+                        .foregroundStyle(VisualTokens.accentTerracotta)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 8)
                 }
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
+            .frame(maxHeight: 300)
 
             HStack(spacing: 12) {
                 Button("Cancel") {
@@ -581,5 +615,33 @@ struct DeepFocusSetupSheet: View {
         }
         .frame(width: 300)
         .background(VisualTokens.panelBackground)
+    }
+
+    private func appRow(name: String, bundleId: String) -> some View {
+        HStack {
+            Image(systemName: selectedApps.contains(bundleId) ? "checkmark.square.fill" : "square")
+                .foregroundStyle(selectedApps.contains(bundleId) ? VisualTokens.accentTerracotta : VisualTokens.textTertiary)
+                .onTapGesture {
+                    if selectedApps.contains(bundleId) {
+                        selectedApps.remove(bundleId)
+                    } else {
+                        selectedApps.insert(bundleId)
+                    }
+                }
+
+            Text(name)
+                .foregroundStyle(VisualTokens.textPrimary)
+
+            Spacer()
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if selectedApps.contains(bundleId) {
+                selectedApps.remove(bundleId)
+            } else {
+                selectedApps.insert(bundleId)
+            }
+        }
     }
 }

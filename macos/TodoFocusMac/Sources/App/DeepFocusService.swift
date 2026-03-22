@@ -73,16 +73,20 @@ final class DeepFocusService {
 
         if blockedApps.contains(bundleId) {
             let now = Date()
+            let shouldShowOverlay: Bool
             if lastShownOverlayBundleId == bundleId,
                let lastTime = lastShownOverlayTime,
                now.timeIntervalSince(lastTime) < 3 {
-                recordDistraction(appBundleId: bundleId)
-                return
+                shouldShowOverlay = false
+            } else {
+                shouldShowOverlay = true
+                lastShownOverlayBundleId = bundleId
+                lastShownOverlayTime = now
             }
-            lastShownOverlayBundleId = bundleId
-            lastShownOverlayTime = now
             recordDistraction(appBundleId: bundleId)
-            showOverlay(for: app.localizedName ?? bundleId, bundleId: bundleId)
+            if shouldShowOverlay {
+                showOverlay(for: app.localizedName ?? bundleId, bundleId: bundleId)
+            }
         }
     }
 
