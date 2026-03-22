@@ -71,11 +71,17 @@ jobs:
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-      - name: Upload release assets
+      - name: Create or upload release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${{ steps.tag.outputs.tag }}" \
+          TAG="${{ steps.tag.outputs.tag }}"
+          gh release create "$TAG" \
+            "dist-native/TodoFocus-macos-universal.zip" \
+            "dist-native/TodoFocus-macos-universal.zip.sha256" \
+            --title "$TAG" \
+            --clobber || \
+          gh release upload "$TAG" \
             "dist-native/TodoFocus-macos-universal.zip" \
             "dist-native/TodoFocus-macos-universal.zip.sha256" \
             --clobber
