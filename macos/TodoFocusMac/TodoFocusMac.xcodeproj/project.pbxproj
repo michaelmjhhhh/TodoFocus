@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */; };
 		0EDA51E619FC88E2BF87629B /* VisualTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC7B115E98F0487D59FC4C /* VisualTokens.swift */; };
 		0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */; };
 		10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */; };
@@ -96,6 +97,7 @@
 		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusReportView.swift; sourceTree = "<group>"; };
 		2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistence.swift; sourceTree = "<group>"; };
 		2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutHintBar.swift; sourceTree = "<group>"; };
 		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */,
+				2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */,
 				4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */,
 				69D7E8E5ABB00A1C6EC8B171 /* InteractiveStyles.swift */,
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
@@ -514,6 +517,7 @@
 				91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */,
 				AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */,
 				9199B9A57495CE73F7B12A00 /* DeepFocusOverlayView.swift in Sources */,
+				087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */,
 				C27609899EAE9347733CBD7D /* DeepFocusService.swift in Sources */,
 				D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */,
 				82D99CCE3720B8974B8FD9AE /* InteractiveStyles.swift in Sources */,
