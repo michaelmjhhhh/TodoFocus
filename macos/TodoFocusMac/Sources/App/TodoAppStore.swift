@@ -223,6 +223,14 @@ final class TodoAppStore {
         }
         try? reload()
     }
+
+    func startDeepFocus(blockedApps: [String]) {
+        appModel.deepFocusService.startSession(blockedApps: blockedApps)
+    }
+
+    func endDeepFocus() -> DeepFocusReport? {
+        appModel.deepFocusService.endSession()
+    }
 }
 
 private extension Todo {

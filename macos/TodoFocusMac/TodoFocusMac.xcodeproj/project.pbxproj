@@ -41,6 +41,7 @@
 		8B5529DB40999FB77D54F419 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D5FE3587E551AA2AF551C4 /* TaskListView.swift */; };
 		8BFAC4E3D3E5240169A0786F /* UIInteractionTokensTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC15B7650F503558B4FBDD6D /* UIInteractionTokensTests.swift */; };
 		90D943479B3C84C14E3B8F4C /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4D9C369AC0CDDFE5E2A4A6 /* Step.swift */; };
+		9199B9A57495CE73F7B12A00 /* DeepFocusOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */; };
 		91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B7FBF596FE48369C865FF /* CoreTodo.swift */; };
 		98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCE7E86937A152A989DCFCD /* RootView.swift */; };
 		9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */; };
@@ -51,6 +52,7 @@
 		A6567251923E066DBC16F466 /* TodoRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF6A4A3CE241E3341FE30A /* TodoRepositoryTests.swift */; };
 		AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */; };
 		B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */; };
+		C27609899EAE9347733CBD7D /* DeepFocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97B7432D8B38188F373B1AF /* DeepFocusService.swift */; };
 		C2FEA8790A8A2C89D8C58905 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */; };
 		CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */; };
 		D2DE83D790E60752968ACD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */; };
@@ -99,6 +101,7 @@
 		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
 		2F3E319E19EF05FA501E7B85 /* SelectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionState.swift; sourceTree = "<group>"; };
 		30D5FE3587E551AA2AF551C4 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusOverlayView.swift; sourceTree = "<group>"; };
 		3AB414833F47C20B5284EA0B /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		3B0FBC628810409AC97FA334 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		3CCE7E86937A152A989DCFCD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 		BE07B39987D458DF0BF2B7D5 /* LaunchResourceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceEditorView.swift; sourceTree = "<group>"; };
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
 		D2206266636D0C567F9A8BC5 /* SmartList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartList.swift; sourceTree = "<group>"; };
+		D97B7432D8B38188F373B1AF /* DeepFocusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusService.swift; sourceTree = "<group>"; };
 		DC15B7650F503558B4FBDD6D /* UIInteractionTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIInteractionTokensTests.swift; sourceTree = "<group>"; };
 		DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectionStateTests.swift; sourceTree = "<group>"; };
 		EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRowView.swift; sourceTree = "<group>"; };
@@ -282,6 +286,7 @@
 		63441E227DD10E02595C0EEB /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */,
 				4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */,
 				69D7E8E5ABB00A1C6EC8B171 /* InteractiveStyles.swift */,
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
@@ -328,6 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				77780E76FD121D34BF6D7EE3 /* AppModel.swift */,
+				D97B7432D8B38188F373B1AF /* DeepFocusService.swift */,
 				ABC90DAB9D3BCB9A0A483E24 /* LaunchpadService.swift */,
 				2F3E319E19EF05FA501E7B85 /* SelectionState.swift */,
 				6A0EACE45650F8B34190D4A3 /* ThemeStore.swift */,
@@ -507,6 +513,8 @@
 				E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */,
 				91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */,
 				AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */,
+				9199B9A57495CE73F7B12A00 /* DeepFocusOverlayView.swift in Sources */,
+				C27609899EAE9347733CBD7D /* DeepFocusService.swift in Sources */,
 				D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */,
 				82D99CCE3720B8974B8FD9AE /* InteractiveStyles.swift in Sources */,
 				7888AA64CCB1C0DAB036F4F1 /* LaunchResource.swift in Sources */,

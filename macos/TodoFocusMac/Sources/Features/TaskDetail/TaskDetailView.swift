@@ -10,6 +10,8 @@ struct TaskDetailView: View {
     @State private var titleText: String = ""
     @State private var titleValidationMessage: String?
     @FocusState private var isTitleFocused: Bool
+    @State private var showDeepFocusSheet = false
+    @State private var selectedBlockedApps: Set<String> = []
 
     init(store: TodoAppStore, launchpadService: LaunchpadService, todo: Todo?, onClose: @escaping () -> Void) {
         self._store = Bindable(store)
@@ -73,6 +75,18 @@ struct TaskDetailView: View {
         .animation(MotionTokens.panelSpring, value: todo?.id)
         .animation(MotionTokens.focusEase, value: isTitleFocused)
         .animation(MotionTokens.validationEase, value: titleValidationMessage != nil)
+        .sheet(isPresented: $showDeepFocusSheet) {
+            DeepFocusSetupSheet(
+                selectedApps: $selectedBlockedApps,
+                onStart: {
+                    store.startDeepFocus(blockedApps: Array(selectedBlockedApps))
+                    showDeepFocusSheet = false
+                },
+                onCancel: {
+                    showDeepFocusSheet = false
+                }
+            )
+        }
     }
 
     private func header(todo: Todo) -> some View {
@@ -131,6 +145,14 @@ struct TaskDetailView: View {
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
                 Spacer()
+                Button {
+                    showDeepFocusSheet = true
+                } label: {
+                    Image(systemName: "flame")
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(VisualTokens.accentTerracotta)
+
                 Button {
                     commitTitle(todoId: todo.id)
                     onClose()
@@ -404,5 +426,88 @@ struct StepsEditorView: View {
 
     private func reloadSteps() {
         steps = store.loadSteps(todoId: todoId)
+    }
+}
+
+struct DeepFocusSetupSheet: View {
+    @Binding var selectedApps: Set<String>
+    let onStart: () -> Void
+    let onCancel: () -> Void
+
+    private let availableApps: [(name: String, bundleId: String)] = [
+        ("Messages", "com.apple.MobileSMS"),
+        ("Safari", "com.apple.Safari"),
+        ("Chrome", "com.google.Chrome"),
+        ("Mail", "com.apple.mail"),
+        ("Twitter/X", "com.twitter.twitter-mac"),
+        ("Slack", "com.tinyspeck.slackmacgap"),
+        ("Discord", "com.hnc.Discord"),
+        ("Spotify", "com.spotify.client")
+    ]
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Start Deep Focus")
+                .font(.headline)
+                .padding(.top, 20)
+
+            Text("Select apps to block during focus session")
+                .font(.subheadline)
+                .foregroundStyle(VisualTokens.textSecondary)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(availableApps, id: \.bundleId) { app in
+                    HStack {
+                        Image(systemName: selectedApps.contains(app.bundleId) ? "checkmark.square.fill" : "square")
+                            .foregroundStyle(selectedApps.contains(app.bundleId) ? VisualTokens.accentTerracotta : VisualTokens.textTertiary)
+                            .onTapGesture {
+                                if selectedApps.contains(app.bundleId) {
+                                    selectedApps.remove(app.bundleId)
+                                } else {
+                                    selectedApps.insert(app.bundleId)
+                                }
+                            }
+
+                        Text(app.name)
+                            .foregroundStyle(VisualTokens.textPrimary)
+
+                        Spacer()
+                    }
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if selectedApps.contains(app.bundleId) {
+                            selectedApps.remove(app.bundleId)
+                        } else {
+                            selectedApps.insert(app.bundleId)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+
+            HStack(spacing: 12) {
+                Button("Cancel") {
+                    onCancel()
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(VisualTokens.textPrimary)
+
+                Button("Start") {
+                    onStart()
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(VisualTokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.white)
+            }
+            .padding(.bottom, 20)
+        }
+        .frame(width: 300)
+        .background(VisualTokens.panelBackground)
     }
 }
