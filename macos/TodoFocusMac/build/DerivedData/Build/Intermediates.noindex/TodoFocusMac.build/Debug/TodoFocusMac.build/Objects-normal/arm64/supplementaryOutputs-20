@@ -1,0 +1,23 @@
+{
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/App/WindowPersistence.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/WindowPersistence.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/WindowPersistence.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/WindowPersistence.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/WindowPersistence.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/WindowPersistence.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Features/Common/VisualTokens.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/VisualTokens.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/VisualTokens.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/VisualTokens.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/VisualTokens.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/VisualTokens.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Features/TaskList/TodoRowView.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TodoRowView.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TodoRowView.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TodoRowView.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TodoRowView.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TodoRowView.swiftdeps"
+  }
+}

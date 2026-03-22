@@ -19,10 +19,10 @@ struct SidebarView: View {
     var body: some View {
         List {
             Section {
-                smartRow("My Day", systemImage: "sun.max", selection: .myDay)
-                smartRow("Important", systemImage: "star", selection: .important)
-                smartRow("Planned", systemImage: "calendar", selection: .planned)
-                smartRow("All Tasks", systemImage: "tray.full", selection: .all)
+                smartRow("My Day", systemImage: "sun.max", selection: .myDay, count: store.myDayCount)
+                smartRow("Important", systemImage: "star", selection: .important, count: store.importantCount)
+                smartRow("Planned", systemImage: "calendar", selection: .planned, count: store.plannedCount)
+                smartRow("All Tasks", systemImage: "tray.full", selection: .all, count: store.todoCount)
             }
 
             Section {
@@ -49,12 +49,13 @@ struct SidebarView: View {
         .animation(.easeInOut(duration: 0.15), value: lists.count)
     }
 
-    private func smartRow(_ title: String, systemImage: String, selection: SidebarSelection) -> some View {
+    private func smartRow(_ title: String, systemImage: String, selection: SidebarSelection, count: Int? = nil) -> some View {
         SidebarRowButton(
             title: title,
             systemImage: systemImage,
             listColor: nil,
             isSelected: appModel.selection == selection,
+            count: count,
             action: {
                 withAnimation(MotionTokens.focusEase) {
                     appModel.selectSidebar(selection)
@@ -69,6 +70,7 @@ struct SidebarView: View {
             systemImage: "list.bullet",
             listColor: Color(hex: list.color),
             isSelected: appModel.selection == .customList(list.id),
+            count: store.countForList(list.id),
             action: {
                 withAnimation(MotionTokens.focusEase) {
                     appModel.selectSidebar(.customList(list.id))
@@ -281,6 +283,7 @@ private struct SidebarRowButton: View {
     let systemImage: String
     let listColor: Color?
     let isSelected: Bool
+    let count: Int?
     let action: () -> Void
     @State private var isHovered: Bool = false
 
@@ -299,6 +302,15 @@ private struct SidebarRowButton: View {
                 Text(title)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? VisualTokens.textPrimary : VisualTokens.textSecondary)
+
+                if let count {
+                    Text("\(count)")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(isSelected ? VisualTokens.textSecondary : VisualTokens.textTertiary)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(VisualTokens.bgFloating.opacity(0.5), in: Capsule())
+                }
 
                 Spacer(minLength: 0)
 

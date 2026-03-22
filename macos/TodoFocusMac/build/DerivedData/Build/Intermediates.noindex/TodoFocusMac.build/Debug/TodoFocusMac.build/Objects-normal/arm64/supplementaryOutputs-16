@@ -1,0 +1,30 @@
+{
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Core/Models/Step.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/Step.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/Step.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/Step.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/Step.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/Step.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Data/DTO/StepRecord.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRecord.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRecord.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRecord.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRecord.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRecord.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Data/Repositories/StepRepository.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRepository.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRepository.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRepository.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRepository.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/StepRepository.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Features/TaskDetail/TaskDetailView.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TaskDetailView.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TaskDetailView.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TaskDetailView.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TaskDetailView.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/TaskDetailView.swiftdeps"
+  }
+}

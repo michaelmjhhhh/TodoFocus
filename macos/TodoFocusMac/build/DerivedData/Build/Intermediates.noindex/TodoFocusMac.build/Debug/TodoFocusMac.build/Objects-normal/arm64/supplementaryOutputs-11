@@ -1,0 +1,30 @@
+{
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/App/AppModel.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/AppModel.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/AppModel.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/AppModel.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/AppModel.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/AppModel.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Core/Models/CoreTodo.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/CoreTodo.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/CoreTodo.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/CoreTodo.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/CoreTodo.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/CoreTodo.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Data/Database/DatabaseManager.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/DatabaseManager.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/DatabaseManager.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/DatabaseManager.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/DatabaseManager.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/DatabaseManager.swiftdeps"
+  },
+  "/Users/michael/todo_focus/macos/TodoFocusMac/Sources/Features/Common/ImmersiveHeaderView.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/ImmersiveHeaderView.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/ImmersiveHeaderView.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/ImmersiveHeaderView.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/ImmersiveHeaderView.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/TodoFocusMac.build/Debug/TodoFocusMac.build/Objects-normal/arm64/ImmersiveHeaderView.swiftdeps"
+  }
+}

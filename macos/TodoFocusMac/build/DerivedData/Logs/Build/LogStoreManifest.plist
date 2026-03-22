@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>12</integer>
+	<key>logs</key>
+	<dict>
+		<key>3D833232-0BC0-44E8-8182-4633A8A13EB8</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>3D833232-0BC0-44E8-8182-4633A8A13EB8.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>2</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>4</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>TodoFocusMac project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>TodoFocusMac</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>795848686.16641104</real>
+			<key>timeStoppedRecording</key>
+			<real>795848688.22653198</real>
+			<key>title</key>
+			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>3D833232-0BC0-44E8-8182-4633A8A13EB8</string>
+		</dict>
+		<key>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>TodoFocusMac project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>TodoFocusMac</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>795849219.75970697</real>
+			<key>timeStoppedRecording</key>
+			<real>795849222.42731798</real>
+			<key>title</key>
+			<string>Building project TodoFocusMac with scheme TodoFocusMac and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>76AEE6C1-59C1-46DE-B3DF-E74D53647ACA</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
