@@ -5,6 +5,7 @@ struct TaskListView: View {
     @Bindable var store: TodoAppStore
     @State private var commandText: String = ""
     @State private var isCompletedCollapsed: Bool = false
+    @State private var isCompletedPanelVisible: Bool = true
     @State private var showClearCompletedConfirmation: Bool = false
     @FocusState private var isCommandFocused: Bool
 
@@ -35,15 +36,26 @@ struct TaskListView: View {
                     .padding(.vertical, 3)
                     .background(VisualTokens.sectionBackground, in: Capsule())
 
-                Circle()
-                    .fill(VisualTokens.violetAccent)
-                    .frame(width: 7, height: 7)
-                Circle()
-                    .fill(VisualTokens.cyanAccent)
-                    .frame(width: 7, height: 7)
-                Circle()
-                    .fill(VisualTokens.roseAccent)
-                    .frame(width: 7, height: 7)
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isCompletedPanelVisible.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
+                            .font(.system(size: 11))
+                        Text("Completed")
+                            .font(.caption2.weight(.medium))
+                        Text("\(completedTodos.count)")
+                            .font(.caption2.weight(.medium))
+                    }
+                    .foregroundStyle(isCompletedPanelVisible ? VisualTokens.textSecondary : VisualTokens.textTertiary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(VisualTokens.sectionBackground, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .help(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
             }
 
             QuickAddView { title in
@@ -70,13 +82,13 @@ struct TaskListView: View {
                 todoColumn(title: "Active", todos: activeTodos)
                     .frame(maxWidth: .infinity)
 
-                if !isCompletedCollapsed {
+                if isCompletedPanelVisible {
                     completedColumn
                         .frame(width: 260)
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
-            .animation(.easeInOut(duration: 0.2), value: isCompletedCollapsed)
+            .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
         }
         .padding(16)
         .foregroundStyle(.primary)
