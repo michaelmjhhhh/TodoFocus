@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class TodoAppStore {
     private let appModel: AppModel
     private let listRepository: ListRepository
@@ -12,6 +13,8 @@ final class TodoAppStore {
 
     var lists: [TodoList] = []
     var todos: [Todo] = []
+
+    var deepFocusService: DeepFocusService { appModel.deepFocusService }
 
     var todoCount: Int { todos.count }
     var completedCount: Int { todos.filter { $0.isCompleted }.count }
@@ -221,6 +224,14 @@ final class TodoAppStore {
             try? listRepository.renameList(id: listId, name: trimmed, now: now())
         }
         try? reload()
+    }
+
+    func startDeepFocus(blockedApps: [String]) {
+        appModel.deepFocusService.startSession(blockedApps: blockedApps)
+    }
+
+    func endDeepFocus() -> DeepFocusReport? {
+        appModel.deepFocusService.endSession()
     }
 }
 

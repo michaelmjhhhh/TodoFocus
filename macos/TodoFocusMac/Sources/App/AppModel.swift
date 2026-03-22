@@ -2,11 +2,13 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class AppModel {
     var selection: SidebarSelection = .myDay
     var timeFilter: TimeFilter = .allDates
     var selectedTodoID: String?
     var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
+    var deepFocusService: DeepFocusService = DeepFocusService()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {
