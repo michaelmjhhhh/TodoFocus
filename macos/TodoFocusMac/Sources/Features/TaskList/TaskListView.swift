@@ -196,7 +196,11 @@ struct TaskListView: View {
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoIDs.contains(todo.id),
                             onSelect: {
-                                store.selectTodo(todoId: todo.id)
+                                if NSEvent.modifierFlags.contains(.command) {
+                                    appModel.selectTodo(todoId: todo.id, exclusive: false)
+                                } else {
+                                    appModel.selectTodo(todoId: todo.id, exclusive: true)
+                                }
                             },
                             onToggleComplete: {
                                 try? store.toggleComplete(todoId: todo.id)
@@ -271,7 +275,11 @@ struct TaskListView: View {
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoIDs.contains(todo.id),
                             onSelect: {
-                                store.selectTodo(todoId: todo.id)
+                                if NSEvent.modifierFlags.contains(.command) {
+                                    appModel.selectTodo(todoId: todo.id, exclusive: false)
+                                } else {
+                                    appModel.selectTodo(todoId: todo.id, exclusive: true)
+                                }
                             },
                             onToggleComplete: {
                                 try? store.toggleComplete(todoId: todo.id)
