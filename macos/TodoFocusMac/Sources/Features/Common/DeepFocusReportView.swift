@@ -17,8 +17,16 @@ struct DeepFocusReportView: View {
             VStack(alignment: .leading, spacing: 12) {
                 LabeledContent("Total distractions", value: "\(report.totalDistractionAttempts)")
                 
-                ForEach(report.distractionAttempts.sorted(by: { $0.value > $1.value }), id: \.key) { app, count in
-                    LabeledContent(app, value: "\(count)")
+                ForEach(report.distractionAttempts.sorted(by: { $0.value > $1.value }), id: \.key) { bundleId, count in
+                    let displayName = report.distractionAppNames[bundleId] ?? bundleId
+                    HStack {
+                        Text(displayName)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                        Spacer()
+                        Text("\(count)")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding()
