@@ -58,5 +58,7 @@ struct TodoFocusMacApp: App {
             }
             .preferredColorScheme(themeStore.preferredColorScheme)
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unified(showsTitle: false))
     }
 }

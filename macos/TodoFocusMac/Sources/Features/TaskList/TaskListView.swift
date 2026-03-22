@@ -214,61 +214,70 @@ struct TaskListView: View {
 
     private var completedColumn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
                 Button {
-                    isCompletedCollapsed.toggle()
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        isCompletedCollapsed.toggle()
+                    }
                 } label: {
-                    Image(systemName: isCompletedCollapsed ? "chevron.right" : "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(VisualTokens.mutedText)
+                    HStack(spacing: 4) {
+                        Image(systemName: isCompletedCollapsed ? "chevron.right" : "chevron.down")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(VisualTokens.textTertiary)
+
+                        Text("Completed")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(VisualTokens.textSecondary)
+                    }
                 }
                 .buttonStyle(.plain)
 
-                Text("Completed")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(VisualTokens.mutedText)
+                Text("\(completedTodos.count)")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(VisualTokens.textTertiary)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(VisualTokens.bgFloating, in: Capsule())
 
                 Spacer()
 
-                if !isCompletedCollapsed {
-                    Button("Clear Completed") {
+                if !isCompletedCollapsed && !completedTodos.isEmpty {
+                    Button {
                         showClearCompletedConfirmation = true
+                    } label: {
+                        Text("Clear")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(VisualTokens.accentTerracotta)
                     }
-                    .buttonStyle(.borderless)
-                    .font(.caption)
-                    .disabled(completedTodos.isEmpty)
-                }
-
-                Text("\(completedTodos.count)")
-                    .font(.caption2)
-                    .foregroundStyle(VisualTokens.mutedText)
-            }
-
-            if !isCompletedCollapsed {
-                ScrollView {
-                    LazyVStack(spacing: 6) {
-                        ForEach(completedTodos) { todo in
-                            TodoRowView(
-                                todo: todo,
-                                isSelected: appModel.selectedTodoID == todo.id,
-                                onSelect: {
-                                    store.selectTodo(todoId: todo.id)
-                                },
-                                onToggleComplete: {
-                                    try? store.toggleComplete(todoId: todo.id)
-                                },
-                                onToggleImportant: {
-                                    try? store.toggleImportant(todoId: todo.id)
-                                },
-                                onDelete: {
-                                    try? store.deleteTodo(todoId: todo.id)
-                                }
-                            )
-                        }
-                    }
-                    .padding(2)
+                    .buttonStyle(.plain)
                 }
             }
+
+            ScrollView {
+                LazyVStack(spacing: 4) {
+                    ForEach(completedTodos) { todo in
+                        TodoRowView(
+                            todo: todo,
+                            isSelected: appModel.selectedTodoID == todo.id,
+                            onSelect: {
+                                store.selectTodo(todoId: todo.id)
+                            },
+                            onToggleComplete: {
+                                try? store.toggleComplete(todoId: todo.id)
+                            },
+                            onToggleImportant: {
+                                try? store.toggleImportant(todoId: todo.id)
+                            },
+                            onDelete: {
+                                try? store.deleteTodo(todoId: todo.id)
+                            }
+                        )
+                    }
+                }
+                .padding(2)
+            }
+            .opacity(isCompletedCollapsed ? 0 : 1)
+            .clipped()
         }
         .padding(10)
         .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
@@ -276,6 +285,5 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
         }
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
     }
 }
