@@ -1,0 +1,121 @@
+{
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/Support/StandardLibrary/Optional.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Optional.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Optional.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Optional.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Optional.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Optional.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/Support/StandardLibrary/StandardLibrary.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/StandardLibrary.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/StandardLibrary.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/StandardLibrary.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/StandardLibrary.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/StandardLibrary.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/TransactionClock.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionClock.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionClock.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionClock.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionClock.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionClock.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/TransactionObserver.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionObserver.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionObserver.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionObserver.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionObserver.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/TransactionObserver.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/WALSnapshot.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshot.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshot.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshot.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshot.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshot.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Core/WALSnapshotTransaction.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshotTransaction.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshotTransaction.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshotTransaction.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshotTransaction.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/WALSnapshotTransaction.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/Database+Dump.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Database+Dump.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Database+Dump.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Database+Dump.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Database+Dump.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/Database+Dump.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DatabaseReader+dump.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DatabaseReader+dump.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DatabaseReader+dump.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DatabaseReader+dump.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DatabaseReader+dump.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DatabaseReader+dump.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormats/DebugDumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DebugDumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DebugDumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DebugDumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DebugDumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/DebugDumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormats/JSONDumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/JSONDumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/JSONDumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/JSONDumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/JSONDumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/JSONDumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormats/LineDumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/LineDumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/LineDumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/LineDumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/LineDumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/LineDumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormats/ListDumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/ListDumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/ListDumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/ListDumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/ListDumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/ListDumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/Dump/DumpFormats/QuoteDumpFormat.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/QuoteDumpFormat.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/QuoteDumpFormat.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/QuoteDumpFormat.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/QuoteDumpFormat.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/QuoteDumpFormat.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/FTS/FTS3.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/FTS/FTS3Pattern.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3Pattern.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3Pattern.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3Pattern.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3Pattern.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3Pattern.swiftdeps"
+  },
+  "/Users/michael/todo_focus/vendor/GRDB.swift/GRDB/FTS/FTS3TokenizerDescriptor.swift" : {
+    "const-values" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3TokenizerDescriptor.swiftconstvalues",
+    "dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3TokenizerDescriptor.d",
+    "diagnostics" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3TokenizerDescriptor.dia",
+    "object" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3TokenizerDescriptor.o",
+    "swift-dependencies" : "/Users/michael/todo_focus/macos/TodoFocusMac/build/DerivedData/Build/Intermediates.noindex/GRDB.build/Debug/GRDB.build/Objects-normal/arm64/FTS3TokenizerDescriptor.swiftdeps"
+  }
+}

@@ -13,6 +13,17 @@ final class TodoAppStore {
     var lists: [TodoList] = []
     var todos: [Todo] = []
 
+    var todoCount: Int { todos.count }
+    var completedCount: Int { todos.filter { $0.isCompleted }.count }
+    var importantCount: Int { todos.filter { $0.isImportant }.count }
+    var myDayCount: Int { todos.filter { $0.isMyDay }.count }
+    var todayCount: Int { todos.filter { ($0.dueDate ?? .distantPast) < Date() && !$0.isCompleted }.count }
+    var plannedCount: Int { todos.filter { $0.dueDate != nil && !$0.isCompleted }.count }
+
+    func countForList(_ listId: String) -> Int {
+        todos.filter { $0.listId == listId && !$0.isCompleted }.count
+    }
+
     init(
         appModel: AppModel,
         listRepository: ListRepository,
