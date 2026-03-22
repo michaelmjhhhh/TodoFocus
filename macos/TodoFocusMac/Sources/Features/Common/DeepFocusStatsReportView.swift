@@ -32,8 +32,8 @@ struct DeepFocusStatsReportView: View {
                 
                 StatCard(
                     icon: "bell.slash.fill",
-                    value: "\(stats.interruptionCount)",
-                    label: "Interruptions"
+                    value: "\(stats.distractionCount)",
+                    label: "Distractions"
                 )
             }
         }

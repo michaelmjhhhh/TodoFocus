@@ -5,7 +5,7 @@ import Observation
 struct DeepFocusStats: Codable {
     var totalFocusTime: TimeInterval = 0
     var sessionCount: Int = 0
-    var interruptionCount: Int = 0
+    var distractionCount: Int = 0
     
     static let key = "deepFocusStats"
     
@@ -39,14 +39,12 @@ final class DeepFocusService {
     private var sessionStartTime: Date?
     private var overlayWindow: NSWindow?
     private var appMonitor: NSObjectProtocol?
-    private var interruptionCount: Int = 0
 
     func startSession(blockedApps: [String], focusTaskId: String) {
         self.blockedApps = Set(blockedApps)
         self.currentFocusTaskId = focusTaskId
         self.currentSessionId = UUID().uuidString
         self.sessionStartTime = Date()
-        self.interruptionCount = 0
         self.isActive = true
         startMonitoring()
     }
@@ -57,14 +55,15 @@ final class DeepFocusService {
         }
 
         let duration = Date().timeIntervalSince(startTime)
+        let sessionDistractionCount = distractionAttempts.values.reduce(0, +)
         stats.totalFocusTime += duration
         stats.sessionCount += 1
-        stats.interruptionCount += interruptionCount
+        stats.distractionCount += sessionDistractionCount
         stats.save()
         
         let report = DeepFocusReport(
             duration: duration,
-            interruptionCount: interruptionCount,
+            distractionCount: sessionDistractionCount,
             blockedApps: Array(blockedApps),
             focusTaskTitle: nil,
             stats: stats
@@ -83,10 +82,6 @@ final class DeepFocusService {
         distractionAppNames[appBundleId] = appName
     }
     
-    func recordInterruption() {
-        interruptionCount += 1
-    }
-
     private func startMonitoring() {
         let workspace = NSWorkspace.shared
         let notificationCenter = workspace.notificationCenter
@@ -206,7 +201,7 @@ final class DeepFocusService {
 
 struct DeepFocusReport {
     let duration: TimeInterval
-    let interruptionCount: Int
+    let distractionCount: Int
     let blockedApps: [String]
     let focusTaskTitle: String?
     let stats: DeepFocusStats
