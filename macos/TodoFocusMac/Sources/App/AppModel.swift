@@ -7,6 +7,7 @@ final class AppModel {
     var timeFilter: TimeFilter = .allDates
     var selectedTodoID: String?
     var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
+    var deepFocusService: DeepFocusService = DeepFocusService()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {
