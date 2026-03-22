@@ -89,7 +89,7 @@ struct TaskListView: View {
         HStack(spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(VisualTokens.mutedText)
+                    .foregroundStyle(isCommandFocused ? Color.white.opacity(0.92) : VisualTokens.mutedText)
 
                 TextField("Search tasks", text: $commandText)
                     .textFieldStyle(.plain)
@@ -100,9 +100,16 @@ struct TaskListView: View {
             .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
             .overlay {
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+                    .stroke(isCommandFocused ? Color.white.opacity(0.28) : VisualTokens.sectionBorder, lineWidth: isCommandFocused ? 1.2 : 1)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.white.opacity(isCommandFocused ? 0.10 : 0), lineWidth: 4)
+                    .blur(radius: 0.4)
             }
             .shadow(color: Color.black.opacity(0.14), radius: 6, y: 2)
+            .shadow(color: isCommandFocused ? Color.white.opacity(0.10) : .clear, radius: 8)
+            .animation(MotionTokens.focusEase, value: isCommandFocused)
         }
         .background {
             Button("") {

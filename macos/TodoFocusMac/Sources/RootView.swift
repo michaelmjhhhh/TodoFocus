@@ -21,9 +21,15 @@ struct RootView: View {
                 if isSidebarVisible {
                     SidebarView(appModel: appModel, store: store, lists: store.lists)
                         .frame(width: 250)
-                        .background(.ultraThinMaterial)
+                        .background(VisualTokens.bgElevated)
+                        .overlay(alignment: .trailing) {
+                            Rectangle()
+                                .fill(VisualTokens.sectionBorder.opacity(0.9))
+                                .frame(width: 1)
+                        }
 
                     Divider()
+                        .overlay(VisualTokens.sectionBorder.opacity(0.4))
                 }
 
                 TaskListView(appModel: appModel, store: store)
@@ -31,7 +37,7 @@ struct RootView: View {
 
                 if store.selectedTodo != nil {
                     Rectangle()
-                        .fill(Color.secondary.opacity(0.22))
+                        .fill(VisualTokens.sectionBorder.opacity(0.85))
                         .frame(width: 5)
                         .contentShape(Rectangle())
                         .gesture(
@@ -60,6 +66,7 @@ struct RootView: View {
                             .fill(VisualTokens.sectionBorder)
                             .frame(width: 1)
                     }
+                    .shadow(color: Color.black.opacity(0.30), radius: 12, x: -6, y: 0)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }

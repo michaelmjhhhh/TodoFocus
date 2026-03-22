@@ -22,13 +22,16 @@ struct TaskDetailView: View {
         dueDate != nil
     }
 
+    static let launchpadHintTitle: String = "Open everything in one action"
+    static let launchpadHintSubtitle: String = "Add URL, file, or app resources, then choose Launch All."
+
     var body: some View {
         VStack(spacing: 0) {
             if let todo {
                 header(todo: todo)
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
                         section("Schedule") {
                             HStack(spacing: 8) {
                                 DatePicker(
@@ -74,10 +77,15 @@ struct TaskDetailView: View {
                         }
 
                         section("Launchpad") {
-                            Text("Add URL, file, or app resources, then use Launch All to open everything in one action.")
-                                .font(.caption)
-                                .foregroundStyle(VisualTokens.mutedText)
-                                .padding(.bottom, 2)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(Self.launchpadHintTitle)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                Text(Self.launchpadHintSubtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(VisualTokens.mutedText)
+                            }
+                            .padding(.bottom, 4)
 
                             LaunchResourceEditorView(
                                 store: store,
@@ -119,12 +127,26 @@ struct TaskDetailView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(VisualTokens.panelBackground)
-        .animation(.spring(response: 0.26, dampingFraction: 0.88), value: todo?.id)
-        .animation(.easeInOut(duration: 0.18), value: isTitleFocused)
+        .animation(MotionTokens.panelSpring, value: todo?.id)
+        .animation(MotionTokens.focusEase, value: isTitleFocused)
+        .animation(MotionTokens.validationEase, value: titleValidationMessage != nil)
     }
 
     private func header(todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        let hasValidationError = titleValidationMessage != nil
+        let titleStrokeColor: Color = {
+            if hasValidationError {
+                return Color.red.opacity(0.70)
+            }
+            if isTitleFocused {
+                return Color.white.opacity(0.26)
+            }
+            return VisualTokens.sectionBorder.opacity(0.70)
+        }()
+        let titleStrokeWidth: CGFloat = (hasValidationError || isTitleFocused) ? 1.2 : 1
+        let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.10 : 0
+
+        return VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
                 VStack(alignment: .leading, spacing: 6) {
                     TextField("Task title", text: $titleText)
@@ -147,16 +169,24 @@ struct TaskDetailView: View {
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
                 .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.white.opacity(isTitleFocused ? 0.09 : 0.04))
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.white.opacity(isTitleFocused ? 0.11 : 0.05))
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(VisualTokens.sectionBorder.opacity(isTitleFocused ? 0.95 : 0.65), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(titleStrokeColor, lineWidth: titleStrokeWidth)
                 }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.white.opacity(titleGlowOpacity), lineWidth: 4)
+                        .blur(radius: 0.4)
+                }
+                .shadow(color: hasValidationError ? Color.red.opacity(0.16) : .clear, radius: 6)
+                .animation(MotionTokens.focusEase, value: isTitleFocused)
+                .animation(MotionTokens.validationEase, value: hasValidationError)
                 Spacer()
                 Button {
                     commitTitle(todoId: todo.id)
@@ -171,7 +201,7 @@ struct TaskDetailView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(VisualTokens.sectionBackground)
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
+        .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
         .overlay(alignment: .bottom) {
             Rectangle()
                 .fill(VisualTokens.sectionBorder)
@@ -186,12 +216,13 @@ struct TaskDetailView: View {
                 .foregroundStyle(VisualTokens.mutedText)
             content()
         }
-        .padding(10)
-        .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+        .padding(12)
+        .background(VisualTokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
         .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(VisualTokens.sectionBorder.opacity(0.92), lineWidth: 1)
         }
+        .shadow(color: Color.black.opacity(0.10), radius: 5, y: 2)
         .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
