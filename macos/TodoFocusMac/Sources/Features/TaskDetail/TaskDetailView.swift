@@ -628,13 +628,6 @@ struct DeepFocusSetupSheet: View {
         HStack {
             Image(systemName: selectedApps.contains(bundleId) ? "checkmark.square.fill" : "square")
                 .foregroundStyle(selectedApps.contains(bundleId) ? VisualTokens.accentTerracotta : VisualTokens.textTertiary)
-                .onTapGesture {
-                    if selectedApps.contains(bundleId) {
-                        selectedApps.remove(bundleId)
-                    } else {
-                        selectedApps.insert(bundleId)
-                    }
-                }
 
             Text(name)
                 .foregroundStyle(VisualTokens.textPrimary)
