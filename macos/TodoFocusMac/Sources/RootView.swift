@@ -66,7 +66,7 @@ struct RootView: View {
             .background(
                 VisualTokens.appBackground
             )
-            .animation(.spring(response: 0.3, dampingFraction: 0.9), value: store.selectedTodo?.id)
+            .animation(MotionTokens.panelSpring, value: store.selectedTodo?.id)
             .onAppear {
                 containerWidth = proxy.size.width
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
@@ -92,7 +92,7 @@ struct RootView: View {
         }
         .onChange(of: appModel.selectedTodoID) { _, newValue in
             if newValue != nil {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(MotionTokens.focusEase) {
                     isSidebarVisible = false
                 }
             }

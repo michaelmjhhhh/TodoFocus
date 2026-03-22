@@ -27,13 +27,13 @@ struct SidebarView: View {
                     Button(action: addList) {
                         Image(systemName: "plus")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(AppIconButtonStyle(isEmphasized: true))
                 }
             }
         }
         .listStyle(.sidebar)
-        .animation(.easeInOut(duration: 0.18), value: appModel.selection)
-        .animation(.spring(response: 0.25, dampingFraction: 0.86), value: lists.count)
+        .animation(MotionTokens.focusEase, value: appModel.selection)
+        .animation(MotionTokens.interactiveSpring, value: lists.count)
     }
 
     private var selectionBinding: Binding<String?> {

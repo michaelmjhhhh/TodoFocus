@@ -64,6 +64,7 @@ struct TaskListView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(VisualTokens.sectionBorder, lineWidth: 1)
             }
+            .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
 
             HStack(spacing: 12) {
                 todoColumn(title: "Active", todos: activeTodos)
@@ -72,8 +73,8 @@ struct TaskListView: View {
         }
         .padding(16)
         .foregroundStyle(.primary)
-        .animation(.spring(response: 0.24, dampingFraction: 0.86), value: filteredVisibleTodos.count)
-        .animation(.easeInOut(duration: 0.18), value: appModel.timeFilter)
+        .animation(MotionTokens.interactiveSpring, value: filteredVisibleTodos.count)
+        .animation(MotionTokens.focusEase, value: appModel.timeFilter)
         .alert("Clear completed tasks?", isPresented: $showClearCompletedConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
@@ -101,6 +102,7 @@ struct TaskListView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(VisualTokens.sectionBorder, lineWidth: 1)
             }
+            .shadow(color: Color.black.opacity(0.14), radius: 6, y: 2)
         }
         .background {
             Button("") {
@@ -200,6 +202,7 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
         }
+        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
     }
 
     private var completedColumn: some View {
@@ -266,5 +269,6 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(VisualTokens.sectionBorder, lineWidth: 1)
         }
+        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
     }
 }

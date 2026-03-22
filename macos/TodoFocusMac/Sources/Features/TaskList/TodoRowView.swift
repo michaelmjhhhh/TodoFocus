@@ -41,13 +41,13 @@ struct TodoRowView: View {
                 Button(action: onToggleImportant) {
                     Image(systemName: todo.isImportant ? "star.fill" : "star")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(AppIconButtonStyle())
                 .foregroundStyle(todo.isImportant ? Color.yellow : VisualTokens.mutedText)
 
                 Button(action: onDelete) {
                     Image(systemName: "trash")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(AppIconButtonStyle())
                 .foregroundStyle(VisualTokens.mutedText)
             }
             .opacity(isHovered ? 1 : 0)
@@ -57,16 +57,12 @@ struct TodoRowView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
-        .background((isSelected ? Color.white.opacity(0.12) : Color.white.opacity(isHovered ? 0.08 : 0.04)), in: RoundedRectangle(cornerRadius: 8))
+        .appRowState(isHovered: isHovered, isSelected: isSelected)
         .overlay(alignment: .leading) {
             RoundedRectangle(cornerRadius: 8)
                 .fill(VisualTokens.accent)
                 .frame(width: todo.isImportant ? 3 : 0)
-                .animation(.spring(response: 0.24, dampingFraction: 0.85), value: todo.isImportant)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(VisualTokens.sectionBorder.opacity(isHovered ? 1 : 0), lineWidth: 1)
+                .animation(MotionTokens.interactiveSpring, value: todo.isImportant)
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -75,6 +71,6 @@ struct TodoRowView: View {
         .onHover { hovering in
             isHovered = hovering
         }
-        .animation(.spring(response: 0.24, dampingFraction: 0.84), value: todo.isCompleted)
+        .animation(MotionTokens.interactiveSpring, value: todo.isCompleted)
     }
 }
