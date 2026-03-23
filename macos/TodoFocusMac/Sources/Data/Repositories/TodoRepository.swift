@@ -21,6 +21,7 @@ struct UpdateTodoInput {
     var launchResources: String??
     var dueDate: Date??
     var listID: String??
+    var focusTimeSeconds: Int?
 }
 
 enum TodoRepositoryError: Error, Equatable {
@@ -60,7 +61,8 @@ struct TodoRepository {
                 sortOrder: count,
                 createdAt: now,
                 updatedAt: now,
-                listId: input.listID?.isEmpty == true ? nil : input.listID
+                listId: input.listID?.isEmpty == true ? nil : input.listID,
+                focusTimeSeconds: 0
             )
             try record.insert(db)
             return record
@@ -112,6 +114,9 @@ struct TodoRepository {
             }
             if let listID = input.listID {
                 current.listId = (listID?.isEmpty == true) ? nil : listID
+            }
+            if let focusTimeSeconds = input.focusTimeSeconds {
+                current.focusTimeSeconds = focusTimeSeconds
             }
 
             current.updatedAt = now

@@ -231,7 +231,41 @@ final class TodoAppStore {
     }
 
     func endDeepFocus() -> DeepFocusReport? {
-        appModel.deepFocusService.endSession()
+        guard let report = appModel.deepFocusService.endSession() else {
+            return nil
+        }
+
+        if let focusTaskId = report.focusTaskId {
+            try? updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+        }
+
+        return report
+    }
+
+    func updateFocusTime(todoId: String, additionalSeconds: Int) throws {
+        guard let current = try todoRepository.fetchTodo(id: todoId) else {
+            return
+        }
+        var input = UpdateTodoInput()
+        input.focusTimeSeconds = (current.focusTimeSeconds ?? 0) + additionalSeconds
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+    }
+
+    func formatFocusTime(_ seconds: Int) -> String {
+        if seconds < 60 {
+            return "\(seconds)s"
+        } else if seconds < 3600 {
+            let minutes = seconds / 60
+            return "\(minutes)m"
+        } else {
+            let hours = seconds / 3600
+            let minutes = (seconds % 3600) / 60
+            if minutes > 0 {
+                return "\(hours)h \(minutes)m"
+            } else {
+                return "\(hours)h"
+            }
+        }
     }
 
     func appendToFocusTaskNotes(_ text: String) {
@@ -272,7 +306,8 @@ private extension TodoRecord {
             dueDate: dueDate,
             notes: notes,
             listId: listId,
-            launchResourcesRaw: launchResources
+            launchResourcesRaw: launchResources,
+            focusTimeSeconds: focusTimeSeconds
         )
     }
 }
