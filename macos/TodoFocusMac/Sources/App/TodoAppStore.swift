@@ -249,6 +249,7 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.focusTimeSeconds = (current.focusTimeSeconds ?? 0) + additionalSeconds
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try reload()
     }
 
     func formatFocusTime(_ seconds: Int) -> String {
