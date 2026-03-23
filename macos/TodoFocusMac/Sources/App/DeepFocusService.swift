@@ -66,7 +66,8 @@ final class DeepFocusService {
             distractionCount: sessionDistractionCount,
             blockedApps: Array(blockedApps),
             focusTaskTitle: nil,
-            stats: stats
+            stats: stats,
+            focusTaskId: currentFocusTaskId
         )
         lastReport = report
 
@@ -205,4 +206,5 @@ struct DeepFocusReport {
     let blockedApps: [String]
     let focusTaskTitle: String?
     let stats: DeepFocusStats
+    let focusTaskId: String?
 }

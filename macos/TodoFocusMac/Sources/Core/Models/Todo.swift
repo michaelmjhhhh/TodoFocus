@@ -10,4 +10,5 @@ struct Todo: Identifiable, Equatable {
     var notes: String
     var listId: String?
     var launchResourcesRaw: String
+    var focusTimeSeconds: Int = 0
 }

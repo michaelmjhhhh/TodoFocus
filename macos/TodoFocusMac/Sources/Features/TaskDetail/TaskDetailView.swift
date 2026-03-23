@@ -41,6 +41,9 @@ struct TaskDetailView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         dateSection(todo: todo)
+                        if todo.focusTimeSeconds > 0 {
+                            focusTimeSection(todo: todo)
+                        }
                         notesSection(todo: todo)
                         stepsSection(todo: todo)
                         launchpadSection(todo: todo)
@@ -220,6 +223,27 @@ struct TaskDetailView: View {
                 try? store.setDueDate(todoId: todo.id, date: nil)
             }
         )
+    }
+
+    private func focusTimeSection(todo: Todo) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "clock.fill")
+                .foregroundStyle(VisualTokens.accentTerracotta)
+                .font(.system(size: 14))
+
+            Text("Focus Time")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(VisualTokens.mutedText)
+
+            Spacer()
+
+            Text(store.formatFocusTime(todo.focusTimeSeconds))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(VisualTokens.textPrimary)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(VisualTokens.bgElevated, in: RoundedRectangle(cornerRadius: 8))
     }
 
     private func notesSection(todo: Todo) -> some View {

@@ -19,4 +19,5 @@ struct TodoRecord: Codable, FetchableRecord, PersistableRecord, Equatable {
     var createdAt: Date
     var updatedAt: Date
     var listId: String?
+    var focusTimeSeconds: Int = 0
 }

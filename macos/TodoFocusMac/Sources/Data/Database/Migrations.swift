@@ -47,6 +47,10 @@ enum Migrations {
             try db.create(index: "idx_step_todo_sort", on: "step", columns: ["todoId", "sortOrder"])
         }
 
+        migrator.registerMigration("v2_add_focus_time") { db in
+            try db.execute(sql: "ALTER TABLE todo ADD COLUMN focusTimeSeconds INTEGER NOT NULL DEFAULT 0")
+        }
+
         return migrator
     }
 }

@@ -54,6 +54,7 @@
 		A0FBDFF3B725B51B7F153995 /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C2B13C8E141A41A721EB9 /* Migrations.swift */; };
 		A253EF4EAE3275AFB724ABB0 /* ListRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515BEFC0401BABD096FDF98D /* ListRecord.swift */; };
 		A6567251923E066DBC16F466 /* TodoRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF6A4A3CE241E3341FE30A /* TodoRepositoryTests.swift */; };
+		A693872DB3F46211434ECED4 /* DeepFocusServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B960FC5EC323996AA47D3BC8 /* DeepFocusServiceTests.swift */; };
 		AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE1E72B6E3895D17014CE7C /* DatabaseManager.swift */; };
 		B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */; };
 		C27609899EAE9347733CBD7D /* DeepFocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97B7432D8B38188F373B1AF /* DeepFocusService.swift */; };
@@ -146,6 +147,7 @@
 		AE6C2B13C8E141A41A721EB9 /* Migrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrations.swift; sourceTree = "<group>"; };
 		B00F7F32AC8B9D5FF79A2F67 /* TimeFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFilter.swift; sourceTree = "<group>"; };
 		B49658E6F7D71CC961B6F7F1 /* TodoQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoQueryTests.swift; sourceTree = "<group>"; };
+		B960FC5EC323996AA47D3BC8 /* DeepFocusServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusServiceTests.swift; sourceTree = "<group>"; };
 		BE07B39987D458DF0BF2B7D5 /* LaunchResourceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceEditorView.swift; sourceTree = "<group>"; };
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
 		D2206266636D0C567F9A8BC5 /* SmartList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartList.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 			children = (
 				81F49BBBD3470E39E67D6825 /* AppModelTests.swift */,
 				DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */,
+				B960FC5EC323996AA47D3BC8 /* DeepFocusServiceTests.swift */,
 				4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */,
 				7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */,
 				3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */,
@@ -586,6 +589,7 @@
 			files = (
 				639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */,
 				3C6F2349B5015A515214E282 /* AppSelectionStateTests.swift in Sources */,
+				A693872DB3F46211434ECED4 /* DeepFocusServiceTests.swift in Sources */,
 				0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */,
 				B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */,
 				9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */,
