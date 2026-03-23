@@ -17,7 +17,6 @@ struct DeepFocusReportView: View {
             VStack(alignment: .leading, spacing: 12) {
                 LabeledContent("Duration", value: formatDuration(report.duration))
                 LabeledContent("Distractions", value: "\(report.distractionCount)")
-                LabeledContent("Total focus time", value: formatDuration(report.stats.totalFocusTime))
                 LabeledContent("Total sessions", value: "\(report.stats.sessionCount)")
             }
             .padding()
