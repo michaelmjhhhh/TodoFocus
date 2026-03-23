@@ -142,11 +142,11 @@ final class TodoAppStore {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
 
-    func setDueDate(todoId: String, date: Date?) {
+    func setDueDate(todoId: String, date: Date?) throws {
         var input = UpdateTodoInput()
         input.dueDate = date
-        try? todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try? reload()
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try reload()
     }
 
     func updateTitle(todoId: String, title: String) -> Result<Void, TodoRepositoryError> {
@@ -161,12 +161,12 @@ final class TodoAppStore {
         }
     }
 
-    func addStep(todoId: String, title: String) {
+    func addStep(todoId: String, title: String) throws {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else {
             return
         }
-        _ = try? stepRepository.addStep(todoID: todoId, title: trimmedTitle)
+        _ = try stepRepository.addStep(todoID: todoId, title: trimmedTitle)
     }
 
     func toggleStep(stepId: String, isCompleted: Bool) {
@@ -244,7 +244,7 @@ final class TodoAppStore {
             let captureText = text.trimmingCharacters(in: .whitespacesAndNewlines)
             let title = captureText.components(separatedBy: .newlines).first ?? captureText
             
-            try? quickAdd(
+            _ = try? quickAdd(
                 title: title,
                 planned: false,
                 isImportant: false,
