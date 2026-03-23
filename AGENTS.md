@@ -21,6 +21,10 @@
 - Minimalist dark UI: Claude Code-inspired dark theme with terracotta accent (#C46849).
 - Quick Capture (⌘⇧T): global hotkey for capturing thoughts; appends to Deep Focus task notes with timestamp, or creates new task in Inbox when no Deep Focus active.
 - Deep Focus Stats: tracks cumulative focus time, session count, and distraction count from blocked app attempts.
+- Theme toggle: dark/light/system persistence, dark by default.
+- Window persistence: detail panel width persists across app launches.
+- Search (⌘K): local search across task titles and notes.
+- My Day smart list: shows tasks with `isMyDay == true` flag.
 
 ## Quick Capture Feature
 
@@ -31,6 +35,15 @@
   - If no Deep Focus: creates new task in Inbox (no list assigned)
 - **Permission handling**: App shows orange warning in shortcut bar when permission not granted; clicking opens System Settings directly
 - **Important**: Accessibility permission is tied to code signature; if app is rebuilt and re-signed, permission must be re-granted
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| ⌘⇧T | Quick Capture (global hotkey, requires Accessibility permission) |
+| ⌘⇧F | Start Deep Focus on selected task (opens setup sheet to select blocked apps) |
+| ⌘K | Search tasks by title and notes |
+| ⌘⇧N | Add new task to current view |
 
 ## Security Guardrails (Launchpad)
 
