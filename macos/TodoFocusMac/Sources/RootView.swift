@@ -84,6 +84,9 @@ struct RootView: View {
                 }
                 appModel.quickCaptureService.setup()
             }
+            .onDisappear {
+                appModel.quickCaptureService.cleanup()
+            }
             .onChange(of: proxy.size.width) { _, newValue in
                 containerWidth = newValue
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: newValue)

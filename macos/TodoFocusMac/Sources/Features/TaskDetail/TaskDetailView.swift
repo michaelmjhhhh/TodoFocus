@@ -211,13 +211,13 @@ struct TaskDetailView: View {
                 get: { dueDate },
                 set: { newValue in
                     dueDate = newValue
-                    store.setDueDate(todoId: todo.id, date: newValue)
+                    try? store.setDueDate(todoId: todo.id, date: newValue)
                 }
             ),
             dueDate: todo.dueDate,
             onClear: {
                 dueDate = Date()
-                store.setDueDate(todoId: todo.id, date: nil)
+                try? store.setDueDate(todoId: todo.id, date: nil)
             }
         )
     }
@@ -500,9 +500,13 @@ struct StepsEditorView: View {
         guard !trimmedTitle.isEmpty else {
             return
         }
-        store.addStep(todoId: todoId, title: trimmedTitle)
-        newStepTitle = ""
-        reloadSteps()
+        do {
+            try store.addStep(todoId: todoId, title: trimmedTitle)
+            newStepTitle = ""
+            reloadSteps()
+        } catch {
+            // TODO: Surface error to user via feedback mechanism
+        }
     }
 
     private func reloadSteps() {

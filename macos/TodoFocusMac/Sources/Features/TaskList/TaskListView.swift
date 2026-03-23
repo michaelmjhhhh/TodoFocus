@@ -9,6 +9,13 @@ struct TaskListView: View {
     @State private var showClearCompletedConfirmation: Bool = false
     @FocusState private var isCommandFocused: Bool
 
+    private var listColorMap: [String: Color] {
+        Dictionary(uniqueKeysWithValues: store.lists.compactMap { list in
+            guard let color = Color(hex: list.color) as Color? else { return nil }
+            return (list.id, color)
+        })
+    }
+
     var body: some View {
         VStack(spacing: 12) {
             commandBar
@@ -327,8 +334,7 @@ struct TaskListView: View {
 
     private func colorForList(listId: String?) -> Color? {
         guard let listId else { return nil }
-        guard let list = store.lists.first(where: { $0.id == listId }) else { return nil }
-        return Color(hex: list.color)
+        return listColorMap[listId]
     }
 }
 
