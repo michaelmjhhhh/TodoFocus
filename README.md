@@ -43,8 +43,18 @@ Most todo apps stop at "remember this." TodoFocus helps you "start now."
 - **Quick Capture (⌘⇧T)** -- global hotkey to capture thoughts anywhere; appends to Deep Focus task notes or creates Inbox task
 - **Deep Focus Stats** -- tracks cumulative focus time, session count, and distraction count from blocked app attempts
 - **Dark / Light theme** -- toggle with persistence, dark by default
+- **Search (⌘K)** -- local search across task titles and notes
 - **Smooth native animations** -- SwiftUI transitions throughout
 - **Local SQLite** -- all data stays on your machine, zero cloud dependency
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| ⌘⇧T | Quick Capture (global hotkey, requires Accessibility permission) |
+| ⌘⇧F | Start Deep Focus on selected task |
+| ⌘K | Search tasks by title and notes |
+| ⌘⇧N | Add new task to current view |
 
 ## Screens and UX
 
