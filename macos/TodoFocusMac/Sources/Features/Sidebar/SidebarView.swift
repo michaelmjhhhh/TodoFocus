@@ -245,6 +245,11 @@ private struct SidebarListItemView: View {
     @Binding var editingListName: String
     @Binding var editingListColor: String
 
+    private static let availableColors: [String] = [
+        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
+        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
+    ]
+
     var body: some View {
         if isEditing {
             listEditRow
@@ -342,7 +347,7 @@ private struct SidebarListItemView: View {
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
-            ForEach(availableColors, id: \.self) { colorHex in
+            ForEach(Self.availableColors, id: \.self) { colorHex in
                 Circle()
                     .fill(Color(hex: colorHex))
                     .frame(width: 16, height: 16)
