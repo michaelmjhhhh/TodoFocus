@@ -22,10 +22,6 @@ struct TaskDetailView: View {
         self.onClose = onClose
     }
 
-    static func shouldShowDueDateClearButton(dueDate: Date?) -> Bool {
-        dueDate != nil
-    }
-
     static let launchpadHintTitle: String = "Open everything in one action"
     static let launchpadHintSubtitle: String = "Add URL, file, or app resources, then choose Launch All."
 
