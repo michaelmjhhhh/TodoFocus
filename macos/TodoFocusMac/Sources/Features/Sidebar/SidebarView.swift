@@ -27,11 +27,15 @@ struct SidebarView: View {
 
             Section {
                 ForEach(lists) { list in
-                    if editingListId == list.id {
-                        listEditRow(list)
-                    } else {
-                        listRow(list)
-                    }
+                    SidebarListItemView(
+                        list: list,
+                        isEditing: editingListId == list.id,
+                        appModel: appModel,
+                        store: store,
+                        editingListId: $editingListId,
+                        editingListName: $editingListName,
+                        editingListColor: $editingListColor
+                    )
                 }
                 .onDelete(perform: deleteLists)
 
@@ -62,91 +66,6 @@ struct SidebarView: View {
                 }
             }
         )
-    }
-
-    private func listRow(_ list: TodoList) -> some View {
-        SidebarRowButton(
-            title: list.name,
-            systemImage: "list.bullet",
-            listColor: Color(hex: list.color),
-            isSelected: appModel.selection == .customList(list.id),
-            count: store.countForList(list.id),
-            action: {
-                withAnimation(MotionTokens.focusEase) {
-                    appModel.selectSidebar(.customList(list.id))
-                }
-            }
-        )
-        .contextMenu {
-            Button("Edit color") {
-                editingListId = list.id
-                editingListName = list.name
-                editingListColor = list.color
-            }
-            Button("Rename") {
-                editingListId = list.id
-                editingListName = list.name
-            }
-            Divider()
-            Button("Delete", role: .destructive) {
-                deleteList(list)
-            }
-        }
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            Button(role: .destructive) {
-                deleteList(list)
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
-        }
-    }
-
-    private func listEditRow(_ list: TodoList) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(Color(hex: editingListColor))
-                    .frame(width: 12, height: 12)
-
-                TextField("List name", text: $editingListName)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 13))
-                    .foregroundStyle(VisualTokens.textPrimary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
-                    }
-                    .onSubmit {
-                        renameList(list)
-                    }
-
-                Button {
-                    renameList(list)
-                } label: {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(VisualTokens.accentTerracotta)
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    editingListId = nil
-                    editingListName = ""
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 10))
-                        .foregroundStyle(VisualTokens.textTertiary)
-                }
-                .buttonStyle(.plain)
-            }
-
-            colorPickerRow(selectedColor: $editingListColor)
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
     }
 
     private var addListButton: some View {
@@ -254,27 +173,12 @@ struct SidebarView: View {
         }
     }
 
-    private func deleteList(_ list: TodoList) {
-        store.deleteList(listId: list.id)
-    }
-
     private func deleteLists(at offsets: IndexSet) {
         for index in offsets {
             if index < lists.count {
                 store.deleteList(listId: lists[index].id)
             }
         }
-    }
-
-    private func renameList(_ list: TodoList) {
-        let trimmed = editingListName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            editingListId = nil
-            return
-        }
-        store.renameList(listId: list.id, newName: trimmed, color: editingListColor)
-        editingListId = nil
-        editingListName = ""
     }
 }
 
@@ -329,5 +233,143 @@ private struct SidebarRowButton: View {
                 isHovered = hovering
             }
         }
+    }
+}
+
+private struct SidebarListItemView: View {
+    let list: TodoList
+    let isEditing: Bool
+    let appModel: AppModel
+    let store: TodoAppStore
+    @Binding var editingListId: String?
+    @Binding var editingListName: String
+    @Binding var editingListColor: String
+
+    var body: some View {
+        if isEditing {
+            listEditRow
+        } else {
+            listRow
+        }
+    }
+
+    @ViewBuilder
+    private var listRow: some View {
+        SidebarRowButton(
+            title: list.name,
+            systemImage: "list.bullet",
+            listColor: Color(hex: list.color),
+            isSelected: appModel.selection == .customList(list.id),
+            count: store.countForList(list.id),
+            action: {
+                withAnimation(MotionTokens.focusEase) {
+                    appModel.selectSidebar(.customList(list.id))
+                }
+            }
+        )
+        .contextMenu {
+            Button("Edit color") {
+                editingListId = list.id
+                editingListName = list.name
+                editingListColor = list.color
+            }
+            Button("Rename") {
+                editingListId = list.id
+                editingListName = list.name
+            }
+            Divider()
+            Button("Delete", role: .destructive) {
+                store.deleteList(listId: list.id)
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                store.deleteList(listId: list.id)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var listEditRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(Color(hex: editingListColor))
+                    .frame(width: 12, height: 12)
+
+                TextField("List name", text: $editingListName)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 13))
+                    .foregroundStyle(VisualTokens.textPrimary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
+                    }
+                    .onSubmit {
+                        renameList
+                    }
+
+                Button {
+                    renameList
+                } label: {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(VisualTokens.accentTerracotta)
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    editingListId = nil
+                    editingListName = ""
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10))
+                        .foregroundStyle(VisualTokens.textTertiary)
+                }
+                .buttonStyle(.plain)
+            }
+
+            colorPickerRow(selectedColor: $editingListColor)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+    }
+
+    private func colorPickerRow(selectedColor: Binding<String>) -> some View {
+        HStack(spacing: 6) {
+            ForEach(availableColors, id: \.self) { colorHex in
+                Circle()
+                    .fill(Color(hex: colorHex))
+                    .frame(width: 16, height: 16)
+                    .overlay {
+                        if selectedColor.wrappedValue == colorHex {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            selectedColor.wrappedValue = colorHex
+                        }
+                    }
+            }
+        }
+    }
+
+    private var renameList: Void {
+        let trimmed = editingListName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            editingListId = nil
+            return
+        }
+        store.renameList(listId: list.id, newName: trimmed, color: editingListColor)
+        editingListId = nil
+        editingListName = ""
     }
 }
