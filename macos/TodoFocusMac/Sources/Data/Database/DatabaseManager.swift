@@ -25,4 +25,12 @@ final class DatabaseManager {
         let dir = appSupport.appendingPathComponent("todofocus", isDirectory: true)
         return dir.appendingPathComponent("todofocus.db").path
     }
+
+    func clearAllTables() throws {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM step")
+            try db.execute(sql: "DELETE FROM todo")
+            try db.execute(sql: "DELETE FROM list")
+        }
+    }
 }
