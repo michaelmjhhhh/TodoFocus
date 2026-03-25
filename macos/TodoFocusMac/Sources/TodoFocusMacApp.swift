@@ -60,5 +60,11 @@ struct TodoFocusMacApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
+
+#if os(macOS)
+        Settings {
+            SettingsView(databasePath: databaseManager?.path ?? "")
+        }
+#endif
     }
 }
