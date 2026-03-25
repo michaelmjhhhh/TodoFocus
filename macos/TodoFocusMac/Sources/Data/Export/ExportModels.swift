@@ -24,6 +24,7 @@ struct ExportTodo: Codable {
     let notes: String
     let listId: String?
     let focusTimeSeconds: Int?
+    let sortOrder: Int
     let steps: [ExportStep]
     let launchResources: [ExportLaunchResource]
 }

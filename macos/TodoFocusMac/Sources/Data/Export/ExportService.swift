@@ -55,9 +55,10 @@ final class ExportService {
                     isImportant: record.isImportant,
                     isMyDay: record.isMyDay,
                     dueDate: record.dueDate,
-                    notes: record.notes ?? "",
+                    notes: record.notes,
                     listId: record.listId,
                     focusTimeSeconds: record.focusTimeSeconds,
+                    sortOrder: record.sortOrder,
                     steps: steps,
                     launchResources: resources.map { ExportLaunchResource(type: $0.type.rawValue, value: $0.value, label: $0.label) }
                 )
@@ -111,7 +112,7 @@ final class ExportService {
                     notes: todo.notes,
                     launchResources: "[]",
                     dueDate: todo.dueDate,
-                    sortOrder: 0,
+                    sortOrder: todo.sortOrder,
                     createdAt: Date(),
                     updatedAt: Date(),
                     listId: todo.listId,
