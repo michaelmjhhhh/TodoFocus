@@ -24,6 +24,8 @@ struct ExportTodo: Codable {
     let notes: String
     let listId: String?
     let focusTimeSeconds: Int?
+    let recurrence: String?
+    let recurrenceInterval: Int
     let sortOrder: Int
     let steps: [ExportStep]
     let launchResources: [ExportLaunchResource]
