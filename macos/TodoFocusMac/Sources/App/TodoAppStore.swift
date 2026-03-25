@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import AppKit
 
 @Observable
 @MainActor
@@ -89,6 +90,10 @@ final class TodoAppStore {
         input.isCompleted = !current.isCompleted
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
         try reload()
+        // Play completion sound when marking as complete (not uncompleting)
+        if !current.isCompleted {
+            NSSound(named: NSSound.Name("Pop"))?.play()
+        }
     }
 
     func toggleImportant(todoId: String) throws {
