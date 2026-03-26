@@ -207,6 +207,7 @@ struct TaskListView: View {
                     ForEach(todos) { todo in
                         TodoRowView(
                             todo: todo,
+                            store: store,
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
                             onSelect: {
@@ -282,6 +283,7 @@ struct TaskListView: View {
                     ForEach(completedTodos) { todo in
                         TodoRowView(
                             todo: todo,
+                            store: store,
                             listColor: colorForList(listId: todo.listId),
                             isSelected: appModel.selectedTodoID == todo.id,
                             onSelect: {
