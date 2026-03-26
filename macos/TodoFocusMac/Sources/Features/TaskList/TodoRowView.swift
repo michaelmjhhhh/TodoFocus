@@ -23,6 +23,7 @@ struct TodoRowView: View {
     let onToggleComplete: () -> Void
     let onToggleImportant: () -> Void
     let onDelete: () -> Void
+    @Environment(\.themeTokens) private var tokens
     @State private var isHovered: Bool = false
 
     static func shouldShowSecondaryControls(isHovered: Bool, isSelected: Bool) -> Bool {
@@ -37,7 +38,7 @@ struct TodoRowView: View {
         if todo.isImportant {
             return .yellow
         }
-        return listColor ?? VisualTokens.accentTerracotta
+        return listColor ?? tokens.accentTerracotta
     }
 
     private var showIndicator: Bool {
@@ -73,7 +74,7 @@ struct TodoRowView: View {
                         Image(systemName: "calendar")
                     }
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? Color.white.opacity(0.82) : VisualTokens.mutedText)
+                    .foregroundStyle(isSelected ? Color.white.opacity(0.82) : tokens.mutedText)
                 }
                 if todo.isOverdue {
                     DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
@@ -87,13 +88,13 @@ struct TodoRowView: View {
                     Image(systemName: todo.isImportant ? "star.fill" : "star")
                 }
                 .buttonStyle(AppIconButtonStyle())
-                .foregroundStyle(todo.isImportant ? Color.yellow : VisualTokens.mutedText)
+                .foregroundStyle(todo.isImportant ? Color.yellow : tokens.mutedText)
 
                 Button(action: onDelete) {
                     Image(systemName: "trash")
                 }
                 .buttonStyle(AppIconButtonStyle())
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
             }
             .frame(width: 62, alignment: .trailing)
             .opacity(isSecondaryControlsVisible ? 1 : 0.001)

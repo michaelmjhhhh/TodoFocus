@@ -3,6 +3,7 @@ import SwiftUI
 struct DeepFocusReportView: View {
     let report: DeepFocusReport
     let onDismiss: () -> Void
+    @Environment(\.themeTokens) private var tokens
 
     @State private var isAppeared = false
 
@@ -18,7 +19,7 @@ struct DeepFocusReportView: View {
         }
         .padding(28)
         .frame(width: 340)
-        .background(VisualTokens.bgFloating)
+        .background(tokens.bgFloating)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
         .scaleEffect(isAppeared ? 1 : 0.9)
@@ -33,17 +34,17 @@ struct DeepFocusReportView: View {
         VStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(VisualTokens.accentTerracotta.opacity(0.15))
+                    .fill(tokens.accentTerracotta.opacity(0.15))
                     .frame(width: 80, height: 80)
 
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 44))
-                    .foregroundStyle(VisualTokens.accentTerracotta)
+                    .foregroundStyle(tokens.accentTerracotta)
             }
 
             Text("Focus Complete")
                 .font(.title2.weight(.semibold))
-                .foregroundStyle(VisualTokens.textPrimary)
+                .foregroundStyle(tokens.textPrimary)
         }
     }
 
@@ -51,12 +52,12 @@ struct DeepFocusReportView: View {
         VStack(spacing: 4) {
             Text(formatDuration(report.duration))
                 .font(.system(size: 48, weight: .bold, design: .rounded))
-                .foregroundStyle(VisualTokens.textPrimary)
+                .foregroundStyle(tokens.textPrimary)
                 .contentTransition(.numericText())
 
             Text("Duration")
                 .font(.subheadline)
-                .foregroundStyle(VisualTokens.textSecondary)
+                .foregroundStyle(tokens.textSecondary)
         }
         .padding(.vertical, 8)
     }
@@ -71,7 +72,7 @@ struct DeepFocusReportView: View {
 
             Divider()
                 .frame(height: 40)
-                .background(VisualTokens.sectionBorder)
+                .background(tokens.sectionBorder)
 
             statItem(
                 icon: "bell.slash.fill",
@@ -80,7 +81,7 @@ struct DeepFocusReportView: View {
             )
         }
         .padding(.vertical, 12)
-        .background(VisualTokens.bgElevated)
+        .background(tokens.bgElevated)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
@@ -88,16 +89,16 @@ struct DeepFocusReportView: View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .font(.system(size: 18))
-                .foregroundStyle(VisualTokens.accentTerracotta)
+                .foregroundStyle(tokens.accentTerracotta)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
                     .font(.system(.body, design: .rounded).weight(.semibold))
-                    .foregroundStyle(VisualTokens.textPrimary)
+                    .foregroundStyle(tokens.textPrimary)
 
                 Text(label)
                     .font(.caption2)
-                    .foregroundStyle(VisualTokens.textSecondary)
+                    .foregroundStyle(tokens.textSecondary)
             }
         }
         .frame(maxWidth: .infinity)
@@ -110,7 +111,7 @@ struct DeepFocusReportView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(VisualTokens.accentTerracotta)
+                .background(tokens.accentTerracotta)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)

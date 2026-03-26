@@ -6,6 +6,7 @@ struct LaunchResourceEditorView: View {
     @Bindable var store: TodoAppStore
     let todo: Todo
     let launchpadService: LaunchpadService
+    @Environment(\.themeTokens) private var tokens
 
     @State private var draft: [LaunchResource] = []
     @State private var labelText: String = ""
@@ -38,7 +39,7 @@ struct LaunchResourceEditorView: View {
         HStack {
             Text("Launchpad")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             Spacer()
 
@@ -55,7 +56,7 @@ struct LaunchResourceEditorView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(VisualTokens.accentTerracotta, in: Capsule())
+                    .background(tokens.accentTerracotta, in: Capsule())
                 }
                 .buttonStyle(.plain)
             }
@@ -67,9 +68,9 @@ struct LaunchResourceEditorView: View {
             } label: {
                 Image(systemName: "plus")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(VisualTokens.accentTerracotta)
+                    .foregroundStyle(tokens.accentTerracotta)
                     .frame(width: 28, height: 28)
-                    .background(VisualTokens.bgFloating, in: Circle())
+                    .background(tokens.bgFloating, in: Circle())
             }
             .buttonStyle(.plain)
             .disabled(draft.count >= 12)
@@ -81,15 +82,15 @@ struct LaunchResourceEditorView: View {
         VStack(spacing: 8) {
             Image(systemName: "link")
                 .font(.system(size: 24))
-                .foregroundStyle(VisualTokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary)
 
             Text("No resources yet")
                 .font(.caption)
-                .foregroundStyle(VisualTokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary)
 
             Text("Add URLs, files, or apps to launch from this task")
                 .font(.caption2)
-                .foregroundStyle(VisualTokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -108,20 +109,20 @@ struct LaunchResourceEditorView: View {
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
                 .padding(10)
-                .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
+                .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
+                        .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                 }
 
             TextField(typePlaceholder, text: $valueText)
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
                 .padding(10)
-                .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
+                .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
+                        .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                 }
 
             if selectedType != .url {
@@ -133,7 +134,7 @@ struct LaunchResourceEditorView: View {
                     }
                 }
                 .font(.caption)
-                .foregroundStyle(VisualTokens.accentTerracotta)
+                .foregroundStyle(tokens.accentTerracotta)
             }
 
             HStack(spacing: 8) {
@@ -141,7 +142,7 @@ struct LaunchResourceEditorView: View {
                     cancelAdd()
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(VisualTokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary)
 
                 Spacer()
 
@@ -153,15 +154,15 @@ struct LaunchResourceEditorView: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 6)
-                .background(VisualTokens.accentTerracotta, in: Capsule())
+                .background(tokens.accentTerracotta, in: Capsule())
                 .disabled(labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || valueText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
         .padding(12)
-        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
+        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
         .overlay {
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+                .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
 
@@ -175,10 +176,10 @@ struct LaunchResourceEditorView: View {
                 Text(type.label)
                     .font(.caption2.weight(.medium))
             }
-            .foregroundStyle(selectedType == type ? .white : VisualTokens.textSecondary)
+            .foregroundStyle(selectedType == type ? .white : tokens.textSecondary)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(selectedType == type ? VisualTokens.accentTerracotta : VisualTokens.bgFloating, in: Capsule())
+            .background(selectedType == type ? tokens.accentTerracotta : tokens.bgFloating, in: Capsule())
         }
         .buttonStyle(.plain)
     }
@@ -201,12 +202,12 @@ struct LaunchResourceEditorView: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(item.label)
                     .font(.system(size: 13))
-                    .foregroundStyle(VisualTokens.textPrimary)
+                    .foregroundStyle(tokens.textPrimary)
                     .lineLimit(1)
 
                 Text(item.displayValue)
                     .font(.caption2)
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
                     .lineLimit(1)
             }
 
@@ -217,9 +218,9 @@ struct LaunchResourceEditorView: View {
             } label: {
                 Image(systemName: "play.fill")
                     .font(.system(size: 10))
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
                     .frame(width: 24, height: 24)
-                    .background(VisualTokens.bgFloating, in: Circle())
+                    .background(tokens.bgFloating, in: Circle())
             }
             .buttonStyle(.plain)
 
@@ -231,14 +232,14 @@ struct LaunchResourceEditorView: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 10))
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
                     .frame(width: 24, height: 24)
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
     }
 
     private var typePlaceholder: String {
@@ -373,9 +374,9 @@ extension LaunchResourceType {
 
     var color: Color {
         switch self {
-        case .url: return VisualTokens.accentBlue
-        case .file: return VisualTokens.accentAmber
-        case .app: return VisualTokens.accentViolet
+        case .url: return tokens.accentBlue
+        case .file: return tokens.accentAmber
+        case .app: return tokens.accentViolet
         }
     }
 }

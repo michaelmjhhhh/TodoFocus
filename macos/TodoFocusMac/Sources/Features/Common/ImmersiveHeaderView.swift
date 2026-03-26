@@ -4,6 +4,7 @@ import SwiftUI
 struct ImmersiveHeaderView: View {
     @Binding var isExpanded: Bool
     @Binding var isSidebarVisible: Bool
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
         HStack(spacing: 0) {
@@ -22,11 +23,11 @@ struct ImmersiveHeaderView: View {
         HStack(spacing: 8) {
             Image(systemName: "checkmark")
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(VisualTokens.accentTerracotta)
+                .foregroundStyle(tokens.accentTerracotta)
 
             Text("TodoFocus.")
                 .font(.system(size: 13, weight: .medium, design: .default))
-                .foregroundStyle(VisualTokens.textSecondary)
+                .foregroundStyle(tokens.textSecondary)
         }
     }
 
@@ -38,7 +39,7 @@ struct ImmersiveHeaderView: View {
         } label: {
             Image(systemName: isSidebarVisible ? "sidebar.leading" : "sidebar.trailing")
                 .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(VisualTokens.textSecondary)
+                .foregroundStyle(tokens.textSecondary)
                 .frame(width: 24, height: 24)
         }
         .buttonStyle(.plain)

@@ -5,6 +5,7 @@ struct TaskDetailView: View {
     let launchpadService: LaunchpadService
     let todo: Todo?
     let onClose: () -> Void
+    @Environment(\.themeTokens) private var tokens
     @State private var notesText: String = ""
     @State private var dueDate: Date = Date()
     @State private var titleText: String = ""
@@ -76,7 +77,7 @@ struct TaskDetailView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(VisualTokens.panelBackground)
+        .background(tokens.panelBackground)
         .animation(MotionTokens.panelSpring, value: todo?.id)
         .animation(MotionTokens.focusEase, value: isTitleFocused)
         .animation(MotionTokens.validationEase, value: titleValidationMessage != nil)
@@ -121,7 +122,7 @@ struct TaskDetailView: View {
             if isTitleFocused {
                 return Color.white.opacity(0.26)
             }
-            return VisualTokens.sectionBorder.opacity(0.70)
+            return tokens.sectionBorder.opacity(0.70)
         }()
         let titleStrokeWidth: CGFloat = (hasValidationError || isTitleFocused) ? 1.2 : 1
         let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.10 : 0
@@ -179,7 +180,7 @@ struct TaskDetailView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(VisualTokens.accentTerracotta, in: Capsule())
+                    .background(tokens.accentTerracotta, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .keyboardShortcut("f", modifiers: [.command, .shift])
@@ -191,15 +192,15 @@ struct TaskDetailView: View {
                     Image(systemName: "xmark")
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
             }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(VisualTokens.sectionBackground)
+        .background(tokens.sectionBackground)
         .overlay(alignment: .bottom) {
             Rectangle()
-                .fill(VisualTokens.sectionBorder)
+                .fill(tokens.sectionBorder)
                 .frame(height: 1)
         }
     }
@@ -225,36 +226,36 @@ struct TaskDetailView: View {
     private func focusTimeSection(todo: Todo) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "clock.fill")
-                .foregroundStyle(VisualTokens.accentTerracotta)
+                .foregroundStyle(tokens.accentTerracotta)
                 .font(.system(size: 14))
 
             Text("Focus Time")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             Spacer()
 
             Text(store.formatFocusTime(todo.focusTimeSeconds))
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.textPrimary)
+                .foregroundStyle(tokens.textPrimary)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(VisualTokens.bgElevated, in: RoundedRectangle(cornerRadius: 8))
+        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: 8))
     }
 
     private func notesSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Notes")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             TextEditor(text: $notesText)
                 .frame(minHeight: 100)
                 .scrollContentBackground(.hidden)
                 .padding(10)
-                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(VisualTokens.textPrimary)
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(tokens.textPrimary)
                 .onChange(of: notesText) { _, newValue in
                     store.updateNotesDebounced(todoId: todo.id, notes: newValue)
                 }
@@ -265,7 +266,7 @@ struct TaskDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Steps")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             StepsEditorView(todoId: todo.id, store: store)
         }
@@ -275,11 +276,11 @@ struct TaskDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Launchpad")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             Text(Self.launchpadHintTitle)
                 .font(.caption)
-                .foregroundStyle(VisualTokens.textSecondary)
+                .foregroundStyle(tokens.textSecondary)
 
             LaunchResourceEditorView(
                 store: store,
@@ -293,19 +294,19 @@ struct TaskDetailView: View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(VisualTokens.accentTerracotta.opacity(0.2))
+                    .fill(tokens.accentTerracotta.opacity(0.2))
                     .frame(width: 32, height: 32)
                 Image(systemName: "flame.fill")
-                    .foregroundColor(VisualTokens.accentTerracotta)
+                    .foregroundColor(tokens.accentTerracotta)
             }
             
             VStack(alignment: .leading, spacing: 2) {
                 Text("Deep Focus Active")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundColor(VisualTokens.textPrimary)
+                    .foregroundColor(tokens.textPrimary)
                 Text("Blocking \(store.deepFocusService.blockedApps.count) apps")
                     .font(.caption)
-                    .foregroundColor(VisualTokens.textSecondary)
+                    .foregroundColor(tokens.textSecondary)
             }
             
             Spacer()
@@ -321,7 +322,7 @@ struct TaskDetailView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
-                    .background(VisualTokens.accentTerracotta, in: Capsule())
+                    .background(tokens.accentTerracotta, in: Capsule())
             }
             .buttonStyle(.plain)
         }
@@ -329,10 +330,10 @@ struct TaskDetailView: View {
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(VisualTokens.accentTerracotta.opacity(0.12))
+                .fill(tokens.accentTerracotta.opacity(0.12))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(VisualTokens.accentTerracotta.opacity(0.3), lineWidth: 1)
+                        .stroke(tokens.accentTerracotta.opacity(0.3), lineWidth: 1)
                 )
         )
         .padding(.horizontal, 12)
@@ -381,7 +382,7 @@ struct InlineDatePicker: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(VisualTokens.mutedText)
+                .foregroundStyle(tokens.mutedText)
 
             HStack(spacing: 8) {
                 Button {
@@ -389,13 +390,13 @@ struct InlineDatePicker: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "calendar")
-                            .foregroundStyle(VisualTokens.accentTerracotta)
+                            .foregroundStyle(tokens.accentTerracotta)
                         Text(formattedDate)
-                            .foregroundStyle(VisualTokens.textPrimary)
+                            .foregroundStyle(tokens.textPrimary)
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
                 .popover(isPresented: $isPickerPresented, arrowEdge: .top) {
@@ -419,11 +420,11 @@ struct InlineDatePicker: View {
                                 isPickerPresented = false
                             }
                             .buttonStyle(.plain)
-                            .foregroundStyle(VisualTokens.danger)
+                            .foregroundStyle(tokens.danger)
                             .padding(12)
                         }
                     }
-                    .background(VisualTokens.bgElevated)
+                    .background(tokens.bgElevated)
                 }
 
                 Spacer()
@@ -449,8 +450,8 @@ struct StepsEditorView: View {
                 TextField("Add a step", text: $newStepTitle)
                     .textFieldStyle(.plain)
                     .padding(10)
-                    .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
-                    .foregroundStyle(VisualTokens.textPrimary)
+                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .foregroundStyle(tokens.textPrimary)
                     .onSubmit(addStep)
 
                 Button("Add") {
@@ -459,7 +460,7 @@ struct StepsEditorView: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(VisualTokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(.white)
                 .opacity(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
                 .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -468,7 +469,7 @@ struct StepsEditorView: View {
             if steps.isEmpty {
                 Text("No steps yet")
                     .font(.caption)
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
                     .padding(.top, 4)
             } else {
                 VStack(spacing: 4) {
@@ -491,12 +492,12 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(step.isCompleted ? VisualTokens.success : VisualTokens.textTertiary)
+                    .foregroundStyle(step.isCompleted ? tokens.success : tokens.textTertiary)
             }
             .buttonStyle(.plain)
 
             Text(step.title)
-                .foregroundStyle(step.isCompleted ? VisualTokens.textTertiary : VisualTokens.textPrimary)
+                .foregroundStyle(step.isCompleted ? tokens.textTertiary : tokens.textPrimary)
                 .strikethrough(step.isCompleted)
 
             Spacer()
@@ -506,14 +507,14 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: "trash")
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
                     .font(.caption)
             }
             .buttonStyle(.plain)
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 10)
-        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
+        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
     }
 
     private func addStep() {
@@ -606,21 +607,21 @@ struct DeepFocusSetupSheet: View {
                                 Image(systemName: "minus")
                                     .font(.system(size: 12, weight: .bold))
                                     .frame(width: 28, height: 28)
-                                    .background(VisualTokens.bgFloating)
+                                    .background(tokens.bgFloating)
                                     .clipShape(Circle())
-                                    .overlay(Circle().stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1))
+                                    .overlay(Circle().stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
-                            .foregroundStyle(minutes > 1 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
+                            .foregroundStyle(minutes > 1 ? tokens.textPrimary : tokens.textTertiary)
 
                             VStack(spacing: 2) {
                                 Text("\(minutes)")
                                     .font(.system(size: 32, weight: .bold, design: .rounded))
-                                    .foregroundStyle(VisualTokens.textPrimary)
+                                    .foregroundStyle(tokens.textPrimary)
                                     .monospacedDigit()
                                 Text("minutes")
                                     .font(.caption2)
-                                    .foregroundStyle(VisualTokens.textSecondary)
+                                    .foregroundStyle(tokens.textSecondary)
                             }
                             .frame(minWidth: 80)
 
@@ -632,19 +633,19 @@ struct DeepFocusSetupSheet: View {
                                 Image(systemName: "plus")
                                     .font(.system(size: 12, weight: .bold))
                                     .frame(width: 28, height: 28)
-                                    .background(VisualTokens.bgFloating)
+                                    .background(tokens.bgFloating)
                                     .clipShape(Circle())
-                                    .overlay(Circle().stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1))
+                                    .overlay(Circle().stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
-                            .foregroundStyle(minutes < 480 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
+                            .foregroundStyle(minutes < 480 ? tokens.textPrimary : tokens.textTertiary)
                         }
                         .padding(.vertical, 12)
                         .padding(.horizontal, 20)
-                        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
+                        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(VisualTokens.textTertiary.opacity(0.15), lineWidth: 1)
+                                .stroke(tokens.textTertiary.opacity(0.15), lineWidth: 1)
                         )
 
                         // Quick preset chips
@@ -655,13 +656,13 @@ struct DeepFocusSetupSheet: View {
                                 } label: {
                                     Text("\(preset)m")
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundStyle(minutes == preset ? .white : VisualTokens.textSecondary)
+                                        .foregroundStyle(minutes == preset ? .white : tokens.textSecondary)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 6)
                                         .background(
                                             minutes == preset
-                                                ? VisualTokens.accentTerracotta
-                                                : VisualTokens.bgFloating,
+                                                ? tokens.accentTerracotta
+                                                : tokens.bgFloating,
                                             in: Capsule()
                                         )
                                         .overlay(
@@ -669,7 +670,7 @@ struct DeepFocusSetupSheet: View {
                                                 .stroke(
                                                     minutes == preset
                                                         ? Color.clear
-                                                        : VisualTokens.textTertiary.opacity(0.2),
+                                                        : tokens.textTertiary.opacity(0.2),
                                                     lineWidth: 1
                                                 )
                                         )
@@ -683,7 +684,7 @@ struct DeepFocusSetupSheet: View {
                 } else {
                     Text("Session runs until you manually end it")
                         .font(.caption)
-                        .foregroundStyle(VisualTokens.textSecondary)
+                        .foregroundStyle(tokens.textSecondary)
                         .padding(.horizontal, 20)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
@@ -692,7 +693,7 @@ struct DeepFocusSetupSheet: View {
 
             Text("Select apps to block during focus session")
                 .font(.subheadline)
-                .foregroundStyle(VisualTokens.textSecondary)
+                .foregroundStyle(tokens.textSecondary)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
@@ -722,7 +723,7 @@ struct DeepFocusSetupSheet: View {
                             Image(systemName: "plus.circle")
                             Text("Add Custom App")
                         }
-                        .foregroundStyle(VisualTokens.accentTerracotta)
+                        .foregroundStyle(tokens.accentTerracotta)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 8)
@@ -738,8 +739,8 @@ struct DeepFocusSetupSheet: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
-                .background(VisualTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(VisualTokens.textPrimary)
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(tokens.textPrimary)
 
                 Button("Start") {
                     let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
@@ -748,22 +749,22 @@ struct DeepFocusSetupSheet: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
-                .background(VisualTokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(.white)
             }
             .padding(.bottom, 20)
         }
         .frame(width: 300)
-        .background(VisualTokens.panelBackground)
+        .background(tokens.panelBackground)
     }
 
     private func appRow(name: String, bundleId: String) -> some View {
         HStack {
             Image(systemName: selectedApps.contains(bundleId) ? "checkmark.square.fill" : "square")
-                .foregroundStyle(selectedApps.contains(bundleId) ? VisualTokens.accentTerracotta : VisualTokens.textTertiary)
+                .foregroundStyle(selectedApps.contains(bundleId) ? tokens.accentTerracotta : tokens.textTertiary)
 
             Text(name)
-                .foregroundStyle(VisualTokens.textPrimary)
+                .foregroundStyle(tokens.textPrimary)
 
             Spacer()
         }

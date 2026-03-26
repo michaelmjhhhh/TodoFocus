@@ -16,6 +16,7 @@ struct AppIconButtonStyle: ButtonStyle {
 struct RowStateModifier: ViewModifier {
     let isHovered: Bool
     let isSelected: Bool
+    @Environment(\.themeTokens) private var tokens
 
     func body(content: Content) -> some View {
         let isActive = isHovered || isSelected
@@ -29,7 +30,7 @@ struct RowStateModifier: ViewModifier {
                     .stroke(
                         isSelected
                             ? Color.white.opacity(0.22)
-                            : VisualTokens.sectionBorder.opacity(isActive ? 0.95 : 0),
+                            : tokens.sectionBorder.opacity(isActive ? 0.95 : 0),
                         lineWidth: isSelected ? 1.2 : 1
                     )
             }
