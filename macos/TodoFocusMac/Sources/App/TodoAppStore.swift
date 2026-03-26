@@ -96,6 +96,14 @@ final class TodoAppStore {
         }
     }
 
+    func markComplete(todoId: String) throws {
+        var input = UpdateTodoInput()
+        input.isCompleted = true
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try reload()
+        NSSound(named: NSSound.Name("Pop"))?.play()
+    }
+
     func toggleImportant(todoId: String) throws {
         guard let current = try todoRepository.fetchTodo(id: todoId) else {
             return
