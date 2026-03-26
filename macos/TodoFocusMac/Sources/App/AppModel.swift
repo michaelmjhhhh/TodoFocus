@@ -17,6 +17,8 @@ final class AppModel {
             selectedTodoID = nil
             if next == .overdue {
                 timeFilter = .overdue
+            } else {
+                timeFilter = .allDates
             }
         }
     }
