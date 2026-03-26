@@ -11,4 +11,15 @@ struct Todo: Identifiable, Equatable {
     var listId: String?
     var launchResourcesRaw: String
     var focusTimeSeconds: Int = 0
+
+    var debtSeconds: Int? {
+        guard !isCompleted, let dueDate = dueDate else { return nil }
+        let diff = Int(Date().timeIntervalSince(dueDate))
+        guard diff > 0 else { return nil }
+        return diff
+    }
+
+    var isOverdue: Bool {
+        debtSeconds != nil
+    }
 }
