@@ -313,7 +313,7 @@ final class TodoAppStore {
 
 private extension Todo {
     var coreTodo: CoreTodo {
-        CoreTodo(id: id, isMyDay: isMyDay, isImportant: isImportant, dueDate: dueDate, listId: listId)
+        CoreTodo(id: id, isMyDay: isMyDay, isImportant: isImportant, isCompleted: isCompleted, dueDate: dueDate, listId: listId)
     }
 }
 
