@@ -30,6 +30,8 @@ final class AppModel {
             return "important"
         case .planned:
             return "planned"
+        case .overdue:
+            return "overdue"
         case .all:
             return "all"
         case let .customList(id):

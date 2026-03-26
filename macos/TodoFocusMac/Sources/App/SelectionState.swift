@@ -4,6 +4,7 @@ enum SidebarSelection: Equatable {
     case myDay
     case important
     case planned
+    case overdue
     case all
     case customList(String)
 
@@ -15,6 +16,8 @@ enum SidebarSelection: Equatable {
             return .important
         case .planned:
             return .planned
+        case .overdue:
+            return .all
         case .all:
             return .all
         case let .customList(id):

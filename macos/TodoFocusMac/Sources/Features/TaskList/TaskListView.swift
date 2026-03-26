@@ -150,6 +150,8 @@ struct TaskListView: View {
             return "Important"
         case .planned:
             return "Planned"
+        case .overdue:
+            return "Overdue"
         case .all:
             return "All Tasks"
         case let .customList(id):
