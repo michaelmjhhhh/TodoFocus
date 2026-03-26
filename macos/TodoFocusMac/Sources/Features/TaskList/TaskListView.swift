@@ -21,10 +21,17 @@ struct TaskListView: View {
             commandBar
 
             HStack(spacing: 10) {
-                Text(title)
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                if isOverdueView {
+                    Text("Overdue \u{00b7} \(store.formatDebt(store.totalOverdueDebtSeconds)) total debt")
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                } else {
+                    Text(title)
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                }
                 Spacer()
-                filterPicker
+                if !isOverdueView {
+                    filterPicker
+                }
 
                 Text("\(filteredVisibleTodos.count)")
                     .font(.caption2.weight(.semibold))
@@ -74,17 +81,32 @@ struct TaskListView: View {
             }
             .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
 
-            HStack(spacing: 12) {
-                todoColumn(title: "Active", todos: activeTodos)
-                    .frame(maxWidth: .infinity)
-
-                if isCompletedPanelVisible {
-                    completedColumn
-                        .frame(width: 260)
-                        .transition(.opacity.combined(with: .move(edge: .trailing)))
+            if isOverdueView && activeTodos.isEmpty {
+                Spacer()
+                VStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle")
+                        .font(.system(size: 40))
+                        .foregroundStyle(VisualTokens.textTertiary)
+                    Text("No overdue tasks")
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(VisualTokens.textSecondary)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 40)
+                Spacer()
+            } else {
+                HStack(spacing: 12) {
+                    todoColumn(title: "Active", todos: activeTodos)
+                        .frame(maxWidth: .infinity)
+
+                    if isCompletedPanelVisible {
+                        completedColumn
+                            .frame(width: 260)
+                            .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
             }
-            .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
         }
         .shortcutHintBar(
             needsAccessibilityPermission: appModel.quickCaptureService.needsAccessibilityPermission,
@@ -166,12 +188,20 @@ struct TaskListView: View {
         return nil
     }
 
+    private var isOverdueView: Bool {
+        appModel.selection == .overdue
+    }
+
     private var filteredVisibleTodos: [Todo] {
         Self.filterTodos(store.visibleTodos, query: commandText)
     }
 
     private var activeTodos: [Todo] {
-        filteredVisibleTodos.filter { !$0.isCompleted }
+        var todos = filteredVisibleTodos.filter { !$0.isCompleted }
+        if isOverdueView {
+            todos.sort { ($0.dueDate ?? .distantFuture) < ($1.dueDate ?? .distantFuture) }
+        }
+        return todos
     }
 
     private var completedTodos: [Todo] {
