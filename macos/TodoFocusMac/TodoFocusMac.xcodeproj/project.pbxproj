@@ -51,7 +51,9 @@
 		9199B9A57495CE73F7B12A00 /* DeepFocusOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3625055382C151CD6384FAB6 /* DeepFocusOverlayView.swift */; };
 		91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B7FBF596FE48369C865FF /* CoreTodo.swift */; };
 		960A7BFB6248537F88BF1C75 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B08E7687273C5B6DDBD4FD5 /* Color+Hex.swift */; };
+		976765295227DA3EF9FEC81A /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E091CF73EAB5386C5F51AF /* ThemeTokens.swift */; };
 		98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCE7E86937A152A989DCFCD /* RootView.swift */; };
+		9EF258AA9690DE211B9B90E3 /* ThemeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C041E259E1AA3D6238B2A360 /* ThemeEnvironment.swift */; };
 		9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */; };
 		A06641EBAC9429CF7A200652 /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC65359FCD8A661E494F8E6 /* QuickAddView.swift */; };
 		A07A6F7772AE2B855A31DB11 /* SelectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E319E19EF05FA501E7B85 /* SelectionState.swift */; };
@@ -105,6 +107,7 @@
 		0BD67E5BD83F1A8B609F0661 /* LaunchResourceValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceValidation.swift; sourceTree = "<group>"; };
 		0CBB93E177F1BAE2BD678353 /* TodoFocusMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoFocusMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10C4E9EB9EEDE55EC25A2997 /* TodoAppStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppStoreTests.swift; sourceTree = "<group>"; };
+		16E091CF73EAB5386C5F51AF /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
 		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		19458B7C988B347EA18FCFF7 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +164,7 @@
 		B49658E6F7D71CC961B6F7F1 /* TodoQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoQueryTests.swift; sourceTree = "<group>"; };
 		B960FC5EC323996AA47D3BC8 /* DeepFocusServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusServiceTests.swift; sourceTree = "<group>"; };
 		BE07B39987D458DF0BF2B7D5 /* LaunchResourceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceEditorView.swift; sourceTree = "<group>"; };
+		C041E259E1AA3D6238B2A360 /* ThemeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEnvironment.swift; sourceTree = "<group>"; };
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
 		D2206266636D0C567F9A8BC5 /* SmartList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartList.swift; sourceTree = "<group>"; };
 		D97B7432D8B38188F373B1AF /* DeepFocusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusService.swift; sourceTree = "<group>"; };
@@ -323,6 +327,8 @@
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
 				085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */,
 				2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */,
+				C041E259E1AA3D6238B2A360 /* ThemeEnvironment.swift */,
+				16E091CF73EAB5386C5F51AF /* ThemeTokens.swift */,
 				80CC7B115E98F0487D59FC4C /* VisualTokens.swift */,
 			);
 			path = Common;
@@ -616,7 +622,9 @@
 				2D6BE558DD2AB44D6424DDD7 /* StepRepository.swift in Sources */,
 				C2FEA8790A8A2C89D8C58905 /* TaskDetailView.swift in Sources */,
 				8B5529DB40999FB77D54F419 /* TaskListView.swift in Sources */,
+				9EF258AA9690DE211B9B90E3 /* ThemeEnvironment.swift in Sources */,
 				243B5B18ADC816895A198044 /* ThemeStore.swift in Sources */,
+				976765295227DA3EF9FEC81A /* ThemeTokens.swift in Sources */,
 				2C0D092C397234106188359E /* TimeFilter.swift in Sources */,
 				207C83314051B92B1810A45A /* Todo.swift in Sources */,
 				398F21706296FAAA014823D5 /* TodoAppStore.swift in Sources */,

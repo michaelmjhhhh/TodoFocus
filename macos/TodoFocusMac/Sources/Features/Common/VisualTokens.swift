@@ -42,3 +42,10 @@ enum VisualTokens {
     static let cyanAccent = accentBlue
     static let roseAccent = danger
 }
+
+extension VisualTokens {
+    /// Returns ThemeTokens for a given theme (for test/preview use)
+    static func current(for theme: ThemeStore.Theme = .dark) -> ThemeTokens {
+        ThemeTokens(theme: theme)
+    }
+}

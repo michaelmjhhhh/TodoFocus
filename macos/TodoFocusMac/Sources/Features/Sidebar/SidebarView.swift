@@ -4,6 +4,8 @@ struct SidebarView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
     let lists: [TodoList]
+    let themeStore: ThemeStore
+    @Environment(\.themeTokens) private var tokens
     @State private var isAddingList: Bool = false
     @State private var newListName: String = ""
     @State private var newListColor: String = "#6366F1"
@@ -45,11 +47,18 @@ struct SidebarView: View {
                 } else {
                     addListButton
                 }
+            } footer: {
+                HStack {
+                    Spacer()
+                    themeToggleButton
+                    Spacer()
+                }
+                .padding(.top, 4)
             }
         }
         .listStyle(.sidebar)
         .scrollContentBackground(.hidden)
-        .background(VisualTokens.bgElevated)
+        .background(tokens.bgElevated)
         .animation(MotionTokens.focusEase, value: appModel.selection)
         .animation(.easeInOut(duration: 0.15), value: lists.count)
     }
@@ -78,11 +87,11 @@ struct SidebarView: View {
             HStack(spacing: 8) {
                 Image(systemName: "plus")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
 
                 Text("Add list")
                     .font(.system(size: 13))
-                    .foregroundStyle(VisualTokens.textTertiary)
+                    .foregroundStyle(tokens.textTertiary)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
@@ -100,13 +109,13 @@ struct SidebarView: View {
                 TextField("List name", text: $newListName)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
-                    .foregroundStyle(VisualTokens.textPrimary)
+                    .foregroundStyle(tokens.textPrimary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
-                    .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
+                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
                     .overlay {
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
+                            .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                     }
                     .onSubmit {
                         commitAddList()
@@ -117,7 +126,7 @@ struct SidebarView: View {
                 } label: {
                     Image(systemName: "checkmark")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(VisualTokens.accentTerracotta)
+                        .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
                 .disabled(newListName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -130,7 +139,7 @@ struct SidebarView: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 10))
-                        .foregroundStyle(VisualTokens.textTertiary)
+                        .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
             }
@@ -181,6 +190,49 @@ struct SidebarView: View {
             }
         }
     }
+
+    private func cycleTheme() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            switch themeStore.theme {
+            case .dark:
+                themeStore.theme = .light
+            case .light:
+                themeStore.theme = .system
+            case .system:
+                themeStore.theme = .dark
+            }
+        }
+    }
+
+    private var themeIcon: String {
+        switch themeStore.theme {
+        case .dark: return "moon.fill"
+        case .light: return "sun.max.fill"
+        case .system: return "circle.lefthalf.filled"
+        }
+    }
+
+    private var themeTooltip: String {
+        switch themeStore.theme {
+        case .dark: return "Dark mode — click to switch"
+        case .light: return "Light mode — click to switch"
+        case .system: return "System mode — click to switch"
+        }
+    }
+
+    private var themeToggleButton: some View {
+        Button {
+            cycleTheme()
+        } label: {
+            Image(systemName: themeIcon)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(tokens.textSecondary)
+                .frame(width: 28, height: 28)
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 6))
+        }
+        .buttonStyle(.plain)
+        .help(themeTooltip)
+    }
 }
 
 private struct SidebarRowButton: View {
@@ -191,41 +243,42 @@ private struct SidebarRowButton: View {
     let count: Int?
     let action: () -> Void
     @State private var isHovered: Bool = false
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Capsule()
-                    .fill(listColor ?? VisualTokens.accentTerracotta)
+                    .fill(listColor ?? tokens.accentTerracotta)
                     .frame(width: listColor != nil || isSelected ? 3 : 0, height: listColor != nil || isSelected ? 16 : 0)
 
                 Image(systemName: systemImage)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? VisualTokens.textPrimary : VisualTokens.textSecondary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
                 Text(title)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? VisualTokens.textPrimary : VisualTokens.textSecondary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
                 if let count {
                     Text("\(count)")
                         .font(.caption2.weight(.medium))
-                        .foregroundStyle(isSelected ? VisualTokens.textSecondary : VisualTokens.textTertiary)
+                        .foregroundStyle(isSelected ? tokens.textSecondary : tokens.textTertiary)
                         .padding(.horizontal, 5)
                         .padding(.vertical, 2)
-                        .background(VisualTokens.bgFloating.opacity(0.5), in: Capsule())
+                        .background(tokens.bgFloating.opacity(0.5), in: Capsule())
                 }
 
                 Spacer(minLength: 0)
 
                 Image(systemName: "checkmark")
                     .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(listColor ?? VisualTokens.accentTerracotta)
+                    .foregroundStyle(listColor ?? tokens.accentTerracotta)
                     .opacity(isSelected ? 1 : 0)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(isSelected ? VisualTokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
+            .background(isSelected ? tokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
             .contentShape(RoundedRectangle(cornerRadius: 9))
         }
         .buttonStyle(.plain)
@@ -245,6 +298,7 @@ private struct SidebarListItemView: View {
     @Binding var editingListId: String?
     @Binding var editingListName: String
     @Binding var editingListColor: String
+    @Environment(\.themeTokens) private var tokens
 
     private static let availableColors: [String] = [
         "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
@@ -308,13 +362,13 @@ private struct SidebarListItemView: View {
                 TextField("List name", text: $editingListName)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
-                    .foregroundStyle(VisualTokens.textPrimary)
+                    .foregroundStyle(tokens.textPrimary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
-                    .background(VisualTokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
+                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
                     .overlay {
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1)
+                            .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                     }
                     .onSubmit {
                         renameList
@@ -325,7 +379,7 @@ private struct SidebarListItemView: View {
                 } label: {
                     Image(systemName: "checkmark")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(VisualTokens.accentTerracotta)
+                        .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
 
@@ -335,7 +389,7 @@ private struct SidebarListItemView: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 10))
-                        .foregroundStyle(VisualTokens.textTertiary)
+                        .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
             }

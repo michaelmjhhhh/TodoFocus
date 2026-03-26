@@ -3,7 +3,8 @@ import SwiftUI
 struct ShortcutHintBar: View {
     var needsAccessibilityPermission: Bool = false
     var onRequestPermission: (() -> Void)?
-    
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
         HStack(spacing: 16) {
             if needsAccessibilityPermission {
@@ -23,10 +24,10 @@ struct ShortcutHintBar: View {
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(VisualTokens.bgFloating.opacity(0.8))
+                .fill(tokens.bgFloating.opacity(0.8))
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(VisualTokens.sectionBorder, lineWidth: 1)
+                        .stroke(tokens.sectionBorder, lineWidth: 1)
                 )
         )
     }
@@ -57,14 +58,14 @@ struct ShortcutHintBar: View {
         HStack(spacing: 4) {
             Text(key)
                 .font(.caption2.weight(.semibold).monospaced())
-                .foregroundStyle(VisualTokens.textPrimary)
+                .foregroundStyle(tokens.textPrimary)
             Text(action)
                 .font(.caption2)
-                .foregroundStyle(VisualTokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 3)
-        .background(VisualTokens.sectionBackground, in: Capsule())
+        .background(tokens.sectionBackground, in: Capsule())
     }
 }
 

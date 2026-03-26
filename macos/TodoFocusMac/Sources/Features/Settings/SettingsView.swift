@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     let databasePath: String
+    let themeStore: ThemeStore
     @State private var exportError: String?
     @State private var importError: String?
     @State private var showExportSuccess = false
@@ -15,6 +16,7 @@ struct SettingsView: View {
         TabView {
             GeneralSettingsView(
                 databasePath: databasePath,
+                themeStore: themeStore,
                 onExport: performExport,
                 onImport: performImport,
                 showExportSuccess: $showExportSuccess,
@@ -91,6 +93,7 @@ struct SettingsView: View {
 
 struct GeneralSettingsView: View {
     let databasePath: String
+    @Bindable var themeStore: ThemeStore
     let onExport: () -> Void
     let onImport: () -> Void
     @Binding var showExportSuccess: Bool
@@ -102,6 +105,15 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
+            Section("Appearance") {
+                Picker("Theme", selection: $themeStore.theme) {
+                    Text("Dark").tag(ThemeStore.Theme.dark)
+                    Text("Light").tag(ThemeStore.Theme.light)
+                    Text("System").tag(ThemeStore.Theme.system)
+                }
+                .pickerStyle(.segmented)
+            }
+
             Section {
                 Text("Data Management")
                     .font(.headline)
