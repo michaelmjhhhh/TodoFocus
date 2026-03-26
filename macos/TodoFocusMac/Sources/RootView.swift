@@ -104,5 +104,26 @@ struct RootView: View {
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
+        .overlay(alignment: .bottomTrailing) {
+            Button("") {
+                cycleTheme()
+            }
+            .keyboardShortcut("l", modifiers: [.command, .shift])
+            .opacity(0)
+            .allowsHitTesting(false)
+        }
+    }
+
+    private func cycleTheme() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            switch themeStore.theme {
+            case .dark:
+                themeStore.theme = .light
+            case .light:
+                themeStore.theme = .system
+            case .system:
+                themeStore.theme = .dark
+            }
+        }
     }
 }
