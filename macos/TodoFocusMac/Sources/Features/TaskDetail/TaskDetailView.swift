@@ -365,6 +365,7 @@ struct InlineDatePicker: View {
     let dueDate: Date?
     let onClear: () -> Void
     @State private var isPickerPresented = false
+    @Environment(\.themeTokens) private var tokens
 
     private var formattedDate: String {
         let formatter = DateFormatter()
@@ -438,6 +439,7 @@ struct StepsEditorView: View {
     @Bindable var store: TodoAppStore
     @State private var steps: [TodoStep] = []
     @State private var newStepTitle: String = ""
+    @Environment(\.themeTokens) private var tokens
 
     init(todoId: String, store: TodoAppStore) {
         self.todoId = todoId
@@ -543,6 +545,7 @@ struct DeepFocusSetupSheet: View {
     @State private var customApps: [(name: String, bundleId: String)] = []
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
+    @Environment(\.themeTokens) private var tokens
 
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),

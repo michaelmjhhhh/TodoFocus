@@ -374,9 +374,9 @@ extension LaunchResourceType {
 
     var color: Color {
         switch self {
-        case .url: return tokens.accentBlue
-        case .file: return tokens.accentAmber
-        case .app: return tokens.accentViolet
+        case .url: return VisualTokens.accentBlue
+        case .file: return VisualTokens.accentAmber
+        case .app: return VisualTokens.accentViolet
         }
     }
 }

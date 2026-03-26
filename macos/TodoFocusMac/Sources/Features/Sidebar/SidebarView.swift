@@ -243,6 +243,7 @@ private struct SidebarRowButton: View {
     let count: Int?
     let action: () -> Void
     @State private var isHovered: Bool = false
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
         Button(action: action) {
@@ -297,6 +298,7 @@ private struct SidebarListItemView: View {
     @Binding var editingListId: String?
     @Binding var editingListName: String
     @Binding var editingListColor: String
+    @Environment(\.themeTokens) private var tokens
 
     private static let availableColors: [String] = [
         "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",

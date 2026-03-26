@@ -93,7 +93,7 @@ struct SettingsView: View {
 
 struct GeneralSettingsView: View {
     let databasePath: String
-    let themeStore: ThemeStore
+    @Bindable var themeStore: ThemeStore
     let onExport: () -> Void
     let onImport: () -> Void
     @Binding var showExportSuccess: Bool

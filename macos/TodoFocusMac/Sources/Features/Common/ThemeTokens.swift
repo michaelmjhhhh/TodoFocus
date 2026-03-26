@@ -2,7 +2,7 @@ import SwiftUI
 import Observation
 
 @Observable
-final class ThemeTokens {
+final class ThemeTokens: Sendable {
     let theme: ThemeStore.Theme
 
     init(theme: ThemeStore.Theme = .dark) {
