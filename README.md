@@ -2,68 +2,22 @@
 
 Local-first native macOS todo app for focused execution, not just list keeping.
 
-TodoFocus combines familiar task management with a launch-oriented workflow:
-- capture and organize tasks quickly
-- filter by time per view
-- open the exact work context (URLs, files, apps) from each task
-
 ## Why TodoFocus
 
-Most todo apps stop at "remember this." TodoFocus helps you "start now."
+- **Local-first by default** — Data lives on your machine in SQLite. No account, no cloud, no sync friction.
+- **Start work instantly** — Attach URLs, files, and apps to any task. Click **Launch All** to open your entire work context at once.
+- **Focus filters** — See exactly what matters today. Filter any view by Overdue, Today, Tomorrow, Next 7 days, or No date.
+- **Deep Focus sessions** — Track cumulative focus time and block distracting apps while you work.
 
-- Local-first by default (SQLite, no account required)
-- Fast desktop workflow with SwiftUI + native pickers
-- Context Launchpad Tasks: one task can launch all related resources
-- Clean focus-oriented UI with animated interactions
+---
 
-## What Makes It Different
+## Getting Started
 
-1. Context Launchpad Tasks
-   - Attach `url`, `file`, and `app` resources to a task
-   - Click `Launch All` to open your work context instantly
-2. Per-view Time Filters
-   - Apply date windows in every view (`Overdue`, `Today`, `Tomorrow`, `Next 7 days`, `No date`)
-3. Local-first Desktop Runtime
-   - Data lives on your machine
-   - Native desktop interactions (file/app picker, launch actions)
+### Install
 
-## Features
+Download the latest release from the [GitHub Releases page](https://github.com/michaelmjhhhh/TodoFocus/releases). Unzip and move `TodoFocusMac.app` to your Applications folder.
 
-- **My Day / Important / Planned** -- smart lists that filter automatically
-- **Smart-list quick add** -- adding inside Important/Planned now preserves the list intent automatically
-- **Per-view time filters** -- filter any list by `Overdue`, `Today`, `Tomorrow`, `Next 7 days`, or `No date`
-- **Custom lists with colors** -- create, rename, delete with 10 color options; color appears as left indicator on tasks
-- **Subtasks (Steps)** -- break tasks into smaller pieces
-- **Due dates** -- with relative display (Today, Tomorrow, Overdue)
-- **Notes** -- per-task free-text notes with auto-save
-- **Context Launchpad Tasks (MVP)** -- attach `URL`, `File`, and `App` resources to a task and launch all in one click
-- **Native file/app pickers** -- pick launch targets from desktop dialogs instead of manually typing paths
-- **Resizable detail panel** -- drag to widen/narrow right panel for long resource values
-- **Collapsible completed panel** -- hide completed tasks to focus on active work
-- **Quick Capture (⌘⇧T)** -- global hotkey to capture thoughts anywhere; appends to Deep Focus task notes or creates Inbox task
-- **Deep Focus Stats** -- tracks cumulative focus time, session count, and distraction count from blocked app attempts
-- **Dark / Light theme** -- toggle with persistence, dark by default
-- **Search (⌘K)** -- local search across task titles and notes
-- **Smooth native animations** -- SwiftUI transitions throughout
-- **Local SQLite** -- all data stays on your machine, zero cloud dependency
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| ⌘⇧T | Quick Capture (global hotkey, requires Accessibility permission) |
-| ⌘⇧F | Start Deep Focus on selected task |
-| ⌘K | Search tasks by title and notes |
-| ⌘⇧N | Add new task to current view |
-
-## Screens and UX
-
-- Three-panel app shell (lists, tasks, detail)
-- Resizable detail panel for dense task metadata
-- Native file/app picker buttons for launch resources
-- Smooth native SwiftUI transitions throughout list and detail interactions
-
-## Quick Start
+### Build from source
 
 ```bash
 git clone https://github.com/michaelmjhhhh/TodoFocus.git
@@ -73,133 +27,196 @@ xcodegen generate
 xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
-For tests:
+### First launch
 
-```bash
-xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
-```
+On first launch, the app will prompt for **Accessibility permission** to enable the global hotkey (⌘⇧T) for Quick Capture. Go to **System Settings > Privacy & Security > Accessibility** and enable TodoFocus.
 
-## Requirements
+---
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Smart lists** | My Day, Important, Planned — filter automatically |
+| **Per-view time filters** | Overdue / Today / Tomorrow / Next 7 days / No date |
+| **Custom lists with colors** | Create lists with 10 color options; color appears as a left indicator on tasks |
+| **Context Launchpad Tasks** | Attach URL, File, and App resources to a task; launch all in one click |
+| **Subtasks (Steps)** | Break tasks into smaller pieces |
+| **Due dates** | Relative display — "Today", "Tomorrow", "Overdue" |
+| **Notes** | Per-task free-text notes with auto-save |
+| **Deep Focus** | Start a focus session on any task; tracks time and blocks distracting apps |
+| **Quick Capture (⌘⇧T)** | Global hotkey captures thoughts from anywhere; appends to Deep Focus task notes or creates an Inbox task |
+| **Search (⌘K)** | Local search across task titles and notes |
+| **Dark / Light theme** | Toggle with persistence; dark by default |
+| **Collapsible completed** | Hide completed tasks to focus on active work |
+| **Resizable detail panel** | Drag to widen or narrow the right panel |
+
+---
+
+## How to Use
+
+### Create a task
+
+1. Select a list in the sidebar (or use **Inbox**).
+2. Press **⌘⇧N** or click the **+** button.
+3. Type your task title and press Enter.
+
+### Set a due date
+
+1. Select a task.
+2. In the detail panel, click the **date field**.
+3. Choose a date from the picker, or type "today", "tomorrow", or a date.
+
+### Attach resources (URL, file, app)
+
+1. Select a task.
+2. In the detail panel, click **Add URL**, **Add File**, or **Add App**.
+3. Use the native picker to select your resource.
+4. Click **Launch All** to open everything at once.
+
+### Start a Deep Focus session
+
+1. Select a task.
+2. Press **⌘⇧F** or click **Start Focus** in the detail panel.
+3. The session timer begins. If you have blocklist apps configured, the app will enforce focus by closing them if opened.
+
+### Filter tasks by time
+
+- Click the **time filter bar** at the top of the task list.
+- Choose **Overdue**, **Today**, **Tomorrow**, **Next 7 days**, or **No date**.
+- The filter applies to the current view.
+
+### Search tasks
+
+1. Press **⌘K**.
+2. Type your search query.
+3. Results show matching tasks from all lists.
+
+### Quick Capture
+
+1. Press **⌘⇧T** from any application.
+2. Type your thought and press Enter.
+3. If a Deep Focus session is active, the note is appended to that task. Otherwise, a new Inbox task is created.
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| ⌘⇧T | Quick Capture (global hotkey) |
+| ⌘⇧F | Start Deep Focus on selected task |
+| ⌘⇧N | Add new task to current view |
+| ⌘K | Search tasks |
+| ⌘W | Close current window |
+| ⌘Q | Quit app |
+
+---
+
+## For Developers
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| App Framework | SwiftUI |
+| State Management | Observation (`@Observable`) |
+| Database | SQLite via GRDB |
+| Build | Xcode + xcodegen |
+| Packaging | Zipped `.app` in GitHub Releases |
+
+### Requirements
 
 - **Xcode** 16+
 - **macOS** 14+
 - **xcodegen**
-- **Accessibility permission** (for Quick Capture global hotkey): first launch will prompt to enable in System Settings > Privacy & Security > Accessibility
 
-No external database needed. No API keys. No accounts.
-
-## Tech Stack
-
-| Layer | Tech |
-|-------|------|
-| App Framework | SwiftUI |
-| State | Observation (`@Observable`) |
-| Database | SQLite via GRDB |
-| Build | Xcode + xcodebuild |
-| Packaging | zipped `.app` in GitHub Releases |
-
-## Project Structure
+### Project Structure
 
 ```
 macos/TodoFocusMac/
   Sources/
-    App/                # app model, stores, launch services
-    Core/               # pure domain models and filters
-    Data/               # GRDB migrations and repositories
-    Features/           # Sidebar, TaskList, TaskDetail
+    App/           # AppModel, TodoAppStore, DeepFocusService, LaunchpadService, QuickCaptureService
+    Core/          # Domain models (Todo, List, Step, LaunchResource) and filters
+    Data/          # GRDB migrations, DTOs (Record types), and repositories
+    Features/      # SwiftUI views organized by feature (Sidebar, TaskList, TaskDetail, Common, QuickCapture)
   Tests/
-    CoreTests/          # domain and behavior tests
-    DataTests/          # migration and repository tests
+    CoreTests/     # Domain and behavior tests
+    DataTests/     # Migration and repository tests
 ```
 
-## Development
+### Build & Test
 
 ```bash
+# Generate Xcode project (after adding/removing/renaming files)
 xcodegen generate
+
+# Build
 xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+
+# Test
 xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+
+# Run a single test file
+xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS" -only-testing:CoreTests/TodoAppStoreTests
 ```
 
-## Delivery Workflow
+### Architecture
 
-- For bugs, follow evidence-first debugging (root cause before code changes).
-- For new features, we use: `issue -> branch -> implement -> PR`.
-- Prefer a short implementation plan for non-trivial features before coding.
+**State Management:**
+- `@Observable @MainActor TodoAppStore` is the central state holder — owns lists and todos, coordinates CRUD via repositories, and computes visible todos through `AppModel.query()`.
+- `AppModel` holds UI state: selected sidebar item, selected todo ID, time filter, sort order, theme, and window size.
 
-## Open Source Notes
+**Data Flow:**
+```
+GRDB Records (TodoRecord, ListRecord, StepRecord)
+    ↓ Record extensions map to domain models (Todo, TodoList, TodoStep)
+    ↓ Repositories fetch and store records
+    ↓ TodoAppStore orchestrates and exposes state to views
+    ↓ SwiftUI Views observe TodoAppStore
+```
 
-- License: MIT
-- Contributions: Issues and PRs are welcome
-- Security baseline: launch actions are validated and executed via native macOS APIs (no shell execution)
+**Key Patterns:**
+- Views only handle UI; `TodoAppStore` handles business logic; repositories handle persistence.
+- Notes auto-save with 0.5s debounce via `DispatchWorkItem`.
+- Launch resources are validated via `LaunchResourceValidation` before persistence and launched via `NSWorkspace` only (no shell execution).
+- GRDB migrations run automatically on first launch via `DatabaseManager.makeMigrator()`.
 
-## Desktop Packaging (Native macOS)
+### Releasing
 
-### Build rules we follow
-
-- Release artifact is zipped `.app` uploaded to GitHub Releases.
-- App Store distribution is out of scope.
-- Build and test from a clean, updated `main`.
-- Generate checksum (`sha256`) for each uploaded zip.
-
-### Commands
+Releases use the `release-macos-native` GitHub Actions workflow, triggered by version tags:
 
 ```bash
-xcodegen generate
-xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
-xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -configuration Release -derivedDataPath "macos/TodoFocusMac/build/DerivedData" -destination "platform=macOS"
-APP_PATH="macos/TodoFocusMac/build/DerivedData/Build/Products/Release/TodoFocusMac.app"
-ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "dist-native/TodoFocus-macos-universal.zip"
-shasum -a 256 "dist-native/TodoFocus-macos-universal.zip" > "dist-native/TodoFocus-macos-universal.zip.sha256"
+git checkout main && git pull
+git tag vX.Y.Z
+git push origin vX.Y.Z
+gh workflow run release-macos-native -f tag=vX.Y.Z
 ```
 
-### CI Release (Required, CI-first)
+---
 
-Release artifacts should come from GitHub Actions workflow `release-macos-native`.
-Do not manually upload local assets unless CI is unavailable and maintainers approve an emergency fallback.
+## Troubleshooting
 
-1. Start from clean, updated `main`:
-   - `git checkout main && git pull`
-2. Create and push the release tag:
-   - `git tag vX.Y.Z`
-   - `git push origin vX.Y.Z`
-3. Trigger release workflow for that tag:
-   - `gh workflow run release-macos-native -f tag=vX.Y.Z`
-4. Monitor the run:
-   - `gh run list --workflow release-macos-native --limit 5`
-   - `gh run watch <run-id>`
-5. Verify assets on the release page:
-   - `gh release view vX.Y.Z --json assets,url`
-    - Confirm expected files are attached (`TodoFocus-macos-universal.zip` and checksum file).
+**Build fails after renaming files.**
+Run `xcodegen generate` and rebuild.
 
-### If Workflow Fails (Retry / Rollback)
+**App data looks stale or corrupted.**
+Delete `~/Library/Application Support/todofocus/todofocus.db` for a clean local reset. The database is rebuilt on next launch.
 
-1. Inspect logs: `gh run view <run-id> --log`.
-2. Retry workflow for transient failures (runner/network/signing issues).
-3. If assets are bad, remove only broken assets and rerun:
-   - `gh release delete-asset vX.Y.Z <asset-name> -y`
-4. If tag was incorrect, recreate it:
-   - `git tag -d vX.Y.Z`
-   - `git push origin :refs/tags/vX.Y.Z`
-   - Create correct tag and run `release-macos` again.
+**Global hotkey (⌘⇧T) doesn't work.**
+Verify that TodoFocus has **Accessibility permission** in **System Settings > Privacy & Security > Accessibility**.
 
-### Runtime and local data
+**File or app launch fails.**
+Check that TodoFocus has **Full Disk Access** or the relevant file access permissions in **System Settings > Privacy & Security**.
 
-- App is native SwiftUI and uses GRDB-backed SQLite locally.
-- On first launch, GRDB migrations are applied automatically.
-- Local database path on macOS:
-  - `~/Library/Application Support/todofocus/todofocus.db`
+**Picker dialogs don't open.**
+Verify macOS file and app permissions for TodoFocus.
 
-### Launchpad Safety Model
+---
 
-- Launch actions are executed with native macOS APIs (`NSWorkspace`), not shell commands.
-- Resource payloads are validated before persistence and before launch.
-- URL schemes are allowlisted and invalid payloads are rejected.
+## Contributing
 
-### Common issue and fix
-
-- If build fails after file moves, run `xcodegen generate` and rebuild.
-- If app data looks stale, remove `~/Library/Application Support/todofocus/todofocus.db` for a clean local reset.
-- If picker/launch behavior fails, verify app has macOS file access permissions.
+Issues and pull requests are welcome. Please read the existing code and tests before submitting PRs.
 
 ## License
 
