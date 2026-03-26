@@ -182,6 +182,7 @@ struct TaskDetailView: View {
                     .background(VisualTokens.accentTerracotta, in: Capsule())
                 }
                 .buttonStyle(.plain)
+                .keyboardShortcut("f", modifiers: [.command, .shift])
 
                 Button {
                     commitTitle(todoId: todo.id)
