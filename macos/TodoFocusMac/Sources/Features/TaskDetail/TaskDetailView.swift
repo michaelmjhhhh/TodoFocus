@@ -543,14 +543,6 @@ struct DeepFocusSetupSheet: View {
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
 
-    private let minuteFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimum = 1
-        formatter.maximum = 480
-        return formatter
-    }()
-
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),
         ("Safari", "com.apple.Safari"),
@@ -605,19 +597,88 @@ struct DeepFocusSetupSheet: View {
                 .padding(.horizontal, 20)
 
                 if isTimedMode {
-                    HStack(spacing: 8) {
-                        TextField("Minutes", value: $minutes, formatter: minuteFormatter)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 80)
-                            .onChange(of: minutes) { _, newValue in
-                                if newValue < 1 { minutes = 1 }
-                                if newValue > 480 { minutes = 480 }
+                    VStack(spacing: 16) {
+                        // Duration display with stepper
+                        HStack(spacing: 16) {
+                            Button {
+                                if minutes > 5 {
+                                    minutes -= 5
+                                }
+                            } label: {
+                                Image(systemName: "minus")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .frame(width: 28, height: 28)
+                                    .background(VisualTokens.bgFloating)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(minutes > 5 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
 
-                        Text("minutes")
-                            .foregroundStyle(VisualTokens.textSecondary)
+                            VStack(spacing: 2) {
+                                Text("\(minutes)")
+                                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                                    .foregroundStyle(VisualTokens.textPrimary)
+                                    .monospacedDigit()
+                                Text("minutes")
+                                    .font(.caption2)
+                                    .foregroundStyle(VisualTokens.textSecondary)
+                            }
+                            .frame(minWidth: 80)
 
-                        Spacer()
+                            Button {
+                                if minutes < 480 {
+                                    minutes += 5
+                                }
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .frame(width: 28, height: 28)
+                                    .background(VisualTokens.bgFloating)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1))
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(minutes < 480 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
+                        }
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 20)
+                        .background(VisualTokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(VisualTokens.textTertiary.opacity(0.15), lineWidth: 1)
+                        )
+
+                        // Quick preset chips
+                        HStack(spacing: 8) {
+                            ForEach([25, 45, 60, 90], id: \.self) { preset in
+                                Button {
+                                    minutes = preset
+                                } label: {
+                                    Text("\(preset)m")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundStyle(minutes == preset ? .white : VisualTokens.textSecondary)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(
+                                            minutes == preset
+                                                ? VisualTokens.accentTerracotta
+                                                : VisualTokens.bgFloating,
+                                            in: Capsule()
+                                        )
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(
+                                                    minutes == preset
+                                                        ? Color.clear
+                                                        : VisualTokens.textTertiary.opacity(0.2),
+                                                    lineWidth: 1
+                                                )
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
                     .padding(.horizontal, 20)
                     .transition(.opacity.combined(with: .move(edge: .top)))
