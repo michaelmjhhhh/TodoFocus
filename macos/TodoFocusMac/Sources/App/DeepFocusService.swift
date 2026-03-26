@@ -42,9 +42,9 @@ final class DeepFocusService {
     private var appMonitor: NSObjectProtocol?
     private var timerCancellable: AnyCancellable?
     @ObservationIgnored private var timerNotifier = DeepFocusTimerNotifier()
-    private var onTimerComplete: (() -> Void)?
+    private var onTimerComplete: ((DeepFocusReport) -> Void)?
 
-    func startSession(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, onTimerComplete: (() -> Void)? = nil) {
+    func startSession(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, onTimerComplete: ((DeepFocusReport) -> Void)? = nil) {
         // End any existing session first
         if isActive {
             _ = endSession()
@@ -85,8 +85,8 @@ final class DeepFocusService {
         // Show notification
         timerNotifier.notifySessionComplete(report: report)
 
-        // Mark task complete
-        onTimerComplete?()
+        // Notify with report (mark task complete + update focus time)
+        onTimerComplete?(report)
 
         // Show report (handled by onEndFocusSession callback in UI)
     }

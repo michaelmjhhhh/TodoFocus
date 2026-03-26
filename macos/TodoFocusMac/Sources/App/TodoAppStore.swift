@@ -244,8 +244,9 @@ final class TodoAppStore {
             blockedApps: blockedApps,
             duration: duration,
             focusTaskId: focusTaskId,
-            onTimerComplete: { [weak self] in
+            onTimerComplete: { [weak self] report in
                 try? self?.markComplete(todoId: focusTaskId)
+                try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
             }
         )
     }
