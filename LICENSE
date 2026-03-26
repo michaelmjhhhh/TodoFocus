@@ -1,0 +1,101 @@
+GNU Affero General Public License v3.0
+
+Permissions of this strongest copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights.
+
+A modified version is a work based on the Program. The "Corresponding Application" is any associated work that is combined with or linked to the Program, but is not the Program itself.
+
+TERMS AND CONDITIONS
+
+0. Definitions.
+
+"This License" refers to version 3 of the GNU Affero General Public License.
+
+"Copyright" also means copyright-like laws that apply to other kinds of works, such as semiconductor masks.
+
+"The Program" refers to any copyrightable work licensed under this License. Each licensee is addressed as "you". "Licensees" and "recipients" may be individuals or organizations.
+
+To "modify" a work means to copy from or adapt all or part of the work in a fashion requiring copyright permission, other than the making of an exact copy. The resulting work is called a "modified version" of the earlier work or a work "based on" the earlier work.
+
+A "covered work" means either the unmodified Program or a work based on the Program.
+
+1. Source Code.
+
+The "source code" for a work means the preferred form of the work for making modifications to it. "Object code" means any non-source form of a work.
+
+A "Standard Interface" means an interface that either is an official standard defined by a recognized standards body or, in the case of interfaces specified for a particular programming language, one that is widely used among developers working in that language.
+
+The "System Libraries" of an executable work include anything, other than the work as a whole, that (a) is included in the normal form of packaging a Major Component, but which is not part of that Major Component, and (b) serves only to enable use of the work with that Major Component, or to implement a Standard Interface for which an implementation is available to the public in source code form.
+
+The "Corresponding Source" for a work in object code form means all the machine code, source code, and interface definition files needed to generate, install, and (for an executable work) run the object code and to modify the work, including scripts to control those activities.
+
+2. Basic Permissions.
+
+All rights granted under this License are granted for the term of copyright on the Program, and are irrevocable provided the stated conditions are met. This License explicitly affirms your unlimited permission to run the Program. The output from running a covered work is covered by this License only if the output, given its content, constitutes a covered work. This License acknowledges your rights of fair use or other equivalent, as provided by copyright law.
+
+You may make, run and propagate covered works that you do not convey, without conditions so long as your license otherwise remains in force. You may convey covered works to others for the sole purpose of having them make modifications exclusively for you, or provide you with facilities for running those works, provided that you comply with the License in all other respects and you do not do anything that creates or could create any risk to health or safety. Conveying any other kind of work requires explicit permission under this License.
+
+3. Creating Collective Works.
+
+A "collective work" is a work formed by incorporating a number of separate, independent programs into one combined program. This License applies to the aggregate. To constitute a collective work, the aggregate must be such that the minimum aggregation of the separate programs creates a work based on the Program.
+
+4. Distributing Source Code Form.
+
+A participant that is a "contributor" or a "licensee" may add additional attribution as part of a file's documentation, provided that no such attribution shall be interpreted as granting any rights under this License.
+
+When you convey a unmodified version of the Program, the work must include prominent notice stating that it is released under this License and including this license text.
+
+If you distribute covered works in the aggregate, you must keep intact all copyright notices in the source code and this license text.
+
+5. Required or Desired Notices.
+
+You may not copy, modify, sublicense, link with, or distribute the Program, except as expressly provided under this License. Any attempt otherwise to copy, modify, sublicense, link with, or distribute the Program is void, and will automatically terminate your rights under this License.
+
+If you develop a modification of the Program, or develop a separate program that incorporates or links to the Program, you must, at the request of any other licensee, clearly mark your modification or your separate program as a "Based on" or "Contains" of the Program, and include prominent notice stating that you have modified the Program or that the modification is based on the Program.
+
+If you develop a separate program that incorporates or links to the Program, you must, at the request of any other licensee, include prominent notice stating that your program is a "Derivative" or "Contains" modifications to the Program, and that you are the sole author of the modifications.
+
+6. Additional Terms.
+
+"Additional permissions" are terms that supplement the terms of this License by making exceptions from one or more of its conditions. Additional permissions that are applicable to the entire Program shall be treated as though they were included in this License, to the extent that they are valid under applicable law. If additional permissions apply only to part of the Program, that part may be used separately under those permissions, but the entire Program remains governed by this License without regard to the additional permissions.
+
+When you convey a copy of a covered work, you may at your option remove any additional permissions from that copy, or from any part of it. (Additional permissions may be written to require their own removal in certain cases when you modify the work.) You may place additional permissions on material, added by you to a covered work, for which you have or can give appropriate copyright permission.
+
+7. Termination.
+
+You may not propagate or modify a covered work except as expressly provided under this License. Any attempt otherwise to propagate or modify it is void, and will automatically terminate your rights under this License.
+
+However, if you cease all violation of this License, then your license from a particular copyright holder is reinstated (a) provisionally, unless and until the copyright holder explicitly and finally terminates your license, and (b) permanently, if the copyright holder fails to notify you of the violation by some reasonable means prior to 60 days after the cessation.
+
+8. No License for Modified Works.
+
+You may not modify a covered work in a way that creates or could create a risk to health or safety. Any modification that does create such risk shall be treated as though it were a separate program, and shall not be considered part of the covered work.
+
+9. Patents.
+
+A "contributor" is a copyright holder who authorizes use under this License of the Program or a work on which the Program is based. A contributor's "essential patent claims" are all patent claims owned or controlled by the contributor, whether already acquired or hereafter acquired, that would be infringed by some manner, permitted by this License, of making, using, or selling the Program, but do not include claims that would be infringed only as a consequence of further modification of the Program.
+
+Each contributor grants you a non-exclusive, worldwide, royalty-free patent license under the contributor's essential patent claims, to make, use, sell, offer for sale, import and otherwise run, modify and propagate the contents of the contributor's Program.
+
+In the following three paragraphs, a "patent license" is any express agreement or commitment, however denominated, not to enforce a patent (such as an express permission to practice a patent or covenant not to sue for patent infringement). To "grant" such a patent license to a party means to make such an agreement or commitment not to enforce a patent against the party.
+
+If you convey a covered work, knowingly relying on a patent license, and the Corresponding Source of the work is not available for anyone to copy, free of charge and under the terms of this License, through a publicly available network server or other readily accessible means, then you must either (1) cause the Corresponding Source to be so available, or (2) arrange to deprive yourself of the benefit of the patent license for this particular work, or (3) arrange, in a manner consistent with the requirements of this License, to extend the patent license to downstream recipients.
+
+10. Termination.
+
+If you assert a patent license claim against a contributor, or if a participant's patent license is terminated because it asserts such a claim, the termination shall not limit the rights of parties who have received copies or rights from you under this License.
+
+If your license from a particular copyright holder is reinstated, you may continue to operate under that license with respect to the covered work until the copyright holder explicitly and finally terminates your license.
+
+11. No Warranty.
+
+THE PROGRAM IS PROVIDED WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE PROGRAM OR THE USE OR OTHER DEALINGS IN THE PROGRAM.
+
+12. Disclaimer of Liability.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+13. Interpretation.
+
+If the Program is a work based on a library, and the library is part of a larger work that is not a derivative of the library, then you must ensure that anyone who copies or modifies the library is able to delete any references to the Program or to any covered work that is part of the library.
+
+END OF TERMS AND CONDITIONS
