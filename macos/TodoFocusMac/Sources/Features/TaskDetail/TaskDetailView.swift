@@ -601,9 +601,7 @@ struct DeepFocusSetupSheet: View {
                         // Duration display with stepper
                         HStack(spacing: 16) {
                             Button {
-                                if minutes > 5 {
-                                    minutes -= 5
-                                }
+                                minutes = max(1, minutes - 5)
                             } label: {
                                 Image(systemName: "minus")
                                     .font(.system(size: 12, weight: .bold))
@@ -613,7 +611,7 @@ struct DeepFocusSetupSheet: View {
                                     .overlay(Circle().stroke(VisualTokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
-                            .foregroundStyle(minutes > 5 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
+                            .foregroundStyle(minutes > 1 ? VisualTokens.textPrimary : VisualTokens.textTertiary)
 
                             VStack(spacing: 2) {
                                 Text("\(minutes)")
