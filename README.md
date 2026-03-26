@@ -1,104 +1,82 @@
 # TodoFocus
 
-Local-first native macOS todo app for focused execution, not just list keeping.
+<p align="center">
+  <img src="https://via.placeholder.com/800x500/1C1C1E/C46849?text=TodoFocus" alt="TodoFocus" width="800"/>
+</p>
 
-## Why TodoFocus
-
-- **Local-first by default** — Data lives on your machine in SQLite. No account, no cloud, no sync friction.
-- **Start work instantly** — Attach URLs, files, and apps to any task. Click **Launch All** to open your entire work context at once.
-- **Focus filters** — See exactly what matters today. Filter any view by Overdue, Today, Tomorrow, Next 7 days, or No date.
-- **Deep Focus sessions** — Track cumulative focus time, block distracting apps, and set a timer to auto-end sessions.
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-14%2B-blue" alt="macOS 14+"/>
+  <img src="https://img.shields.io/badge/SwiftUI-orange" alt="SwiftUI"/>
+  <img src="https://img.shields.io/badge/Database-SQLite-yellow" alt="SQLite"/>
+  <img src="https://img.shields.io/badge/License-AGPL--3.0-green" alt="AGPL-3.0"/>
+</p>
 
 ---
 
-## Getting Started
+Local-first native macOS todo app for **focused execution**, not just list keeping.
 
-### Install
+---
 
-Download the latest release from the [GitHub Releases page](https://github.com/michaelmjhhhh/TodoFocus/releases). Unzip and move `TodoFocusMac.app` to your Applications folder.
+## Why TodoFocus
 
-### Build from source
+| | |
+|---|---|
+| 💾 **Local-First** | Data lives on your machine in SQLite. No account, no cloud, no sync friction. |
+| ⚡ **Launch Everything** | Attach URLs, files, and apps to any task. Click **Launch All** to open your entire context at once. |
+| 🎯 **Smart Filters** | See exactly what matters today. Filter by Overdue, Today, Tomorrow, Next 7 days, or No date. |
+| 🔥 **Deep Focus** | Track focus time, block distracting apps, and set a timer to auto-end sessions. |
+| ⌨️ **Quick Capture** | Press **⌘⇧T** from anywhere to capture thoughts instantly. |
+
+---
+
+## Quick Start
 
 ```bash
+# Download latest release
+# → https://github.com/michaelmjhhhh/TodoFocus/releases
+
+# Or build from source
+brew install xcodegen
 git clone https://github.com/michaelmjhhhh/TodoFocus.git
 cd TodoFocus/macos/TodoFocusMac
-brew install xcodegen
 xcodegen generate
 xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
-### First launch
-
-On first launch, the app will prompt for **Accessibility permission** to enable the global hotkey (⌘⇧T) for Quick Capture. Go to **System Settings > Privacy & Security > Accessibility** and enable TodoFocus.
+**First launch:** Grant **Accessibility permission** when prompted (System Settings → Privacy & Security → Accessibility).
 
 ---
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| **Smart lists** | My Day, Important, Planned — filter automatically |
-| **Per-view time filters** | Overdue / Today / Tomorrow / Next 7 days / No date |
-| **Custom lists with colors** | Create lists with 10 color options; color appears as a left indicator on tasks |
-| **Context Launchpad Tasks** | Attach URL, File, and App resources to a task; launch all in one click |
-| **Subtasks (Steps)** | Break tasks into smaller pieces |
-| **Due dates** | Relative display — "Today", "Tomorrow", "Overdue" |
+### 📋 Task Management
+| | |
+|---|---|
+| **Smart Lists** | My Day, Important, Planned — filter automatically |
+| **Custom Lists** | Create lists with 10 color options |
+| **Subtasks** | Break tasks into smaller pieces |
+| **Due Dates** | Relative display — "Today", "Tomorrow", "Overdue" |
 | **Notes** | Per-task free-text notes with auto-save |
-| **Deep Focus** | Start a focus session on any task; tracks time and blocks distracting apps |
-| **Deep Focus Timer** | Set custom duration (25/45/60/90 min presets or custom) or Infinite mode; auto-ends session with notification and marks task complete |
-| **Quick Capture (⌘⇧T)** | Global hotkey captures thoughts from anywhere; appends to Deep Focus task notes or creates an Inbox task |
-| **Search (⌘K)** | Local search across task titles and notes |
-| **Dark / Light theme** | Toggle with persistence; dark by default |
-| **Collapsible completed** | Hide completed tasks to focus on active work |
-| **Resizable detail panel** | Drag to widen or narrow the right panel |
+| **Search** | Press **⌘K** to search across all tasks |
 
----
+### 🎯 Focus
+| | |
+|---|---|
+| **Deep Focus Sessions** | Start a focus session on any task; tracks time and blocks distracting apps |
+| **Deep Focus Timer** | Set custom duration (25/45/60/90 min or custom) or Infinite mode. Timer auto-ends session, shows notification, marks task complete |
 
-## How to Use
+### 🚀 Productivity
+| | |
+|---|---|
+| **Context Launchpad** | Attach URLs, files, and apps to a task; launch all in one click |
+| **Quick Capture** | Press **⌘⇧T** from any app to capture thoughts |
+| **Collapsible Completed** | Hide completed tasks to focus on active work |
 
-### Create a task
-
-1. Select a list in the sidebar (or use **Inbox**).
-2. Press **⌘⇧N** or click the **+** button.
-3. Type your task title and press Enter.
-
-### Set a due date
-
-1. Select a task.
-2. In the detail panel, click the **date field**.
-3. Choose a date from the picker, or type "today", "tomorrow", or a date.
-
-### Attach resources (URL, file, app)
-
-1. Select a task.
-2. In the detail panel, click **Add URL**, **Add File**, or **Add App**.
-3. Use the native picker to select your resource.
-4. Click **Launch All** to open everything at once.
-
-### Start a Deep Focus session
-
-1. Select a task.
-2. Press **⌘⇧F** or click **Start Focus** in the detail panel.
-3. Choose **Timed** (enter minutes or pick a preset) or **Infinite** mode.
-4. Click **Start**. When the timer ends, you'll get a notification and the task marks complete automatically.
-
-### Filter tasks by time
-
-- Click the **time filter bar** at the top of the task list.
-- Choose **Overdue**, **Today**, **Tomorrow**, **Next 7 days**, or **No date**.
-- The filter applies to the current view.
-
-### Search tasks
-
-1. Press **⌘K**.
-2. Type your search query.
-3. Results show matching tasks from all lists.
-
-### Quick Capture
-
-1. Press **⌘⇧T** from any application.
-2. Type your thought and press Enter.
-3. If a Deep Focus session is active, the note is appended to that task. Otherwise, a new Inbox task is created.
+### 🎨 Customization
+| | |
+|---|---|
+| **Dark / Light Theme** | Toggle with persistence; dark by default |
+| **Resizable Panel** | Drag to adjust detail panel width |
 
 ---
 
@@ -106,90 +84,53 @@ On first launch, the app will prompt for **Accessibility permission** to enable 
 
 | Shortcut | Action |
 |----------|--------|
-| ⌘⇧T | Quick Capture (global hotkey) |
-| ⌘⇧F | Start Deep Focus on selected task |
-| ⌘⇧N | Add new task to current view |
-| ⌘K | Search tasks |
-| ⌘W | Close current window |
-| ⌘Q | Quit app |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>T</kbd> | Quick Capture (global hotkey) |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>F</kbd> | Start Deep Focus on selected task |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>N</kbd> | Add new task to current view |
+| <kbd>⌘</kbd><kbd>K</kbd> | Search tasks |
+| <kbd>⌘</kbd><kbd>W</kbd> | Close current window |
+| <kbd>⌘</kbd><kbd>Q</kbd> | Quit app |
 
 ---
 
-## For Developers
-
-### Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| App Framework | SwiftUI |
+| UI Framework | SwiftUI |
 | State Management | Observation (`@Observable`) |
 | Database | SQLite via GRDB |
-| Build | Xcode + xcodegen |
+| Build System | Xcode + xcodegen |
 | Packaging | Zipped `.app` in GitHub Releases |
-
-### Requirements
-
-- **Xcode** 16+
-- **macOS** 14+
-- **xcodegen**
 
 ### Project Structure
 
 ```
 macos/TodoFocusMac/
-  Sources/
-    App/           # AppModel, TodoAppStore, DeepFocusService, LaunchpadService, QuickCaptureService
-    Core/          # Domain models (Todo, List, Step, LaunchResource) and filters
-    Data/          # GRDB migrations, DTOs (Record types), and repositories
-    Features/      # SwiftUI views organized by feature (Sidebar, TaskList, TaskDetail, Common, QuickCapture)
-  Tests/
-    CoreTests/     # Domain and behavior tests
-    DataTests/     # Migration and repository tests
+├── Sources/
+│   ├── App/           # AppModel, TodoAppStore, DeepFocusService
+│   ├── Core/          # Domain models (Todo, List, Step)
+│   ├── Data/          # GRDB migrations, DTOs, repositories
+│   └── Features/      # SwiftUI views
+└── Tests/
 ```
 
-### Build & Test
+### Building
 
 ```bash
-# Generate Xcode project (after adding/removing/renaming files)
+# Generate project after file changes
 xcodegen generate
 
 # Build
-xcodebuild build -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 
 # Test
-xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
-
-# Run a single test file
-xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS" -only-testing:CoreTests/TodoAppStoreTests
+xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
-
-### Architecture
-
-**State Management:**
-- `@Observable @MainActor TodoAppStore` is the central state holder — owns lists and todos, coordinates CRUD via repositories, and computes visible todos through `AppModel.query()`.
-- `AppModel` holds UI state: selected sidebar item, selected todo ID, time filter, sort order, theme, and window size.
-
-**Data Flow:**
-```
-GRDB Records (TodoRecord, ListRecord, StepRecord)
-    ↓ Record extensions map to domain models (Todo, TodoList, TodoStep)
-    ↓ Repositories fetch and store records
-    ↓ TodoAppStore orchestrates and exposes state to views
-    ↓ SwiftUI Views observe TodoAppStore
-```
-
-**Key Patterns:**
-- Views only handle UI; `TodoAppStore` handles business logic; repositories handle persistence.
-- Notes auto-save with 0.5s debounce via `DispatchWorkItem`.
-- Launch resources are validated via `LaunchResourceValidation` before persistence and launched via `NSWorkspace` only (no shell execution).
-- GRDB migrations run automatically on first launch via `DatabaseManager.makeMigrator()`.
 
 ### Releasing
 
-Releases use the `release-macos-native` GitHub Actions workflow, triggered by version tags:
-
 ```bash
-git checkout main && git pull
 git tag vX.Y.Z
 git push origin vX.Y.Z
 gh workflow run release-macos-native -f tag=vX.Y.Z
@@ -199,27 +140,21 @@ gh workflow run release-macos-native -f tag=vX.Y.Z
 
 ## Troubleshooting
 
-**Build fails after renaming files.**
-Run `xcodegen generate` and rebuild.
-
-**App data looks stale or corrupted.**
-Delete `~/Library/Application Support/todofocus/todofocus.db` for a clean local reset. The database is rebuilt on next launch.
-
-**Global hotkey (⌘⇧T) doesn't work.**
-Verify that TodoFocus has **Accessibility permission** in **System Settings > Privacy & Security > Accessibility**.
-
-**File or app launch fails.**
-Check that TodoFocus has **Full Disk Access** or the relevant file access permissions in **System Settings > Privacy & Security**.
-
-**Picker dialogs don't open.**
-Verify macOS file and app permissions for TodoFocus.
+| Issue | Solution |
+|-------|----------|
+| Build fails after renaming files | Run `xcodegen generate` |
+| Data looks stale | Delete `~/Library/Application Support/todofocus/todofocus.db` |
+| Global hotkey doesn't work | Grant **Accessibility permission** in System Settings |
+| App launch fails | Grant **Full Disk Access** or relevant permissions |
 
 ---
 
 ## Contributing
 
-Issues and pull requests are welcome. Please read the existing code and tests before submitting PRs.
+Issues and pull requests welcome.
+
+---
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](LICENSE) — See [LICENSE](LICENSE) for details.
