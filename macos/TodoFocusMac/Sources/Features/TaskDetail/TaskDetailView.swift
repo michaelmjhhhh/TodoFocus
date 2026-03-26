@@ -543,6 +543,14 @@ struct DeepFocusSetupSheet: View {
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
 
+    private let minuteFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimum = 1
+        formatter.maximum = 480
+        return formatter
+    }()
+
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),
         ("Safari", "com.apple.Safari"),
@@ -586,6 +594,42 @@ struct DeepFocusSetupSheet: View {
             Text("Start Deep Focus")
                 .font(.headline)
                 .padding(.top, 20)
+
+            // Timer Mode Picker
+            VStack(spacing: 12) {
+                Picker("Focus Mode", selection: $isTimedMode) {
+                    Text("Timed").tag(true)
+                    Text("Infinite").tag(false)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 20)
+
+                if isTimedMode {
+                    HStack(spacing: 8) {
+                        TextField("Minutes", value: $minutes, formatter: minuteFormatter)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 80)
+                            .onChange(of: minutes) { _, newValue in
+                                if newValue < 1 { minutes = 1 }
+                                if newValue > 480 { minutes = 480 }
+                            }
+
+                        Text("minutes")
+                            .foregroundStyle(VisualTokens.textSecondary)
+
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                } else {
+                    Text("Session runs until you manually end it")
+                        .font(.caption)
+                        .foregroundStyle(VisualTokens.textSecondary)
+                        .padding(.horizontal, 20)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: isTimedMode)
 
             Text("Select apps to block during focus session")
                 .font(.subheadline)
