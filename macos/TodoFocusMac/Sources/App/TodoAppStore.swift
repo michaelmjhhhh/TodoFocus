@@ -23,6 +23,25 @@ final class TodoAppStore {
     var myDayCount: Int { todos.filter { $0.isMyDay }.count }
     var todayCount: Int { todos.filter { ($0.dueDate ?? .distantPast) < Date() && !$0.isCompleted }.count }
     var plannedCount: Int { todos.filter { $0.dueDate != nil && !$0.isCompleted }.count }
+    var overdueCount: Int { todos.filter { $0.isOverdue }.count }
+    var totalOverdueDebtSeconds: Int { todos.compactMap { $0.debtSeconds }.reduce(0, +) }
+
+    func formatDebt(_ seconds: Int) -> String {
+        if seconds < 60 {
+            return "\(seconds)s"
+        } else if seconds < 3600 {
+            let minutes = seconds / 60
+            return "\(minutes)m"
+        } else {
+            let hours = seconds / 3600
+            let minutes = (seconds % 3600) / 60
+            if minutes > 0 {
+                return "\(hours)h \(minutes)m"
+            } else {
+                return "\(hours)h"
+            }
+        }
+    }
 
     func countForList(_ listId: String) -> Int {
         todos.filter { $0.listId == listId && !$0.isCompleted }.count
