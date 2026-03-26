@@ -1,7 +1,7 @@
 # TodoFocus
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x500/1C1C1E/C46849?text=TodoFocus" alt="TodoFocus" width="800"/>
+  <img src="assets/overdue-screenshot.png" alt="TodoFocus" width="800"/>
 </p>
 
 <p align="center">
