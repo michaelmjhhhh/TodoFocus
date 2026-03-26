@@ -1,7 +1,22 @@
 import SwiftUI
 
+struct DebtBadge: View {
+    let timeString: String
+
+    var body: some View {
+        Text("Overdue \(timeString)")
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(Color.red)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Color.red.opacity(0.12))
+            .cornerRadius(4)
+    }
+}
+
 struct TodoRowView: View {
     let todo: Todo
+    let store: TodoAppStore
     let listColor: Color?
     let isSelected: Bool
     let onSelect: () -> Void
@@ -59,6 +74,9 @@ struct TodoRowView: View {
                     }
                     .font(.caption2)
                     .foregroundStyle(isSelected ? Color.white.opacity(0.82) : VisualTokens.mutedText)
+                }
+                if todo.isOverdue {
+                    DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
                 }
             }
 

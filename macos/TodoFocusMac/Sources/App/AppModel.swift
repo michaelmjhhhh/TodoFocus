@@ -15,6 +15,9 @@ final class AppModel {
         if selection != next {
             selection = next
             selectedTodoID = nil
+            if next == .overdue {
+                timeFilter = .overdue
+            }
         }
     }
 
@@ -30,6 +33,8 @@ final class AppModel {
             return "important"
         case .planned:
             return "planned"
+        case .overdue:
+            return "overdue"
         case .all:
             return "all"
         case let .customList(id):

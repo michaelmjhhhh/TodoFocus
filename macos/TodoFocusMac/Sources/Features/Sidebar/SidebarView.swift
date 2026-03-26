@@ -22,6 +22,7 @@ struct SidebarView: View {
                 smartRow("My Day", systemImage: "sun.max", selection: .myDay, count: store.myDayCount)
                 smartRow("Important", systemImage: "star", selection: .important, count: store.importantCount)
                 smartRow("Planned", systemImage: "calendar", selection: .planned, count: store.plannedCount)
+                smartRow("Overdue", systemImage: "exclamationmark.triangle", selection: .overdue, count: store.overdueCount)
                 smartRow("All Tasks", systemImage: "tray.full", selection: .all, count: store.todoCount)
             }
 

@@ -35,6 +35,7 @@ private func diffInLocalDays(from: Date, to: Date, calendar: Calendar) -> Int {
 func matches(
     filter: TimeFilter,
     dueDate: Date?,
+    isCompleted: Bool,
     now: Date = Date(),
     calendar: Calendar = .current
 ) -> Bool {
@@ -53,7 +54,7 @@ func matches(
     let dayDiff = diffInLocalDays(from: now, to: dueDate, calendar: calendar)
 
     if filter == .overdue {
-        return dayDiff < 0
+        return !isCompleted && dayDiff < 0
     }
 
     if filter == .today {
@@ -70,8 +71,9 @@ func matches(
 func matchesTimeFilter(
     _ filter: TimeFilter,
     dueDate: Date?,
+    isCompleted: Bool,
     now: Date = Date(),
     calendar: Calendar = .current
 ) -> Bool {
-    matches(filter: filter, dueDate: dueDate, now: now, calendar: calendar)
+    matches(filter: filter, dueDate: dueDate, isCompleted: isCompleted, now: now, calendar: calendar)
 }

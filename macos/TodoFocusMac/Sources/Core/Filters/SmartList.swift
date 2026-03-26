@@ -32,6 +32,6 @@ func applyFilters(
 ) -> [CoreTodo] {
     let smartListFiltered = filterTodos(todos, for: smartList)
     return smartListFiltered.filter {
-        matchesTimeFilter(timeFilter, dueDate: $0.dueDate, now: now, calendar: calendar)
+        matchesTimeFilter(timeFilter, dueDate: $0.dueDate, isCompleted: $0.isCompleted, now: now, calendar: calendar)
     }
 }
