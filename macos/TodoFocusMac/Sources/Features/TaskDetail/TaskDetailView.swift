@@ -83,9 +83,9 @@ struct TaskDetailView: View {
         .sheet(isPresented: $showDeepFocusSheet) {
             DeepFocusSetupSheet(
                 selectedApps: $selectedBlockedApps,
-                onStart: {
+                onStart: { duration in
                     if let focusTaskId = todo?.id {
-                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), focusTaskId: focusTaskId)
+                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), duration: duration, focusTaskId: focusTaskId)
                     }
                     showDeepFocusSheet = false
                 },
@@ -537,9 +537,19 @@ struct StepsEditorView: View {
 
 struct DeepFocusSetupSheet: View {
     @Binding var selectedApps: Set<String>
-    let onStart: () -> Void
+    let onStart: (TimeInterval?) -> Void
     let onCancel: () -> Void
     @State private var customApps: [(name: String, bundleId: String)] = []
+    @State private var isTimedMode: Bool = true
+    @State private var minutes: Int = 25
+
+    private let minuteFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimum = 1
+        formatter.maximum = 480
+        return formatter
+    }()
 
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),
@@ -584,6 +594,42 @@ struct DeepFocusSetupSheet: View {
             Text("Start Deep Focus")
                 .font(.headline)
                 .padding(.top, 20)
+
+            // Timer Mode Picker
+            VStack(spacing: 12) {
+                Picker("Focus Mode", selection: $isTimedMode) {
+                    Text("Timed").tag(true)
+                    Text("Infinite").tag(false)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 20)
+
+                if isTimedMode {
+                    HStack(spacing: 8) {
+                        TextField("Minutes", value: $minutes, formatter: minuteFormatter)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 80)
+                            .onChange(of: minutes) { _, newValue in
+                                if newValue < 1 { minutes = 1 }
+                                if newValue > 480 { minutes = 480 }
+                            }
+
+                        Text("minutes")
+                            .foregroundStyle(VisualTokens.textSecondary)
+
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                } else {
+                    Text("Session runs until you manually end it")
+                        .font(.caption)
+                        .foregroundStyle(VisualTokens.textSecondary)
+                        .padding(.horizontal, 20)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: isTimedMode)
 
             Text("Select apps to block during focus session")
                 .font(.subheadline)
@@ -637,7 +683,8 @@ struct DeepFocusSetupSheet: View {
                 .foregroundStyle(VisualTokens.textPrimary)
 
                 Button("Start") {
-                    onStart()
+                    let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
+                    onStart(duration)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)

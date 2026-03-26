@@ -96,6 +96,14 @@ final class TodoAppStore {
         }
     }
 
+    func markComplete(todoId: String) throws {
+        var input = UpdateTodoInput()
+        input.isCompleted = true
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try reload()
+        NSSound(named: NSSound.Name("Pop"))?.play()
+    }
+
     func toggleImportant(todoId: String) throws {
         guard let current = try todoRepository.fetchTodo(id: todoId) else {
             return
@@ -231,8 +239,15 @@ final class TodoAppStore {
         try? reload()
     }
 
-    func startDeepFocus(blockedApps: [String], focusTaskId: String) {
-        appModel.deepFocusService.startSession(blockedApps: blockedApps, focusTaskId: focusTaskId)
+    func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String) {
+        appModel.deepFocusService.startSession(
+            blockedApps: blockedApps,
+            duration: duration,
+            focusTaskId: focusTaskId,
+            onTimerComplete: { [weak self] in
+                try? self?.markComplete(todoId: focusTaskId)
+            }
+        )
     }
 
     func endDeepFocus() -> DeepFocusReport? {
