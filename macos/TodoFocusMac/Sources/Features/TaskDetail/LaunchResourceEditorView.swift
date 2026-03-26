@@ -196,7 +196,7 @@ struct LaunchResourceEditorView: View {
         HStack(spacing: 10) {
             Image(systemName: item.type.icon)
                 .font(.system(size: 12))
-                .foregroundStyle(item.type.color)
+                .foregroundStyle(resourceTypeColor(item.type))
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 1) {
@@ -345,6 +345,14 @@ struct LaunchResourceEditorView: View {
         }
         return "Launched \(summary.launchedCount). \(summary.failedCount + summary.rejectedCount) failed"
     }
+
+    private func resourceTypeColor(_ type: LaunchResourceType) -> Color {
+        switch type {
+        case .url: return tokens.accentBlue
+        case .file: return tokens.accentAmber
+        case .app: return tokens.accentViolet
+        }
+    }
 }
 
 extension LaunchResourceType: CaseIterable, Identifiable {
@@ -369,14 +377,6 @@ extension LaunchResourceType {
         case .url: return "link"
         case .file: return "doc"
         case .app: return "app.badge"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .url: return VisualTokens.accentBlue
-        case .file: return VisualTokens.accentAmber
-        case .app: return VisualTokens.accentViolet
         }
     }
 }
