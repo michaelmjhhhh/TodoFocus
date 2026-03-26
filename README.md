@@ -7,7 +7,7 @@ Local-first native macOS todo app for focused execution, not just list keeping.
 - **Local-first by default** — Data lives on your machine in SQLite. No account, no cloud, no sync friction.
 - **Start work instantly** — Attach URLs, files, and apps to any task. Click **Launch All** to open your entire work context at once.
 - **Focus filters** — See exactly what matters today. Filter any view by Overdue, Today, Tomorrow, Next 7 days, or No date.
-- **Deep Focus sessions** — Track cumulative focus time and block distracting apps while you work.
+- **Deep Focus sessions** — Track cumulative focus time, block distracting apps, and set a timer to auto-end sessions.
 
 ---
 
@@ -45,6 +45,7 @@ On first launch, the app will prompt for **Accessibility permission** to enable 
 | **Due dates** | Relative display — "Today", "Tomorrow", "Overdue" |
 | **Notes** | Per-task free-text notes with auto-save |
 | **Deep Focus** | Start a focus session on any task; tracks time and blocks distracting apps |
+| **Deep Focus Timer** | Set custom duration (25/45/60/90 min presets or custom) or Infinite mode; auto-ends session with notification and marks task complete |
 | **Quick Capture (⌘⇧T)** | Global hotkey captures thoughts from anywhere; appends to Deep Focus task notes or creates an Inbox task |
 | **Search (⌘K)** | Local search across task titles and notes |
 | **Dark / Light theme** | Toggle with persistence; dark by default |
@@ -78,7 +79,8 @@ On first launch, the app will prompt for **Accessibility permission** to enable 
 
 1. Select a task.
 2. Press **⌘⇧F** or click **Start Focus** in the detail panel.
-3. The session timer begins. If you have blocklist apps configured, the app will enforce focus by closing them if opened.
+3. Choose **Timed** (enter minutes or pick a preset) or **Infinite** mode.
+4. Click **Start**. When the timer ends, you'll get a notification and the task marks complete automatically.
 
 ### Filter tasks by time
 
@@ -220,4 +222,4 @@ Issues and pull requests are welcome. Please read the existing code and tests be
 
 ## License
 
-MIT
+[AGPL-3.0](LICENSE)
