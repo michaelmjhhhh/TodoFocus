@@ -42,8 +42,11 @@ struct TodoFocusMacApp: App {
                         appModel: appModel,
                         store: store,
                         launchpadService: launchpadService,
-                        databasePath: databaseManager?.path ?? "unavailable"
+                        databasePath: databaseManager?.path ?? "unavailable",
+                        themeStore: themeStore
                     )
+                    .preferredColorScheme(themeStore.preferredColorScheme)
+                    .themeMode(themeStore.theme)
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Database unavailable")
@@ -63,7 +66,7 @@ struct TodoFocusMacApp: App {
 
 #if os(macOS)
         Settings {
-            SettingsView(databasePath: databaseManager?.path ?? "")
+            SettingsView(databasePath: databaseManager?.path ?? "", themeStore: themeStore)
         }
 #endif
     }
