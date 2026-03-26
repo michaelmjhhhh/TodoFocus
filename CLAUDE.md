@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TodoFocus is a native macOS todo app built with SwiftUI + Observation + GRDB/SQLite. It features a three-panel layout (Sidebar, TaskList, TaskDetail), per-view time filtering, Context Launchpad Tasks (attach url/file/app resources), Deep Focus sessions, and Quick Capture global hotkey.
+TodoFocus is a native macOS todo app built with SwiftUI + Observation + GRDB/SQLite. It features a three-panel layout (Sidebar, TaskList, TaskDetail), per-view time filtering, Context Launchpad Tasks (attach url/file/app resources), Deep Focus sessions with timer, and Quick Capture global hotkey.
 
 ## Build Commands
 
