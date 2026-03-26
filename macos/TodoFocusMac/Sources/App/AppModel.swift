@@ -15,6 +15,9 @@ final class AppModel {
         if selection != next {
             selection = next
             selectedTodoID = nil
+            if next == .overdue {
+                timeFilter = .overdue
+            }
         }
     }
 
