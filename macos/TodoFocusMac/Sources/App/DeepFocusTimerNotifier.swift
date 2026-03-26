@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-final class DeepFocusTimerNotifier {
+final class DeepFocusTimerNotifier: @unchecked Sendable {
     private let notificationCenter = UNUserNotificationCenter.current()
     private let categoryIdentifier = "DEEP_FOCUS_COMPLETE"
 

@@ -1,21 +1,22 @@
 import Foundation
 import AppKit
 import Observation
+import Combine
 
 struct DeepFocusStats: Codable {
     var totalFocusTime: TimeInterval = 0
     var sessionCount: Int = 0
     var distractionCount: Int = 0
-    
+
     static let key = "deepFocusStats"
-    
+
     static func load() -> DeepFocusStats {
         guard let data = UserDefaults.standard.data(forKey: key),
-              let stats = try? JSONDecoder().decode(DeepFocusStats.self, from: data) 
+              let stats = try? JSONDecoder().decode(DeepFocusStats.self, from: data)
         else { return DeepFocusStats() }
         return stats
     }
-    
+
     func save() {
         if let data = try? JSONEncoder().encode(self) {
             UserDefaults.standard.set(data, forKey: DeepFocusStats.key)
@@ -39,17 +40,61 @@ final class DeepFocusService {
     private var sessionStartTime: Date?
     private var overlayWindow: NSWindow?
     private var appMonitor: NSObjectProtocol?
+    private var timerCancellable: AnyCancellable?
+    @ObservationIgnored private var timerNotifier = DeepFocusTimerNotifier()
+    private var onTimerComplete: (() -> Void)?
 
-    func startSession(blockedApps: [String], focusTaskId: String) {
+    func startSession(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, onTimerComplete: (() -> Void)? = nil) {
+        // End any existing session first
+        if isActive {
+            _ = endSession()
+        }
+
         self.blockedApps = Set(blockedApps)
         self.currentFocusTaskId = focusTaskId
         self.currentSessionId = UUID().uuidString
         self.sessionStartTime = Date()
         self.isActive = true
+        self.onTimerComplete = onTimerComplete
+
+        // Request notification permission if we have a duration
+        if let duration, duration > 0 {
+            Task {
+                _ = await timerNotifier.requestAuthorization()
+            }
+            startTimer(duration: duration)
+        }
+
         startMonitoring()
     }
 
+    private func startTimer(duration: TimeInterval) {
+        timerCancellable = Timer.publish(every: duration, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.handleTimerComplete()
+            }
+    }
+
+    private func handleTimerComplete() {
+        timerCancellable?.cancel()
+        timerCancellable = nil
+
+        guard let report = endSession() else { return }
+
+        // Show notification
+        timerNotifier.notifySessionComplete(report: report)
+
+        // Mark task complete
+        onTimerComplete?()
+
+        // Show report (handled by onEndFocusSession callback in UI)
+    }
+
     func endSession() -> DeepFocusReport? {
+        timerCancellable?.cancel()
+        timerCancellable = nil
+
         guard isActive, let sessionId = currentSessionId, let startTime = sessionStartTime else {
             return nil
         }
@@ -60,7 +105,7 @@ final class DeepFocusService {
         stats.sessionCount += 1
         stats.distractionCount += sessionDistractionCount
         stats.save()
-        
+
         let report = DeepFocusReport(
             duration: duration,
             distractionCount: sessionDistractionCount,
@@ -82,7 +127,7 @@ final class DeepFocusService {
         distractionAttempts[appBundleId, default: 0] += 1
         distractionAppNames[appBundleId] = appName
     }
-    
+
     private func startMonitoring() {
         let workspace = NSWorkspace.shared
         let notificationCenter = workspace.notificationCenter

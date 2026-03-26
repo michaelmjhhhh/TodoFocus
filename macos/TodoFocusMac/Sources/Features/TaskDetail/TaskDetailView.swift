@@ -83,9 +83,9 @@ struct TaskDetailView: View {
         .sheet(isPresented: $showDeepFocusSheet) {
             DeepFocusSetupSheet(
                 selectedApps: $selectedBlockedApps,
-                onStart: {
+                onStart: { duration in
                     if let focusTaskId = todo?.id {
-                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), focusTaskId: focusTaskId)
+                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), duration: duration, focusTaskId: focusTaskId)
                     }
                     showDeepFocusSheet = false
                 },
@@ -537,9 +537,11 @@ struct StepsEditorView: View {
 
 struct DeepFocusSetupSheet: View {
     @Binding var selectedApps: Set<String>
-    let onStart: () -> Void
+    let onStart: (TimeInterval?) -> Void
     let onCancel: () -> Void
     @State private var customApps: [(name: String, bundleId: String)] = []
+    @State private var isTimedMode: Bool = true
+    @State private var minutes: Int = 25
 
     private let availableApps: [(name: String, bundleId: String)] = [
         ("Messages", "com.apple.MobileSMS"),
@@ -637,7 +639,8 @@ struct DeepFocusSetupSheet: View {
                 .foregroundStyle(VisualTokens.textPrimary)
 
                 Button("Start") {
-                    onStart()
+                    let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
+                    onStart(duration)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)
