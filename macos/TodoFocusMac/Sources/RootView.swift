@@ -24,7 +24,7 @@ struct RootView: View {
         GeometryReader { proxy in
             HStack(spacing: 0) {
                 if isSidebarVisible {
-                    SidebarView(appModel: appModel, store: store, lists: store.lists)
+                    SidebarView(appModel: appModel, store: store, lists: store.lists, themeStore: themeStore)
                         .frame(width: 250)
                         .background(themeTokens.bgElevated)
                         .overlay(alignment: .trailing) {

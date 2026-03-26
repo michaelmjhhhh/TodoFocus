@@ -4,6 +4,7 @@ struct SidebarView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
     let lists: [TodoList]
+    let themeStore: ThemeStore
     @Environment(\.themeTokens) private var tokens
     @State private var isAddingList: Bool = false
     @State private var newListName: String = ""
@@ -46,6 +47,13 @@ struct SidebarView: View {
                 } else {
                     addListButton
                 }
+            } footer: {
+                HStack {
+                    Spacer()
+                    themeToggleButton
+                    Spacer()
+                }
+                .padding(.top, 4)
             }
         }
         .listStyle(.sidebar)
@@ -181,6 +189,49 @@ struct SidebarView: View {
                 store.deleteList(listId: lists[index].id)
             }
         }
+    }
+
+    private func cycleTheme() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            switch themeStore.theme {
+            case .dark:
+                themeStore.theme = .light
+            case .light:
+                themeStore.theme = .system
+            case .system:
+                themeStore.theme = .dark
+            }
+        }
+    }
+
+    private var themeIcon: String {
+        switch themeStore.theme {
+        case .dark: return "moon.fill"
+        case .light: return "sun.max.fill"
+        case .system: return "circle.lefthalf.filled"
+        }
+    }
+
+    private var themeTooltip: String {
+        switch themeStore.theme {
+        case .dark: return "Dark mode — click to switch"
+        case .light: return "Light mode — click to switch"
+        case .system: return "System mode — click to switch"
+        }
+    }
+
+    private var themeToggleButton: some View {
+        Button {
+            cycleTheme()
+        } label: {
+            Image(systemName: themeIcon)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(tokens.textSecondary)
+                .frame(width: 28, height: 28)
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 6))
+        }
+        .buttonStyle(.plain)
+        .help(themeTooltip)
     }
 }
 
