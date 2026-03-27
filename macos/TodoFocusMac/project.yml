@@ -15,7 +15,9 @@ targets:
     type: application
     platform: macOS
     sources:
-      - Sources
+      - path: Sources
+        excludes:
+          - Agent/**
       - path: Assets.xcassets
         buildPhase: resources
     settings:
@@ -29,6 +31,26 @@ targets:
       testTargets:
         - CoreTests
         - DataTests
+  TodoFocusAgent:
+    type: tool
+    platform: macOS
+    sources:
+      - path: Sources/Agent
+      - path: Sources/Data/Database/Migrations.swift
+      - path: Sources/Data/DTO/HardFocusSessionRecord.swift
+      - path: Sources/Data/DTO/AgentHeartbeatRecord.swift
+      - path: Sources/Data/Database/DatabaseManager.swift
+      - path: Sources/Data/Repositories/HardFocusSessionRepository.swift
+    settings:
+      base:
+        PRODUCT_NAME: TodoFocusAgent
+        PRODUCT_BUNDLE_IDENTIFIER: com.michaelmjhhhh.todofocus.agent
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+        SWIFT_VERSION: "6.0"
+    dependencies:
+      - package: GRDB
   CoreTests:
     type: bundle.unit-test
     platform: macOS
