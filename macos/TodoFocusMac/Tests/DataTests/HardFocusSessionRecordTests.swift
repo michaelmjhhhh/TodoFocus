@@ -8,7 +8,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
         let record = HardFocusSessionRecord(
             sessionId: "test-id",
             mode: "hard",
-            status: "active",
+            status: .active,
             startTime: now,
             plannedEndTime: plannedEnd,
             actualEndTime: nil,
@@ -21,7 +21,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
 
         XCTAssertEqual(record.sessionId, "test-id")
         XCTAssertEqual(record.mode, "hard")
-        XCTAssertEqual(record.status, "active")
+        XCTAssertEqual(record.status, .active)
         XCTAssertEqual(record.startTime.timeIntervalSince1970, now.timeIntervalSince1970, accuracy: 1)
         XCTAssertEqual(record.plannedEndTime.timeIntervalSince1970, plannedEnd.timeIntervalSince1970, accuracy: 1)
         XCTAssertNil(record.actualEndTime)
@@ -36,7 +36,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
         let record = HardFocusSessionRecord(
             sessionId: "test-id",
             mode: "hard",
-            status: "active",
+            status: .active,
             startTime: Date(),
             plannedEndTime: Date().addingTimeInterval(3600),
             actualEndTime: nil,

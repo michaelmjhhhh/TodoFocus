@@ -14,7 +14,7 @@ final class HardFocusSessionRepository {
         }
     }
 
-    func updateStatus(sessionId: String, status: String, actualEndTime: Date? = nil) throws {
+    func updateStatus(sessionId: String, status: HardFocusStatus, actualEndTime: Date? = nil) throws {
         try dbQueue.write { db in
             try db.execute(
                 sql: """
@@ -22,7 +22,7 @@ final class HardFocusSessionRepository {
                     SET status = ?, actual_end_time = ?
                     WHERE session_id = ?
                     """,
-                arguments: [status, actualEndTime, sessionId]
+                arguments: [status.rawValue, actualEndTime, sessionId]
             )
         }
     }
@@ -30,7 +30,7 @@ final class HardFocusSessionRepository {
     func activeSession() throws -> HardFocusSessionRecord? {
         try dbQueue.read { db in
             try HardFocusSessionRecord
-                .filter(Column("status") == "active")
+                .filter(Column("status") == HardFocusStatus.active)
                 .order(Column("created_at").desc)
                 .fetchOne(db)
         }
