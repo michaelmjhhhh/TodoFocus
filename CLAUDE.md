@@ -62,6 +62,31 @@ GRDB Records (TodoRecord, ListRecord, StepRecord)
 - Migrations v2: adds `focusTimeSeconds` to `todo`
 - Delete `todofocus.db` to reset local data
 
+## Contributor Guidelines
+
+- Keep changes focused and small; avoid unrelated refactors in the same PR.
+- Follow existing stack: SwiftUI + Observation, GRDB + SQLite, native macOS APIs.
+- Run checks before opening a PR: `xcodebuild test ...` and a quick local build.
+- Do not commit secrets (`.env`, local DB files, signing credentials).
+- For data model changes, include GRDB migration updates and verify app startup still applies migrations.
+- For non-trivial feature work, write a plan in `docs/superpowers/plans/` before implementation.
+
+## Security Guardrails (Launchpad)
+
+- Never add shell/command execution for launch resources.
+- Keep launch operations in native macOS service (`NSWorkspace`) with strict payload validation.
+- URL scheme allowlist restrictions must reject unsupported payloads.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| ⌘⇧T | Quick Capture (global hotkey, requires Accessibility permission) |
+| ⌘⇧F | Start Deep Focus on selected task |
+| ⌘⇧L | Toggle theme (Dark → Light → System) |
+| ⌘⇧N | Add new task to current view |
+| ⌘K | Search tasks by title and notes |
+
 ## Release Workflow
 
 Releases use the `release-macos-native` GitHub Actions workflow triggered by `v*` tags:
