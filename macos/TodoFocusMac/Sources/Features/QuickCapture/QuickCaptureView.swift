@@ -5,59 +5,60 @@ struct QuickCaptureView: View {
     let onSubmit: () -> Void
     let onCancel: () -> Void
     let targetInfo: String
+    @Environment(\.themeTokens) private var tokens
     @State private var isSubmitting = false
     @State private var showSuccess = false
-    
+
     var body: some View {
         VStack(spacing: 12) {
             HStack {
                 Image(systemName: "lightbulb.fill")
-                    .foregroundColor(Color(hex: "C46849"))
+                    .foregroundColor(tokens.accentTerracotta)
                     .font(.system(size: 16))
                 Text("Quick Capture")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(tokens.textPrimary)
                 Spacer()
                 Text(targetInfo)
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.6))
+                    .foregroundColor(tokens.textPrimary.opacity(0.6))
             }
-            
+
             HStack {
                 TextField("Capture a thought...", text: $text)
                     .textFieldStyle(.plain)
                     .padding(10)
-                    .background(Color.white.opacity(0.1))
+                    .background(tokens.textPrimary.opacity(0.1))
                     .cornerRadius(8)
-                    .foregroundColor(.white)
+                    .foregroundColor(tokens.textPrimary)
                     .scaleEffect(isSubmitting ? 0.98 : 1.0)
                     .animation(.easeInOut(duration: 0.1), value: isSubmitting)
                     .onSubmit {
                         handleSubmit()
                     }
-                
+
                 if showSuccess {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundColor(tokens.success)
                         .font(.system(size: 20))
                         .transition(.scale.combined(with: .opacity))
                 }
             }
-            
+
             HStack {
                 Spacer()
                 Button("Cancel") {
                     onCancel()
                 }
                 .buttonStyle(.plain)
-                .foregroundColor(.white.opacity(0.7))
+                .foregroundColor(tokens.textPrimary.opacity(0.7))
                 .keyboardShortcut(.escape)
-                
+
                 Button("Add") {
                     handleSubmit()
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Color(hex: "C46849"))
+                .tint(tokens.accentTerracotta)
                 .keyboardShortcut(.return)
             }
         }

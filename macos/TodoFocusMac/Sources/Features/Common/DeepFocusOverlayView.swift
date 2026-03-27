@@ -5,34 +5,35 @@ struct DeepFocusOverlayView: View {
     let attemptCount: Int
     let onDismiss: () -> Void
     let onEndFocus: () -> Void
-    
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: "flame.fill")
                 .font(.system(size: 48))
-                .foregroundColor(Color(hex: "C46849"))
-            
+                .foregroundColor(tokens.accentTerracotta)
+
             Text("Deep Focus Active")
                 .font(.title2)
                 .fontWeight(.semibold)
-            
+
             Text("You tried to open \(blockedAppName)")
-                .foregroundColor(.secondary)
-            
+                .foregroundColor(tokens.textSecondary)
+
             Text("Attempt #\(attemptCount)")
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(tokens.textSecondary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 4)
-                .background(Color.secondary.opacity(0.2))
+                .background(tokens.textSecondary.opacity(0.2))
                 .clipShape(Capsule())
-            
+
             HStack(spacing: 16) {
                 Button("End Focus") {
                     onEndFocus()
                 }
                 .buttonStyle(.bordered)
-                
+
                 Button("Dismiss") {
                     onDismiss()
                 }
@@ -42,7 +43,7 @@ struct DeepFocusOverlayView: View {
         .padding(32)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(hex: "1C1C1E"))
+                .fill(tokens.bgElevated)
                 .shadow(radius: 20)
         )
         .frame(width: 300)
