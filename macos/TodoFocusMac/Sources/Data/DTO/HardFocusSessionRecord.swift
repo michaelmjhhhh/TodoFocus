@@ -1,12 +1,19 @@
 import Foundation
 import GRDB
 
+enum HardFocusStatus: String, Codable, DatabaseValueConvertible {
+    case active
+    case completed
+    case interrupted
+}
+
 struct HardFocusSessionRecord: Codable, FetchableRecord, PersistableRecord, Equatable {
     static let databaseTableName = "hardfocus_session"
+    static let databasePrimaryKey: [String]? = ["session_id"]
 
     var sessionId: String
     var mode: String
-    var status: String
+    var status: HardFocusStatus
     var startTime: Date
     var plannedEndTime: Date
     var actualEndTime: Date?
