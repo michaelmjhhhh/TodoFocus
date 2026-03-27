@@ -75,7 +75,7 @@ xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -desti
 ### 🎨 Customization
 | | |
 |---|---|
-| **Dark / Light Theme** | Toggle with persistence; dark by default |
+| **Dark / Light Theme** | Toggle with sidebar button, ⌘⇧L, or Settings; dark by default |
 | **Resizable Panel** | Drag to adjust detail panel width |
 
 ---
@@ -86,6 +86,7 @@ xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -desti
 |----------|--------|
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>T</kbd> | Quick Capture (global hotkey) |
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>F</kbd> | Start Deep Focus on selected task |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>L</kbd> | Toggle theme (Dark → Light → System) |
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>N</kbd> | Add new task to current view |
 | <kbd>⌘</kbd><kbd>K</kbd> | Search tasks |
 | <kbd>⌘</kbd><kbd>W</kbd> | Close current window |

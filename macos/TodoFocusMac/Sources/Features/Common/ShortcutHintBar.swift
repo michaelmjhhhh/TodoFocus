@@ -17,6 +17,7 @@ struct ShortcutHintBar: View {
                 shortcutPill("⌘⇧T", "Quick Capture")
                 shortcutPill("⌘⇧F", "Focus")
                 shortcutPill("⌘K", "Search")
+                shortcutPill("⌘⇧L", "Theme")
                 shortcutPill("⌘⇧N", "Add")
             }
         }

@@ -191,19 +191,6 @@ struct SidebarView: View {
         }
     }
 
-    private func cycleTheme() {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            switch themeStore.theme {
-            case .dark:
-                themeStore.theme = .light
-            case .light:
-                themeStore.theme = .system
-            case .system:
-                themeStore.theme = .dark
-            }
-        }
-    }
-
     private var themeIcon: String {
         switch themeStore.theme {
         case .dark: return "moon.fill"
@@ -222,7 +209,9 @@ struct SidebarView: View {
 
     private var themeToggleButton: some View {
         Button {
-            cycleTheme()
+            withAnimation(.easeInOut(duration: 0.2)) {
+                themeStore.cycleTheme()
+            }
         } label: {
             Image(systemName: themeIcon)
                 .font(.system(size: 13, weight: .medium))

@@ -104,5 +104,15 @@ struct RootView: View {
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
+        .overlay(alignment: .bottomTrailing) {
+            Button("") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    themeStore.cycleTheme()
+                }
+            }
+            .keyboardShortcut("l", modifiers: [.command, .shift])
+            .opacity(0)
+            .allowsHitTesting(false)
+        }
     }
 }
