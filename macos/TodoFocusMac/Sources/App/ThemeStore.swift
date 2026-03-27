@@ -36,4 +36,15 @@ final class ThemeStore {
             return .dark
         }
     }
+
+    func cycleTheme() {
+        switch theme {
+        case .dark:
+            theme = .light
+        case .light:
+            theme = .system
+        case .system:
+            theme = .dark
+        }
+    }
 }
