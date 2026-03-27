@@ -117,7 +117,11 @@ final class AgentSessionController {
         } else {
             sessionId = nil
         }
-        try? db.writeHeartbeat(sessionId: sessionId)
+        do {
+            try db.writeHeartbeat(sessionId: sessionId)
+        } catch {
+            print("Heartbeat failed: \(error)")
+        }
     }
 
     // MARK: - Distributed Notification Hint
@@ -132,6 +136,18 @@ final class AgentSessionController {
     }
 
     @objc private func handleSessionChanged() {
-        checkForActiveSession()
+        DispatchQueue.main.async { [weak self] in
+            self?.checkForActiveSession()
+        }
+    }
+
+    deinit {
+        // Dispatch to main thread since timers were scheduled on RunLoop.main
+        DispatchQueue.main.async { [weak self] in
+            self?.idleTimer?.invalidate()
+            self?.activeTimer?.invalidate()
+            self?.heartbeatTimer?.invalidate()
+        }
+        DistributedNotificationCenter.default().removeObserver(self)
     }
 }
