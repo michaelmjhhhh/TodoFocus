@@ -268,11 +268,12 @@ private struct SidebarRowButton: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
             .background(isSelected ? tokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
+            .background(isSelected ? tokens.accentTerracotta.opacity(0.08) : Color.clear, in: RoundedRectangle(cornerRadius: 9))
             .contentShape(RoundedRectangle(cornerRadius: 9))
         }
         .buttonStyle(.plain)
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.12)) {
+            withAnimation(.easeInOut(duration: 0.15)) {
                 isHovered = hovering
             }
         }
