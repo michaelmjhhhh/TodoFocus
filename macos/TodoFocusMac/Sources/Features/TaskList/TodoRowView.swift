@@ -48,18 +48,40 @@ struct TodoRowView: View {
     var body: some View {
         HStack(spacing: 10) {
             Button(action: onToggleComplete) {
-                Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 17, weight: .semibold))
-                    .padding(5)
-                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.10), in: Circle())
+                ZStack {
+                    // Outer circle
+                    Circle()
+                        .fill(todo.isCompleted
+                            ? tokens.accentTerracotta
+                            : tokens.bgFloating)
+                        .overlay {
+                            Circle()
+                                .stroke(
+                                    todo.isCompleted
+                                        ? tokens.accentTerracotta.opacity(0.5)
+                                        : tokens.textTertiary.opacity(0.3),
+                                    lineWidth: 1.5
+                                )
+                        }
+
+                    // Inner glow ring for completed
+                    if todo.isCompleted {
+                        Circle()
+                            .stroke(tokens.accentTerracotta.opacity(0.3), lineWidth: 2)
+                            .padding(3)
+                    }
+
+                    // Checkmark
+                    Image(systemName: todo.isCompleted ? "checkmark" : "circle")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(todo.isCompleted ? .white : tokens.textTertiary)
+                }
+                .frame(width: 28, height: 28)
             }
             .buttonStyle(.plain)
             .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary)
-            .overlay {
-                Circle()
-                    .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
-                    .padding(2)
-            }
+            .scaleEffect(todo.isCompleted ? 1.0 : 0.95)
+            .animation(MotionTokens.hoverEase, value: todo.isCompleted)
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
 
             VStack(alignment: .leading, spacing: 2) {
