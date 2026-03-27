@@ -192,7 +192,7 @@ struct TaskDetailView: View {
                         Text("Deep Focus")
                             .font(.system(size: 13, weight: .semibold))
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(tokens.textPrimary)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(
@@ -334,7 +334,7 @@ struct TaskDetailView: View {
             } label: {
                 Text("End Focus")
                     .font(.subheadline.weight(.medium))
-                    .foregroundColor(.white)
+                    .foregroundStyle(tokens.textPrimary)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                     .background(tokens.accentTerracotta, in: Capsule())
@@ -486,7 +486,7 @@ struct StepsEditorView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(.white)
+                .foregroundStyle(tokens.textPrimary)
                 .opacity(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
                 .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
@@ -682,7 +682,7 @@ struct DeepFocusSetupSheet: View {
                                 } label: {
                                     Text("\(preset)m")
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundStyle(minutes == preset ? .white : tokens.textSecondary)
+                                        .foregroundStyle(minutes == preset ? tokens.textPrimary : tokens.textSecondary)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 6)
                                         .background(
@@ -776,7 +776,7 @@ struct DeepFocusSetupSheet: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
                 .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(.white)
+                .foregroundStyle(tokens.textPrimary)
             }
             .padding(.bottom, 20)
         }
