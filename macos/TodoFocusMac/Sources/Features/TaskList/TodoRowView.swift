@@ -135,9 +135,9 @@ struct TodoRowView: View {
         }
         .animation(MotionTokens.hoverEase, value: isHovered)
         .scaleEffect(isPressed ? 0.99 : 1.0)
-        .animation(.easeInOut(duration: 0.1), value: isPressed)
+        .animation(MotionTokens.hoverEase, value: isPressed)
         .gesture(
-            DragGesture(minimumDistance: 0)
+            LongPressGesture(minimumDuration: 0)
                 .onChanged { _ in if !isPressed { isPressed = true } }
                 .onEnded { _ in isPressed = false }
         )
