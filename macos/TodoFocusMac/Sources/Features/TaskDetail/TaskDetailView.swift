@@ -39,21 +39,21 @@ struct TaskDetailView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         dateSection(todo: todo)
                         Divider()
-                            .background(tokens.sectionBorder.opacity(0.5))
+                            .foregroundStyle(tokens.sectionBorder.opacity(0.5))
                             .padding(.vertical, 12)
                         if todo.focusTimeSeconds > 0 {
                             focusTimeSection(todo: todo)
                             Divider()
-                                .background(tokens.sectionBorder.opacity(0.5))
+                                .foregroundStyle(tokens.sectionBorder.opacity(0.5))
                                 .padding(.vertical, 12)
                         }
                         notesSection(todo: todo)
                         Divider()
-                            .background(tokens.sectionBorder.opacity(0.5))
+                            .foregroundStyle(tokens.sectionBorder.opacity(0.5))
                             .padding(.vertical, 12)
                         stepsSection(todo: todo)
                         Divider()
-                            .background(tokens.sectionBorder.opacity(0.5))
+                            .foregroundStyle(tokens.sectionBorder.opacity(0.5))
                             .padding(.vertical, 12)
                         launchpadSection(todo: todo)
                     }
