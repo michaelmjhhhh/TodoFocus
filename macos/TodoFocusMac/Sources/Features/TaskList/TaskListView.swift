@@ -265,7 +265,7 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
+        .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
     }
 
     private var completedColumn: some View {
