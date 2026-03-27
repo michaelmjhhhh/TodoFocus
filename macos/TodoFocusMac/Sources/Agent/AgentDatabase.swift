@@ -10,8 +10,10 @@ final class AgentDatabase {
         }
         let dbURL = containerURL.appendingPathComponent("todofocus.db")
         var config = Configuration()
+        config.foreignKeysEnabled = true
         // Agent writes heartbeat only; session data is read-only
         self.dbQueue = try DatabaseQueue(path: dbURL.path, configuration: config)
+        try Migrations.makeMigrator().migrate(dbQueue)
     }
 
     func readActiveSession() throws -> HardFocusSessionRecord? {
