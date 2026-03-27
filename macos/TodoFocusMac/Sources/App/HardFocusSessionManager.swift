@@ -7,6 +7,7 @@ enum HardFocusError: Error {
     case agentNotAvailable
     case noActiveSession
     case invalidPassphrase
+    case encodingFailed
 }
 
 @MainActor
@@ -51,7 +52,9 @@ final class HardFocusSessionManager: ObservableObject {
 
         let passphraseHash = hashPassphrase(passphrase)
         let blockedAppsJson = try JSONEncoder().encode(blockedApps)
-        let blockedAppsString = String(data: blockedAppsJson, encoding: .utf8)!
+        guard let blockedAppsString = String(data: blockedAppsJson, encoding: .utf8) else {
+            throw HardFocusError.encodingFailed
+        }
 
         let session = HardFocusSessionRecord(
             sessionId: UUID().uuidString,
@@ -85,15 +88,7 @@ final class HardFocusSessionManager: ObservableObject {
             throw HardFocusError.invalidPassphrase
         }
 
-        try repository.updateStatus(
-            sessionId: session.sessionId,
-            status: .completed,
-            actualEndTime: Date()
-        )
-
-        currentSession = nil
-        isEnforcing = false
-        timer?.invalidate()
+        try await endSessionInternal(status: .completed)
     }
 
     func emergencyEndSession() async throws {
@@ -114,18 +109,27 @@ final class HardFocusSessionManager: ObservableObject {
 
     // MARK: - Private
 
+    private func endSessionInternal(status: HardFocusSessionStatus) async throws {
+        guard let session = currentSession else {
+            throw HardFocusError.noActiveSession
+        }
+
+        try repository.updateStatus(
+            sessionId: session.sessionId,
+            status: status,
+            actualEndTime: Date()
+        )
+
+        currentSession = nil
+        isEnforcing = false
+        timer?.invalidate()
+    }
+
     private func startTimer(duration: TimeInterval) {
         timer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
             Task { @MainActor in
                 // Timer expiry = end without passphrase requirement
-                guard let session = self?.currentSession else { return }
-                try? self?.repository.updateStatus(
-                    sessionId: session.sessionId,
-                    status: .completed,
-                    actualEndTime: Date()
-                )
-                self?.currentSession = nil
-                self?.isEnforcing = false
+                try? await self?.endSessionInternal(status: .completed)
             }
         }
     }
