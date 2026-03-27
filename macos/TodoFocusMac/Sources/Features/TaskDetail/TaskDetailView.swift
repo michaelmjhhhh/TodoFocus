@@ -188,16 +188,23 @@ struct TaskDetailView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "flame.fill")
+                            .font(.system(size: 12))
                         Text("Deep Focus")
-                            .font(.subheadline.weight(.medium))
+                            .font(.system(size: 13, weight: .semibold))
                     }
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(tokens.accentTerracotta, in: Capsule())
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        LinearGradient(
+                            colors: [tokens.accentTerracotta, tokens.accentTerracotta.opacity(0.8)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ),
+                        in: Capsule()
+                    )
                 }
                 .buttonStyle(.plain)
-                .keyboardShortcut("f", modifiers: [.command, .shift])
 
                 Button {
                     commitTitle(todoId: todo.id)
