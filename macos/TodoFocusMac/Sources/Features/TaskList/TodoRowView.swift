@@ -25,6 +25,7 @@ struct TodoRowView: View {
     let onDelete: () -> Void
     @Environment(\.themeTokens) private var tokens
     @State private var isHovered: Bool = false
+    @State private var isPressed: Bool = false
 
     static func shouldShowSecondaryControls(isHovered: Bool, isSelected: Bool) -> Bool {
         isHovered || isSelected
@@ -126,7 +127,20 @@ struct TodoRowView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
-        .appRowState(isHovered: isHovered, isSelected: isSelected)
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isSelected
+                    ? tokens.accentTerracotta.opacity(0.08)
+                    : (isHovered ? tokens.bgFloating.opacity(0.4) : Color.clear))
+        }
+        .animation(MotionTokens.hoverEase, value: isHovered)
+        .scaleEffect(isPressed ? 0.99 : 1.0)
+        .animation(.easeInOut(duration: 0.1), value: isPressed)
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in if !isPressed { isPressed = true } }
+                .onEnded { _ in isPressed = false }
+        )
         .overlay(alignment: .leading) {
             if showIndicator {
                 RoundedRectangle(cornerRadius: 8)
