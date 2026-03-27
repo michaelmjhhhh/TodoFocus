@@ -38,14 +38,26 @@ struct TaskDetailView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         dateSection(todo: todo)
+                        Divider()
+                            .background(tokens.sectionBorder.opacity(0.5))
+                            .padding(.vertical, 12)
                         if todo.focusTimeSeconds > 0 {
                             focusTimeSection(todo: todo)
+                            Divider()
+                                .background(tokens.sectionBorder.opacity(0.5))
+                                .padding(.vertical, 12)
                         }
                         notesSection(todo: todo)
+                        Divider()
+                            .background(tokens.sectionBorder.opacity(0.5))
+                            .padding(.vertical, 12)
                         stepsSection(todo: todo)
+                        Divider()
+                            .background(tokens.sectionBorder.opacity(0.5))
+                            .padding(.vertical, 12)
                         launchpadSection(todo: todo)
                     }
-                    .padding(16)
+                    .padding(.horizontal, 16).padding(.vertical, 20)
                     .onAppear {
                         titleText = todo.title
                         notesText = todo.notes
@@ -132,7 +144,9 @@ struct TaskDetailView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     TextField("Task title", text: $titleText)
                         .textFieldStyle(.plain)
-                        .font(.headline.weight(.semibold))
+                        .font(.system(size: 24, weight: .semibold, design: .default))
+                        .foregroundStyle(tokens.textPrimary)
+                        .lineLimit(2)
                         .focused($isTitleFocused)
                         .onSubmit {
                             commitTitle(todoId: todo.id)
@@ -246,9 +260,7 @@ struct TaskDetailView: View {
 
     private func notesSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Notes")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+            sectionHeader("Notes")
 
             TextEditor(text: $notesText)
                 .frame(minHeight: 100)
@@ -264,9 +276,7 @@ struct TaskDetailView: View {
 
     private func stepsSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Steps")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+            sectionHeader("Steps")
 
             StepsEditorView(todoId: todo.id, store: store)
         }
@@ -274,9 +284,7 @@ struct TaskDetailView: View {
 
     private func launchpadSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Launchpad")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+            sectionHeader("Launchpad")
 
             Text(Self.launchpadHintTitle)
                 .font(.caption)
@@ -356,6 +364,14 @@ struct TaskDetailView: View {
             titleValidationMessage = "Could not save title"
             titleText = currentTitle
         }
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .semibold, design: .default))
+            .foregroundStyle(tokens.textTertiary)
+            .textCase(.uppercase)
+            .tracking(0.5)
     }
 }
 
