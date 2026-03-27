@@ -36,7 +36,7 @@ struct TodoRowView: View {
 
     private var indicatorColor: Color {
         if todo.isImportant {
-            return .yellow
+            return tokens.warning
         }
         return listColor ?? tokens.accentTerracotta
     }
@@ -51,13 +51,13 @@ struct TodoRowView: View {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 17, weight: .semibold))
                     .padding(5)
-                    .background(todo.isCompleted ? Color.green.opacity(0.22) : Color.white.opacity(0.12), in: Circle())
+                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.10), in: Circle())
             }
             .buttonStyle(.plain)
-            .foregroundStyle(todo.isCompleted ? Color.green : Color.white.opacity(0.94))
+            .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary)
             .overlay {
                 Circle()
-                    .stroke(Color.white.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
+                    .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
                     .padding(2)
             }
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
@@ -66,7 +66,7 @@ struct TodoRowView: View {
                 Text(todo.title)
                     .strikethrough(todo.isCompleted)
                     .font(.body.weight(todo.isCompleted ? .regular : .medium))
-                    .foregroundStyle(isSelected ? Color.white : .primary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : .primary)
                 if let dueDate = todo.dueDate {
                     Label {
                         Text(dueDate, style: .date)
@@ -74,7 +74,7 @@ struct TodoRowView: View {
                         Image(systemName: "calendar")
                     }
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? Color.white.opacity(0.82) : tokens.mutedText)
+                    .foregroundStyle(isSelected ? tokens.textPrimary.opacity(0.82) : tokens.mutedText)
                 }
                 if todo.isOverdue {
                     DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
@@ -88,7 +88,7 @@ struct TodoRowView: View {
                     Image(systemName: todo.isImportant ? "star.fill" : "star")
                 }
                 .buttonStyle(AppIconButtonStyle())
-                .foregroundStyle(todo.isImportant ? Color.yellow : tokens.mutedText)
+                .foregroundStyle(todo.isImportant ? tokens.warning : tokens.mutedText)
 
                 Button(action: onDelete) {
                     Image(systemName: "trash")
