@@ -35,4 +35,27 @@ final class HardFocusSessionRepository {
                 .fetchOne(db)
         }
     }
+
+    func writeHeartbeat(sessionId: String?) throws {
+        try dbQueue.write { db in
+            let record = AgentHeartbeatRecord(
+                agentId: "primary",
+                lastHeartbeat: Date(),
+                currentSessionId: sessionId
+            )
+            try record.save(db)
+        }
+    }
+
+    func readHeartbeat() throws -> AgentHeartbeatRecord? {
+        try dbQueue.read { db in
+            try AgentHeartbeatRecord.fetchOne(db, key: "primary")
+        }
+    }
+
+    func isAgentAlive() throws -> Bool {
+        guard let heartbeat = try readHeartbeat() else { return false }
+        let staleThreshold: TimeInterval = 120  // 2 minutes
+        return Date().timeIntervalSince(heartbeat.lastHeartbeat) < staleThreshold
+    }
 }
