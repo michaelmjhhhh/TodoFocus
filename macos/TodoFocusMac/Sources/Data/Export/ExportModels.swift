@@ -1,10 +1,27 @@
 import Foundation
 
+enum ExportFormatVersion {
+    static let v1_0 = "1.0"
+    static let v1_1 = "1.1"
+    static let current = v1_1
+
+    static func isSupported(_ version: String) -> Bool {
+        version == v1_0 || version == v1_1
+    }
+}
+
 struct ExportData: Codable {
     let version: String
     let exportedAt: Date
+    let meta: ExportMeta?
     let lists: [ExportList]
     let todos: [ExportTodo]
+}
+
+struct ExportMeta: Codable {
+    let appVersion: String?
+    let platform: String?
+    let importHints: [String]?
 }
 
 struct ExportList: Codable {
