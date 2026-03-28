@@ -293,9 +293,17 @@ final class TodoAppStore {
         }
     }
 
-    func endDeepFocus() async -> DeepFocusReport? {
+    func endDeepFocus(endedByHardFocus: Bool = false) async -> DeepFocusReport? {
+        let configuredDuration = appModel.deepFocusService.sessionDuration
         guard let report = appModel.deepFocusService.endSession() else {
             return nil
+        }
+
+        if endedByHardFocus,
+           let duration = configuredDuration,
+           report.duration + 0.5 >= duration,
+           let focusTaskId = report.focusTaskId {
+            try? markComplete(todoId: focusTaskId)
         }
 
         if let focusTaskId = report.focusTaskId {

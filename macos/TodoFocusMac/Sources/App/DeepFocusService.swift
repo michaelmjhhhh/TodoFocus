@@ -32,6 +32,7 @@ final class DeepFocusService {
     var lastReport: DeepFocusReport?
     var currentSessionId: String?
     var currentFocusTaskId: String?
+    var sessionDuration: TimeInterval?
     var blockedApps: Set<String> = []
     var distractionAttempts: [String: Int] = [:]
     var distractionAppNames: [String: String] = [:]
@@ -52,6 +53,7 @@ final class DeepFocusService {
 
         self.blockedApps = Set(blockedApps)
         self.currentFocusTaskId = focusTaskId
+        self.sessionDuration = duration
         self.currentSessionId = UUID().uuidString
         self.sessionStartTime = Date()
         self.isActive = true
@@ -235,6 +237,7 @@ final class DeepFocusService {
         isActive = false
         currentSessionId = nil
         currentFocusTaskId = nil
+        sessionDuration = nil
         blockedApps = []
         distractionAttempts = [:]
         distractionAppNames = [:]

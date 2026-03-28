@@ -82,6 +82,66 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(enforcer.stopCallCount, 1)
     }
 
+    @MainActor
+    func testEndDeepFocusTriggeredByHardFocusMarksTaskCompleteWhenTimedSessionElapsed() async throws {
+        let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
+        let manager = try DatabaseManager(databasePath: path)
+        let listRepository = ListRepository(dbQueue: manager.dbQueue)
+        let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+        let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
+        let appModel = AppModel()
+        let hardFocusManager = HardFocusSessionManager(
+            repository: hardFocusRepository,
+            agentManager: MockTestHardFocusAgentManager(isRegistered: true, isRunning: true),
+            inProcessEnforcer: MockTestHardFocusInProcessEnforcer(),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        let store = TodoAppStore(
+            appModel: appModel,
+            listRepository: listRepository,
+            todoRepository: todoRepository,
+            stepRepository: stepRepository,
+            hardFocusRepository: hardFocusRepository,
+            hardFocusManager: hardFocusManager,
+            now: Date.init
+        )
+
+        let todo = try store.quickAdd(
+            title: "Timed Focus Task",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        store.startDeepFocus(
+            blockedApps: [],
+            duration: nil,
+            focusTaskId: todo.id,
+            passphrase: "unlock"
+        )
+
+        let started = expectation(description: "Hard focus started")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            if hardFocusManager.isEnforcing {
+                started.fulfill()
+            }
+        }
+        await fulfillment(of: [started], timeout: 1.0)
+
+        // Simulate a timed session whose planned duration has already elapsed.
+        store.deepFocusService.sessionDuration = 0
+
+        _ = await store.endDeepFocus(endedByHardFocus: true)
+
+        let persisted = try XCTUnwrap(todoRepository.fetchTodo(id: todo.id))
+        XCTAssertTrue(persisted.isCompleted)
+    }
+
     func testVisibleTodosUsesAppModelSelectionAndTimeFilter() throws {
         let now = Date(timeIntervalSince1970: 1_763_520_000)
         let tomorrow = now.addingTimeInterval(86_400)

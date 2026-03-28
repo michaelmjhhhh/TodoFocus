@@ -106,7 +106,7 @@ struct RootView: View {
         .onReceive(store.hardFocusManager.$isEnforcing) { isEnforcing in
             if isHardFocusActive && !isEnforcing && store.deepFocusService.isActive {
                 Task { @MainActor in
-                    _ = await store.endDeepFocus()
+                    _ = await store.endDeepFocus(endedByHardFocus: true)
                 }
             }
             isHardFocusActive = isEnforcing
