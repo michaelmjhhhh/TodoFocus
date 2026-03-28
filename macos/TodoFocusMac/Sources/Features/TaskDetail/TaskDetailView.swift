@@ -174,16 +174,22 @@ struct TaskDetailView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "flame.fill")
-                        Text("Deep Focus")
+                        Text(store.deepFocusService.isActive ? "Focus Running" : "Deep Focus")
                             .font(.subheadline.weight(.medium))
                     }
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(tokens.accentTerracotta, in: Capsule())
+                    .background(
+                        store.deepFocusService.isActive
+                            ? tokens.textTertiary
+                            : tokens.accentTerracotta,
+                        in: Capsule()
+                    )
                 }
                 .buttonStyle(.plain)
                 .keyboardShortcut("f", modifiers: [.command, .shift])
+                .disabled(store.deepFocusService.isActive)
 
                 Button {
                     commitTitle(todoId: todo.id)
@@ -307,24 +313,12 @@ struct TaskDetailView: View {
                 Text("Blocking \(store.deepFocusService.blockedApps.count) apps")
                     .font(.caption)
                     .foregroundColor(tokens.textSecondary)
+                Text("Unlock from the top Hard Focus bar")
+                    .font(.caption2)
+                    .foregroundColor(tokens.textSecondary.opacity(0.9))
             }
             
             Spacer()
-            
-            Button {
-                if let report = store.endDeepFocus() {
-                    focusReport = report
-                    showFocusReport = true
-                }
-            } label: {
-                Text("End Focus")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(tokens.accentTerracotta, in: Capsule())
-            }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

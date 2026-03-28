@@ -9,15 +9,77 @@ final class TodoAppStoreTests: XCTestCase {
         let listRepository = ListRepository(dbQueue: manager.dbQueue)
         let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
         let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+        let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
         let appModel = AppModel()
         let store = TodoAppStore(
             appModel: appModel,
             listRepository: listRepository,
             todoRepository: todoRepository,
             stepRepository: stepRepository,
+            hardFocusRepository: hardFocusRepository,
             now: { now }
         )
         return (store, appModel, listRepository, todoRepository)
+    }
+
+    @MainActor
+    func testEndDeepFocusAlsoEndsHardFocusSession() async throws {
+        let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
+        let manager = try DatabaseManager(databasePath: path)
+        let listRepository = ListRepository(dbQueue: manager.dbQueue)
+        let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+        let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
+        let appModel = AppModel()
+        let enforcer = MockTestHardFocusInProcessEnforcer()
+        let hardFocusManager = HardFocusSessionManager(
+            repository: hardFocusRepository,
+            agentManager: MockTestHardFocusAgentManager(isRegistered: true, isRunning: true),
+            inProcessEnforcer: enforcer,
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        let store = TodoAppStore(
+            appModel: appModel,
+            listRepository: listRepository,
+            todoRepository: todoRepository,
+            stepRepository: stepRepository,
+            hardFocusRepository: hardFocusRepository,
+            hardFocusManager: hardFocusManager,
+            now: Date.init
+        )
+
+        let todo = try store.quickAdd(
+            title: "Focus Task",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        store.startDeepFocus(
+            blockedApps: ["com.apple.Safari"],
+            duration: nil,
+            focusTaskId: todo.id,
+            passphrase: "unlock"
+        )
+
+        let started = expectation(description: "Hard focus started")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            if hardFocusManager.isEnforcing {
+                started.fulfill()
+            }
+        }
+        await fulfillment(of: [started], timeout: 1.0)
+        XCTAssertTrue(hardFocusManager.isEnforcing)
+
+        _ = await store.endDeepFocus()
+
+        XCTAssertFalse(hardFocusManager.isEnforcing)
+        XCTAssertNil(try hardFocusRepository.activeSession())
+        XCTAssertGreaterThanOrEqual(enforcer.stopCallCount, 1)
     }
 
     func testVisibleTodosUsesAppModelSelectionAndTimeFilter() throws {
@@ -186,5 +248,30 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "search").map(\.id), ["b"])
         XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "").map(\.id), ["a", "b"])
         XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "vendor").map(\.id), [])
+    }
+}
+
+private final class MockTestHardFocusAgentManager: HardFocusAgentControlling {
+    var isRegistered: Bool
+    var isRunning: Bool
+
+    init(isRegistered: Bool, isRunning: Bool) {
+        self.isRegistered = isRegistered
+        self.isRunning = isRunning
+    }
+
+    func register() throws {
+        isRegistered = true
+    }
+}
+
+@MainActor
+private final class MockTestHardFocusInProcessEnforcer: HardFocusInProcessEnforcing {
+    private(set) var stopCallCount = 0
+
+    func start(blockedApps: [String]) { }
+
+    func stop() {
+        stopCallCount += 1
     }
 }
