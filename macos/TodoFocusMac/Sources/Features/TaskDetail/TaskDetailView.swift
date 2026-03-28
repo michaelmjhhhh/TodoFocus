@@ -756,8 +756,10 @@ struct DeepFocusSetupSheet: View {
                 .foregroundStyle(tokens.textPrimary)
 
                 Button("Start") {
+                    let trimmed = passphrase.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmed.isEmpty else { return }
                     let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
-                    onStart(duration, passphrase)
+                    onStart(duration, trimmed)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)

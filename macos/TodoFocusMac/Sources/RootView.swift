@@ -103,8 +103,8 @@ struct RootView: View {
         .task {
             try? store.reload()
         }
-        .onReceive(store.hardFocusManager.objectWillChange) { [weak store] _ in
-            isHardFocusActive = store?.hardFocusManager.isEnforcing ?? false
+        .onReceive(store.hardFocusManager.$isEnforcing) { isEnforcing in
+            isHardFocusActive = isEnforcing
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)

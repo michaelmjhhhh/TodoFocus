@@ -263,24 +263,30 @@ final class TodoAppStore {
 
     func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, passphrase: String) {
         Task { @MainActor in
-            // Start hard focus session (kills blocked apps)
-            try? await hardFocusManager.startSession(
+            // Start hard focus session (kills blocked apps) - must succeed before starting deep focus
+            do {
+                try await hardFocusManager.startSession(
+                    blockedApps: blockedApps,
+                    duration: duration,
+                    focusTaskId: focusTaskId,
+                    passphrase: passphrase
+                )
+            } catch {
+                // Hard focus failed (e.g., missing Accessibility permission) — do not start deep focus
+                return
+            }
+
+            // Hard focus started successfully — now start deep focus service for UI overlay
+            appModel.deepFocusService.startSession(
                 blockedApps: blockedApps,
                 duration: duration,
                 focusTaskId: focusTaskId,
-                passphrase: passphrase
+                onTimerComplete: { [weak self] report in
+                    try? self?.markComplete(todoId: focusTaskId)
+                    try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+                }
             )
         }
-        // Also start deep focus service for UI overlay
-        appModel.deepFocusService.startSession(
-            blockedApps: blockedApps,
-            duration: duration,
-            focusTaskId: focusTaskId,
-            onTimerComplete: { [weak self] report in
-                try? self?.markComplete(todoId: focusTaskId)
-                try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
-            }
-        )
     }
 
     func endDeepFocus() -> DeepFocusReport? {
