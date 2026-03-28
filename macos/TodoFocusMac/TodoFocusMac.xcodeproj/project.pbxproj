@@ -46,6 +46,7 @@
 		562F4C2B29D889F78C31AF57 /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = D618BA5F04EE273ECD9EF530 /* Migrations.swift */; };
 		569BFB21A2090DBB610FFA38 /* AgentSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075FF7F688EDFDD0DA2CF732 /* AgentSessionController.swift */; };
 		5BD3BD4EDF2656D17AF51BE4 /* AgentHeartbeatRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FFFD681515D79596102C48 /* AgentHeartbeatRecord.swift */; };
+		5FD60125EFC0965590F89843 /* HardFocusInProcessEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CA8CF25F37C0C4358BE53 /* HardFocusInProcessEnforcer.swift */; };
 		617054A787911D3600EC4DF7 /* StepRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B875EF0C5AEEACBC449D970 /* StepRecord.swift */; };
 		639E4502F5B1767422B7A161 /* AppModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F49BBBD3470E39E67D6825 /* AppModelTests.swift */; };
 		64CAC0EE2BA2F5B20FAEB504 /* SmartListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */; };
@@ -158,6 +159,7 @@
 		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		19458B7C988B347EA18FCFF7 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		1950C542DDDF6617D03FE7C2 /* DataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C5CA8CF25F37C0C4358BE53 /* HardFocusInProcessEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardFocusInProcessEnforcer.swift; sourceTree = "<group>"; };
 		2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusReportView.swift; sourceTree = "<group>"; };
 		27FFFD681515D79596102C48 /* AgentHeartbeatRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentHeartbeatRecord.swift; sourceTree = "<group>"; };
 		2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPersistence.swift; sourceTree = "<group>"; };
@@ -455,6 +457,7 @@
 				D97B7432D8B38188F373B1AF /* DeepFocusService.swift */,
 				6F213B8DC45CE5527CE01193 /* DeepFocusTimerNotifier.swift */,
 				034819C4AD6863939B8A97A4 /* HardFocusAgentManager.swift */,
+				1C5CA8CF25F37C0C4358BE53 /* HardFocusInProcessEnforcer.swift */,
 				C4C02F3CCE23A226FC531579 /* HardFocusSessionManager.swift */,
 				ABC90DAB9D3BCB9A0A483E24 /* LaunchpadService.swift */,
 				729482FCE1EC68FFAD05F576 /* QuickCaptureService.swift */,
@@ -747,6 +750,7 @@
 				D47CCAA280BB56FC203BAE6E /* ExportModels.swift in Sources */,
 				4CA6ED27D39773B7F998AE1D /* ExportService.swift in Sources */,
 				05A4E94740B3822DF32846A2 /* HardFocusAgentManager.swift in Sources */,
+				5FD60125EFC0965590F89843 /* HardFocusInProcessEnforcer.swift in Sources */,
 				C873786B788F91F014E6F313 /* HardFocusLockView.swift in Sources */,
 				8D1AF5857D6856A06AB31926 /* HardFocusSessionManager.swift in Sources */,
 				D8985E1616C869686A73FCC9 /* HardFocusSessionRecord.swift in Sources */,

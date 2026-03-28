@@ -58,33 +58,31 @@ final class HardFocusSessionManagerTests: XCTestCase {
         XCTAssertNotNil(try repository.activeSession())
     }
 
-    func testStartSessionFailsWhenAgentIsNotRunning() async throws {
+    func testStartSessionSucceedsWhenAgentIsNotRunning() async throws {
         let dbManager = try DatabaseManager(databasePath: ":memory:")
         let repository = HardFocusSessionRepository(dbQueue: dbManager.dbQueue)
         let agent = MockHardFocusAgentManager(isRegistered: false, isRunning: false)
+        let enforcer = MockHardFocusInProcessEnforcer()
         let manager = HardFocusSessionManager(
             repository: repository,
             agentManager: agent,
+            inProcessEnforcer: enforcer,
             isAccessibilityTrusted: { true },
             agentStartupTimeout: 0,
             agentPollInterval: 0.01
         )
 
-        do {
-            try await manager.startSession(
-                blockedApps: ["com.apple.Safari"],
-                duration: 60,
-                focusTaskId: "task-1",
-                passphrase: "unlock"
-            )
-            XCTFail("Expected agentNotAvailable")
-        } catch let error as HardFocusError {
-            XCTAssertEqual(error, .agentNotAvailable)
-        }
+        try await manager.startSession(
+            blockedApps: ["com.apple.Safari"],
+            duration: 60,
+            focusTaskId: "task-1",
+            passphrase: "unlock"
+        )
 
         XCTAssertEqual(agent.registerCallCount, 1)
-        XCTAssertFalse(manager.isEnforcing)
-        XCTAssertNil(try repository.activeSession())
+        XCTAssertTrue(manager.isEnforcing)
+        XCTAssertNotNil(try repository.activeSession())
+        XCTAssertEqual(enforcer.lastStartedBlockedApps, ["com.apple.Safari"])
     }
 
     func testStartSessionWaitsForAgentToBecomeRunningAfterRegister() async throws {
@@ -141,5 +139,21 @@ private final class MockHardFocusAgentManager: HardFocusAgentControlling {
         registerCallCount += 1
         isRegistered = true
         registerTime = Date()
+    }
+}
+
+@MainActor
+private final class MockHardFocusInProcessEnforcer: HardFocusInProcessEnforcing {
+    private(set) var startCallCount = 0
+    private(set) var stopCallCount = 0
+    private(set) var lastStartedBlockedApps: [String] = []
+
+    func start(blockedApps: [String]) {
+        startCallCount += 1
+        lastStartedBlockedApps = blockedApps
+    }
+
+    func stop() {
+        stopCallCount += 1
     }
 }
