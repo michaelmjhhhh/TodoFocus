@@ -6,7 +6,7 @@
     <string>com.todofocus.hardfocus.agent</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Applications/TodoFocus.app/Contents/MacOS/TodoFocusAgent</string>
+        <string>@executable_path/../MacOS/TodoFocusAgent</string>
     </array>
     <key>KeepAlive</key>
     <true/>

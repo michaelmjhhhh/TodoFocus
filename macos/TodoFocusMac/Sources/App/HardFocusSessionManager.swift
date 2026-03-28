@@ -38,10 +38,6 @@ final class HardFocusSessionManager: ObservableObject {
             throw HardFocusError.accessibilityPermissionDenied
         }
 
-        guard try repository.isAgentAlive() else {
-            throw HardFocusError.agentNotAvailable
-        }
-
         let endTime: Date
         if let duration {
             endTime = Date().addingTimeInterval(duration)
@@ -73,6 +69,14 @@ final class HardFocusSessionManager: ObservableObject {
         try repository.create(session)
         currentSession = session
         isEnforcing = true
+
+        // Notify agent to start enforcing immediately (agent polls as fallback)
+        DistributedNotificationCenter.default().postNotificationName(
+            NSNotification.Name("com.todofocus.hardfocus.session.changed"),
+            object: nil,
+            userInfo: nil,
+            deliverImmediately: true
+        )
 
         if let duration {
             startTimer(duration: duration)
@@ -109,7 +113,7 @@ final class HardFocusSessionManager: ObservableObject {
 
     // MARK: - Private
 
-    private func endSessionInternal(status: HardFocusSessionStatus) async throws {
+    private func endSessionInternal(status: HardFocusStatus) async throws {
         guard let session = currentSession else {
             throw HardFocusError.noActiveSession
         }

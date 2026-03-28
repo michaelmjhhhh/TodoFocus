@@ -142,12 +142,10 @@ final class AgentSessionController {
     }
 
     deinit {
-        // Dispatch to main thread since timers were scheduled on RunLoop.main
-        DispatchQueue.main.async { [weak self] in
-            self?.idleTimer?.invalidate()
-            self?.activeTimer?.invalidate()
-            self?.heartbeatTimer?.invalidate()
-        }
+        // Timer.invalidate() is thread-safe and can be called from any thread
+        idleTimer?.invalidate()
+        activeTimer?.invalidate()
+        heartbeatTimer?.invalidate()
         DistributedNotificationCenter.default().removeObserver(self)
     }
 }
