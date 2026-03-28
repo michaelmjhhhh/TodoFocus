@@ -1,21 +1,27 @@
 import Foundation
 import AppKit
 
-enum AgentState {
+enum AgentState: Sendable {
     case idle
     case active(session: HardFocusSessionRecord)
 }
 
-final class AgentSessionController {
+final class AgentSessionController: @unchecked Sendable {
     private let db: AgentDatabase
     private let enforcer: AppEnforcer
     private var state: AgentState = .idle
-    private var idleTimer: Timer?
-    private var activeTimer: Timer?
-    private var heartbeatTimer: Timer?
+    private nonisolated(unsafe) var idleTimer: Timer?
+    private nonisolated(unsafe) var activeTimer: Timer?
+    private nonisolated(unsafe) var heartbeatTimer: Timer?
+    private let lock = NSLock()
 
     init() {
-        self.db = try! AgentDatabase()
+        do {
+            self.db = try AgentDatabase()
+        } catch {
+            print("AgentDatabase failed: \(error). Exiting.")
+            exit(1)
+        }
         self.enforcer = AppEnforcer()
     }
 
@@ -35,6 +41,8 @@ final class AgentSessionController {
     }
 
     private func checkForActiveSession() {
+        lock.lock()
+        defer { lock.unlock() }
         guard case .idle = state else { return }
 
         do {
@@ -49,9 +57,11 @@ final class AgentSessionController {
     // MARK: - Active Session
 
     private func activateSession(_ session: HardFocusSessionRecord) {
+        lock.lock()
         state = .active(session: session)
         idleTimer?.invalidate()
         idleTimer = nil
+        lock.unlock()
 
         // Initial sweep
         enforcer.sweepAndTerminate(blockedApps: session.blockedAppsBundleIds)
@@ -72,7 +82,11 @@ final class AgentSessionController {
     }
 
     private func pollForSessionEnd() {
-        guard case .active(let session) = state else { return }
+        lock.lock()
+        let currentState = state
+        lock.unlock()
+
+        guard case .active(let session) = currentState else { return }
 
         do {
             if let currentSession = try db.readActiveSession(),
@@ -106,17 +120,23 @@ final class AgentSessionController {
         heartbeatTimer?.invalidate()
         heartbeatTimer = nil
 
+        lock.lock()
         state = .idle
+        lock.unlock()
+
         startIdleLoop()
     }
 
     private func writeHeartbeat() {
         let sessionId: String?
+        lock.lock()
         if case .active(let session) = state {
             sessionId = session.sessionId
         } else {
             sessionId = nil
         }
+        lock.unlock()
+
         do {
             try db.writeHeartbeat(sessionId: sessionId)
         } catch {
@@ -136,13 +156,14 @@ final class AgentSessionController {
     }
 
     @objc private func handleSessionChanged() {
+        // DistributedNotificationCenter delivers on a system thread; dispatch to main for thread safety
         DispatchQueue.main.async { [weak self] in
             self?.checkForActiveSession()
         }
     }
 
     deinit {
-        // Timer.invalidate() is thread-safe and can be called from any thread
+        // Timer.invalidate() and removeObserver are thread-safe
         idleTimer?.invalidate()
         activeTimer?.invalidate()
         heartbeatTimer?.invalidate()

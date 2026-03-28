@@ -20,6 +20,8 @@ targets:
           - Agent/**
       - path: Assets.xcassets
         buildPhase: resources
+      - path: Resources/com.todofocus.hardfocus.agent.plist
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: TodoFocusMac
@@ -27,6 +29,11 @@ targets:
         MACOSX_DEPLOYMENT_TARGET: "14.0"
     dependencies:
       - package: GRDB
+      - target: TodoFocusAgent
+        embed: true
+        codeSign: false
+        copy:
+          destination: executables
     scheme:
       testTargets:
         - CoreTests
