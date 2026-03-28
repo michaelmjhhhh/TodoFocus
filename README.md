@@ -27,11 +27,9 @@
 
 ## 30-Second Demo
 
-- `00:00` Pick one task from My Day or Smart Lists
-- `00:08` Click `Launch All` to open files/apps/URLs for that task
-- `00:15` Start `Deep Focus` (or `Hard Focus` for strict mode)
-- `00:25` Use `⌘⇧T` to capture ideas without breaking flow
-- `00:30` End session with real progress, not tab chaos
+<p align="center">
+  <img src="assets/demo.gif" alt="TodoFocus QuickDemo" width="980" />
+</p>
 
 ## The Story
 
