@@ -24,6 +24,11 @@ final class HardFocusSessionManager: ObservableObject {
         if let active = try? repository.activeSession() {
             self.currentSession = active
             self.isEnforcing = true
+            // Reschedule timer from the persisted plannedEndTime (original duration may have partially elapsed)
+            let remaining = active.plannedEndTime.timeIntervalSinceNow
+            if remaining > 0 {
+                startTimer(duration: remaining)
+            }
         }
     }
 
@@ -41,6 +46,11 @@ final class HardFocusSessionManager: ObservableObject {
     ) async throws {
         guard AXIsProcessTrusted() else {
             throw HardFocusError.accessibilityPermissionDenied
+        }
+
+        // Prevent creating a second active session if one is already running
+        if (try? repository.activeSession()) != nil {
+            throw HardFocusError.agentNotAvailable
         }
 
         let endTime: Date

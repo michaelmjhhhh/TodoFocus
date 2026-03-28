@@ -4,10 +4,8 @@
 <dict>
     <key>Label</key>
     <string>com.todofocus.hardfocus.agent</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>@executable_path/../MacOS/TodoFocusAgent</string>
-    </array>
+    <key>BundleProgram</key>
+    <string>Contents/MacOS/TodoFocusAgent</string>
     <key>KeepAlive</key>
     <true/>
     <key>RunAtLoad</key>
