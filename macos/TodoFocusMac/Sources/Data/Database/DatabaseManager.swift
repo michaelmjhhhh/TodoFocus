@@ -20,10 +20,9 @@ final class DatabaseManager {
 
     private static func defaultDatabasePath() -> String {
         let fm = FileManager.default
-        let appSupport = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support")
-        let dir = appSupport.appendingPathComponent("todofocus", isDirectory: true)
-        return dir.appendingPathComponent("todofocus.db").path
+        let containerURL = fm.containerURL(forSecurityApplicationGroupIdentifier: "group.com.todofocus")
+            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support/todofocus")
+        return containerURL.appendingPathComponent("todofocus.db").path
     }
 
     func clearAllTables() throws {

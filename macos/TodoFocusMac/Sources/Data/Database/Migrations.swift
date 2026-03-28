@@ -51,6 +51,35 @@ enum Migrations {
             try db.execute(sql: "ALTER TABLE todo ADD COLUMN focusTimeSeconds INTEGER NOT NULL DEFAULT 0")
         }
 
+        migrator.registerMigration("v3_hardfocus") { db in
+            try db.create(table: "hardfocus_session") { t in
+                t.column("session_id", .text).primaryKey()
+                t.column("mode", .text).notNull()
+                t.column("status", .text).notNull().defaults(to: "active")
+                t.column("start_time", .datetime).notNull()
+                t.column("planned_end_time", .datetime).notNull()
+                t.column("actual_end_time", .datetime)
+                t.column("unlock_phrase_hash", .text).notNull()
+                t.column("blocked_apps", .text).notNull()
+                t.column("focus_task_id", .text)
+                t.column("grace_seconds", .integer).notNull().defaults(to: 300)
+                t.column("created_at", .datetime).notNull()
+            }
+
+            try db.create(table: "agent_heartbeat") { t in
+                t.column("agent_id", .text).primaryKey().defaults(to: "primary")
+                t.column("last_heartbeat", .datetime).notNull()
+                t.column("current_session_id", .text)
+            }
+
+            try db.create(
+                index: "idx_session_active",
+                on: "hardfocus_session",
+                columns: ["status"],
+                condition: Column("status") == "active"
+            )
+        }
+
         return migrator
     }
 }
