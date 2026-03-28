@@ -76,7 +76,7 @@ TodoFocus exists to close that gap between intention and execution.
 ### Task System
 - Smart views: overdue, today, tomorrow, next 7 days, no date
 - Custom lists with color indicators
-- Notes and subtasks support
+- Notes support
 
 ### Local-First by Design
 - No account required
