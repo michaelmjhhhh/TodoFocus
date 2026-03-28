@@ -36,12 +36,24 @@ final class HardFocusSessionManager: ObservableObject {
         self.agentPollInterval = agentPollInterval
         // Restore active session from persisted state after app relaunch/crash
         if let active = try? repository.activeSession() {
-            self.currentSession = active
-            self.isEnforcing = true
             // Reschedule timer from the persisted plannedEndTime (original duration may have partially elapsed)
             let remaining = active.plannedEndTime.timeIntervalSinceNow
-            if remaining > 0 {
-                startTimer(duration: remaining)
+            if active.plannedEndTime == .distantFuture || remaining > 0 {
+                self.currentSession = active
+                self.isEnforcing = true
+                if remaining > 0 {
+                    startTimer(duration: remaining)
+                }
+            } else {
+                // Timed session already expired while app was not running.
+                // Close it immediately so startup doesn't get stuck in a stale lock state.
+                try? repository.updateStatus(
+                    sessionId: active.sessionId,
+                    status: .completed,
+                    actualEndTime: Date()
+                )
+                self.currentSession = nil
+                self.isEnforcing = false
             }
         }
     }
