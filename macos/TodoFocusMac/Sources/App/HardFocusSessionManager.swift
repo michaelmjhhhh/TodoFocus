@@ -17,6 +17,7 @@ final class HardFocusSessionManager: ObservableObject {
 
     private let repository: HardFocusSessionRepository
     private let agentManager: HardFocusAgentControlling
+    private let inProcessEnforcer: HardFocusInProcessEnforcing
     private let isAccessibilityTrusted: () -> Bool
     private let agentStartupTimeout: TimeInterval
     private let agentPollInterval: TimeInterval
@@ -25,12 +26,14 @@ final class HardFocusSessionManager: ObservableObject {
     init(
         repository: HardFocusSessionRepository,
         agentManager: HardFocusAgentControlling = HardFocusAgentManager(),
+        inProcessEnforcer: HardFocusInProcessEnforcing = HardFocusInProcessEnforcer(),
         isAccessibilityTrusted: @escaping () -> Bool = { AXIsProcessTrusted() },
         agentStartupTimeout: TimeInterval = 2.0,
         agentPollInterval: TimeInterval = 0.1
     ) {
         self.repository = repository
         self.agentManager = agentManager
+        self.inProcessEnforcer = inProcessEnforcer
         self.isAccessibilityTrusted = isAccessibilityTrusted
         self.agentStartupTimeout = agentStartupTimeout
         self.agentPollInterval = agentPollInterval
@@ -41,6 +44,7 @@ final class HardFocusSessionManager: ObservableObject {
             if active.plannedEndTime == .distantFuture || remaining > 0 {
                 self.currentSession = active
                 self.isEnforcing = true
+                self.inProcessEnforcer.start(blockedApps: active.blockedAppsBundleIds)
                 if remaining > 0 {
                     startTimer(duration: remaining)
                 }
@@ -74,7 +78,9 @@ final class HardFocusSessionManager: ObservableObject {
             throw HardFocusError.accessibilityPermissionDenied
         }
 
-        try await ensureAgentIsRunning()
+        // Best-effort: register and wait for LaunchAgent, but don't fail session start
+        // when unavailable. In-process enforcer keeps hard focus functional while app runs.
+        _ = try? await ensureAgentIsRunning()
 
         // Prevent creating a second active session if one is already running
         if (try? repository.activeSession()) != nil {
@@ -112,6 +118,7 @@ final class HardFocusSessionManager: ObservableObject {
         try repository.create(session)
         currentSession = session
         isEnforcing = true
+        inProcessEnforcer.start(blockedApps: blockedApps)
 
         // Notify agent to start enforcing immediately (agent polls as fallback)
         DistributedNotificationCenter.default().postNotificationName(
@@ -152,6 +159,7 @@ final class HardFocusSessionManager: ObservableObject {
         currentSession = nil
         isEnforcing = false
         timer?.invalidate()
+        inProcessEnforcer.stop()
     }
 
     // MARK: - Private
@@ -190,6 +198,7 @@ final class HardFocusSessionManager: ObservableObject {
         currentSession = nil
         isEnforcing = false
         timer?.invalidate()
+        inProcessEnforcer.stop()
     }
 
     private func startTimer(duration: TimeInterval) {
