@@ -3,6 +3,37 @@ import XCTest
 
 @MainActor
 final class HardFocusSessionManagerTests: XCTestCase {
+    func testInitEndsExpiredTimedSession() throws {
+        let dbManager = try DatabaseManager(databasePath: ":memory:")
+        let repository = HardFocusSessionRepository(dbQueue: dbManager.dbQueue)
+        let session = HardFocusSessionRecord(
+            sessionId: "expired-session",
+            mode: "hard",
+            status: .active,
+            startTime: Date().addingTimeInterval(-600),
+            plannedEndTime: Date().addingTimeInterval(-60),
+            actualEndTime: nil,
+            unlockPhraseHash: "hash",
+            blockedApps: #"["com.apple.Safari"]"#,
+            focusTaskId: "task-1",
+            graceSeconds: 300,
+            createdAt: Date().addingTimeInterval(-600)
+        )
+        try repository.create(session)
+
+        let manager = HardFocusSessionManager(
+            repository: repository,
+            agentManager: MockHardFocusAgentManager(isRegistered: true, isRunning: true),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        XCTAssertFalse(manager.isEnforcing)
+        XCTAssertNil(manager.currentSession)
+        XCTAssertNil(try repository.activeSession())
+    }
+
     func testStartSessionRegistersAgentWhenNotRegistered() async throws {
         let dbManager = try DatabaseManager(databasePath: ":memory:")
         let repository = HardFocusSessionRepository(dbQueue: dbManager.dbQueue)
