@@ -6,6 +6,12 @@ enum HardFocusAgentError: Error {
     case unregistrationFailed
 }
 
+protocol HardFocusAgentControlling {
+    func register() throws
+    var isRegistered: Bool { get }
+    var isRunning: Bool { get }
+}
+
 final class HardFocusAgentManager {
     private let service: SMAppService
 
@@ -35,3 +41,5 @@ final class HardFocusAgentManager {
         service.status == .enabled
     }
 }
+
+extension HardFocusAgentManager: HardFocusAgentControlling {}

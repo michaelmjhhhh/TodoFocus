@@ -118,10 +118,11 @@ struct RootView: View {
             .opacity(0)
             .allowsHitTesting(false)
         }
-        .overlay {
+        .safeAreaInset(edge: .top) {
             if isHardFocusActive {
                 HardFocusLockView(sessionManager: store.hardFocusManager)
                     .environment(\.themeTokens, themeTokens)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
     }
