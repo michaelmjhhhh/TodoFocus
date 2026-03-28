@@ -18,16 +18,22 @@ final class HardFocusSessionManager: ObservableObject {
     private let repository: HardFocusSessionRepository
     private let agentManager: HardFocusAgentControlling
     private let isAccessibilityTrusted: () -> Bool
+    private let agentStartupTimeout: TimeInterval
+    private let agentPollInterval: TimeInterval
     private var timer: Timer?
 
     init(
         repository: HardFocusSessionRepository,
         agentManager: HardFocusAgentControlling = HardFocusAgentManager(),
-        isAccessibilityTrusted: @escaping () -> Bool = { AXIsProcessTrusted() }
+        isAccessibilityTrusted: @escaping () -> Bool = { AXIsProcessTrusted() },
+        agentStartupTimeout: TimeInterval = 2.0,
+        agentPollInterval: TimeInterval = 0.1
     ) {
         self.repository = repository
         self.agentManager = agentManager
         self.isAccessibilityTrusted = isAccessibilityTrusted
+        self.agentStartupTimeout = agentStartupTimeout
+        self.agentPollInterval = agentPollInterval
         // Restore active session from persisted state after app relaunch/crash
         if let active = try? repository.activeSession() {
             self.currentSession = active
@@ -56,7 +62,7 @@ final class HardFocusSessionManager: ObservableObject {
             throw HardFocusError.accessibilityPermissionDenied
         }
 
-        try ensureAgentIsRunning()
+        try await ensureAgentIsRunning()
 
         // Prevent creating a second active session if one is already running
         if (try? repository.activeSession()) != nil {
@@ -138,14 +144,24 @@ final class HardFocusSessionManager: ObservableObject {
 
     // MARK: - Private
 
-    private func ensureAgentIsRunning() throws {
+    private func ensureAgentIsRunning() async throws {
         if !agentManager.isRegistered {
             try agentManager.register()
         }
 
-        guard agentManager.isRunning else {
-            throw HardFocusError.agentNotAvailable
+        if agentManager.isRunning {
+            return
         }
+
+        let deadline = Date().addingTimeInterval(agentStartupTimeout)
+        while Date() < deadline {
+            try await Task.sleep(nanoseconds: UInt64(agentPollInterval * 1_000_000_000))
+            if agentManager.isRunning {
+                return
+            }
+        }
+
+        throw HardFocusError.agentNotAvailable
     }
 
     private func endSessionInternal(status: HardFocusStatus) async throws {
