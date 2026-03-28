@@ -20,6 +20,11 @@ final class HardFocusSessionManager: ObservableObject {
 
     init(repository: HardFocusSessionRepository) {
         self.repository = repository
+        // Restore active session from persisted state after app relaunch/crash
+        if let active = try? repository.activeSession() {
+            self.currentSession = active
+            self.isEnforcing = true
+        }
     }
 
     // MARK: - Public API

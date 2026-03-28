@@ -41,28 +41,31 @@ final class AgentSessionController: @unchecked Sendable {
     }
 
     private func checkForActiveSession() {
-        lock.lock()
-        defer { lock.unlock() }
-        guard case .idle = state else { return }
-
+        // Load session outside the lock to avoid deadlock (NSLock is non-recursive)
+        let session: HardFocusSessionRecord?
         do {
-            if let session = try db.readActiveSession() {
-                activateSession(session)
-            }
+            session = try db.readActiveSession()
         } catch {
             print("Error reading active session: \(error)")
+            return
         }
+
+        guard let activeSession = session else { return }
+
+        lock.lock()
+        guard case .idle = state else { lock.unlock(); return }
+        state = .active(session: activeSession)
+        idleTimer?.invalidate()
+        idleTimer = nil
+        lock.unlock()
+
+        // Now call activateSession without holding the lock
+        activateSession(activeSession)
     }
 
     // MARK: - Active Session
 
     private func activateSession(_ session: HardFocusSessionRecord) {
-        lock.lock()
-        state = .active(session: session)
-        idleTimer?.invalidate()
-        idleTimer = nil
-        lock.unlock()
-
         // Initial sweep
         enforcer.sweepAndTerminate(blockedApps: session.blockedAppsBundleIds)
 

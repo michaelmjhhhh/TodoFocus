@@ -5,9 +5,8 @@ final class AgentDatabase {
     private let dbQueue: DatabaseQueue
 
     init(appGroupIdentifier: String = "group.com.todofocus") throws {
-        guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) else {
-            throw AgentError.appGroupNotFound
-        }
+        let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier)
+            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support/todofocus")
         let dbURL = containerURL.appendingPathComponent("todofocus.db")
         var config = Configuration()
         config.foreignKeysEnabled = true
@@ -35,8 +34,4 @@ final class AgentDatabase {
             try record.save(db)
         }
     }
-}
-
-enum AgentError: Error {
-    case appGroupNotFound
 }
