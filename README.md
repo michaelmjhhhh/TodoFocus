@@ -81,6 +81,7 @@ TodoFocus exists to close that gap between intention and execution.
 ### Local-First by Design
 - No account required
 - SQLite database on your machine
+- Database path: `~/Library/Application Support/todofocus/todofocus.db`
 - Import/Export with backup-safe replace and merge
 
 ## Who This Is For
@@ -121,7 +122,7 @@ Quick Capture uses a global shortcut, so macOS requires Accessibility permission
 | Shortcut | Action |
 |---|---|
 | `⌘⇧T` | Quick Capture (global) |
-| `⌘⇧F` | Start Deep Focus |
+| `⌘⇧F` | Start Deep Focus for selected task |
 | `⌘⇧N` | Add new task |
 | `⌘K` | Search tasks |
 
