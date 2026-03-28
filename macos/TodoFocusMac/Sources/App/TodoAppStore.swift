@@ -16,6 +16,7 @@ final class TodoAppStore {
     var todos: [Todo] = []
 
     var deepFocusService: DeepFocusService { appModel.deepFocusService }
+    let hardFocusManager: HardFocusSessionManager
 
     var todoCount: Int { todos.count }
     var completedCount: Int { todos.filter { $0.isCompleted }.count }
@@ -52,12 +53,14 @@ final class TodoAppStore {
         listRepository: ListRepository,
         todoRepository: TodoRepository,
         stepRepository: StepRepository,
+        hardFocusRepository: HardFocusSessionRepository,
         now: @escaping () -> Date = Date.init
     ) {
         self.appModel = appModel
         self.listRepository = listRepository
         self.todoRepository = todoRepository
         self.stepRepository = stepRepository
+        self.hardFocusManager = HardFocusSessionManager(repository: hardFocusRepository)
         self.now = now
     }
 
@@ -258,7 +261,17 @@ final class TodoAppStore {
         try? reload()
     }
 
-    func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String) {
+    func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, passphrase: String) {
+        Task { @MainActor in
+            // Start hard focus session (kills blocked apps)
+            try? await hardFocusManager.startSession(
+                blockedApps: blockedApps,
+                duration: duration,
+                focusTaskId: focusTaskId,
+                passphrase: passphrase
+            )
+        }
+        // Also start deep focus service for UI overlay
         appModel.deepFocusService.startSession(
             blockedApps: blockedApps,
             duration: duration,

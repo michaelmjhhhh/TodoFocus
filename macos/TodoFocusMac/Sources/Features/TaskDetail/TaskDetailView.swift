@@ -84,9 +84,9 @@ struct TaskDetailView: View {
         .sheet(isPresented: $showDeepFocusSheet) {
             DeepFocusSetupSheet(
                 selectedApps: $selectedBlockedApps,
-                onStart: { duration in
+                onStart: { duration, passphrase in
                     if let focusTaskId = todo?.id {
-                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), duration: duration, focusTaskId: focusTaskId)
+                        store.startDeepFocus(blockedApps: Array(selectedBlockedApps), duration: duration, focusTaskId: focusTaskId, passphrase: passphrase)
                     }
                     showDeepFocusSheet = false
                 },
@@ -540,11 +540,12 @@ struct StepsEditorView: View {
 
 struct DeepFocusSetupSheet: View {
     @Binding var selectedApps: Set<String>
-    let onStart: (TimeInterval?) -> Void
+    let onStart: (TimeInterval?, String) -> Void
     let onCancel: () -> Void
     @State private var customApps: [(name: String, bundleId: String)] = []
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
+    @State private var passphrase: String = ""
     @Environment(\.themeTokens) private var tokens
 
     private let availableApps: [(name: String, bundleId: String)] = [
@@ -587,7 +588,7 @@ struct DeepFocusSetupSheet: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Start Deep Focus")
+            Text("Start Hard Focus")
                 .font(.headline)
                 .padding(.top, 20)
 
@@ -735,6 +736,15 @@ struct DeepFocusSetupSheet: View {
             }
             .frame(maxHeight: 300)
 
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Unlock Passphrase")
+                    .font(.subheadline)
+                    .foregroundStyle(tokens.textSecondary)
+                SecureField("Enter a passphrase to unlock later", text: $passphrase)
+                    .textFieldStyle(.roundedBorder)
+            }
+            .padding(.horizontal, 20)
+
             HStack(spacing: 12) {
                 Button("Cancel") {
                     onCancel()
@@ -747,7 +757,7 @@ struct DeepFocusSetupSheet: View {
 
                 Button("Start") {
                     let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
-                    onStart(duration)
+                    onStart(duration, passphrase)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 20)

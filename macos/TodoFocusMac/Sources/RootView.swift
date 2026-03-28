@@ -10,6 +10,7 @@ struct RootView: View {
     @State private var isSidebarVisible: Bool = true
     @State private var isHeaderExpanded: Bool = true
     @State private var themeTokens: ThemeTokens
+    @State private var isHardFocusActive: Bool = false
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String, themeStore: ThemeStore) {
         self._appModel = Bindable(appModel)
@@ -102,6 +103,9 @@ struct RootView: View {
         .task {
             try? store.reload()
         }
+        .onReceive(store.hardFocusManager.objectWillChange) { [weak store] _ in
+            isHardFocusActive = store?.hardFocusManager.isEnforcing ?? false
+        }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
         .overlay(alignment: .bottomTrailing) {
@@ -113,6 +117,12 @@ struct RootView: View {
             .keyboardShortcut("l", modifiers: [.command, .shift])
             .opacity(0)
             .allowsHitTesting(false)
+        }
+        .overlay {
+            if isHardFocusActive {
+                HardFocusLockView(sessionManager: store.hardFocusManager)
+                    .environment(\.themeTokens, themeTokens)
+            }
         }
     }
 }
