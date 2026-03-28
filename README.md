@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/macOS-14%2B-0A84FF" alt="macOS 14+" />
   <img src="https://img.shields.io/badge/SwiftUI-Native-F2994A" alt="SwiftUI" />
   <img src="https://img.shields.io/badge/Data-Local%20SQLite-4F8A3D" alt="Local SQLite" />
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-2D2D2D" alt="License" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2D2D2D" alt="License" /></a>
 </p>
 
 <p align="center">
@@ -153,4 +153,4 @@ Issues: <https://github.com/michaelmjhhhh/TodoFocus/issues>
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[MIT](LICENSE)
