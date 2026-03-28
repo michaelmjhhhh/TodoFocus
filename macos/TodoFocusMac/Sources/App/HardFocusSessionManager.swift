@@ -2,7 +2,7 @@ import Foundation
 import AppKit
 import CryptoKit
 
-enum HardFocusError: Error {
+enum HardFocusError: Error, Equatable {
     case accessibilityPermissionDenied
     case agentNotAvailable
     case noActiveSession
@@ -16,10 +16,18 @@ final class HardFocusSessionManager: ObservableObject {
     @Published private(set) var isEnforcing = false
 
     private let repository: HardFocusSessionRepository
+    private let agentManager: HardFocusAgentControlling
+    private let isAccessibilityTrusted: () -> Bool
     private var timer: Timer?
 
-    init(repository: HardFocusSessionRepository) {
+    init(
+        repository: HardFocusSessionRepository,
+        agentManager: HardFocusAgentControlling = HardFocusAgentManager(),
+        isAccessibilityTrusted: @escaping () -> Bool = { AXIsProcessTrusted() }
+    ) {
         self.repository = repository
+        self.agentManager = agentManager
+        self.isAccessibilityTrusted = isAccessibilityTrusted
         // Restore active session from persisted state after app relaunch/crash
         if let active = try? repository.activeSession() {
             self.currentSession = active
@@ -35,7 +43,7 @@ final class HardFocusSessionManager: ObservableObject {
     // MARK: - Public API
 
     func canStartSession() -> Bool {
-        return AXIsProcessTrusted()
+        return isAccessibilityTrusted()
     }
 
     func startSession(
@@ -44,9 +52,11 @@ final class HardFocusSessionManager: ObservableObject {
         focusTaskId: String?,
         passphrase: String
     ) async throws {
-        guard AXIsProcessTrusted() else {
+        guard isAccessibilityTrusted() else {
             throw HardFocusError.accessibilityPermissionDenied
         }
+
+        try ensureAgentIsRunning()
 
         // Prevent creating a second active session if one is already running
         if (try? repository.activeSession()) != nil {
@@ -127,6 +137,16 @@ final class HardFocusSessionManager: ObservableObject {
     }
 
     // MARK: - Private
+
+    private func ensureAgentIsRunning() throws {
+        if !agentManager.isRegistered {
+            try agentManager.register()
+        }
+
+        guard agentManager.isRunning else {
+            throw HardFocusError.agentNotAvailable
+        }
+    }
 
     private func endSessionInternal(status: HardFocusStatus) async throws {
         guard let session = currentSession else {
