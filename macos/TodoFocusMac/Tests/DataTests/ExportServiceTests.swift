@@ -155,4 +155,46 @@ final class ExportServiceTests: XCTestCase {
         let local = try todoRepo.fetchTodo(id: "todo-local")
         XCTAssertNotNil(local)
     }
+
+    func testMergeImportCanClearExistingLaunchResources() throws {
+        let manager = try makeManager()
+        let service = makeService(manager)
+        try seedBasicData(manager)
+
+        // Export current dataset and then modify payload to clear launch resources for todo-1.
+        let exported = try service.exportToJSON()
+        var payload = try ExportData.decode(from: exported)
+        let updatedTodos = payload.todos.map { todo -> ExportTodo in
+            guard todo.id == "todo-1" else { return todo }
+            return ExportTodo(
+                id: todo.id,
+                title: todo.title,
+                isCompleted: todo.isCompleted,
+                isImportant: todo.isImportant,
+                isMyDay: todo.isMyDay,
+                dueDate: todo.dueDate,
+                notes: todo.notes,
+                listId: todo.listId,
+                focusTimeSeconds: todo.focusTimeSeconds,
+                recurrence: todo.recurrence,
+                recurrenceInterval: todo.recurrenceInterval,
+                sortOrder: todo.sortOrder,
+                steps: todo.steps,
+                launchResources: []
+            )
+        }
+        payload = ExportData(
+            version: payload.version,
+            exportedAt: payload.exportedAt,
+            meta: payload.meta,
+            lists: payload.lists,
+            todos: updatedTodos
+        )
+
+        _ = try service.executeImportJSON(try payload.encode(), mode: .merge)
+
+        let todoRepo = TodoRepository(dbQueue: manager.dbQueue)
+        let merged = try XCTUnwrap(todoRepo.fetchTodo(id: "todo-1"))
+        XCTAssertEqual(merged.launchResources, "[]")
+    }
 }

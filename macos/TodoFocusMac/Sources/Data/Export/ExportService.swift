@@ -233,7 +233,7 @@ final class ExportService {
                     recurrenceInterval: max(1, todo.recurrenceInterval),
                     lastCompletedAt: existingTodo?.lastCompletedAt,
                     notes: todo.notes,
-                    launchResources: existingTodo?.launchResources ?? "[]",
+                    launchResources: "[]",
                     dueDate: todo.dueDate,
                     sortOrder: todo.sortOrder,
                     createdAt: createdAt,
@@ -267,31 +267,29 @@ final class ExportService {
                     }
                 }
 
-                if !todo.launchResources.isEmpty {
-                    let validResources = todo.launchResources.compactMap { er -> LaunchResource? in
-                        guard let type = LaunchResourceType(rawValue: er.type) else {
-                            report.skipped.launchResources += 1
-                            report.errors.append("Unsupported launch resource type '\(er.type)' for todo \(todo.id)")
-                            return nil
-                        }
-                        return LaunchResource(
-                            id: UUID().uuidString,
-                            type: type,
-                            label: er.label,
-                            value: er.value,
-                            createdAt: Date()
-                        )
+                let validResources = todo.launchResources.compactMap { er -> LaunchResource? in
+                    guard let type = LaunchResourceType(rawValue: er.type) else {
+                        report.skipped.launchResources += 1
+                        report.errors.append("Unsupported launch resource type '\(er.type)' for todo \(todo.id)")
+                        return nil
                     }
-                    let encoded = try JSONEncoder().encode(validResources)
-                    try db.execute(
-                        sql: "UPDATE todo SET launchResources = ? WHERE id = ?",
-                        arguments: [String(data: encoded, encoding: .utf8), todo.id]
+                    return LaunchResource(
+                        id: UUID().uuidString,
+                        type: type,
+                        label: er.label,
+                        value: er.value,
+                        createdAt: Date()
                     )
-                    if existingTodo != nil {
-                        report.updated.launchResources += validResources.count
-                    } else {
-                        report.created.launchResources += validResources.count
-                    }
+                }
+                let encoded = try JSONEncoder().encode(validResources)
+                try db.execute(
+                    sql: "UPDATE todo SET launchResources = ? WHERE id = ?",
+                    arguments: [String(data: encoded, encoding: .utf8), todo.id]
+                )
+                if existingTodo != nil {
+                    report.updated.launchResources += validResources.count
+                } else {
+                    report.created.launchResources += validResources.count
                 }
             }
         }
