@@ -18,13 +18,15 @@ struct TodoFocusMacApp: App {
             let listRepository = ListRepository(dbQueue: manager.dbQueue)
             let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
             let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+            let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
             _appModel = State(initialValue: model)
             _store = State(
                 initialValue: TodoAppStore(
                     appModel: model,
                     listRepository: listRepository,
                     todoRepository: todoRepository,
-                    stepRepository: stepRepository
+                    stepRepository: stepRepository,
+                    hardFocusRepository: hardFocusRepository
                 )
             )
             _startupError = State(initialValue: nil)

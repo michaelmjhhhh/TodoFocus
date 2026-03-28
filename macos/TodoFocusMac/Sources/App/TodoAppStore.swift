@@ -16,6 +16,7 @@ final class TodoAppStore {
     var todos: [Todo] = []
 
     var deepFocusService: DeepFocusService { appModel.deepFocusService }
+    let hardFocusManager: HardFocusSessionManager
 
     var todoCount: Int { todos.count }
     var completedCount: Int { todos.filter { $0.isCompleted }.count }
@@ -52,12 +53,14 @@ final class TodoAppStore {
         listRepository: ListRepository,
         todoRepository: TodoRepository,
         stepRepository: StepRepository,
+        hardFocusRepository: HardFocusSessionRepository,
         now: @escaping () -> Date = Date.init
     ) {
         self.appModel = appModel
         self.listRepository = listRepository
         self.todoRepository = todoRepository
         self.stepRepository = stepRepository
+        self.hardFocusManager = HardFocusSessionManager(repository: hardFocusRepository)
         self.now = now
     }
 
@@ -258,16 +261,32 @@ final class TodoAppStore {
         try? reload()
     }
 
-    func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String) {
-        appModel.deepFocusService.startSession(
-            blockedApps: blockedApps,
-            duration: duration,
-            focusTaskId: focusTaskId,
-            onTimerComplete: { [weak self] report in
-                try? self?.markComplete(todoId: focusTaskId)
-                try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+    func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, passphrase: String) {
+        Task { @MainActor in
+            // Start hard focus session (kills blocked apps) - must succeed before starting deep focus
+            do {
+                try await hardFocusManager.startSession(
+                    blockedApps: blockedApps,
+                    duration: duration,
+                    focusTaskId: focusTaskId,
+                    passphrase: passphrase
+                )
+            } catch {
+                // Hard focus failed (e.g., missing Accessibility permission) — do not start deep focus
+                return
             }
-        )
+
+            // Hard focus started successfully — now start deep focus service for UI overlay
+            appModel.deepFocusService.startSession(
+                blockedApps: blockedApps,
+                duration: duration,
+                focusTaskId: focusTaskId,
+                onTimerComplete: { [weak self] report in
+                    try? self?.markComplete(todoId: focusTaskId)
+                    try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+                }
+            )
+        }
     }
 
     func endDeepFocus() -> DeepFocusReport? {

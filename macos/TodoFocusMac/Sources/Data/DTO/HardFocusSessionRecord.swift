@@ -7,7 +7,8 @@ enum HardFocusStatus: String, Codable, DatabaseValueConvertible {
     case interrupted
 }
 
-struct HardFocusSessionRecord: Codable, FetchableRecord, PersistableRecord, Equatable {
+struct HardFocusSessionRecord: Codable, FetchableRecord, PersistableRecord, Equatable, Identifiable {
+    var id: String { sessionId }
     static let databaseTableName = "hardfocus_session"
     static let databasePrimaryKey: [String]? = ["session_id"]
 
