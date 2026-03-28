@@ -54,13 +54,14 @@ final class TodoAppStore {
         todoRepository: TodoRepository,
         stepRepository: StepRepository,
         hardFocusRepository: HardFocusSessionRepository,
+        hardFocusManager: HardFocusSessionManager? = nil,
         now: @escaping () -> Date = Date.init
     ) {
         self.appModel = appModel
         self.listRepository = listRepository
         self.todoRepository = todoRepository
         self.stepRepository = stepRepository
-        self.hardFocusManager = HardFocusSessionManager(repository: hardFocusRepository)
+        self.hardFocusManager = hardFocusManager ?? HardFocusSessionManager(repository: hardFocusRepository)
         self.now = now
     }
 
@@ -284,18 +285,33 @@ final class TodoAppStore {
                 onTimerComplete: { [weak self] report in
                     try? self?.markComplete(todoId: focusTaskId)
                     try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+                    Task { @MainActor [weak self] in
+                        try? await self?.hardFocusManager.emergencyEndSession()
+                    }
                 }
             )
         }
     }
 
-    func endDeepFocus() -> DeepFocusReport? {
+    func endDeepFocus(endedByHardFocus: Bool = false) async -> DeepFocusReport? {
+        let configuredDuration = appModel.deepFocusService.sessionDuration
         guard let report = appModel.deepFocusService.endSession() else {
             return nil
         }
 
+        if endedByHardFocus,
+           let duration = configuredDuration,
+           report.duration + 0.5 >= duration,
+           let focusTaskId = report.focusTaskId {
+            try? markComplete(todoId: focusTaskId)
+        }
+
         if let focusTaskId = report.focusTaskId {
             try? updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+        }
+
+        if hardFocusManager.isEnforcing {
+            try? await hardFocusManager.emergencyEndSession()
         }
 
         return report

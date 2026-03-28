@@ -104,6 +104,11 @@ struct RootView: View {
             try? store.reload()
         }
         .onReceive(store.hardFocusManager.$isEnforcing) { isEnforcing in
+            if isHardFocusActive && !isEnforcing && store.deepFocusService.isActive {
+                Task { @MainActor in
+                    _ = await store.endDeepFocus(endedByHardFocus: true)
+                }
+            }
             isHardFocusActive = isEnforcing
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
