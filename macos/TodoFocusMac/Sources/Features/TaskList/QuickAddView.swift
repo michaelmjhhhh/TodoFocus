@@ -1,21 +1,63 @@
 import SwiftUI
 
 struct QuickAddView: View {
+    @Environment(\.themeTokens) private var tokens
     @State private var text: String = ""
     @FocusState private var isInputFocused: Bool
     let onSubmit: (String) -> Void
 
-    var body: some View {
-        HStack(spacing: 8) {
-            TextField("Add a task (⌘⇧N)", text: $text)
-                .textFieldStyle(.roundedBorder)
-                .focused($isInputFocused)
-                .onSubmit(submit)
+    private var canSubmit: Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 
-            Button("Add") {
-                submit()
+    var body: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(isInputFocused ? tokens.accentTerracotta : tokens.textTertiary)
+                    .accessibilityHidden(true)
+
+                TextField("Add a task (⌘⇧N)", text: $text)
+                    .textFieldStyle(.plain)
+                    .focused($isInputFocused)
+                    .onSubmit(submit)
+                    .accessibilityLabel("Task title")
             }
-            .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isInputFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isInputFocused ? 1.2 : 1)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(tokens.inputGlow.opacity(isInputFocused ? 0.55 : 0), lineWidth: 4)
+                    .blur(radius: 0.7)
+            }
+            .animation(MotionTokens.focusEase, value: isInputFocused)
+
+            Button {
+                submit()
+            } label: {
+                Text("Add")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .frame(minWidth: 54)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 9)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(canSubmit ? tokens.textPrimary : tokens.textTertiary)
+            .background(canSubmit ? tokens.accentTerracotta.opacity(0.90) : tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(canSubmit ? tokens.accentTerracotta.opacity(0.55) : tokens.inputBorder, lineWidth: 1)
+            }
+            .opacity(canSubmit ? 1 : 0.72)
+            .disabled(!canSubmit)
+            .accessibilityLabel("Add task")
+            .animation(MotionTokens.focusEase, value: canSubmit)
         }
         .background {
             Button("") {

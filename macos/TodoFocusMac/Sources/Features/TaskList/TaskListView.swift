@@ -75,12 +75,12 @@ struct TaskListView: View {
                 }
             }
             .padding(10)
-            .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+            .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(tokens.sectionBorder, lineWidth: 1)
             }
-            .shadow(color: Color.black.opacity(0.18), radius: 8, y: 3)
+            .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
 
             if isOverdueView && activeTodos.isEmpty {
                 Spacer()
@@ -133,27 +133,42 @@ struct TaskListView: View {
         HStack(spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(isCommandFocused ? tokens.textPrimary : tokens.mutedText)
+                    .foregroundStyle(isCommandFocused ? tokens.accentTerracotta : tokens.mutedText)
 
                 TextField("Search tasks (⌘K)", text: $commandText)
                     .textFieldStyle(.plain)
                     .focused($isCommandFocused)
+
+                if !commandText.isEmpty {
+                    Button {
+                        commandText = ""
+                        isCommandFocused = true
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(tokens.textTertiary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Clear search")
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                }
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 7)
-            .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(isCommandFocused ? tokens.textPrimary.opacity(0.28) : tokens.sectionBorder, lineWidth: isCommandFocused ? 1.2 : 1)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isCommandFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isCommandFocused ? 1.2 : 1)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(tokens.textPrimary.opacity(isCommandFocused ? 0.10 : 0), lineWidth: 4)
-                    .blur(radius: 0.4)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(tokens.inputGlow.opacity(isCommandFocused ? 0.52 : 0), lineWidth: 4)
+                    .blur(radius: 0.7)
             }
-            .shadow(color: Color.black.opacity(0.14), radius: 6, y: 2)
-            .shadow(color: isCommandFocused ? tokens.textPrimary.opacity(0.10) : .clear, radius: 8)
+            .shadow(color: Color.black.opacity(0.10), radius: 5, y: 2)
+            .shadow(color: isCommandFocused ? tokens.inputGlow : .clear, radius: 8, y: 1)
             .animation(MotionTokens.focusEase, value: isCommandFocused)
+            .animation(MotionTokens.focusEase, value: commandText.isEmpty)
         }
         .background {
             Button("") {
@@ -372,4 +387,3 @@ struct TaskListView: View {
         return listColorMap[listId]
     }
 }
-
