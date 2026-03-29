@@ -98,4 +98,42 @@ final class TimeFilterTests: XCTestCase {
         XCTAssertFalse(matches(filter: .tomorrow, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
         XCTAssertFalse(matches(filter: .next7Days, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
     }
+
+    func testTodoIsOverdueExcludesDatesEarlierToday() {
+        let now = date(2026, 3, 21, 23, 59)
+        let dueEarlierToday = date(2026, 3, 21, 0, 1)
+        let todo = Todo(
+            id: "todo-1",
+            title: "Task",
+            isCompleted: false,
+            isImportant: false,
+            isMyDay: false,
+            dueDate: dueEarlierToday,
+            notes: "",
+            listId: nil,
+            launchResourcesRaw: "[]"
+        )
+
+        XCTAssertFalse(todo.isOverdue(at: now, calendar: calendar))
+        XCTAssertNil(todo.debtSeconds(at: now, calendar: calendar))
+    }
+
+    func testTodoIsOverdueMatchesPreviousDay() {
+        let now = date(2026, 3, 21, 10)
+        let dueYesterday = date(2026, 3, 20, 23, 59)
+        let todo = Todo(
+            id: "todo-2",
+            title: "Task",
+            isCompleted: false,
+            isImportant: false,
+            isMyDay: false,
+            dueDate: dueYesterday,
+            notes: "",
+            listId: nil,
+            launchResourcesRaw: "[]"
+        )
+
+        XCTAssertTrue(todo.isOverdue(at: now, calendar: calendar))
+        XCTAssertNotNil(todo.debtSeconds(at: now, calendar: calendar))
+    }
 }

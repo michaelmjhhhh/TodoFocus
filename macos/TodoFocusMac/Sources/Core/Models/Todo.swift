@@ -12,14 +12,25 @@ struct Todo: Identifiable, Equatable {
     var launchResourcesRaw: String
     var focusTimeSeconds: Int = 0
 
-    var debtSeconds: Int? {
-        guard !isCompleted, let dueDate = dueDate else { return nil }
-        let diff = Int(Date().timeIntervalSince(dueDate))
+    func debtSeconds(at now: Date = Date(), calendar: Calendar = .current) -> Int? {
+        guard !isCompleted, let dueDate else { return nil }
+
+        // Due date is day-based in the UI, so a task should only become overdue
+        // after the local due day has fully passed.
+        let dueDay = calendar.startOfDay(for: dueDate)
+        let nowDay = calendar.startOfDay(for: now)
+        guard dueDay < nowDay else { return nil }
+
+        let diff = Int(now.timeIntervalSince(dueDate))
         guard diff > 0 else { return nil }
         return diff
     }
 
-    var isOverdue: Bool {
-        debtSeconds != nil
+    var debtSeconds: Int? { debtSeconds() }
+
+    func isOverdue(at now: Date = Date(), calendar: Calendar = .current) -> Bool {
+        debtSeconds(at: now, calendar: calendar) != nil
     }
+
+    var isOverdue: Bool { isOverdue() }
 }
