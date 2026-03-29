@@ -143,6 +143,112 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertTrue(persisted.isCompleted)
     }
 
+    @MainActor
+    func testEndDeepFocusWithPassphraseRejectsInvalidPassphraseAndKeepsSessionActive() async throws {
+        let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
+        let manager = try DatabaseManager(databasePath: path)
+        let listRepository = ListRepository(dbQueue: manager.dbQueue)
+        let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+        let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
+        let appModel = AppModel()
+        let hardFocusManager = HardFocusSessionManager(
+            repository: hardFocusRepository,
+            agentManager: MockTestHardFocusAgentManager(isRegistered: true, isRunning: true),
+            inProcessEnforcer: MockTestHardFocusInProcessEnforcer(),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        let store = TodoAppStore(
+            appModel: appModel,
+            listRepository: listRepository,
+            todoRepository: todoRepository,
+            stepRepository: stepRepository,
+            hardFocusRepository: hardFocusRepository,
+            hardFocusManager: hardFocusManager,
+            now: Date.init
+        )
+
+        let todo = try store.quickAdd(
+            title: "Needs passphrase",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        store.startDeepFocus(
+            blockedApps: ["com.apple.Safari"],
+            duration: nil,
+            focusTaskId: todo.id,
+            passphrase: "unlock"
+        )
+
+        let started = expectation(description: "Hard focus started")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            if hardFocusManager.isEnforcing {
+                started.fulfill()
+            }
+        }
+        await fulfillment(of: [started], timeout: 1.0)
+
+        do {
+            _ = try await store.endDeepFocusWithPassphrase("wrong-passphrase")
+            XCTFail("Expected invalid passphrase error")
+        } catch let error as HardFocusError {
+            XCTAssertEqual(error, .invalidPassphrase)
+        }
+
+        XCTAssertTrue(hardFocusManager.isEnforcing)
+        XCTAssertTrue(store.deepFocusService.isActive)
+    }
+
+    @MainActor
+    func testEndFocusForAppTerminationStopsHardFocusEvenWhenDeepFocusIsInactive() async throws {
+        let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
+        let manager = try DatabaseManager(databasePath: path)
+        let listRepository = ListRepository(dbQueue: manager.dbQueue)
+        let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
+        let stepRepository = StepRepository(dbQueue: manager.dbQueue)
+        let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
+        let appModel = AppModel()
+        let hardFocusManager = HardFocusSessionManager(
+            repository: hardFocusRepository,
+            agentManager: MockTestHardFocusAgentManager(isRegistered: true, isRunning: true),
+            inProcessEnforcer: MockTestHardFocusInProcessEnforcer(),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        let store = TodoAppStore(
+            appModel: appModel,
+            listRepository: listRepository,
+            todoRepository: todoRepository,
+            stepRepository: stepRepository,
+            hardFocusRepository: hardFocusRepository,
+            hardFocusManager: hardFocusManager,
+            now: Date.init
+        )
+
+        try await hardFocusManager.startSession(
+            blockedApps: ["com.apple.Safari"],
+            duration: nil,
+            focusTaskId: nil,
+            passphrase: "unlock"
+        )
+        XCTAssertTrue(hardFocusManager.isEnforcing)
+        XCTAssertFalse(store.deepFocusService.isActive)
+
+        await store.endFocusForAppTermination()
+
+        XCTAssertFalse(hardFocusManager.isEnforcing)
+        XCTAssertFalse(store.deepFocusService.isActive)
+        XCTAssertNil(try hardFocusRepository.activeSession())
+    }
+
     func testVisibleTodosUsesAppModelSelectionAndTimeFilter() throws {
         let now = Date(timeIntervalSince1970: 1_763_520_000)
         let tomorrow = now.addingTimeInterval(86_400)

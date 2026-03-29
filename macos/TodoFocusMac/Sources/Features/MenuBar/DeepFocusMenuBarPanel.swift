@@ -10,6 +10,10 @@ struct DeepFocusMenuBarPanel: View {
     @Environment(\.openWindow) private var openWindow
     @State private var themeTokens: ThemeTokens
     @State private var now: Date = .now
+    @State private var endFocusPassphrase: String = ""
+    @State private var showEndFocusPrompt: Bool = false
+    @State private var passphraseError: String?
+    @FocusState private var isPassphraseFieldFocused: Bool
 
     init(store: TodoAppStore, themeStore: ThemeStore, mainWindowID: String) {
         self._store = Bindable(store)
@@ -36,8 +40,7 @@ struct DeepFocusMenuBarPanel: View {
                     isDestructive: false,
                     isDisabled: false
                 ) {
-                    openWindow(id: mainWindowID)
-                    NSApp.activate(ignoringOtherApps: true)
+                    openMainWindow()
                 }
 
                 MenuBarPanelActionButton(
@@ -46,8 +49,10 @@ struct DeepFocusMenuBarPanel: View {
                     isDestructive: true,
                     isDisabled: !state.isActive
                 ) {
-                    Task { @MainActor in
-                        _ = await store.endDeepFocus()
+                    passphraseError = nil
+                    showEndFocusPrompt.toggle()
+                    if showEndFocusPrompt {
+                        isPassphraseFieldFocused = true
                     }
                 }
 
@@ -60,9 +65,13 @@ struct DeepFocusMenuBarPanel: View {
                     NSApplication.shared.terminate(nil)
                 }
             }
+
+            if showEndFocusPrompt && state.isActive {
+                endFocusPrompt
+            }
         }
         .padding(14)
-        .frame(width: 320)
+        .frame(width: 340)
         .background(themeTokens.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay {
@@ -79,6 +88,13 @@ struct DeepFocusMenuBarPanel: View {
         }
         .onChange(of: themeStore.theme) { _, newTheme in
             themeTokens = ThemeTokens(theme: newTheme)
+        }
+        .onChange(of: state.isActive) { _, isActive in
+            if !isActive {
+                showEndFocusPrompt = false
+                passphraseError = nil
+                endFocusPassphrase = ""
+            }
         }
     }
 
@@ -119,12 +135,18 @@ struct DeepFocusMenuBarPanel: View {
 
     @ViewBuilder
     private func contextSection(state: DeepFocusMenuBarState, blockedAppCount: Int) -> some View {
-        HStack(spacing: 8) {
-            contextChip(title: "Blocked", value: "\(blockedAppCount) apps")
-            contextChip(
-                title: "Session",
-                value: state.menuBarBadge.map { "\($0) left" } ?? (state.isActive ? "Running" : "Idle")
-            )
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                contextChip(title: "Blocked", value: "\(blockedAppCount) apps")
+                contextChip(
+                    title: "Session",
+                    value: state.menuBarBadge.map { "\($0) left" } ?? (state.isActive ? "Running" : "Idle")
+                )
+            }
+
+            if state.isActive, let title = currentFocusTaskTitle, !title.isEmpty {
+                contextChip(title: "Task", value: title)
+            }
         }
     }
 
@@ -148,6 +170,106 @@ struct DeepFocusMenuBarPanel: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(themeTokens.sectionBorder, lineWidth: 1)
         }
+    }
+
+    @ViewBuilder
+    private var endFocusPrompt: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Enter passphrase to end focus")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(themeTokens.textPrimary)
+
+            HStack(spacing: 8) {
+                SecureField("Passphrase", text: $endFocusPassphrase)
+                    .textFieldStyle(.plain)
+                    .focused($isPassphraseFieldFocused)
+                    .padding(.horizontal, 10)
+                    .frame(height: 34)
+                    .background(themeTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(themeTokens.sectionBorder, lineWidth: 1)
+                    }
+                    .onSubmit {
+                        submitEndFocus()
+                    }
+
+                Button("End") {
+                    submitEndFocus()
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 10)
+                .frame(height: 34)
+                .background(themeTokens.accentTerracotta.opacity(0.22), in: RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(themeTokens.accentTerracotta.opacity(0.55), lineWidth: 1)
+                }
+                .foregroundStyle(themeTokens.textPrimary)
+                .disabled(endFocusPassphrase.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+
+            if let passphraseError {
+                Text(passphraseError)
+                    .font(.system(size: 11))
+                    .foregroundStyle(themeTokens.danger)
+            }
+        }
+        .padding(10)
+        .background(themeTokens.bgFloating.opacity(0.85), in: RoundedRectangle(cornerRadius: 10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(themeTokens.sectionBorder, lineWidth: 1)
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+        .animation(MotionTokens.focusEase, value: passphraseError ?? "")
+    }
+
+    private var currentFocusTaskTitle: String? {
+        guard let focusTaskId = store.deepFocusService.currentFocusTaskId else {
+            return nil
+        }
+        return store.todos.first(where: { $0.id == focusTaskId })?.title
+    }
+
+    private func submitEndFocus() {
+        let trimmed = endFocusPassphrase.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            return
+        }
+
+        Task { @MainActor in
+            do {
+                _ = try await store.endDeepFocusWithPassphrase(trimmed)
+                showEndFocusPrompt = false
+                passphraseError = nil
+                endFocusPassphrase = ""
+            } catch let error as HardFocusError {
+                if error == .invalidPassphrase {
+                    passphraseError = "Invalid passphrase"
+                } else {
+                    passphraseError = "Unable to end focus right now"
+                }
+                isPassphraseFieldFocused = true
+            } catch {
+                passphraseError = "Unable to end focus right now"
+                isPassphraseFieldFocused = true
+            }
+        }
+    }
+
+    private func openMainWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+
+        if let existingWindow = NSApp.windows.first(where: { $0.canBecomeMain }) {
+            if existingWindow.isMiniaturized {
+                existingWindow.deminiaturize(nil)
+            }
+            existingWindow.makeKeyAndOrderFront(nil)
+            return
+        }
+
+        openWindow(id: mainWindowID)
     }
 }
 

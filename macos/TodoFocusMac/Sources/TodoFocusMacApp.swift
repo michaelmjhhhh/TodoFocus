@@ -1,11 +1,36 @@
 import SwiftUI
+import AppKit
 
 private enum SceneIDs {
     static let mainWindow = "main"
 }
 
+final class TodoFocusMacAppDelegate: NSObject, NSApplicationDelegate {
+    var onTerminateRequested: (@MainActor () async -> Void)?
+    private var isHandlingTermination = false
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard !isHandlingTermination else {
+            return .terminateNow
+        }
+
+        guard let onTerminateRequested else {
+            return .terminateNow
+        }
+
+        isHandlingTermination = true
+        Task { @MainActor in
+            await onTerminateRequested()
+            NSApp.reply(toApplicationShouldTerminate: true)
+            self.isHandlingTermination = false
+        }
+        return .terminateLater
+    }
+}
+
 @main
 struct TodoFocusMacApp: App {
+    @NSApplicationDelegateAdaptor(TodoFocusMacAppDelegate.self) private var appDelegate
     @State private var appModel = AppModel()
     @State private var themeStore = ThemeStore()
     @State private var store: TodoAppStore?
@@ -53,6 +78,11 @@ struct TodoFocusMacApp: App {
                     )
                     .preferredColorScheme(themeStore.preferredColorScheme)
                     .themeMode(themeStore.theme)
+                    .task {
+                        appDelegate.onTerminateRequested = { [weak store] in
+                            await store?.endFocusForAppTermination()
+                        }
+                    }
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Database unavailable")
@@ -69,6 +99,7 @@ struct TodoFocusMacApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
+        .defaultSize(width: 1280, height: 820)
 
         MenuBarExtra {
             Group {
