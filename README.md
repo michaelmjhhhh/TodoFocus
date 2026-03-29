@@ -71,6 +71,17 @@ What to look for in this demo:
 2. Download `TodoFocus-macos-universal.zip`
 3. Move `TodoFocusMac.app` to `Applications`
 
+### If macOS Blocks the App ("Malware" / "Damaged" Warning)
+If macOS prevents launch because the app is from an unidentified developer or is flagged as potentially harmful:
+
+1. Try opening `TodoFocusMac.app` once from `Applications` (let it fail).
+2. Open `System Settings -> Privacy & Security`.
+3. Scroll to the Security section and find the message about `TodoFocusMac.app`.
+4. Click `Open Anyway`.
+5. Confirm again in the follow-up dialog (`Open`).
+
+If you still see a warning, right-click the app in `Applications`, choose `Open`, then confirm once more. After this, macOS should trust future launches.
+
 ### Build From Source
 
 ```bash
