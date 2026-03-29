@@ -24,4 +24,20 @@ final class DeepFocusServiceTests: XCTestCase {
         
         XCTAssertEqual(report?.stats.distractionCount, 3)
     }
+
+    func testSessionStartedAtExposedDuringSessionAndClearedAfterEnd() {
+        let service = DeepFocusService()
+
+        XCTAssertNil(service.sessionStartedAt)
+
+        service.startSession(blockedApps: [], duration: 25 * 60, focusTaskId: "test-task-id")
+
+        guard let sessionStartedAt = service.sessionStartedAt else {
+            return XCTFail("Expected sessionStartedAt while active session exists")
+        }
+        XCTAssertLessThanOrEqual(abs(sessionStartedAt.timeIntervalSinceNow), 1.0)
+
+        _ = service.endSession()
+        XCTAssertNil(service.sessionStartedAt)
+    }
 }

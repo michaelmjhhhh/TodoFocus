@@ -1,5 +1,9 @@
 import SwiftUI
 
+private enum SceneIDs {
+    static let mainWindow = "main"
+}
+
 @main
 struct TodoFocusMacApp: App {
     @State private var appModel = AppModel()
@@ -37,7 +41,7 @@ struct TodoFocusMacApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: SceneIDs.mainWindow) {
             Group {
                 if let store {
                     RootView(
@@ -65,6 +69,30 @@ struct TodoFocusMacApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
+
+        MenuBarExtra {
+            Group {
+                if let store {
+                    DeepFocusMenuBarPanel(
+                        store: store,
+                        themeStore: themeStore,
+                        mainWindowID: SceneIDs.mainWindow
+                    )
+                } else {
+                    Text("TodoFocus unavailable")
+                        .font(.system(size: 12))
+                        .padding(12)
+                }
+            }
+            .preferredColorScheme(themeStore.preferredColorScheme)
+        } label: {
+            if let store {
+                DeepFocusMenuBarLabel(store: store)
+            } else {
+                Label("TodoFocus", systemImage: "checklist")
+            }
+        }
+        .menuBarExtraStyle(.window)
 
 #if os(macOS)
         Settings {
