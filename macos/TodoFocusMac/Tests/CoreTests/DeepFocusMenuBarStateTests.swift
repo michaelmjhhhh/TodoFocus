@@ -49,4 +49,19 @@ final class DeepFocusMenuBarStateTests: XCTestCase {
         XCTAssertEqual(state.menuBarBadge, "0m")
         XCTAssertTrue(state.isActive)
     }
+
+    func testFromTimedSessionDoesNotExceedConfiguredMinutesWhenNowSlightlyBeforeStart() {
+        let sessionStartedAt = Date(timeIntervalSince1970: 1_000)
+        let now = Date(timeIntervalSince1970: 999.7)
+
+        let state = DeepFocusMenuBarState.from(
+            isActive: true,
+            sessionDuration: 25 * 60,
+            sessionStartedAt: sessionStartedAt,
+            now: now
+        )
+
+        XCTAssertEqual(state.menuBarBadge, "25m")
+        XCTAssertEqual(state.subtitle, "25m remaining")
+    }
 }

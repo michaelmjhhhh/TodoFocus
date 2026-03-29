@@ -22,7 +22,7 @@ struct DeepFocusMenuBarState: Equatable {
         }
 
         if let sessionDuration, let sessionStartedAt {
-            let elapsed = now.timeIntervalSince(sessionStartedAt)
+            let elapsed = max(0, now.timeIntervalSince(sessionStartedAt))
             let remainingSeconds = max(0, sessionDuration - elapsed)
             let remainingMinutes = Int(ceil(remainingSeconds / 60.0))
             let remaining = "\(remainingMinutes)m"

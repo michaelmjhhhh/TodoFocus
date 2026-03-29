@@ -317,6 +317,33 @@ final class TodoAppStore {
         return report
     }
 
+    func endDeepFocusWithPassphrase(_ passphrase: String) async throws -> DeepFocusReport? {
+        if hardFocusManager.isEnforcing {
+            try await hardFocusManager.endSession(passphrase: passphrase)
+        }
+
+        guard let report = appModel.deepFocusService.endSession() else {
+            return nil
+        }
+
+        if let focusTaskId = report.focusTaskId {
+            try? updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+        }
+
+        return report
+    }
+
+    func endFocusForAppTermination() async {
+        if appModel.deepFocusService.isActive {
+            _ = await endDeepFocus(endedByHardFocus: true)
+            return
+        }
+
+        if hardFocusManager.isEnforcing {
+            try? await hardFocusManager.emergencyEndSession()
+        }
+    }
+
     func updateFocusTime(todoId: String, additionalSeconds: Int) throws {
         guard let current = try todoRepository.fetchTodo(id: todoId) else {
             return
