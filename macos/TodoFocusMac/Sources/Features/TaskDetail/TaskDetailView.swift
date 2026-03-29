@@ -68,9 +68,22 @@ struct TaskDetailView: View {
                             notesText = newValue
                         }
                     }
-                    .onChange(of: todo.dueDate) { _, newValue in
-                        dueDate = newValue ?? Date()
-                    }
+                        .onChange(of: todo.dueDate) { _, newValue in
+                            dueDate = newValue ?? Date()
+                        }
+                }
+                .overlay(alignment: .top) {
+                    LinearGradient(
+                        colors: [
+                            tokens.sectionBorder.opacity(0.45),
+                            tokens.sectionBorder.opacity(0.0)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 12)
+                    .padding(.horizontal, 16)
+                    .allowsHitTesting(false)
                 }
             } else {
                 EmptyView()
@@ -205,9 +218,16 @@ struct TaskDetailView: View {
         .padding(.vertical, 10)
         .background(tokens.sectionBackground)
         .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(tokens.sectionBorder)
-                .frame(height: 1)
+            LinearGradient(
+                colors: [
+                    tokens.sectionBorder.opacity(0.0),
+                    tokens.sectionBorder.opacity(0.75)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 8)
+            .allowsHitTesting(false)
         }
     }
 
@@ -269,7 +289,7 @@ struct TaskDetailView: View {
     }
 
     private func stepsSection(todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Steps")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(tokens.mutedText)
@@ -441,26 +461,39 @@ struct StepsEditorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 0) {
                 TextField("Add a step", text: $newStepTitle)
                     .textFieldStyle(.plain)
-                    .padding(10)
-                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(tokens.bgFloating)
                     .foregroundStyle(tokens.textPrimary)
                     .onSubmit(addStep)
+
+                Rectangle()
+                    .fill(tokens.sectionBorder.opacity(0.55))
+                    .frame(width: 1)
+                    .padding(.vertical, 7)
 
                 Button("Add") {
                     addStep()
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                    .background(tokens.accentTerracotta)
                 .foregroundStyle(.white)
                 .opacity(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
                 .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
+            .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(tokens.sectionBorder, lineWidth: 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10))
 
             if steps.isEmpty {
                 Text("No steps yet")
@@ -488,11 +521,23 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 14, weight: .semibold))
+                    .frame(width: 24, height: 24)
+                    .background(
+                        step.isCompleted ? tokens.success.opacity(0.14) : tokens.bgElevated,
+                        in: Circle()
+                    )
+                    .overlay {
+                        Circle()
+                            .stroke(step.isCompleted ? tokens.success.opacity(0.3) : tokens.sectionBorder, lineWidth: 1)
+                    }
                     .foregroundStyle(step.isCompleted ? tokens.success : tokens.textTertiary)
             }
             .buttonStyle(.plain)
 
             Text(step.title)
+                .font(.subheadline)
+                .lineLimit(2)
                 .foregroundStyle(step.isCompleted ? tokens.textTertiary : tokens.textPrimary)
                 .strikethrough(step.isCompleted)
 
@@ -503,14 +548,25 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: "trash")
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(tokens.textTertiary)
-                    .font(.caption)
+                    .frame(width: 22, height: 22)
+                    .background(tokens.bgElevated, in: Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(tokens.sectionBorder, lineWidth: 1)
+                    }
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 8)
         .padding(.horizontal, 10)
-        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 6))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(tokens.bgFloating.opacity(0.74), in: RoundedRectangle(cornerRadius: 9))
+        .overlay {
+            RoundedRectangle(cornerRadius: 9)
+                .stroke(tokens.sectionBorder, lineWidth: 1)
+        }
     }
 
     private func addStep() {
@@ -540,6 +596,7 @@ struct DeepFocusSetupSheet: View {
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
     @State private var passphrase: String = ""
+    @FocusState private var isPassphraseFocused: Bool
     @Environment(\.themeTokens) private var tokens
 
     private let availableApps: [(name: String, bundleId: String)] = [
@@ -735,7 +792,28 @@ struct DeepFocusSetupSheet: View {
                     .font(.subheadline)
                     .foregroundStyle(tokens.textSecondary)
                 SecureField("Enter a passphrase to unlock later", text: $passphrase)
-                    .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(.plain)
+                    .focused($isPassphraseFocused)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .foregroundStyle(tokens.textPrimary)
+                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(
+                                isPassphraseFocused
+                                    ? tokens.accentTerracotta.opacity(0.6)
+                                    : tokens.sectionBorder,
+                                lineWidth: isPassphraseFocused ? 1.25 : 1
+                            )
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(tokens.accentTerracotta.opacity(isPassphraseFocused ? 0.14 : 0), lineWidth: 4)
+                            .blur(radius: 0.6)
+                    }
+                    .shadow(color: isPassphraseFocused ? tokens.accentTerracotta.opacity(0.08) : .clear, radius: 8, y: 1)
+                    .animation(MotionTokens.focusEase, value: isPassphraseFocused)
             }
             .padding(.horizontal, 20)
 
