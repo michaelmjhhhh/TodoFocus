@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import TodoFocusMac
 
+@MainActor
 final class FeatureBehaviorTests: XCTestCase {
     func testSelectingSidebarClearsSelectedTask() {
         let model = AppModel()

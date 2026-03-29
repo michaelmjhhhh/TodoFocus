@@ -1,6 +1,7 @@
 import XCTest
 @testable import TodoFocusMac
 
+@MainActor
 final class AppSelectionStateTests: XCTestCase {
     func testSidebarSelectionChangeClearsSelectedTodo() {
         let model = AppModel()

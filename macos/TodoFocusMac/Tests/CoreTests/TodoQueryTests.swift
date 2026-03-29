@@ -40,9 +40,17 @@ final class TodoQueryTests: XCTestCase {
         id: String,
         isMyDay: Bool = false,
         isImportant: Bool = false,
+        isCompleted: Bool = false,
         dueDate: Date? = nil,
         listId: String? = nil
     ) -> CoreTodo {
-        CoreTodo(id: id, isMyDay: isMyDay, isImportant: isImportant, dueDate: dueDate, listId: listId)
+        CoreTodo(
+            id: id,
+            isMyDay: isMyDay,
+            isImportant: isImportant,
+            isCompleted: isCompleted,
+            dueDate: dueDate,
+            listId: listId
+        )
     }
 }

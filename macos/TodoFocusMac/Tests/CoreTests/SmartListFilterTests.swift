@@ -114,6 +114,7 @@ final class SmartListFilterTests: XCTestCase {
         id: String,
         isMyDay: Bool = false,
         isImportant: Bool = false,
+        isCompleted: Bool = false,
         dueDate: Date? = nil,
         listId: String? = nil
     ) -> CoreTodo {
@@ -121,6 +122,7 @@ final class SmartListFilterTests: XCTestCase {
             id: id,
             isMyDay: isMyDay,
             isImportant: isImportant,
+            isCompleted: isCompleted,
             dueDate: dueDate,
             listId: listId
         )
