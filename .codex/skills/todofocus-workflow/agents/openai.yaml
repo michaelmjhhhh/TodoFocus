@@ -1,0 +1,4 @@
+interface:
+  display_name: "TodoFocus Workflow"
+  short_description: "Clarify -> Plan -> Issue/Branch -> Build -> Verify -> PR"
+  default_prompt: "For TodoFocus tasks, enforce this sequence: brainstorming, writing-plans, issue+branch, skill routing (systematic-debugging for bugs, swiftui-expert-skill+ui-ux-pro-max for UI), implementation, verification, then git-commit and gh-cli PR flow with markdown artifacts."
