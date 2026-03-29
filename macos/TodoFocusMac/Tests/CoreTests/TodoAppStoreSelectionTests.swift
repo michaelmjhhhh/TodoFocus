@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import TodoFocusMac
 
+@MainActor
 final class TodoAppStoreSelectionTests: XCTestCase {
     func testSelectAndClearSelectionUpdatesSelectedTodo() throws {
         let now = Date(timeIntervalSince1970: 1_763_520_000)

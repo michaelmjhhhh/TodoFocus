@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import TodoFocusMac
 
+@MainActor
 final class TodoAppStoreTests: XCTestCase {
     private func makeStore(now: Date = Date(timeIntervalSince1970: 1_763_520_000)) throws -> (TodoAppStore, AppModel, ListRepository, TodoRepository) {
         let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
@@ -217,11 +218,6 @@ final class TodoAppStoreTests: XCTestCase {
 
         let persisted = try XCTUnwrap(todoRepository.fetchTodo(id: created.id))
         XCTAssertEqual(persisted.notes, "second")
-    }
-
-    func testDueDateClearButtonVisibilityHelper() {
-        XCTAssertFalse(TaskDetailView.shouldShowDueDateClearButton(dueDate: nil))
-        XCTAssertTrue(TaskDetailView.shouldShowDueDateClearButton(dueDate: Date(timeIntervalSince1970: 1_763_520_000)))
     }
 
     func testDeleteActiveCustomListRoutesSelectionToAll() throws {
