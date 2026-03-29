@@ -25,7 +25,7 @@
   Pick a task. Launch your context. Enter focus mode. Finish.
 </p>
 
-## 30-Second Demo
+## Quick Demo
 
 <p align="center">
   <img src="assets/demo.gif" alt="TodoFocus QuickDemo" width="980" />
