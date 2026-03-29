@@ -11,6 +11,7 @@ struct TaskDetailView: View {
     @State private var titleText: String = ""
     @State private var titleValidationMessage: String?
     @FocusState private var isTitleFocused: Bool
+    @FocusState private var isNotesFocused: Bool
     @State private var showDeepFocusSheet = false
     @State private var showFocusReport = false
     @State private var focusReport: DeepFocusReport?
@@ -271,20 +272,51 @@ struct TaskDetailView: View {
     }
 
     private func notesSection(todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Notes")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Notes")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(tokens.mutedText)
+                Spacer()
+                Text("Scrollable")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(tokens.textTertiary)
+            }
 
-            TextEditor(text: $notesText)
-                .frame(minHeight: 100)
-                .scrollContentBackground(.hidden)
-                .padding(10)
-                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(tokens.textPrimary)
-                .onChange(of: notesText) { _, newValue in
-                    store.updateNotesDebounced(todoId: todo.id, notes: newValue)
+            ZStack(alignment: .topLeading) {
+                if notesText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text("Capture thoughts, context, and follow-ups...")
+                        .font(.subheadline)
+                        .foregroundStyle(tokens.textTertiary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                        .allowsHitTesting(false)
                 }
+
+                TextEditor(text: $notesText)
+                    .focused($isNotesFocused)
+                    .frame(height: 170)
+                    .scrollContentBackground(.hidden)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(tokens.textPrimary)
+                    .onChange(of: notesText) { _, newValue in
+                        store.updateNotesDebounced(todoId: todo.id, notes: newValue)
+                    }
+            }
+            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isNotesFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isNotesFocused ? 1.2 : 1)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(tokens.inputGlow.opacity(isNotesFocused ? 0.52 : 0), lineWidth: 4)
+                    .blur(radius: 0.7)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .shadow(color: Color.black.opacity(0.12), radius: 5, y: 2)
+            .animation(MotionTokens.focusEase, value: isNotesFocused)
         }
     }
 
