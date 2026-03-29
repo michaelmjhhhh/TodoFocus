@@ -33,6 +33,7 @@ final class DeepFocusService {
     var currentSessionId: String?
     var currentFocusTaskId: String?
     var sessionDuration: TimeInterval?
+    var sessionStartedAt: Date? { sessionStartTime }
     var blockedApps: Set<String> = []
     var distractionAttempts: [String: Int] = [:]
     var distractionAppNames: [String: String] = [:]
