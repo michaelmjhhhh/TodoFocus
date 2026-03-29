@@ -59,8 +59,8 @@ What to look for in this demo:
 
 ## Built for Local-First Users
 
-- No account required.
-- SQLite lives on your machine.
+- No account required. 
+- SQLite lives on your machine. Access the database freely.
 - Import/Export supports backup-safe replace and merge.
 - Database path: `~/Library/Application Support/todofocus/todofocus.db`.
 
