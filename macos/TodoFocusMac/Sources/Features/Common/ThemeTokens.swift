@@ -99,4 +99,18 @@ final class ThemeTokens: Sendable {
     var violetAccent: Color { accentViolet }
     var cyanAccent: Color { accentBlue }
     var roseAccent: Color { danger }
+
+    // MARK: - Input Surfaces
+    var inputSurface: Color {
+        theme == .light ? Color.white.opacity(0.96) : bgFloating.opacity(0.78)
+    }
+    var inputBorder: Color {
+        theme == .light ? Color.black.opacity(0.10) : sectionBorder.opacity(0.95)
+    }
+    var inputBorderFocused: Color {
+        theme == .light ? accentTerracotta.opacity(0.58) : accentTerracotta.opacity(0.72)
+    }
+    var inputGlow: Color {
+        theme == .light ? accentTerracotta.opacity(0.24) : accentTerracotta.opacity(0.22)
+    }
 }
