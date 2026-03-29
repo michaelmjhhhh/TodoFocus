@@ -18,84 +18,55 @@
 </p>
 
 <p align="center">
-  <strong>From "I should do this" to "done" with fewer distractions.</strong>
+  <strong>Finish meaningful work with less context switching.</strong>
 </p>
 
 <p align="center">
-  Pick a task. Launch your context. Enter focus mode. Finish.
+  TodoFocus is a local-first macOS task app built for execution: choose one task, launch its context, enter focus mode, and close it.
 </p>
+
+## Why It Feels Different
+
+| Focus Faster | Block Distractions | Launch Context Instantly |
+|---|---|---|
+| Move from list to execution in seconds with My Day, smart filters, and one-click focus start. | Deep Focus and Hard Focus reduce interruption paths when you need protected work blocks. | Attach `url`, `file`, and `app` resources to a task and open everything with `Launch All`. |
 
 ## Quick Demo
 
 <p align="center">
-  <img src="assets/demo.gif" alt="TodoFocus QuickDemo" width="980" />
+  <img src="assets/demo.gif" alt="TodoFocus Quick Demo" width="980" />
 </p>
 
-## The Story
-
-You sit down to work on one task.
-Five minutes later, your browser has 14 tabs, Slack popped up twice, and the original task is still untouched.
-
-TodoFocus exists to close that gap between intention and execution.
+What to look for in this demo:
+- One selected task becomes an execution session, not another list item.
+- `Launch All` restores work context without tab hunting.
+- `⌘⇧T` captures thoughts without breaking flow.
 
 ## Before vs After
 
 | Before | After with TodoFocus |
 |---|---|
-| Task list grows, execution stalls | Select one task and start a focus run |
-| Context switching burns energy | `Launch All` restores your work context instantly |
-| Distractions break momentum | Deep/Hard Focus reduces interruption paths |
-| Ideas get lost mid-session | `⌘⇧T` captures thoughts right away |
+| Task list keeps growing | One task turns into one focused run |
+| Context switching drains attention | Work context opens in one action |
+| Distractions reset momentum | Focus modes preserve deep-work blocks |
 
 ## How It Works
 
-### 1. Pick What Matters
-- Use My Day, Smart Lists, and search (`⌘K`) to choose your next task
+1. Pick what matters with My Day, Smart Lists, and search (`⌘K`).
+2. Open context via task resources (`url`, `file`, `app`) and `Launch All`.
+3. Start `Deep Focus` (timed or infinite), enable `Hard Focus` when needed.
+4. Capture ideas globally with `⌘⇧T`, then keep shipping.
 
-### 2. Restore Context Fast
-- Attach `url`, `file`, and `app` resources to each task
-- Hit `Launch All` and your workspace is ready in seconds
+## Built for Local-First Users
 
-### 3. Lock In
-- Start `Deep Focus` (timed or infinite)
-- Enable `Hard Focus` when you need stricter anti-distraction behavior
-
-### 4. Keep Flow
-- Use global quick capture (`⌘⇧T`) from any app
-- Session stats track focus time and completion momentum
-
-## Feature Highlights
-
-### Focus Engine
-- `Deep Focus`: timer or infinite session mode
-- `Hard Focus`: stronger anti-distraction lock mode
-- Session completion and focus stats tracking
-
-### Task System
-- Smart views: overdue, today, tomorrow, next 7 days, no date
-- Custom lists with color indicators
-- Notes support
-
-### Local-First by Design
-- No account required
-- SQLite database on your machine
-- Database path: `~/Library/Application Support/todofocus/todofocus.db`
-- Import/Export with backup-safe replace and merge
-
-## Who This Is For
-
-- You use macOS and want a focused local-first workflow
-- You lose time on context switching between task, docs, and tools
-- You prefer native speed over web-heavy productivity stacks
-
-## Who This Is Not For
-
-- You need multi-user collaboration and cloud sync first
-- You want a lightweight checklist app without focus tooling
+- No account required.
+- SQLite lives on your machine.
+- Import/Export supports backup-safe replace and merge.
+- Database path: `~/Library/Application Support/todofocus/todofocus.db`.
 
 ## Install
 
-### Fastest Path (Recommended)
+### Fastest Path
 1. Open Releases: <https://github.com/michaelmjhhhh/TodoFocus/releases>
 2. Download `TodoFocus-macos-universal.zip`
 3. Move `TodoFocusMac.app` to `Applications`
@@ -110,9 +81,9 @@ xcodegen generate
 xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
 ```
 
-## First-Run Permissions
+## First-Run Permission
 
-Quick Capture uses a global shortcut, so macOS requires Accessibility permission:
+For global quick capture (`⌘⇧T`), grant Accessibility permission:
 `System Settings -> Privacy & Security -> Accessibility`
 
 ## Keyboard Shortcuts
@@ -124,18 +95,15 @@ Quick Capture uses a global shortcut, so macOS requires Accessibility permission
 | `⌘⇧N` | Add new task |
 | `⌘K` | Search tasks |
 
-## Builder Log
+## Roadmap Snapshot
 
-A transparent solo-builder timeline:
-- `2026-03-28`: import/export upgrade with preflight, merge mode, and safer replace path
-- `2026-03-28`: hard-focus/deep-focus sync fixes and release flow hardening
-- `Ongoing`: onboarding polish, docs cleanup, and edge-case stability work
+- Improve onboarding clarity and first-run guidance.
+- Continue Deep Focus / Hard Focus edge-case hardening.
+- Keep import/export reliability and UX polished.
 
-## Project Status
+## Report Issues
 
-Actively maintained.
-
-If something breaks, open an issue with:
+If something is off, open an issue with:
 - steps to reproduce
 - expected behavior
 - actual behavior
@@ -143,11 +111,12 @@ If something breaks, open an issue with:
 
 Issues: <https://github.com/michaelmjhhhh/TodoFocus/issues>
 
-## Support This Project
+## Support
 
+If TodoFocus helps your workflow:
 1. Star the repo: <https://github.com/michaelmjhhhh/TodoFocus>
-2. Share it with one friend who cares about deep work
-3. Open an issue with one friction point in your daily workflow
+2. Share it with one macOS deep-work friend.
+3. Open one issue describing your biggest friction point.
 
 ## License
 
