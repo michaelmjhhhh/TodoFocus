@@ -34,6 +34,8 @@ final class QuickCaptureService {
     @ObservationIgnored private var finalTranscriptsByLocale: [String: String] = [:]
     @ObservationIgnored private var partialTranscriptsByLocale: [String: String] = [:]
     @ObservationIgnored private var silenceAutoFinalizeWorkItem: DispatchWorkItem?
+    @ObservationIgnored private var hasDetectedSpeechSinceRecordingStart: Bool = false
+    @ObservationIgnored private var failedLocaleIDs: Set<String> = []
 
     func setup() {
         checkAndRequestAccessibility()
@@ -153,6 +155,8 @@ final class QuickCaptureService {
         voicePreviewText = nil
         finalTranscriptsByLocale = [:]
         partialTranscriptsByLocale = [:]
+        hasDetectedSpeechSinceRecordingStart = false
+        failedLocaleIDs = []
         cancelSilenceAutoFinalize()
 
         let granted = await ensureVoicePermissions()
@@ -167,7 +171,6 @@ final class QuickCaptureService {
             isRecordingVoice = true
             needsVoicePermission = false
             voiceStatusMessage = "Listening… English primary, Chinese fallback"
-            scheduleSilenceAutoFinalize()
         } catch {
             isRecordingVoice = false
             voiceStatusMessage = nil
@@ -238,6 +241,8 @@ final class QuickCaptureService {
         if let result {
             let text = result.bestTranscription.formattedString.trimmingCharacters(in: .whitespacesAndNewlines)
             if !text.isEmpty {
+                failedLocaleIDs.remove(localeID)
+                hasDetectedSpeechSinceRecordingStart = true
                 if result.isFinal {
                     finalTranscriptsByLocale[localeID] = text
                     partialTranscriptsByLocale[localeID] = nil
@@ -255,7 +260,12 @@ final class QuickCaptureService {
         }
 
         if let _ = error, isRecordingVoice {
-            voiceStatusMessage = "Listening interrupted, tap mic to retry"
+            failedLocaleIDs.insert(localeID)
+            let laneCount = max(recognitionRequests.count, 1)
+            let allRecognitionLanesFailed = failedLocaleIDs.count >= laneCount
+            if allRecognitionLanesFailed && !hasDetectedSpeechSinceRecordingStart {
+                voiceStatusMessage = "Listening interrupted, tap mic to retry"
+            }
         }
     }
 
@@ -301,6 +311,8 @@ final class QuickCaptureService {
         recognitionRequests = [:]
         finalTranscriptsByLocale = [:]
         partialTranscriptsByLocale = [:]
+        hasDetectedSpeechSinceRecordingStart = false
+        failedLocaleIDs = []
         voicePreviewText = nil
     }
 
