@@ -22,7 +22,11 @@
 	</array>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>TodoFocus uses the microphone for optional Quick Capture voice input.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>TodoFocus uses speech recognition to transcribe Quick Capture voice notes.</string>
 </dict>
 </plist>
