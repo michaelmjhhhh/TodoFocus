@@ -24,6 +24,11 @@ struct QuickCaptureView: View {
                     .foregroundStyle(tokens.textSecondary)
             }
 
+            Text("Voice mode reminder: English is primary, Chinese is fallback.")
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(tokens.textTertiary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
             HStack {
                 TextField("Capture a thought...", text: $service.draftText)
                     .textFieldStyle(.plain)
@@ -73,6 +78,18 @@ struct QuickCaptureView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            if service.isRecordingVoice, let preview = service.voicePreviewText, !preview.isEmpty {
+                HStack(spacing: 6) {
+                    Image(systemName: "waveform")
+                        .foregroundStyle(tokens.accentTerracotta)
+                    Text("Preview: \(preview)")
+                        .font(.caption)
+                        .foregroundStyle(tokens.textSecondary)
+                        .lineLimit(2)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
             if let error = service.voiceErrorMessage {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -109,7 +126,7 @@ struct QuickCaptureView: View {
             }
         }
         .padding(16)
-        .frame(width: 480, height: 220)
+        .frame(width: 500, height: 250)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(tokens.bgElevated)
