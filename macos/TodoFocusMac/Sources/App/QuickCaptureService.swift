@@ -215,12 +215,7 @@ final class QuickCaptureService {
         let format = inputNode.outputFormat(forBus: 0)
         let activeRequests = Array(recognitionRequests.values)
 
-        inputNode.removeTap(onBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
-            for request in activeRequests {
-                request.append(buffer)
-            }
-        }
+        Self.installAudioTap(inputNode: inputNode, format: format, requests: activeRequests)
 
         audioEngine.prepare()
         try audioEngine.start()
@@ -262,6 +257,19 @@ final class QuickCaptureService {
         let speechAuthorized = await ensureSpeechAuthorization()
         let microphoneAuthorized = await ensureMicrophoneAuthorization()
         return speechAuthorized && microphoneAuthorized
+    }
+
+    nonisolated private static func installAudioTap(
+        inputNode: AVAudioInputNode,
+        format: AVAudioFormat,
+        requests: [SFSpeechAudioBufferRecognitionRequest]
+    ) {
+        inputNode.removeTap(onBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
+            for request in requests {
+                request.append(buffer)
+            }
+        }
     }
 
     nonisolated private func ensureSpeechAuthorization() async -> Bool {

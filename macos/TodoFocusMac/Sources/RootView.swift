@@ -44,8 +44,13 @@ struct RootView: View {
 
                 if store.selectedTodo != nil {
                     Rectangle()
-                        .fill(themeTokens.sectionBorder.opacity(0.85))
-                        .frame(width: 5)
+                        .fill(.clear)
+                        .frame(width: 14)
+                        .overlay {
+                            Rectangle()
+                                .fill(themeTokens.sectionBorder.opacity(0.9))
+                                .frame(width: 3)
+                        }
                         .contentShape(Rectangle())
                         .gesture(
                             DragGesture(minimumDistance: 0)
