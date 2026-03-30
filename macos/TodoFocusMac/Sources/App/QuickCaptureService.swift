@@ -6,6 +6,10 @@ import Speech
 @Observable
 @MainActor
 final class QuickCaptureService {
+    private static let primaryLocaleID = "en-US"
+    private static let fallbackLocaleID = "zh-CN"
+    private static let silenceAutoFinalizeSeconds: TimeInterval = 1.2
+
     var isVisible: Bool = false
     var needsAccessibilityPermission: Bool = false
     var isHotkeyReady: Bool = false
@@ -17,6 +21,7 @@ final class QuickCaptureService {
     var voiceStatusMessage: String?
     var voiceErrorMessage: String?
     var needsVoicePermission: Bool = false
+    var voicePreviewText: String?
 
     var deepFocusService: DeepFocusService?
     var onCapture: ((String) -> Void)?
@@ -26,7 +31,9 @@ final class QuickCaptureService {
     @ObservationIgnored private let audioEngine = AVAudioEngine()
     @ObservationIgnored private var recognitionRequests: [String: SFSpeechAudioBufferRecognitionRequest] = [:]
     @ObservationIgnored private var recognitionTasks: [String: SFSpeechRecognitionTask] = [:]
-    @ObservationIgnored private var transcriptsByLocale: [String: String] = [:]
+    @ObservationIgnored private var finalTranscriptsByLocale: [String: String] = [:]
+    @ObservationIgnored private var partialTranscriptsByLocale: [String: String] = [:]
+    @ObservationIgnored private var silenceAutoFinalizeWorkItem: DispatchWorkItem?
 
     func setup() {
         checkAndRequestAccessibility()
@@ -92,6 +99,7 @@ final class QuickCaptureService {
         voiceErrorMessage = nil
         voiceStatusMessage = nil
         needsVoicePermission = false
+        voicePreviewText = nil
 
         let targetInfo: String
         if let dfService = deepFocusService, dfService.isActive {
@@ -142,7 +150,10 @@ final class QuickCaptureService {
 
         voiceErrorMessage = nil
         voiceStatusMessage = nil
-        transcriptsByLocale = [:]
+        voicePreviewText = nil
+        finalTranscriptsByLocale = [:]
+        partialTranscriptsByLocale = [:]
+        cancelSilenceAutoFinalize()
 
         let granted = await ensureVoicePermissions()
         guard granted else {
@@ -155,7 +166,8 @@ final class QuickCaptureService {
             try beginRecognitionPipeline()
             isRecordingVoice = true
             needsVoicePermission = false
-            voiceStatusMessage = "Listening… click again to stop"
+            voiceStatusMessage = "Listening… English primary, Chinese fallback"
+            scheduleSilenceAutoFinalize()
         } catch {
             isRecordingVoice = false
             voiceStatusMessage = nil
@@ -171,13 +183,14 @@ final class QuickCaptureService {
 
         isRecordingVoice = false
         voiceStatusMessage = nil
+        cancelSilenceAutoFinalize()
 
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
 
         recognitionRequests.values.forEach { $0.endAudio() }
 
-        let best = bestTranscript()
+        let best = bestFinalTranscript()
         if !best.isEmpty {
             draftText = best
         }
@@ -188,7 +201,7 @@ final class QuickCaptureService {
     private func beginRecognitionPipeline() throws {
         teardownRecognitionPipeline(cancelTasks: true)
 
-        let localeIDs = ["en-US", "zh-CN"]
+        let localeIDs = [Self.primaryLocaleID, Self.fallbackLocaleID]
 
         for localeID in localeIDs {
             guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeID)),
@@ -223,25 +236,61 @@ final class QuickCaptureService {
 
     private func handleRecognitionCallback(localeID: String, result: SFSpeechRecognitionResult?, error: Error?) {
         if let result {
-            transcriptsByLocale[localeID] = result.bestTranscription.formattedString
-            let best = bestTranscript()
-            if !best.isEmpty {
-                draftText = best
+            let text = result.bestTranscription.formattedString.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !text.isEmpty {
+                if result.isFinal {
+                    finalTranscriptsByLocale[localeID] = text
+                    partialTranscriptsByLocale[localeID] = nil
+                    voicePreviewText = nil
+                    let bestFinal = bestFinalTranscript()
+                    if !bestFinal.isEmpty {
+                        draftText = bestFinal
+                    }
+                } else {
+                    partialTranscriptsByLocale[localeID] = text
+                    voicePreviewText = bestPartialPreview()
+                }
+                scheduleSilenceAutoFinalize()
             }
         }
 
         if let _ = error, isRecordingVoice {
-            let best = bestTranscript()
-            if !best.isEmpty {
-                draftText = best
-            }
+            voiceStatusMessage = "Listening interrupted, tap mic to retry"
         }
     }
 
-    private func bestTranscript() -> String {
-        transcriptsByLocale.values
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .max(by: { $0.count < $1.count }) ?? ""
+    private func bestFinalTranscript() -> String {
+        for localeID in [Self.primaryLocaleID, Self.fallbackLocaleID] {
+            if let text = finalTranscriptsByLocale[localeID], !text.isEmpty {
+                return text
+            }
+        }
+        return finalTranscriptsByLocale.values.first(where: { !$0.isEmpty }) ?? ""
+    }
+
+    private func bestPartialPreview() -> String? {
+        for localeID in [Self.primaryLocaleID, Self.fallbackLocaleID] {
+            if let text = partialTranscriptsByLocale[localeID], !text.isEmpty {
+                return text
+            }
+        }
+        return partialTranscriptsByLocale.values.first(where: { !$0.isEmpty })
+    }
+
+    private func scheduleSilenceAutoFinalize() {
+        cancelSilenceAutoFinalize()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, self.isRecordingVoice else { return }
+            self.stopVoiceCapture()
+            self.voiceStatusMessage = "Auto-stopped after short silence"
+        }
+        silenceAutoFinalizeWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.silenceAutoFinalizeSeconds, execute: workItem)
+    }
+
+    private func cancelSilenceAutoFinalize() {
+        silenceAutoFinalizeWorkItem?.cancel()
+        silenceAutoFinalizeWorkItem = nil
     }
 
     private func teardownRecognitionPipeline(cancelTasks: Bool) {
@@ -250,7 +299,9 @@ final class QuickCaptureService {
         }
         recognitionTasks = [:]
         recognitionRequests = [:]
-        transcriptsByLocale = [:]
+        finalTranscriptsByLocale = [:]
+        partialTranscriptsByLocale = [:]
+        voicePreviewText = nil
     }
 
     private func ensureVoicePermissions() async -> Bool {
