@@ -51,25 +51,34 @@ struct TaskListView: View {
                         isCompletedPanelVisible.toggle()
                     }
                 } label: {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
-                            .font(.system(size: 11))
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.accentTerracotta : tokens.textTertiary)
+                            .frame(width: 20, height: 20)
+                            .background(tokens.bgFloating.opacity(0.95), in: Circle())
                         Text("Completed")
-                            .font(.caption2.weight(.medium))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
                         Text("\(completedTodos.count)")
-                            .font(.caption2.weight(.semibold))
+                            .font(.caption.weight(.semibold))
                             .monospacedDigit()
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(tokens.bgFloating.opacity(0.9), in: Capsule())
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.textPrimary : tokens.textSecondary)
+                            .background(tokens.bgFloating.opacity(0.95), in: Capsule())
                     }
-                    .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 4)
-                    .background(tokens.bgFloating.opacity(0.7), in: Capsule())
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(tokens.bgFloating.opacity(isCompletedPanelVisible ? 0.82 : 0.66), in: Capsule())
                     .overlay {
                         Capsule()
-                            .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                            .stroke(
+                                isCompletedPanelVisible
+                                    ? tokens.accentTerracotta.opacity(0.28)
+                                    : tokens.sectionBorder.opacity(0.92),
+                                lineWidth: 1
+                            )
                     }
                 }
                 .buttonStyle(.plain)
