@@ -7,6 +7,7 @@
 <p align="center">
   <a href="https://github.com/michaelmjhhhh/TodoFocus/releases"><img src="https://img.shields.io/badge/Download-Latest%20Release-0A84FF?style=for-the-badge" alt="Download Latest Release" /></a>
   <a href="https://github.com/michaelmjhhhh/TodoFocus"><img src="https://img.shields.io/badge/GitHub-Star%20Project-111111?style=for-the-badge" alt="Star Project" /></a>
+  <a href="#build-from-source"><img src="https://img.shields.io/badge/Build-From%20Source-2F855A?style=for-the-badge" alt="Build from Source" /></a>
 </p>
 
 <p align="center">
@@ -18,116 +19,189 @@
 </p>
 
 <p align="center">
-  <strong>Finish meaningful work with less context switching.</strong>
+  <strong>Turn tasks into execution sessions, not endless lists.</strong>
 </p>
 
 <p align="center">
-  TodoFocus is a local-first macOS task app built for execution: choose one task, launch its context, enter focus mode, and close it.
+  TodoFocus is a native, local-first macOS app for deep work: capture quickly, launch context instantly, and finish meaningful tasks with fewer interruptions.
 </p>
 
-## Why It Feels Different
+## Why TodoFocus
 
-| Focus Faster | Block Distractions | Launch Context Instantly |
+| Capture Fast | Focus Deep | Launch Context |
 |---|---|---|
-| Move from list to execution in seconds with My Day, smart filters, and one-click focus start. | Deep Focus and Hard Focus reduce interruption paths when you need protected work blocks. | Attach `url`, `file`, and `app` resources to a task and open everything with `Launch All`. |
+| Use Quick Add and global Quick Capture (`⌘⇧T`) to save thoughts without breaking flow. | Start Deep Focus or Hard Focus to reduce distraction paths while you execute. | Attach `url`, `file`, and `app` resources to each task and open all with one action. |
 
-## Quick Demo
+### Before vs After
 
-<p align="center">
-  <img src="assets/demo.gif" alt="TodoFocus Quick Demo" width="980" />
-</p>
-
-What to look for in this demo:
-- One selected task becomes an execution session, not another list item.
-- `Launch All` restores work context without tab hunting.
-- `⌘⇧T` captures thoughts without breaking flow.
-
-## Before vs After
-
-| Before | After with TodoFocus |
+| Before | With TodoFocus |
 |---|---|
-| Task list keeps growing | One task turns into one focused run |
-| Context switching drains attention | Work context opens in one action |
-| Distractions reset momentum | Focus modes preserve deep-work blocks |
+| Tasks pile up and stay abstract | One task becomes one focused execution block |
+| Constant tab/app switching | Context opens in one click via Launchpad |
+| Notes and ideas get lost | Quick Capture routes ideas back into your workflow |
 
-## How It Works
+## Quick Start (3 Minutes)
 
-1. Pick what matters with My Day, Smart Lists, and search (`⌘K`).
-2. Open context via task resources (`url`, `file`, `app`) and `Launch All`.
-3. Start `Deep Focus` (timed or infinite), enable `Hard Focus` when needed.
-4. Capture ideas globally with `⌘⇧T`, then keep shipping.
-
-## Built for Local-First Users
-
-- No account required. 
-- SQLite lives on your machine. Access the database freely.
-- Import/Export supports backup-safe replace and merge.
-- Database path: `~/Library/Application Support/todofocus/todofocus.db`.
-
-## Install
-
-### Fastest Path
-1. Open Releases: <https://github.com/michaelmjhhhh/TodoFocus/releases>
+### 1. Install
+1. Open releases: <https://github.com/michaelmjhhhh/TodoFocus/releases>
 2. Download `TodoFocus-macos-universal.zip`
 3. Move `TodoFocusMac.app` to `Applications`
 
-### If macOS Blocks the App ("Malware" / "Damaged" Warning)
-If macOS prevents launch because the app is from an unidentified developer or is flagged as potentially harmful:
+### 2. Launch Once
+1. Open `TodoFocusMac.app`
+2. If macOS warns, open `System Settings -> Privacy & Security`
+3. Click `Open Anyway`
 
-1. Try opening `TodoFocusMac.app` once from `Applications` (let it fail).
-2. Open `System Settings -> Privacy & Security`.
-3. Scroll to the Security section and find the message about `TodoFocusMac.app`.
-4. Click `Open Anyway`.
-5. Confirm again in the follow-up dialog (`Open`).
+### 3. Enable Permissions (for full experience)
+- Accessibility: required for global Quick Capture hotkey (`⌘⇧T`)
+- Microphone + Speech Recognition: required for voice capture in Quick Capture
 
-If you still see a warning, right-click the app in `Applications`, choose `Open`, then confirm once more. After this, macOS should trust future launches.
+Paths:
+- `System Settings -> Privacy & Security -> Accessibility`
+- `System Settings -> Privacy & Security -> Microphone`
+- `System Settings -> Privacy & Security -> Speech Recognition`
 
-### Build From Source
+### 4. Verify First Success
+- Create one task
+- Add one URL in Launchpad
+- Click `Launch All`
+- Start a Deep Focus session
 
-```bash
-brew install xcodegen
-git clone https://github.com/michaelmjhhhh/TodoFocus.git
-cd TodoFocus/macos/TodoFocusMac
-xcodegen generate
-xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
-```
+If these work, your setup is complete.
 
-## First-Run Permission
+## Core Workflows
 
-For global quick capture (`⌘⇧T`), grant Accessibility permission:
-`System Settings -> Privacy & Security -> Accessibility`
+### Workflow A: Plan -> Launch -> Focus
+1. Select a task in `My Day` / `All Tasks` / custom list.
+2. Open task detail and add Launchpad resources.
+3. Click `Launch All` to open your work context.
+4. Start `Deep Focus` (optionally with timer).
+5. Finish, then close the loop in one place.
+
+### Workflow B: Quick Capture (Typing + Voice)
+1. Press `⌘⇧T` from anywhere.
+2. Type a thought or use voice capture.
+3. Voice behavior:
+- English is primary (`en-US`)
+- Chinese is fallback (`zh-CN`)
+- Final transcript is prioritized for commit
+- Partial transcript is preview-only
+4. After short silence, voice capture auto-finalizes.
+
+### Workflow C: Import / Export Safely
+1. Open Settings -> Data.
+2. Export data snapshot.
+3. Import with merge/replace mode based on your goal.
+4. Portability note: only URL launch resources are imported/exported across devices.
+
+## Feature Highlights
+
+- Smart views: `My Day`, `Important`, `Planned`, `Overdue`, `All Tasks`
+- Search with `⌘K`
+- Deep Focus and Hard Focus for distraction control
+- Launchpad per task with `url`, `file`, `app`
+- Global Quick Capture (`⌘⇧T`)
+- Voice capture with bilingual recognition strategy
+- Resizable task detail panel
+- Polished filter bar, sidebar alignment, and Launchpad editor UI
+- Theme support: dark / light / system (dark by default)
 
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
 |---|---|
-| `⌘⇧T` | Quick Capture (global) |
-| `⌘⇧F` | Start Deep Focus for selected task |
+| `⌘⇧T` | Global Quick Capture |
+| `⌘⇧F` | Start Deep Focus on selected task |
 | `⌘⇧N` | Add new task |
-| `⌘K` | Search tasks |
+| `⌘K` | Search tasks by title and notes |
+
+## Data, Privacy, and Portability
+
+### Local-First Storage
+- No account required
+- Data is stored locally in SQLite
+- Database path: `~/Library/Application Support/todofocus/todofocus.db`
+
+### Import / Export Scope
+- Included: lists, tasks, steps, settings, URL launch resources
+- Excluded from cross-device import/export: file/app launch resources
+
+Why excluded:
+- File paths and app paths are device-local and often invalid on another machine.
+
+### Security Guardrails
+- Launch resources are opened through native `NSWorkspace`
+- No shell command execution path is used for Launchpad actions
+- Unsupported payloads are rejected by validation
+
+## Build From Source
+
+### Requirements
+- macOS 14+
+- Xcode 16+
+- `xcodegen`
+
+### Build and Test
+```bash
+brew install xcodegen
+git clone https://github.com/michaelmjhhhh/TodoFocus.git
+cd TodoFocus/macos/TodoFocusMac
+xcodegen generate
+xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+```
+
+## Contributor Workflow
+
+For non-trivial changes, follow:
+1. Create/update issue
+2. Create fix/feat branch from `main`
+3. Implement focused changes
+4. Run verification gates:
+- `xcodebuild test ...`
+- `xcodebuild build ...`
+5. Open PR with linked issue and verification output
+
+See project rules in [AGENTS.md](AGENTS.md).
+
+## Troubleshooting
+
+### App Is Blocked by macOS
+- Open from `Applications` once
+- Go to `System Settings -> Privacy & Security`
+- Click `Open Anyway`
+- If needed, right-click app -> `Open`
+
+### Quick Capture Hotkey Does Not Trigger
+- Re-check Accessibility permission
+- Relaunch app after granting permission
+- If app signature changed after rebuild, grant again
+
+### Voice Input Feels Inaccurate or Slow
+- Speak complete phrases and allow a short pause for finalization
+- Confirm both Microphone and Speech permissions are granted
+- Use a stable input device and reduce background noise
+
+## Demo
+
+<p align="center">
+  <img src="assets/demo.gif" alt="TodoFocus Quick Demo" width="980" />
+</p>
 
 ## Roadmap Snapshot
 
-- Improve onboarding clarity and first-run guidance.
-- Continue Deep Focus / Hard Focus edge-case hardening.
-- Keep import/export reliability and UX polished.
+- Better onboarding and first-run guidance
+- Continued Deep Focus / Hard Focus reliability hardening
+- Ongoing import/export and UI polish improvements
 
-## Report Issues
-
-If something is off, open an issue with:
-- steps to reproduce
-- expected behavior
-- actual behavior
-- macOS version
-
-Issues: <https://github.com/michaelmjhhhh/TodoFocus/issues>
-
-## Support
+## Support and Feedback
 
 If TodoFocus helps your workflow:
 1. Star the repo: <https://github.com/michaelmjhhhh/TodoFocus>
-2. Share it with one macOS deep-work friend.
-3. Open one issue describing your biggest friction point.
+2. Share it with one macOS deep-work user
+3. Open issues with clear repro steps and environment details
+
+Issue tracker: <https://github.com/michaelmjhhhh/TodoFocus/issues>
 
 ## License
 
