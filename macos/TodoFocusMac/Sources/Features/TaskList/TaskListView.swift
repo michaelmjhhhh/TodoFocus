@@ -38,7 +38,12 @@ struct TaskListView: View {
                     .font(.caption2.weight(.semibold))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(tokens.sectionBackground, in: Capsule())
+                    .foregroundStyle(tokens.textSecondary)
+                    .background(tokens.bgElevated.opacity(0.9), in: Capsule())
+                    .overlay {
+                        Capsule()
+                            .stroke(tokens.sectionBorder.opacity(0.95), lineWidth: 1)
+                    }
 
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -56,7 +61,11 @@ struct TaskListView: View {
                     .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(tokens.sectionBackground, in: Capsule())
+                    .background(tokens.bgElevated.opacity(0.9), in: Capsule())
+                    .overlay {
+                        Capsule()
+                            .stroke(tokens.sectionBorder.opacity(0.95), lineWidth: 1)
+                    }
                 }
                 .buttonStyle(.plain)
                 .help(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
@@ -361,25 +370,46 @@ struct TaskListView: View {
     }
 
     private var filterPicker: some View {
-        HStack(spacing: 2) {
-            ForEach(TimeFilter.allCases) { filter in
-                Button {
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        appModel.timeFilter = filter
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 4) {
+                ForEach(TimeFilter.allCases) { filter in
+                    Button {
+                        withAnimation(MotionTokens.focusEase) {
+                            appModel.timeFilter = filter
+                        }
+                    } label: {
+                        Text(filter.label)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(appModel.timeFilter == filter ? tokens.textPrimary : tokens.textTertiary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(
+                                appModel.timeFilter == filter ? tokens.bgFloating.opacity(0.95) : Color.clear,
+                                in: Capsule()
+                            )
+                            .overlay {
+                                Capsule()
+                                    .stroke(
+                                        appModel.timeFilter == filter
+                                            ? tokens.inputBorderFocused.opacity(0.75)
+                                            : Color.clear,
+                                        lineWidth: 1
+                                    )
+                            }
                     }
-                } label: {
-                    Text(filter.label)
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(appModel.timeFilter == filter ? tokens.textPrimary : tokens.textTertiary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(appModel.timeFilter == filter ? tokens.bgFloating : Color.clear, in: Capsule())
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
-        .padding(3)
-        .background(tokens.bgBase.opacity(0.5), in: Capsule())
+        .padding(.horizontal, 4)
+        .padding(.vertical, 3)
+        .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+        }
+        .shadow(color: Color.black.opacity(0.10), radius: 6, y: 2)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private func colorForList(listId: String?) -> Color? {
