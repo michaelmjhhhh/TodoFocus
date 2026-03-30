@@ -400,9 +400,11 @@ struct TaskListView: View {
                     .buttonStyle(.plain)
                 }
             }
+            .fixedSize(horizontal: true, vertical: false)
         }
         .padding(.horizontal, 4)
         .padding(.vertical, 3)
+        .frame(maxWidth: 430)
         .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
