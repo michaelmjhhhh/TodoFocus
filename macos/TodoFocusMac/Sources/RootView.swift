@@ -11,6 +11,7 @@ struct RootView: View {
     @State private var isHeaderExpanded: Bool = true
     @State private var themeTokens: ThemeTokens
     @State private var isHardFocusActive: Bool = false
+    @State private var detailPanelDragStartWidth: Double?
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String, themeStore: ThemeStore) {
         self._appModel = Bindable(appModel)
@@ -49,8 +50,15 @@ struct RootView: View {
                         .gesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { value in
-                                    let next = appModel.detailPanelWidth - value.translation.width
+                                    if detailPanelDragStartWidth == nil {
+                                        detailPanelDragStartWidth = appModel.detailPanelWidth
+                                    }
+                                    let startWidth = detailPanelDragStartWidth ?? appModel.detailPanelWidth
+                                    let next = startWidth - value.translation.width
                                     appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
+                                }
+                                .onEnded { _ in
+                                    detailPanelDragStartWidth = nil
                                 }
                         )
                         .transition(.move(edge: .trailing).combined(with: .opacity))
