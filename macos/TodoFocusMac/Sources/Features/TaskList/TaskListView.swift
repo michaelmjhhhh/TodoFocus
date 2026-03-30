@@ -35,14 +35,15 @@ struct TaskListView: View {
                 }
 
                 Text("\(filteredVisibleTodos.count)")
-                    .font(.caption2.weight(.semibold))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
+                    .font(.caption.weight(.semibold))
+                    .monospacedDigit()
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
                     .foregroundStyle(tokens.textSecondary)
-                    .background(tokens.bgElevated.opacity(0.9), in: Capsule())
+                    .background(tokens.bgFloating.opacity(0.85), in: Capsule())
                     .overlay {
                         Capsule()
-                            .stroke(tokens.sectionBorder.opacity(0.95), lineWidth: 1)
+                            .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
                     }
 
                 Button {
@@ -50,21 +51,34 @@ struct TaskListView: View {
                         isCompletedPanelVisible.toggle()
                     }
                 } label: {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
-                            .font(.system(size: 11))
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.accentTerracotta : tokens.textTertiary)
+                            .frame(width: 20, height: 20)
+                            .background(tokens.bgFloating.opacity(0.95), in: Circle())
                         Text("Completed")
-                            .font(.caption2.weight(.medium))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
                         Text("\(completedTodos.count)")
-                            .font(.caption2.weight(.medium))
+                            .font(.caption.weight(.semibold))
+                            .monospacedDigit()
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .foregroundStyle(isCompletedPanelVisible ? tokens.textPrimary : tokens.textSecondary)
+                            .background(tokens.bgFloating.opacity(0.95), in: Capsule())
                     }
-                    .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(tokens.bgElevated.opacity(0.9), in: Capsule())
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(tokens.bgFloating.opacity(isCompletedPanelVisible ? 0.82 : 0.66), in: Capsule())
                     .overlay {
                         Capsule()
-                            .stroke(tokens.sectionBorder.opacity(0.95), lineWidth: 1)
+                            .stroke(
+                                isCompletedPanelVisible
+                                    ? tokens.accentTerracotta.opacity(0.28)
+                                    : tokens.sectionBorder.opacity(0.92),
+                                lineWidth: 1
+                            )
                     }
                 }
                 .buttonStyle(.plain)
@@ -371,7 +385,7 @@ struct TaskListView: View {
 
     private var filterPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 4) {
+            HStack(spacing: 6) {
                 ForEach(TimeFilter.allCases) { filter in
                     Button {
                         withAnimation(MotionTokens.focusEase) {
@@ -381,18 +395,18 @@ struct TaskListView: View {
                         Text(filter.label)
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(appModel.timeFilter == filter ? tokens.textPrimary : tokens.textTertiary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
                             .background(
-                                appModel.timeFilter == filter ? tokens.bgFloating.opacity(0.95) : Color.clear,
+                                appModel.timeFilter == filter ? tokens.bgFloating.opacity(0.92) : Color.clear,
                                 in: Capsule()
                             )
                             .overlay {
                                 Capsule()
                                     .stroke(
                                         appModel.timeFilter == filter
-                                            ? tokens.inputBorderFocused.opacity(0.75)
-                                            : Color.clear,
+                                            ? tokens.inputBorderFocused.opacity(0.65)
+                                            : tokens.sectionBorder.opacity(0.0),
                                         lineWidth: 1
                                     )
                             }
@@ -400,14 +414,12 @@ struct TaskListView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .fixedSize(horizontal: true, vertical: false)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
         }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 3)
-        .frame(maxWidth: 430)
-        .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
         }
         .shadow(color: Color.black.opacity(0.10), radius: 6, y: 2)

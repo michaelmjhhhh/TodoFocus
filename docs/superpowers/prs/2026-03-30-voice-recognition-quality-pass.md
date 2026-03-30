@@ -23,6 +23,14 @@ Closes #98
   - language reminder text (English primary, Chinese fallback)
   - preview row for partial transcripts while recording
   - slightly larger panel frame for improved readability
+- polished Task List filter/header visuals:
+  - removed unnecessary trailing blank area in filter capsule
+  - kept horizontal scrolling behavior without squeezing in narrow widths
+  - refined numeric chips with lighter visual weight and monospaced digits
+- polished Launchpad add-resource form visuals:
+  - improved spacing rhythm and rounded corners
+  - switched inputs to tokenized input surfaces/borders
+  - unified type chips and action buttons with clearer hierarchy and softer contrast
 
 ## Verification
 - `xcodebuild test -project "macos/TodoFocusMac/TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"`

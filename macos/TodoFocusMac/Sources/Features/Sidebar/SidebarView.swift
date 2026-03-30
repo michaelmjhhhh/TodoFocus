@@ -84,17 +84,33 @@ struct SidebarView: View {
                 isAddingList = true
             }
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: 10) {
+                Capsule()
+                    .fill(tokens.accentTerracotta)
+                    .frame(width: 3, height: 16)
+                    .opacity(0)
+
                 Image(systemName: "plus")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(tokens.textTertiary)
+                    .frame(width: 16, alignment: .center)
 
                 Text("Add list")
-                    .font(.system(size: 13))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(tokens.textTertiary)
+
+                Spacer(minLength: 0)
+
+                Color.clear
+                    .frame(width: 14, height: 10)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
+            .background(tokens.bgFloating.opacity(0.28), in: RoundedRectangle(cornerRadius: 9))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9)
+                    .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
+            }
         }
         .buttonStyle(.plain)
     }
@@ -239,31 +255,39 @@ private struct SidebarRowButton: View {
             HStack(spacing: 10) {
                 Capsule()
                     .fill(listColor ?? tokens.accentTerracotta)
-                    .frame(width: listColor != nil || isSelected ? 3 : 0, height: listColor != nil || isSelected ? 16 : 0)
+                    .frame(width: 3, height: 16)
+                    .opacity(listColor != nil || isSelected ? 1 : 0)
 
                 Image(systemName: systemImage)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
+                    .frame(width: 16, alignment: .center)
 
                 Text(title)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
+                Spacer(minLength: 0)
+
                 if let count {
                     Text("\(count)")
-                        .font(.caption2.weight(.medium))
+                        .font(.caption2.weight(.semibold))
+                        .monospacedDigit()
                         .foregroundStyle(isSelected ? tokens.textSecondary : tokens.textTertiary)
-                        .padding(.horizontal, 5)
+                        .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background(tokens.bgFloating.opacity(0.5), in: Capsule())
+                        .background(tokens.bgFloating.opacity(0.58), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(tokens.sectionBorder.opacity(0.82), lineWidth: 1)
+                        }
                 }
-
-                Spacer(minLength: 0)
 
                 Image(systemName: "checkmark")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(listColor ?? tokens.accentTerracotta)
                     .opacity(isSelected ? 1 : 0)
+                    .frame(width: 14, alignment: .trailing)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
