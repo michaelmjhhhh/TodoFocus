@@ -69,8 +69,12 @@ struct LaunchResourceEditorView: View {
                 Image(systemName: "plus")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(tokens.accentTerracotta)
-                    .frame(width: 28, height: 28)
-                    .background(tokens.bgFloating, in: Circle())
+                    .frame(width: 30, height: 30)
+                    .background(tokens.bgFloating.opacity(0.9), in: Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                    }
             }
             .buttonStyle(.plain)
             .disabled(draft.count >= 12)
@@ -98,8 +102,8 @@ struct LaunchResourceEditorView: View {
     }
 
     private var addResourceForm: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
                 ForEach(LaunchResourceType.allCases) { type in
                     typeButton(type)
                 }
@@ -108,21 +112,23 @@ struct LaunchResourceEditorView: View {
             TextField("Label", text: $labelText)
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
-                .padding(10)
-                .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(tokens.inputBorder, lineWidth: 1)
                 }
 
             TextField(typePlaceholder, text: $valueText)
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
-                .padding(10)
-                .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(tokens.inputBorder, lineWidth: 1)
                 }
 
             if selectedType != .url {
@@ -133,8 +139,16 @@ struct LaunchResourceEditorView: View {
                         pickApp()
                     }
                 }
-                .font(.caption)
-                .foregroundStyle(tokens.accentTerracotta)
+                .buttonStyle(.plain)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(tokens.textSecondary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                }
             }
 
             HStack(spacing: 8) {
@@ -142,7 +156,15 @@ struct LaunchResourceEditorView: View {
                     cancelAdd()
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(tokens.textTertiary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(tokens.textSecondary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                }
 
                 Spacer()
 
@@ -150,19 +172,23 @@ struct LaunchResourceEditorView: View {
                     addDraftResource()
                 }
                 .buttonStyle(.plain)
-                .font(.caption.weight(.medium))
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 7)
                 .background(tokens.accentTerracotta, in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(tokens.accentTerracotta.opacity(0.65), lineWidth: 1)
+                }
                 .disabled(labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || valueText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
-        .padding(12)
-        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
+        .padding(14)
+        .background(tokens.bgFloating.opacity(0.46), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(tokens.sectionBorder.opacity(0.92), lineWidth: 1)
         }
     }
 
@@ -177,9 +203,16 @@ struct LaunchResourceEditorView: View {
                     .font(.caption2.weight(.medium))
             }
             .foregroundStyle(selectedType == type ? .white : tokens.textSecondary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(selectedType == type ? tokens.accentTerracotta : tokens.bgFloating, in: Capsule())
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(selectedType == type ? tokens.accentTerracotta : tokens.bgFloating.opacity(0.86), in: Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(
+                        selectedType == type ? tokens.accentTerracotta.opacity(0.65) : tokens.sectionBorder.opacity(0.9),
+                        lineWidth: 1
+                    )
+            }
         }
         .buttonStyle(.plain)
     }
