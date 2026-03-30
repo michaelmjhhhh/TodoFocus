@@ -264,7 +264,7 @@ final class QuickCaptureService {
         return speechAuthorized && microphoneAuthorized
     }
 
-    private func ensureSpeechAuthorization() async -> Bool {
+    nonisolated private func ensureSpeechAuthorization() async -> Bool {
         let status = SFSpeechRecognizer.authorizationStatus()
         switch status {
         case .authorized:
@@ -282,7 +282,7 @@ final class QuickCaptureService {
         }
     }
 
-    private func ensureMicrophoneAuthorization() async -> Bool {
+    nonisolated private func ensureMicrophoneAuthorization() async -> Bool {
         let status = AVCaptureDevice.authorizationStatus(for: .audio)
         switch status {
         case .authorized:
