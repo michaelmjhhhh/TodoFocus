@@ -84,17 +84,33 @@ struct SidebarView: View {
                 isAddingList = true
             }
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: 10) {
+                Capsule()
+                    .fill(tokens.accentTerracotta)
+                    .frame(width: 3, height: 16)
+                    .opacity(0)
+
                 Image(systemName: "plus")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(tokens.textTertiary)
+                    .frame(width: 16, alignment: .center)
 
                 Text("Add list")
-                    .font(.system(size: 13))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(tokens.textTertiary)
+
+                Spacer(minLength: 0)
+
+                Color.clear
+                    .frame(width: 14, height: 10)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
+            .background(tokens.bgFloating.opacity(0.28), in: RoundedRectangle(cornerRadius: 9))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9)
+                    .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
+            }
         }
         .buttonStyle(.plain)
     }
@@ -260,7 +276,11 @@ private struct SidebarRowButton: View {
                         .foregroundStyle(isSelected ? tokens.textSecondary : tokens.textTertiary)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background(tokens.bgFloating.opacity(0.62), in: Capsule())
+                        .background(tokens.bgFloating.opacity(0.58), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(tokens.sectionBorder.opacity(0.82), lineWidth: 1)
+                        }
                 }
 
                 Image(systemName: "checkmark")
