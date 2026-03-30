@@ -90,6 +90,7 @@ final class ExportService {
                     }
 
                 let resources = (try? decodeLaunchResources(record.launchResources)) ?? []
+                let portableResources = resources.filter { $0.type == .url }
 
                 return ExportTodo(
                     id: record.id,
@@ -105,7 +106,7 @@ final class ExportService {
                     recurrenceInterval: record.recurrenceInterval,
                     sortOrder: record.sortOrder,
                     steps: steps,
-                    launchResources: resources.map { ExportLaunchResource(type: $0.type.rawValue, value: $0.value, label: $0.label) }
+                    launchResources: portableResources.map { ExportLaunchResource(type: $0.type.rawValue, value: $0.value, label: $0.label) }
                 )
             }
         }
@@ -116,7 +117,12 @@ final class ExportService {
             meta: ExportMeta(
                 appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
                 platform: "macOS",
-                importHints: ["supportsModes:replace,merge", "backupBeforeReplace:true"]
+                importHints: [
+                    "supportsModes:replace,merge",
+                    "backupBeforeReplace:true",
+                    "portableLaunchResources:urlOnly",
+                    "deviceLocalStateExcluded:true"
+                ]
             ),
             lists: lists,
             todos: todos
@@ -152,6 +158,13 @@ final class ExportService {
 
         if importData.lists.isEmpty && importData.todos.isEmpty {
             warnings.append("Import file contains no lists or todos")
+        }
+
+        let nonPortableLaunchResourceCount = importData.todos.reduce(0) { partial, todo in
+            partial + todo.launchResources.filter { $0.type != LaunchResourceType.url.rawValue }.count
+        }
+        if nonPortableLaunchResourceCount > 0 {
+            warnings.append("Found \(nonPortableLaunchResourceCount) non-portable launch resources (file/app). They will be skipped.")
         }
 
         let launchResourceCount = importData.todos.reduce(0) { $0 + $1.launchResources.count }
@@ -271,6 +284,10 @@ final class ExportService {
                     guard let type = LaunchResourceType(rawValue: er.type) else {
                         report.skipped.launchResources += 1
                         report.errors.append("Unsupported launch resource type '\(er.type)' for todo \(todo.id)")
+                        return nil
+                    }
+                    guard type == .url else {
+                        report.skipped.launchResources += 1
                         return nil
                     }
                     return LaunchResource(

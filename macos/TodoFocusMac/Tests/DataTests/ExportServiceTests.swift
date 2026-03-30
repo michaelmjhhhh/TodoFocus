@@ -31,6 +31,20 @@ final class ExportServiceTests: XCTestCase {
                     label: "Docs",
                     value: "https://example.com",
                     createdAt: Date()
+                ),
+                LaunchResource(
+                    id: "res-2",
+                    type: .file,
+                    label: "Spec",
+                    value: "/Users/example/spec.md",
+                    createdAt: Date()
+                ),
+                LaunchResource(
+                    id: "res-3",
+                    type: .app,
+                    label: "Safari",
+                    value: "/Applications/Safari.app",
+                    createdAt: Date()
                 )
             ]
             let resourcesData = try JSONEncoder().encode(resources)
@@ -98,6 +112,58 @@ final class ExportServiceTests: XCTestCase {
         XCTAssertFalse(preflight.blockingErrors.isEmpty)
     }
 
+    func testExportIncludesOnlyURLLaunchResources() throws {
+        let manager = try makeManager()
+        try seedBasicData(manager)
+        let service = makeService(manager)
+
+        let data = try service.exportToJSON()
+        let payload = try ExportData.decode(from: data)
+        let todo = try XCTUnwrap(payload.todos.first { $0.id == "todo-1" })
+
+        XCTAssertEqual(todo.launchResources.count, 1)
+        XCTAssertEqual(todo.launchResources.first?.type, LaunchResourceType.url.rawValue)
+        XCTAssertEqual(todo.launchResources.first?.value, "https://example.com")
+    }
+
+    func testPreflightWarnsWhenNonPortableLaunchResourcesExist() throws {
+        let manager = try makeManager()
+        let service = makeService(manager)
+
+        let payload = """
+        {
+          "version": "1.2",
+          "exportedAt": "2026-03-30T12:00:00Z",
+          "lists": [],
+          "todos": [
+            {
+              "id": "todo-1",
+              "title": "Imported",
+              "isCompleted": false,
+              "isImportant": false,
+              "isMyDay": false,
+              "dueDate": null,
+              "notes": "",
+              "listId": null,
+              "focusTimeSeconds": 0,
+              "recurrence": null,
+              "recurrenceInterval": 1,
+              "sortOrder": 0,
+              "steps": [],
+              "launchResources": [
+                { "type": "url", "value": "https://example.com", "label": "Docs" },
+                { "type": "file", "value": "/tmp/spec.md", "label": "Spec" }
+              ]
+            }
+          ]
+        }
+        """.data(using: .utf8)!
+
+        let preflight = try service.preflightImportJSON(payload)
+        XCTAssertEqual(preflight.counts.launchResources, 2)
+        XCTAssertTrue(preflight.warnings.contains(where: { $0.contains("non-portable launch resources") }))
+    }
+
     func testImportReplaceReturnsStructuredReport() throws {
         let manager = try makeManager()
         try seedBasicData(manager)
@@ -107,6 +173,53 @@ final class ExportServiceTests: XCTestCase {
         let report = try service.executeImportJSON(data, mode: .replace)
 
         XCTAssertGreaterThanOrEqual(report.created.todos, 1)
+    }
+
+    func testImportSkipsNonURLLaunchResources() throws {
+        let manager = try makeManager()
+        let service = makeService(manager)
+
+        let payload = """
+        {
+          "version": "1.2",
+          "exportedAt": "2026-03-30T12:00:00Z",
+          "lists": [
+            { "id": "list-1", "name": "Work", "color": "#C46849", "sortOrder": 0 }
+          ],
+          "todos": [
+            {
+              "id": "todo-1",
+              "title": "Imported",
+              "isCompleted": false,
+              "isImportant": false,
+              "isMyDay": false,
+              "dueDate": null,
+              "notes": "",
+              "listId": "list-1",
+              "focusTimeSeconds": 0,
+              "recurrence": null,
+              "recurrenceInterval": 1,
+              "sortOrder": 0,
+              "steps": [],
+              "launchResources": [
+                { "type": "url", "value": "https://example.com", "label": "Docs" },
+                { "type": "file", "value": "/tmp/spec.md", "label": "Spec" },
+                { "type": "app", "value": "/Applications/Safari.app", "label": "Safari" }
+              ]
+            }
+          ]
+        }
+        """.data(using: .utf8)!
+
+        let report = try service.executeImportJSON(payload, mode: .replace)
+        XCTAssertEqual(report.created.launchResources, 1)
+        XCTAssertEqual(report.skipped.launchResources, 2)
+
+        let todoRepo = TodoRepository(dbQueue: manager.dbQueue)
+        let merged = try XCTUnwrap(todoRepo.fetchTodo(id: "todo-1"))
+        let decoded = try JSONDecoder().decode([LaunchResource].self, from: Data(merged.launchResources.utf8))
+        XCTAssertEqual(decoded.count, 1)
+        XCTAssertEqual(decoded.first?.type, .url)
     }
 
     func testReplaceImportCreatesBackupSnapshotBeforeMutation() throws {
