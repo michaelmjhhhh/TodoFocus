@@ -182,37 +182,40 @@ struct TaskDetailView: View {
                 .shadow(color: hasValidationError ? Color.red.opacity(0.16) : .clear, radius: 6)
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
-                Spacer()
-                Button {
-                    showDeepFocusSheet = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "flame.fill")
-                        Text(store.deepFocusService.isActive ? "Focus Running" : "Deep Focus")
-                            .font(.subheadline.weight(.medium))
-                    }
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(
-                        store.deepFocusService.isActive
-                            ? tokens.textTertiary
-                            : tokens.accentTerracotta,
-                        in: Capsule()
-                    )
-                }
-                .buttonStyle(.plain)
-                .keyboardShortcut("f", modifiers: [.command, .shift])
-                .disabled(store.deepFocusService.isActive)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Button {
-                    commitTitle(todoId: todo.id)
-                    onClose()
-                } label: {
-                    Image(systemName: "xmark")
+                HStack(spacing: 10) {
+                    Button {
+                        showDeepFocusSheet = true
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "flame.fill")
+                            Text(store.deepFocusService.isActive ? "Focus Running" : "Deep Focus")
+                                .font(.subheadline.weight(.medium))
+                        }
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(
+                            store.deepFocusService.isActive
+                                ? tokens.textTertiary
+                                : tokens.accentTerracotta,
+                            in: Capsule()
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .keyboardShortcut("f", modifiers: [.command, .shift])
+                    .disabled(store.deepFocusService.isActive)
+
+                    Button {
+                        commitTitle(todoId: todo.id)
+                        onClose()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(tokens.mutedText)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(tokens.mutedText)
             }
         }
         .padding(.horizontal, 12)
