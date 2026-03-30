@@ -239,31 +239,35 @@ private struct SidebarRowButton: View {
             HStack(spacing: 10) {
                 Capsule()
                     .fill(listColor ?? tokens.accentTerracotta)
-                    .frame(width: listColor != nil || isSelected ? 3 : 0, height: listColor != nil || isSelected ? 16 : 0)
+                    .frame(width: 3, height: 16)
+                    .opacity(listColor != nil || isSelected ? 1 : 0)
 
                 Image(systemName: systemImage)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
+                    .frame(width: 16, alignment: .center)
 
                 Text(title)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
+                Spacer(minLength: 0)
+
                 if let count {
                     Text("\(count)")
-                        .font(.caption2.weight(.medium))
+                        .font(.caption2.weight(.semibold))
+                        .monospacedDigit()
                         .foregroundStyle(isSelected ? tokens.textSecondary : tokens.textTertiary)
-                        .padding(.horizontal, 5)
+                        .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background(tokens.bgFloating.opacity(0.5), in: Capsule())
+                        .background(tokens.bgFloating.opacity(0.62), in: Capsule())
                 }
-
-                Spacer(minLength: 0)
 
                 Image(systemName: "checkmark")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(listColor ?? tokens.accentTerracotta)
                     .opacity(isSelected ? 1 : 0)
+                    .frame(width: 14, alignment: .trailing)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
