@@ -3,10 +3,11 @@ import Foundation
 enum ExportFormatVersion {
     static let v1_0 = "1.0"
     static let v1_1 = "1.1"
-    static let current = v1_1
+    static let v1_2 = "1.2"
+    static let current = v1_2
 
     static func isSupported(_ version: String) -> Bool {
-        version == v1_0 || version == v1_1
+        version == v1_0 || version == v1_1 || version == v1_2
     }
 }
 

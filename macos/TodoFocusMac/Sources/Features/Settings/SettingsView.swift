@@ -40,7 +40,7 @@ struct SettingsView: View {
                 Label("General", systemImage: "gear")
             }
         }
-        .frame(maxWidth: 450, maxHeight: 300)
+        .frame(maxWidth: 520, maxHeight: 430)
     }
 
     private func performExport() {
@@ -122,7 +122,7 @@ struct SettingsView: View {
             lines.append("Created — Lists: \(report.created.lists), Todos: \(report.created.todos), Steps: \(report.created.steps)")
             lines.append("Updated — Lists: \(report.updated.lists), Todos: \(report.updated.todos), Steps: \(report.updated.steps)")
             if report.skipped.launchResources > 0 {
-                lines.append("Skipped launch resources: \(report.skipped.launchResources)")
+                lines.append("Skipped non-portable launch resources (file/app): \(report.skipped.launchResources)")
             }
             if let backup = report.backupFilePath {
                 lines.append("Backup saved to: \(backup)")
@@ -154,54 +154,67 @@ struct GeneralSettingsView: View {
     @Binding var importError: String?
     @Binding var importSuccessMessage: String
     @Binding var pendingImportPreflight: ImportPreflightResult?
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
-        Form {
-            Section("Appearance") {
-                Picker("Theme", selection: $themeStore.theme) {
-                    Text("Dark").tag(ThemeStore.Theme.dark)
-                    Text("Light").tag(ThemeStore.Theme.light)
-                    Text("System").tag(ThemeStore.Theme.system)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                settingsCard(title: "Appearance", icon: "paintbrush") {
+                    Picker("Theme", selection: $themeStore.theme) {
+                        Text("Dark").tag(ThemeStore.Theme.dark)
+                        Text("Light").tag(ThemeStore.Theme.light)
+                        Text("System").tag(ThemeStore.Theme.system)
+                    }
+                    .pickerStyle(.segmented)
                 }
-                .pickerStyle(.segmented)
-            }
 
-            Section {
-                Text("Data Management")
-                    .font(.headline)
-            }
+                settingsCard(title: "Data Import & Export", icon: "arrow.left.arrow.right.circle") {
+                    Text("Portable transfer: lists, tasks, steps, and URL launch resources.")
+                        .font(.caption)
+                        .foregroundStyle(tokens.textSecondary)
+                    Text("Reminder: file and app launch resources are device-local and are intentionally skipped during import/export.")
+                        .font(.caption)
+                        .foregroundStyle(tokens.warning)
+                        .padding(.bottom, 4)
 
-            Section {
-                Button("Export Data") {
-                    onExport()
-                }
-                .buttonStyle(.bordered)
+                    Picker("Import Mode", selection: $selectedImportMode) {
+                        ForEach(ImportMode.allCases) { mode in
+                            Text(mode.title).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.menu)
 
-                Picker("Import Mode", selection: $selectedImportMode) {
-                    ForEach(ImportMode.allCases) { mode in
-                        Text(mode.title).tag(mode)
+                    HStack(spacing: 10) {
+                        Button("Export Data") {
+                            onExport()
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Button("Import Data") {
+                            onImport()
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
-                .pickerStyle(.menu)
 
-                Button("Import Data") {
-                    onImport()
+                settingsCard(title: "Database", icon: "internaldrive") {
+                    Text(URL(fileURLWithPath: databasePath).lastPathComponent)
+                        .font(.subheadline)
+                        .foregroundStyle(tokens.textPrimary)
+                    Text(databasePath)
+                        .font(.caption)
+                        .lineLimit(2)
+                        .truncationMode(.middle)
+                        .foregroundStyle(tokens.textTertiary)
                 }
-                .buttonStyle(.bordered)
             }
-
-            Section {
-                Text("Database: \(URL(fileURLWithPath: databasePath).lastPathComponent)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            .padding(16)
         }
-        .formStyle(.grouped)
-        .padding()
+        .background(tokens.bgBase)
         .alert("Export Successful", isPresented: $showExportSuccess) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Your data has been exported successfully.")
+            Text("Portable data has been exported successfully.")
         }
         .alert("Export Failed", isPresented: $showExportError) {
             Button("OK", role: .cancel) {}
@@ -230,10 +243,31 @@ struct GeneralSettingsView: View {
         } message: {
             if let preflight = pendingImportPreflight {
                 let warningsText = preflight.warnings.isEmpty ? "None" : preflight.warnings.joined(separator: ", ")
-                Text("Version: \(preflight.version)\nLists: \(preflight.counts.lists), Todos: \(preflight.counts.todos), Steps: \(preflight.counts.steps)\nWarnings: \(warningsText)")
+                Text("Version: \(preflight.version)\nLists: \(preflight.counts.lists), Todos: \(preflight.counts.todos), Steps: \(preflight.counts.steps), Launch Resources: \(preflight.counts.launchResources)\nWarnings: \(warningsText)")
             } else {
                 Text("Proceed with import?")
             }
         }
+    }
+
+    @ViewBuilder
+    private func settingsCard<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(tokens.accentTerracotta)
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(tokens.textPrimary)
+            }
+            content()
+        }
+        .padding(12)
+        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(tokens.sectionBorder, lineWidth: 1)
+        )
     }
 }
