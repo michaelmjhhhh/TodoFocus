@@ -3,7 +3,7 @@ import AppKit
 class QuickCapturePanel: NSPanel {
     init() {
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 140),
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 220),
             styleMask: [.titled, .closable, .nonactivatingPanel, .hudWindow, .utilityWindow],
             backing: .buffered,
             defer: false
@@ -15,7 +15,7 @@ class QuickCapturePanel: NSPanel {
         self.titleVisibility = .hidden
         self.titlebarAppearsTransparent = true
         self.isMovableByWindowBackground = true
-        self.backgroundColor = NSColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 0.95)
+        self.backgroundColor = NSColor(red: 0.07, green: 0.07, blue: 0.08, alpha: 0.94)
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         self.isOpaque = false
         self.hasShadow = true
@@ -24,8 +24,8 @@ class QuickCapturePanel: NSPanel {
     func showAtCenter() {
         if let screen = NSScreen.main {
             let screenFrame = screen.visibleFrame
-            let x = screenFrame.midX - 200
-            let y = screenFrame.midY - 70
+            let x = screenFrame.midX - 240
+            let y = screenFrame.midY - 110
             self.setFrameOrigin(NSPoint(x: x, y: y))
         }
         self.makeKeyAndOrderFront(nil)
