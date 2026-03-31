@@ -39,8 +39,13 @@ struct RootView: View {
                         .overlay(themeTokens.sectionBorder.opacity(0.4))
                 }
 
-                TaskListView(appModel: appModel, store: store)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if appModel.selection == .dailyReview {
+                    DailyReviewView(appModel: appModel, store: store)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    TaskListView(appModel: appModel, store: store)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
 
                 if store.selectedTodo != nil {
                     Rectangle()

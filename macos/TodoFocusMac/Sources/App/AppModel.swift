@@ -29,6 +29,8 @@ final class AppModel {
 
     var activeViewID: String {
         switch selection {
+        case .dailyReview:
+            return "daily-review"
         case .myDay:
             return "myday"
         case .important:

@@ -21,6 +21,7 @@ struct SidebarView: View {
     var body: some View {
         List {
             Section {
+                smartRow("Daily Review", systemImage: "checklist", selection: .dailyReview, count: store.todoCount)
                 smartRow("My Day", systemImage: "sun.max", selection: .myDay, count: store.myDayCount)
                 smartRow("Important", systemImage: "star", selection: .important, count: store.importantCount)
                 smartRow("Planned", systemImage: "calendar", selection: .planned, count: store.plannedCount)

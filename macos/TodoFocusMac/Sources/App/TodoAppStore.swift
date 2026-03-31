@@ -185,6 +185,13 @@ final class TodoAppStore {
         try reload()
     }
 
+    func setMyDay(todoId: String, isMyDay: Bool) throws {
+        var input = UpdateTodoInput()
+        input.isMyDay = isMyDay
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        try reload()
+    }
+
     func updateTitle(todoId: String, title: String) -> Result<Void, TodoRepositoryError> {
         do {
             try todoRepository.updateTitle(id: todoId, title: title, now: now())
