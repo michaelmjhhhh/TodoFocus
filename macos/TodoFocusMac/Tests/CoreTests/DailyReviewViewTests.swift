@@ -73,22 +73,49 @@ final class DailyReviewViewTests: XCTestCase {
         let viewModel = DailyReviewBoardViewModel()
 
         XCTAssertTrue(viewModel.isCompletedCollapsed)
-        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
-        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .open))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .completed))
 
         viewModel.toggleCompletedLane()
         XCTAssertFalse(viewModel.isCompletedCollapsed)
 
-        viewModel.toggleColumn(bucket: .today, isCompletedLane: false)
-        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
-        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+        viewModel.toggleColumn(bucket: .today, lane: .open)
+        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, lane: .open))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .completed))
 
-        viewModel.toggleColumn(bucket: .today, isCompletedLane: true)
-        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+        viewModel.toggleColumn(bucket: .today, lane: .completed)
+        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, lane: .completed))
 
-        viewModel.toggleColumn(bucket: .today, isCompletedLane: false)
-        viewModel.toggleColumn(bucket: .today, isCompletedLane: true)
-        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
-        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+        viewModel.toggleColumn(bucket: .today, lane: .open)
+        viewModel.toggleColumn(bucket: .today, lane: .completed)
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .open))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .completed))
+    }
+
+    func testColumnCollapseScopeIsolationForOverdue() {
+        let viewModel = DailyReviewBoardViewModel()
+
+        viewModel.toggleColumn(bucket: .overdue, lane: .open)
+
+        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .overdue, lane: .open))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, lane: .open))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .overdue, lane: .completed))
+    }
+
+    func testBuildBoardKeepsAllTodosInSameBucket() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let now = Date(timeIntervalSince1970: 1_765_000_000)
+
+        let todos: [Todo] = [
+            Todo(id: "today-a", title: "A", isCompleted: false, isImportant: false, isMyDay: false, dueDate: now, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "today-b", title: "B", isCompleted: false, isImportant: false, isMyDay: false, dueDate: now.addingTimeInterval(120), notes: "", listId: nil, launchResourcesRaw: "")
+        ]
+
+        let board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
+        let todayOpen = board.openColumns.first(where: { $0.bucket == .today })?.todos.map(\.id) ?? []
+
+        XCTAssertEqual(Set(todayOpen), Set(["today-a", "today-b"]))
+        XCTAssertEqual(todayOpen.count, 2)
     }
 }

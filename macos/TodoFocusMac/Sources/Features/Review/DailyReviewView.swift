@@ -6,8 +6,7 @@ import Observation
 final class DailyReviewBoardViewModel {
     var board: DailyReviewView.ReviewBoard = .empty
     var isCompletedCollapsed: Bool = true
-    var openCollapsedBuckets: Set<DailyReviewView.ReviewTimeBucket> = []
-    var completedCollapsedBuckets: Set<DailyReviewView.ReviewTimeBucket> = []
+    private var collapsedColumns: Set<DailyReviewView.ReviewColumnCollapseKey> = []
 
     func recompute(todos: [Todo], now: Date = Date(), calendar: Calendar = .current) {
         board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
@@ -17,27 +16,16 @@ final class DailyReviewBoardViewModel {
         isCompletedCollapsed.toggle()
     }
 
-    func isColumnCollapsed(bucket: DailyReviewView.ReviewTimeBucket, isCompletedLane: Bool) -> Bool {
-        if isCompletedLane {
-            return completedCollapsedBuckets.contains(bucket)
-        }
-        return openCollapsedBuckets.contains(bucket)
+    func isColumnCollapsed(bucket: DailyReviewView.ReviewTimeBucket, lane: DailyReviewView.ReviewLane) -> Bool {
+        collapsedColumns.contains(.init(lane: lane, bucket: bucket))
     }
 
-    func toggleColumn(bucket: DailyReviewView.ReviewTimeBucket, isCompletedLane: Bool) {
-        if isCompletedLane {
-            if completedCollapsedBuckets.contains(bucket) {
-                completedCollapsedBuckets.remove(bucket)
-            } else {
-                completedCollapsedBuckets.insert(bucket)
-            }
-            return
-        }
-
-        if openCollapsedBuckets.contains(bucket) {
-            openCollapsedBuckets.remove(bucket)
+    func toggleColumn(bucket: DailyReviewView.ReviewTimeBucket, lane: DailyReviewView.ReviewLane) {
+        let key = DailyReviewView.ReviewColumnCollapseKey(lane: lane, bucket: bucket)
+        if collapsedColumns.contains(key) {
+            collapsedColumns.remove(key)
         } else {
-            openCollapsedBuckets.insert(bucket)
+            collapsedColumns.insert(key)
         }
     }
 }
@@ -66,6 +54,7 @@ struct DailyReviewView: View {
                             title: "Open",
                             systemImage: "tray",
                             columns: boardViewModel.board.openColumns,
+                            lane: .open,
                             collapsed: false,
                             isCompletedLane: false
                         )
@@ -74,6 +63,7 @@ struct DailyReviewView: View {
                             title: "Completed",
                             systemImage: "checkmark.circle",
                             columns: boardViewModel.board.completedColumns,
+                            lane: .completed,
                             collapsed: boardViewModel.isCompletedCollapsed,
                             isCompletedLane: true
                         )
@@ -127,6 +117,7 @@ struct DailyReviewView: View {
         title: String,
         systemImage: String,
         columns: [ReviewColumn],
+        lane: ReviewLane,
         collapsed: Bool,
         isCompletedLane: Bool
     ) -> some View {
@@ -170,9 +161,9 @@ struct DailyReviewView: View {
 
             if !collapsed {
                 ScrollView(.horizontal) {
-                    LazyHStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .top, spacing: 10) {
                         ForEach(columns) { column in
-                            reviewColumnView(column, isCompletedLane: isCompletedLane)
+                            reviewColumnView(column, lane: lane, isCompletedLane: isCompletedLane)
                         }
                     }
                     .padding(.vertical, 2)
@@ -182,31 +173,33 @@ struct DailyReviewView: View {
         }
     }
 
-    private func reviewColumnView(_ column: ReviewColumn, isCompletedLane: Bool) -> some View {
-        let isColumnCollapsed = boardViewModel.isColumnCollapsed(bucket: column.bucket, isCompletedLane: isCompletedLane)
+    private func reviewColumnView(_ column: ReviewColumn, lane: ReviewLane, isCompletedLane: Bool) -> some View {
+        let isColumnCollapsed = boardViewModel.isColumnCollapsed(bucket: column.bucket, lane: lane)
 
         return VStack(alignment: .leading, spacing: 8) {
-            Button {
-                boardViewModel.toggleColumn(bucket: column.bucket, isCompletedLane: isCompletedLane)
-            } label: {
-                HStack(spacing: 6) {
-                    Text(column.bucket.title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(tokens.textPrimary)
-                    Text("\(column.todos.count)")
-                        .font(.caption.weight(.bold))
-                        .monospacedDigit()
-                        .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 2)
-                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
-                    Spacer(minLength: 6)
+            HStack(spacing: 6) {
+                Text(column.bucket.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(tokens.textPrimary)
+                Text("\(column.todos.count)")
+                    .font(.caption.weight(.bold))
+                    .monospacedDigit()
+                    .foregroundStyle(tokens.textSecondary)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 2)
+                    .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                Spacer(minLength: 6)
+                Button {
+                    boardViewModel.toggleColumn(bucket: column.bucket, lane: lane)
+                } label: {
                     Image(systemName: isColumnCollapsed ? "chevron.down" : "chevron.up")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(tokens.textSecondary)
+                        .frame(width: 20, height: 20)
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(column.bucket.title) \(isColumnCollapsed ? "Expand" : "Collapse")")
             }
-            .buttonStyle(.plain)
 
             if !isColumnCollapsed {
                 if column.todos.isEmpty {
@@ -218,7 +211,7 @@ struct DailyReviewView: View {
                         .padding(.vertical, 10)
                         .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 } else {
-                    LazyVStack(spacing: 8) {
+                    VStack(spacing: 8) {
                         ForEach(column.todos) { todo in
                             reviewCard(todo, isCompletedLane: isCompletedLane)
                         }
@@ -487,6 +480,16 @@ struct DailyReviewView: View {
 }
 
 extension DailyReviewView {
+    enum ReviewLane: String {
+        case open
+        case completed
+    }
+
+    struct ReviewColumnCollapseKey: Hashable {
+        let lane: ReviewLane
+        let bucket: ReviewTimeBucket
+    }
+
     enum ReviewTimeBucket: String, CaseIterable, Identifiable {
         case overdue
         case today
