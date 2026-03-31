@@ -68,4 +68,27 @@ final class DailyReviewViewTests: XCTestCase {
         XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .later })?.todos.map(\.id), ["completed-later"])
         XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .noDate })?.todos.map(\.id), ["completed-no-date"])
     }
+
+    func testViewModelSupportsLaneAndPerColumnCollapseIndependently() {
+        let viewModel = DailyReviewBoardViewModel()
+
+        XCTAssertTrue(viewModel.isCompletedCollapsed)
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+
+        viewModel.toggleCompletedLane()
+        XCTAssertFalse(viewModel.isCompletedCollapsed)
+
+        viewModel.toggleColumn(bucket: .today, isCompletedLane: false)
+        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+
+        viewModel.toggleColumn(bucket: .today, isCompletedLane: true)
+        XCTAssertTrue(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+
+        viewModel.toggleColumn(bucket: .today, isCompletedLane: false)
+        viewModel.toggleColumn(bucket: .today, isCompletedLane: true)
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: false))
+        XCTAssertFalse(viewModel.isColumnCollapsed(bucket: .today, isCompletedLane: true))
+    }
 }
