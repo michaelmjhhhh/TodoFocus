@@ -6,6 +6,8 @@ import Observation
 final class DailyReviewBoardViewModel {
     var board: DailyReviewView.ReviewBoard = .empty
     var isCompletedCollapsed: Bool = true
+    var openCollapsedBuckets: Set<DailyReviewView.ReviewTimeBucket> = []
+    var completedCollapsedBuckets: Set<DailyReviewView.ReviewTimeBucket> = []
 
     func recompute(todos: [Todo], now: Date = Date(), calendar: Calendar = .current) {
         board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
@@ -13,6 +15,30 @@ final class DailyReviewBoardViewModel {
 
     func toggleCompletedLane() {
         isCompletedCollapsed.toggle()
+    }
+
+    func isColumnCollapsed(bucket: DailyReviewView.ReviewTimeBucket, isCompletedLane: Bool) -> Bool {
+        if isCompletedLane {
+            return completedCollapsedBuckets.contains(bucket)
+        }
+        return openCollapsedBuckets.contains(bucket)
+    }
+
+    func toggleColumn(bucket: DailyReviewView.ReviewTimeBucket, isCompletedLane: Bool) {
+        if isCompletedLane {
+            if completedCollapsedBuckets.contains(bucket) {
+                completedCollapsedBuckets.remove(bucket)
+            } else {
+                completedCollapsedBuckets.insert(bucket)
+            }
+            return
+        }
+
+        if openCollapsedBuckets.contains(bucket) {
+            openCollapsedBuckets.remove(bucket)
+        } else {
+            openCollapsedBuckets.insert(bucket)
+        }
     }
 }
 
@@ -157,32 +183,45 @@ struct DailyReviewView: View {
     }
 
     private func reviewColumnView(_ column: ReviewColumn, isCompletedLane: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Text(column.bucket.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(tokens.textPrimary)
-                Text("\(column.todos.count)")
-                    .font(.caption.weight(.bold))
-                    .monospacedDigit()
-                    .foregroundStyle(tokens.textSecondary)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 2)
-                    .background(tokens.bgFloating.opacity(0.8), in: Capsule())
-            }
+        let isColumnCollapsed = boardViewModel.isColumnCollapsed(bucket: column.bucket, isCompletedLane: isCompletedLane)
 
-            if column.todos.isEmpty {
-                Text("No tasks")
-                    .font(.caption)
-                    .foregroundStyle(tokens.textTertiary)
-                    .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 10)
-                    .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-            } else {
-                LazyVStack(spacing: 8) {
-                    ForEach(column.todos) { todo in
-                        reviewCard(todo, isCompletedLane: isCompletedLane)
+        return VStack(alignment: .leading, spacing: 8) {
+            Button {
+                boardViewModel.toggleColumn(bucket: column.bucket, isCompletedLane: isCompletedLane)
+            } label: {
+                HStack(spacing: 6) {
+                    Text(column.bucket.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(tokens.textPrimary)
+                    Text("\(column.todos.count)")
+                        .font(.caption.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(tokens.textSecondary)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 2)
+                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                    Spacer(minLength: 6)
+                    Image(systemName: isColumnCollapsed ? "chevron.down" : "chevron.up")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(tokens.textSecondary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            if !isColumnCollapsed {
+                if column.todos.isEmpty {
+                    Text("No tasks")
+                        .font(.caption)
+                        .foregroundStyle(tokens.textTertiary)
+                        .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 10)
+                        .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                } else {
+                    LazyVStack(spacing: 8) {
+                        ForEach(column.todos) { todo in
+                            reviewCard(todo, isCompletedLane: isCompletedLane)
+                        }
                     }
                 }
             }
