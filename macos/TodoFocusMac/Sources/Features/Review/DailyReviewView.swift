@@ -22,16 +22,10 @@ struct DailyReviewView: View {
     @Environment(\.themeTokens) private var tokens
 
     @State private var boardViewModel = DailyReviewBoardViewModel()
-    @State private var touchedTaskIDs: Set<String> = []
-    @State private var completedCount: Int = 0
-    @State private var rescheduledCount: Int = 0
-    @State private var addedToMyDayCount: Int = 0
-    @State private var lastActionText: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             header
-            summaryPanel
 
             if store.todos.isEmpty {
                 emptyState
@@ -95,38 +89,6 @@ struct DailyReviewView: View {
         }
     }
 
-    private var summaryPanel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                summaryChip("Reviewed", value: touchedTaskIDs.count, systemImage: "eye")
-                summaryChip("Done", value: completedCount, systemImage: "checkmark")
-                summaryChip("Rescheduled", value: rescheduledCount, systemImage: "calendar.badge.clock")
-                summaryChip("My Day", value: addedToMyDayCount, systemImage: "sun.max")
-            }
-
-            if let lastActionText {
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(tokens.accentTerracotta.opacity(0.85))
-                        .frame(width: 6, height: 6)
-                    Text(lastActionText)
-                        .font(.caption)
-                        .foregroundStyle(tokens.textSecondary)
-                        .lineLimit(1)
-                }
-            }
-        }
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(tokens.sectionBackground)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
-    }
-
     private func laneSection(
         title: String,
         systemImage: String,
@@ -143,7 +105,7 @@ struct DailyReviewView: View {
                 HStack(spacing: 8) {
                     Image(systemName: systemImage)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(isCompletedLane ? tokens.textSecondary : tokens.accentTerracotta)
+                        .foregroundStyle(tokens.textSecondary)
                     Text(title)
                         .font(.headline.weight(.semibold))
                         .foregroundStyle(tokens.textPrimary)
@@ -262,31 +224,6 @@ struct DailyReviewView: View {
         }
     }
 
-    private func summaryChip(_ label: String, value: Int, systemImage: String) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: systemImage)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(tokens.textTertiary)
-            Text(label)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(tokens.textSecondary)
-            Text("\(value)")
-                .font(.caption.weight(.bold))
-                .monospacedDigit()
-                .foregroundStyle(tokens.textPrimary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(tokens.bgFloating.opacity(0.95), in: Capsule())
-        }
-        .padding(.horizontal, 9)
-        .padding(.vertical, 6)
-        .background(tokens.bgFloating.opacity(0.72), in: Capsule())
-        .overlay {
-            Capsule()
-                .stroke(tokens.sectionBorder.opacity(0.85), lineWidth: 1)
-        }
-    }
-
     private func metricPill(title: String, value: Int) -> some View {
         HStack(spacing: 7) {
             Text(title)
@@ -341,8 +278,6 @@ struct DailyReviewView: View {
         quickActionButton(compact ? "Done" : "Done", systemImage: "checkmark", emphasize: true, compact: compact) {
             runAction(on: todo.id) {
                 try store.markComplete(todoId: todo.id)
-                completedCount += 1
-                lastActionText = "Marked done: \(todo.title)"
             }
         }
     }
@@ -352,8 +287,6 @@ struct DailyReviewView: View {
             runAction(on: todo.id) {
                 if !todo.isMyDay {
                     try store.setMyDay(todoId: todo.id, isMyDay: true)
-                    addedToMyDayCount += 1
-                    lastActionText = "Added to My Day: \(todo.title)"
                 }
             }
         }
@@ -426,9 +359,8 @@ struct DailyReviewView: View {
     private func runAction(on todoID: String, _ action: () throws -> Void) {
         do {
             try action()
-            touchedTaskIDs.insert(todoID)
         } catch {
-            lastActionText = "Action failed. Please retry."
+            _ = todoID
         }
     }
 
@@ -457,8 +389,6 @@ struct DailyReviewView: View {
                 date = nil
             }
             try store.setDueDate(todoId: todo.id, date: date)
-            rescheduledCount += 1
-            lastActionText = "Rescheduled: \(todo.title)"
         }
     }
 }
