@@ -23,164 +23,153 @@
 </p>
 
 <p align="center">
-  TodoFocus is a native, local-first macOS app for deep work: capture quickly, launch context instantly, and finish meaningful tasks with fewer interruptions.
+  TodoFocus is a native, local-first macOS app for deep work: capture quickly, attach context, focus deeply, and review work with fewer interruptions.
 </p>
 
-## Why TodoFocus
+## At a Glance
 
-| Capture Fast | Focus Deep | Launch Context |
-|---|---|---|
-| Use Quick Add and global Quick Capture (`⌘⇧T`) to save thoughts without breaking flow. | Start Deep Focus or Hard Focus to reduce distraction paths while you execute. | Attach `url`, `file`, and `app` resources to each task and open all with one action. |
-
-### Before vs After
-
-| Before | With TodoFocus |
+| Area | Current behavior |
 |---|---|
-| Tasks pile up and stay abstract | One task becomes one focused execution block |
-| Constant tab/app switching | Context opens in one click via Launchpad |
-| Notes and ideas get lost | Quick Capture routes ideas back into your workflow |
+| Capture | Global Quick Capture opens with <code>Cmd+Shift+T</code>. Type a thought or use voice. |
+| Voice | English-only recognition. Final results are committed on stop, with preview fallback if needed. |
+| Focus | Deep Focus and Hard Focus help reduce distraction paths and track session stats. |
+| Launch | Attach <code>url</code>, <code>file</code>, and <code>app</code> resources to a task and open them with Launch All. |
+| Review | Daily Review uses a lightweight kanban board with Open and Completed lanes. |
+| Data | Local SQLite storage, with JSON import/export and URL launch resources as the portable form. |
 
-## Quick Start (3 Minutes)
+## Core Features
 
-### 1. Install
-1. Open releases: <https://github.com/michaelmjhhhh/TodoFocus/releases>
-2. Download `TodoFocus-macos-universal.zip`
-3. Move `TodoFocusMac.app` to `Applications`
-
-### 2. Launch Once
-1. Open `TodoFocusMac.app`
-2. If macOS warns, open `System Settings -> Privacy & Security`
-3. Click `Open Anyway`
-
-### 3. Enable Permissions (for full experience)
-- Accessibility: required for global Quick Capture hotkey (`⌘⇧T`)
-- Microphone + Speech Recognition: required for voice capture in Quick Capture
-
-Paths:
-- `System Settings -> Privacy & Security -> Accessibility`
-- `System Settings -> Privacy & Security -> Microphone`
-- `System Settings -> Privacy & Security -> Speech Recognition`
-
-### 4. Verify First Success
-- Create one task
-- Add one URL in Launchpad
-- Click `Launch All`
-- Start a Deep Focus session
-
-If these work, your setup is complete.
-
-## Core Workflows
-
-### Workflow A: Plan -> Launch -> Focus
-1. Select a task in `My Day` / `All Tasks` / custom list.
-2. Open task detail and add Launchpad resources.
-3. Click `Launch All` to open your work context.
-4. Start `Deep Focus` (optionally with timer).
-5. Finish, then close the loop in one place.
-
-### Workflow B: Quick Capture (Typing + Voice)
-1. Press `⌘⇧T` from anywhere.
-2. Type a thought or use voice capture.
-3. Voice behavior:
-- English is primary (`en-US`)
-- Chinese is fallback (`zh-CN`)
-- Final transcript is prioritized for commit
-- Partial transcript is preview-only
-4. After short silence, voice capture auto-finalizes.
-
-### Workflow C: Import / Export Safely
-1. Open Settings -> Data.
-2. Export data snapshot.
-3. Import with merge/replace mode based on your goal.
-4. Portability note: only URL launch resources are imported/exported across devices.
-
-## Feature Highlights
-
-- Smart views: `My Day`, `Important`, `Planned`, `Overdue`, `All Tasks`
-- Search with `⌘K`
+- Local-first macOS app with no account required
+- Smart views for `My Day`, `Important`, `Planned`, `Overdue`, `All Tasks`, and custom lists
+- Search with `Cmd+K`
+- Launchpad per task for `url`, `file`, and `app` resources
 - Deep Focus and Hard Focus for distraction control
-- Launchpad per task with `url`, `file`, `app`
-- Global Quick Capture (`⌘⇧T`)
-- Voice capture with bilingual recognition strategy
-- Resizable task detail panel
-- Polished filter bar, sidebar alignment, and Launchpad editor UI
-- Theme support: dark / light / system (dark by default)
+- Menu bar Deep Focus panel with lightweight glass styling
+- Quick Capture with typed input and voice input
+- Resizable task detail panel with persisted width
+- Theme support for dark, light, and system appearance
+- JSON import/export for local backup and device transfer
 
-## Keyboard Shortcuts
+## Daily Review
+
+Daily Review is the current cleanup workflow for the whole inbox.
+
+- Open lane is split into `Overdue`, `Today`, `Tomorrow`, `Later`, and `No Date`
+- Completed lane is present and collapsed by default
+- Each card keeps the existing actions: `Done`, `My Day`, and `Reschedule`
+- The board is intentionally lightweight and does not use drag-and-drop yet
+- `No Date` tasks are kept separate from `Later` so dated work stays easier to scan
+
+## Quick Capture
+
+- Open it anywhere with `Cmd+Shift+T`
+- If Deep Focus is active, captures append to the current focus task notes with a timestamp
+- If Deep Focus is not active, captures create a new Inbox task
+- Voice mode is English-only (`en-US`)
+- Partial speech is preview-only; the best final transcript is committed when recording stops
+- After a short silence, recording auto-finalizes
+
+## Launchpad
+
+- Add `url`, `file`, and `app` resources to a task
+- Use `Launch All` to open the saved context in one action
+- Launch actions use native `NSWorkspace`
+- No shell command execution path is used for launch resources
+- Unsupported payloads are rejected by validation
+
+## Deep Focus
+
+- Start Deep Focus from task detail or with `Cmd+Shift+F`
+- The menu bar panel shows active status, countdown, and current task context
+- Session stats track focus time, session count, and distraction attempts
+- Hard Focus is available for stronger in-app enforcement
+- Ending a session can require a passphrase depending on the active flow
+
+## Quick Start
+
+1. Download the latest release from GitHub, or build from source.
+2. Move `TodoFocusMac.app` to `Applications`.
+3. Open the app once and grant permissions when macOS asks.
+4. Create one task, add one URL in Launchpad, start a Deep Focus session, and test Quick Capture.
+
+If those four steps work, the setup is ready.
+
+## Key Shortcuts
 
 | Shortcut | Action |
 |---|---|
-| `⌘⇧T` | Global Quick Capture |
-| `⌘⇧F` | Start Deep Focus on selected task |
-| `⌘⇧N` | Add new task |
-| `⌘K` | Search tasks by title and notes |
+| `Cmd+Shift+T` | Global Quick Capture |
+| `Cmd+Shift+F` | Start Deep Focus on the selected task |
+| `Cmd+K` | Search tasks |
+| `Cmd+Shift+N` | Add a new task |
+| `Cmd+Shift+L` | Toggle theme |
 
-## Data, Privacy, and Portability
+## Permissions
 
-### Local-First Storage
-- No account required
+- Accessibility is required for the global Quick Capture hotkey
+- Microphone and Speech Recognition are required for voice capture
+- Permissions are tied to the app signature, so you may need to grant them again after rebuilding or re-signing
+- Open the relevant page in `System Settings -> Privacy & Security` if macOS does not prompt automatically
+
+## Data and Portability
+
+### Local storage
+
 - Data is stored locally in SQLite
 - Database path: `~/Library/Application Support/todofocus/todofocus.db`
+- No account or cloud sync is required
 
-### Import / Export Scope
-- Included: lists, tasks, steps, settings, URL launch resources
-- Excluded from cross-device import/export: file/app launch resources
+### Import and export
 
-Why excluded:
-- File paths and app paths are device-local and often invalid on another machine.
+- Open `Settings -> General -> Data Import & Export`
+- Export and import use JSON
+- Portable data includes lists, tasks, steps, and URL launch resources
+- File and app launch resources are intentionally skipped for cross-device portability
+- Import can merge or replace data and may create a backup before applying changes
 
-### Security Guardrails
-- Launch resources are opened through native `NSWorkspace`
-- No shell command execution path is used for Launchpad actions
-- Unsupported payloads are rejected by validation
+Why file and app resources are skipped:
+
+- File paths and app paths are device-local and often invalid on another Mac
 
 ## Build From Source
 
 ### Requirements
+
 - macOS 14+
 - Xcode 16+
 - `xcodegen`
 
-### Build and Test
+### Build and test
+
 ```bash
 brew install xcodegen
 git clone https://github.com/michaelmjhhhh/TodoFocus.git
-cd TodoFocus/macos/TodoFocusMac
+cd TodoFocus
+cd macos/TodoFocusMac
 xcodegen generate
 xcodebuild test -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
-xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -destination "platform=macOS"
+xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac" -configuration Release -derivedDataPath "build/DerivedData" -destination "platform=macOS"
 ```
-
-## Contributor Workflow
-
-For non-trivial changes, follow:
-1. Create/update issue
-2. Create fix/feat branch from `main`
-3. Implement focused changes
-4. Run verification gates:
-- `xcodebuild test ...`
-- `xcodebuild build ...`
-5. Open PR with linked issue and verification output
-
-See project rules in [AGENTS.md](AGENTS.md).
 
 ## Troubleshooting
 
-### App Is Blocked by macOS
-- Open from `Applications` once
+### App is blocked by macOS
+
+- Open the app from `Applications` once
 - Go to `System Settings -> Privacy & Security`
-- Click `Open Anyway`
-- If needed, right-click app -> `Open`
+- Click `Open Anyway` if needed
 
-### Quick Capture Hotkey Does Not Trigger
+### Quick Capture hotkey does not trigger
+
 - Re-check Accessibility permission
-- Relaunch app after granting permission
-- If app signature changed after rebuild, grant again
+- Relaunch the app after granting permission
+- Re-grant permission if the app was rebuilt or re-signed
 
-### Voice Input Feels Inaccurate or Slow
+### Voice feels inaccurate or slow
+
 - Speak complete phrases and allow a short pause for finalization
 - Confirm both Microphone and Speech permissions are granted
-- Use a stable input device and reduce background noise
+- Reduce background noise and use a stable input device
 
 ## Demo
 
@@ -188,15 +177,30 @@ See project rules in [AGENTS.md](AGENTS.md).
   <img src="assets/demo.gif" alt="TodoFocus Quick Demo" width="980" />
 </p>
 
+## Contributor Workflow
+
+For non-trivial changes:
+
+1. Create or update an issue
+2. Create a fix or feature branch from `main`
+3. Implement focused changes
+4. Run verification gates:
+   - `xcodebuild test ...`
+   - `xcodebuild build ...`
+5. Open a PR with the linked issue and verification output
+
+See project rules in [AGENTS.md](AGENTS.md).
+
 ## Roadmap Snapshot
 
 - Better onboarding and first-run guidance
-- Continued Deep Focus / Hard Focus reliability hardening
+- Continued Deep Focus and Hard Focus reliability hardening
 - Ongoing import/export and UI polish improvements
 
 ## Support and Feedback
 
 If TodoFocus helps your workflow:
+
 1. Star the repo: <https://github.com/michaelmjhhhh/TodoFocus>
 2. Share it with one macOS deep-work user
 3. Open issues with clear repro steps and environment details
