@@ -247,47 +247,7 @@ struct DailyReviewView: View {
             }
 
             if !isCompletedLane {
-                HStack(spacing: 8) {
-                    quickActionButton("Done", systemImage: "checkmark", emphasize: true) {
-                        runAction(on: todo.id) {
-                            try store.markComplete(todoId: todo.id)
-                            completedCount += 1
-                            lastActionText = "Marked done: \(todo.title)"
-                        }
-                    }
-
-                    quickActionButton("My Day", systemImage: "sun.max", emphasize: false) {
-                        runAction(on: todo.id) {
-                            if !todo.isMyDay {
-                                try store.setMyDay(todoId: todo.id, isMyDay: true)
-                                addedToMyDayCount += 1
-                                lastActionText = "Added to My Day: \(todo.title)"
-                            }
-                        }
-                    }
-
-                    Menu {
-                        Button("Today") { reschedule(todo: todo, to: .today) }
-                        Button("Tomorrow") { reschedule(todo: todo, to: .tomorrow) }
-                        Button("Next 7 Days") { reschedule(todo: todo, to: .next7) }
-                        Button("No Date") { reschedule(todo: todo, to: .none) }
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "calendar.badge.clock")
-                            Text("Reschedule")
-                        }
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 7)
-                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
-                        .overlay {
-                            Capsule()
-                                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-                        }
-                    }
-                    .menuStyle(.borderlessButton)
-                }
+                cardActionsRow(todo)
             }
         }
         .padding(.horizontal, 10)
@@ -361,16 +321,78 @@ struct DailyReviewView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    private func quickActionButton(_ title: String, systemImage: String, emphasize: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+    private func cardActionsRow(_ todo: Todo) -> some View {
+        ViewThatFits(in: .horizontal) {
             HStack(spacing: 6) {
+                doneActionButton(todo, compact: false)
+                myDayActionButton(todo, compact: false)
+                rescheduleMenu(todo, compact: false)
+            }
+
+            HStack(spacing: 6) {
+                doneActionButton(todo, compact: true)
+                myDayActionButton(todo, compact: true)
+                rescheduleMenu(todo, compact: true)
+            }
+        }
+    }
+
+    private func doneActionButton(_ todo: Todo, compact: Bool) -> some View {
+        quickActionButton(compact ? "Done" : "Done", systemImage: "checkmark", emphasize: true, compact: compact) {
+            runAction(on: todo.id) {
+                try store.markComplete(todoId: todo.id)
+                completedCount += 1
+                lastActionText = "Marked done: \(todo.title)"
+            }
+        }
+    }
+
+    private func myDayActionButton(_ todo: Todo, compact: Bool) -> some View {
+        quickActionButton(compact ? "My Day" : "My Day", systemImage: "sun.max", emphasize: false, compact: compact) {
+            runAction(on: todo.id) {
+                if !todo.isMyDay {
+                    try store.setMyDay(todoId: todo.id, isMyDay: true)
+                    addedToMyDayCount += 1
+                    lastActionText = "Added to My Day: \(todo.title)"
+                }
+            }
+        }
+    }
+
+    private func rescheduleMenu(_ todo: Todo, compact: Bool) -> some View {
+        Menu {
+            Button("Today") { reschedule(todo: todo, to: .today) }
+            Button("Tomorrow") { reschedule(todo: todo, to: .tomorrow) }
+            Button("Next 7 Days") { reschedule(todo: todo, to: .next7) }
+            Button("No Date") { reschedule(todo: todo, to: .none) }
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: compact ? "calendar" : "calendar.badge.clock")
+                Text(compact ? "Date" : "Reschedule")
+            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(tokens.textSecondary)
+            .padding(.horizontal, compact ? 9 : 10)
+            .padding(.vertical, compact ? 5 : 6)
+            .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+            }
+        }
+        .menuStyle(.borderlessButton)
+    }
+
+    private func quickActionButton(_ title: String, systemImage: String, emphasize: Bool, compact: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: compact ? 4 : 6) {
                 Image(systemName: systemImage)
                 Text(title)
             }
             .font(.caption.weight(.semibold))
             .foregroundStyle(emphasize ? Color.white : tokens.textSecondary)
-            .padding(.horizontal, 11)
-            .padding(.vertical, 7)
+            .padding(.horizontal, compact ? 9 : 11)
+            .padding(.vertical, compact ? 5 : 7)
             .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgFloating.opacity(0.8)), in: Capsule())
             .overlay {
                 Capsule()
@@ -447,6 +469,7 @@ extension DailyReviewView {
         case today
         case tomorrow
         case later
+        case noDate
 
         var id: String { rawValue }
 
@@ -456,6 +479,7 @@ extension DailyReviewView {
             case .today: return "Today"
             case .tomorrow: return "Tomorrow"
             case .later: return "Later"
+            case .noDate: return "No Date"
             }
         }
     }
@@ -508,7 +532,7 @@ extension DailyReviewView {
     }
 
     static func dueBucket(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> ReviewTimeBucket {
-        guard let dueDate else { return .later }
+        guard let dueDate else { return .noDate }
         if calendar.isDate(dueDate, inSameDayAs: now) { return .today }
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
         if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return .tomorrow }
