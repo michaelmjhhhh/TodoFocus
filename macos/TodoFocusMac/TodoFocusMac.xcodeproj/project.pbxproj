@@ -73,6 +73,7 @@
 		970374ACC66A5F458D5E0F16 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6500EEE2BFADD6031680B52E /* main.swift */; };
 		976765295227DA3EF9FEC81A /* ThemeTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E091CF73EAB5386C5F51AF /* ThemeTokens.swift */; };
 		98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCE7E86937A152A989DCFCD /* RootView.swift */; };
+		9C718797A145DDB359C7FA77 /* DailyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77C6B739E7EC643A862CA7E /* DailyReviewView.swift */; };
 		9EF258AA9690DE211B9B90E3 /* ThemeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C041E259E1AA3D6238B2A360 /* ThemeEnvironment.swift */; };
 		9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */; };
 		A06641EBAC9429CF7A200652 /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC65359FCD8A661E494F8E6 /* QuickAddView.swift */; };
@@ -233,6 +234,7 @@
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
 		D2206266636D0C567F9A8BC5 /* SmartList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartList.swift; sourceTree = "<group>"; };
 		D71E865977B18B59F958122D /* HardFocusSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardFocusSessionRepository.swift; sourceTree = "<group>"; };
+		D77C6B739E7EC643A862CA7E /* DailyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewView.swift; sourceTree = "<group>"; };
 		D82EB36E626694B5222FBD25 /* ExportServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportServiceTests.swift; sourceTree = "<group>"; };
 		D97B7432D8B38188F373B1AF /* DeepFocusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusService.swift; sourceTree = "<group>"; };
 		DC15B7650F503558B4FBDD6D /* UIInteractionTokensTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIInteractionTokensTests.swift; sourceTree = "<group>"; };
@@ -312,6 +314,14 @@
 				9BC2D82AE6A92695B56A24B3 /* TodoRepository.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		36107B181113669F5200BD3D /* Review */ = {
+			isa = PBXGroup;
+			children = (
+				D77C6B739E7EC643A862CA7E /* DailyReviewView.swift */,
+			);
+			path = Review;
 			sourceTree = "<group>";
 		};
 		39C62B103C957C77ECA46BEC /* Database */ = {
@@ -394,6 +404,7 @@
 				63441E227DD10E02595C0EEB /* Common */,
 				2095BC5BB7AE5904693D6E70 /* MenuBar */,
 				CCBC331D26A1A0120CB1FAB2 /* QuickCapture */,
+				36107B181113669F5200BD3D /* Review */,
 				BFA2B5B7546784A7BA874237 /* Settings */,
 				3E66A6608E3D20A905BF4388 /* Sidebar */,
 				3D58B53B294C744C492D3D88 /* TaskDetail */,
@@ -755,6 +766,7 @@
 				E8709ACDA2AB39968E4DB49F /* AppModel.swift in Sources */,
 				960A7BFB6248537F88BF1C75 /* Color+Hex.swift in Sources */,
 				91CC7A7E8B17CA2E124C345D /* CoreTodo.swift in Sources */,
+				9C718797A145DDB359C7FA77 /* DailyReviewView.swift in Sources */,
 				AEC9F0528620AFF4E37F3BF4 /* DatabaseManager.swift in Sources */,
 				0DE2C0C815D0F79A3F3BFCD9 /* DeepFocusMenuBarPanel.swift in Sources */,
 				5543700716C62441E47C8B5D /* DeepFocusMenuBarState.swift in Sources */,

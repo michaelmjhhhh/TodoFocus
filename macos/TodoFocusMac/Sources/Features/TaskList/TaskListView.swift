@@ -205,6 +205,8 @@ struct TaskListView: View {
 
     private var title: String {
         switch appModel.selection {
+        case .dailyReview:
+            return "Daily Review"
         case .myDay:
             return "My Day"
         case .important:
