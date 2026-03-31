@@ -72,7 +72,14 @@ struct DeepFocusMenuBarPanel: View {
         }
         .padding(14)
         .frame(width: 340)
-        .background(themeTokens.panelBackground)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(themeTokens.panelBackground.opacity(0.72))
+            }
+        )
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay {
             RoundedRectangle(cornerRadius: 14)

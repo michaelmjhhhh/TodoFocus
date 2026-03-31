@@ -50,8 +50,10 @@ final class DailyReviewViewTests: XCTestCase {
             Todo(id: "open-today", title: "Open Today", isCompleted: false, isImportant: false, isMyDay: false, dueDate: now, notes: "", listId: nil, launchResourcesRaw: ""),
             Todo(id: "open-tomorrow", title: "Open Tomorrow", isCompleted: false, isImportant: false, isMyDay: false, dueDate: tomorrow, notes: "", listId: nil, launchResourcesRaw: ""),
             Todo(id: "open-later", title: "Open Later", isCompleted: false, isImportant: false, isMyDay: false, dueDate: nextWeek, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "open-no-date", title: "Open No Date", isCompleted: false, isImportant: false, isMyDay: false, dueDate: nil, notes: "", listId: nil, launchResourcesRaw: ""),
             Todo(id: "completed-overdue", title: "Completed Overdue", isCompleted: true, isImportant: false, isMyDay: false, dueDate: yesterday, notes: "", listId: nil, launchResourcesRaw: ""),
-            Todo(id: "completed-later", title: "Completed Later", isCompleted: true, isImportant: false, isMyDay: false, dueDate: nextWeek, notes: "", listId: nil, launchResourcesRaw: "")
+            Todo(id: "completed-later", title: "Completed Later", isCompleted: true, isImportant: false, isMyDay: false, dueDate: nextWeek, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "completed-no-date", title: "Completed No Date", isCompleted: true, isImportant: false, isMyDay: false, dueDate: nil, notes: "", listId: nil, launchResourcesRaw: "")
         ]
 
         let board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
@@ -60,8 +62,10 @@ final class DailyReviewViewTests: XCTestCase {
         XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .today })?.todos.map(\.id), ["open-today"])
         XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .tomorrow })?.todos.map(\.id), ["open-tomorrow"])
         XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .later })?.todos.map(\.id), ["open-later"])
+        XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .noDate })?.todos.map(\.id), ["open-no-date"])
 
         XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .overdue })?.todos.map(\.id), ["completed-overdue"])
         XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .later })?.todos.map(\.id), ["completed-later"])
+        XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .noDate })?.todos.map(\.id), ["completed-no-date"])
     }
 }
