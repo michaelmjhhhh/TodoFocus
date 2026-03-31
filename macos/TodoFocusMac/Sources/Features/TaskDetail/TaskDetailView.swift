@@ -142,7 +142,7 @@ struct TaskDetailView: View {
         let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.10 : 0
 
         return VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
                 VStack(alignment: .leading, spacing: 6) {
                     TextField("Task title", text: $titleText)
                         .textFieldStyle(.plain)
@@ -183,6 +183,15 @@ struct TaskDetailView: View {
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .trailing) {
+                    LinearGradient(
+                        colors: [Color.clear, tokens.sectionBackground.opacity(0.78)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .frame(width: 18)
+                    .allowsHitTesting(false)
+                }
 
                 HStack(spacing: 10) {
                     Button {
@@ -215,6 +224,16 @@ struct TaskDetailView: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(tokens.mutedText)
+                }
+                .padding(.horizontal, 6)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(Color.white.opacity(0.035))
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(tokens.sectionBorder.opacity(0.78), lineWidth: 1)
                 }
             }
         }
