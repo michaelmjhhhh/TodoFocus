@@ -15,7 +15,7 @@ struct ListRepository {
     func createList(name: String, color: String = "#6366F1", now: Date = Date()) throws -> ListRecord {
         try dbQueue.write { db in
             let count = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM list") ?? 0
-            var record = ListRecord(
+            let record = ListRecord(
                 id: UUID().uuidString,
                 name: name,
                 color: color,

@@ -20,6 +20,31 @@ struct TaskListView: View {
     var body: some View {
         VStack(spacing: 12) {
             commandBar
+            if let errorMessage = store.mutationErrorMessage {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(tokens.danger)
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundStyle(tokens.textSecondary)
+                        .lineLimit(2)
+                    Spacer(minLength: 6)
+                    Button("Dismiss") {
+                        store.clearMutationError()
+                    }
+                    .buttonStyle(.plain)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(tokens.accentTerracotta)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(tokens.sectionBorder, lineWidth: 1)
+                }
+            }
 
             HStack(spacing: 10) {
                 if isOverdueView {

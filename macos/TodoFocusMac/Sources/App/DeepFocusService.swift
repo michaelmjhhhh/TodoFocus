@@ -98,7 +98,7 @@ final class DeepFocusService {
         timerCancellable?.cancel()
         timerCancellable = nil
 
-        guard isActive, let sessionId = currentSessionId, let startTime = sessionStartTime else {
+        guard isActive, currentSessionId != nil, let startTime = sessionStartTime else {
             return nil
         }
 
