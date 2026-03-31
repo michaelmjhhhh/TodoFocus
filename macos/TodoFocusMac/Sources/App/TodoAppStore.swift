@@ -14,6 +14,7 @@ final class TodoAppStore {
 
     var lists: [TodoList] = []
     var todos: [Todo] = []
+    var mutationErrorMessage: String?
 
     var deepFocusService: DeepFocusService { appModel.deepFocusService }
     let hardFocusManager: HardFocusSessionManager
@@ -79,8 +80,28 @@ final class TodoAppStore {
     }
 
     func reload() throws {
+        try reloadLists()
+        try reloadTodos()
+    }
+
+    func reloadLists() throws {
         lists = try listRepository.fetchListsOrdered().map { $0.todoList }
+    }
+
+    func reloadTodos() throws {
         todos = try todoRepository.fetchTodosOrdered().map { $0.todo }
+    }
+
+    func clearMutationError() {
+        mutationErrorMessage = nil
+    }
+
+    private func setMutationError(_ error: Error, context: String) {
+        if let localized = error as? LocalizedError, let description = localized.errorDescription, !description.isEmpty {
+            mutationErrorMessage = "\(context): \(description)"
+            return
+        }
+        mutationErrorMessage = "\(context): \(error.localizedDescription)"
     }
 
     @discardableResult
@@ -101,7 +122,7 @@ final class TodoAppStore {
             ),
             now: now()
         )
-        try reload()
+        try reloadTodos()
         return created.todo
     }
 
@@ -112,7 +133,7 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.isCompleted = !current.isCompleted
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
         // Play completion sound when marking as complete (not uncompleting)
         if !current.isCompleted {
             NSSound(named: NSSound.Name("Pop"))?.play()
@@ -123,7 +144,7 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.isCompleted = true
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
         NSSound(named: NSSound.Name("Pop"))?.play()
     }
 
@@ -134,7 +155,7 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.isImportant = !current.isImportant
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
     }
 
     func deleteTodo(todoId: String) throws {
@@ -142,7 +163,7 @@ final class TodoAppStore {
         if appModel.selectedTodoID == todoId {
             appModel.selectedTodoID = nil
         }
-        try reload()
+        try reloadTodos()
     }
 
     func clearCompletedTodos() throws {
@@ -151,7 +172,7 @@ final class TodoAppStore {
         if selectedTodoWasRemoved {
             appModel.selectedTodoID = nil
         }
-        try reload()
+        try reloadTodos()
     }
 
     func selectTodo(todoId: String) {
@@ -169,8 +190,12 @@ final class TodoAppStore {
             guard let self else { return }
             var input = UpdateTodoInput()
             input.notes = notes
-            try? self.todoRepository.updateTodo(id: todoId, input: input, now: self.now())
-            try? self.reload()
+            do {
+                try self.todoRepository.updateTodo(id: todoId, input: input, now: self.now())
+                try self.reloadTodos()
+            } catch {
+                self.setMutationError(error, context: "Failed to save notes")
+            }
             self.notesUpdateWorkItems[todoId] = nil
         }
 
@@ -182,20 +207,20 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.dueDate = date
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
     }
 
     func setMyDay(todoId: String, isMyDay: Bool) throws {
         var input = UpdateTodoInput()
         input.isMyDay = isMyDay
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
     }
 
     func updateTitle(todoId: String, title: String) -> Result<Void, TodoRepositoryError> {
         do {
             try todoRepository.updateTitle(id: todoId, title: title, now: now())
-            try reload()
+            try reloadTodos()
             return .success(())
         } catch let error as TodoRepositoryError {
             return .failure(error)
@@ -213,11 +238,19 @@ final class TodoAppStore {
     }
 
     func toggleStep(stepId: String, isCompleted: Bool) {
-        try? stepRepository.toggleStep(id: stepId, isCompleted: isCompleted)
+        do {
+            try stepRepository.toggleStep(id: stepId, isCompleted: isCompleted)
+        } catch {
+            setMutationError(error, context: "Failed to update step")
+        }
     }
 
     func deleteStep(stepId: String) {
-        try? stepRepository.deleteStep(id: stepId)
+        do {
+            try stepRepository.deleteStep(id: stepId)
+        } catch {
+            setMutationError(error, context: "Failed to delete step")
+        }
     }
 
     func loadSteps(todoId: String) -> [TodoStep] {
@@ -233,7 +266,7 @@ final class TodoAppStore {
                 var input = UpdateTodoInput()
                 input.launchResources = serialized
                 try todoRepository.updateTodo(id: todoId, input: input, now: now())
-                try reload()
+                try reloadTodos()
                 return .success(())
             } catch let error as TodoRepositoryError {
                 return .failure(error)
@@ -244,29 +277,41 @@ final class TodoAppStore {
     }
 
     func deleteList(listId: String) {
-        try? listRepository.deleteList(id: listId)
-        if case let .customList(current) = appModel.selection, current == listId {
-            appModel.selectSidebar(.all)
+        do {
+            try listRepository.deleteList(id: listId)
+            if case let .customList(current) = appModel.selection, current == listId {
+                appModel.selectSidebar(.all)
+            }
+            try reload()
+        } catch {
+            setMutationError(error, context: "Failed to delete list")
         }
-        try? reload()
     }
 
     func createList(name: String, color: String = "#6366F1") {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        _ = try? listRepository.createList(name: trimmed, color: color, now: now())
-        try? reload()
+        do {
+            _ = try listRepository.createList(name: trimmed, color: color, now: now())
+            try reloadLists()
+        } catch {
+            setMutationError(error, context: "Failed to create list")
+        }
     }
 
     func renameList(listId: String, newName: String, color: String? = nil) {
         let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        if let color {
-            try? listRepository.renameList(id: listId, name: trimmed, color: color, now: now())
-        } else {
-            try? listRepository.renameList(id: listId, name: trimmed, now: now())
+        do {
+            if let color {
+                try listRepository.renameList(id: listId, name: trimmed, color: color, now: now())
+            } else {
+                try listRepository.renameList(id: listId, name: trimmed, now: now())
+            }
+            try reloadLists()
+        } catch {
+            setMutationError(error, context: "Failed to rename list")
         }
-        try? reload()
     }
 
     func startDeepFocus(blockedApps: [String], duration: TimeInterval?, focusTaskId: String, passphrase: String) {
@@ -290,10 +335,18 @@ final class TodoAppStore {
                 duration: duration,
                 focusTaskId: focusTaskId,
                 onTimerComplete: { [weak self] report in
-                    try? self?.markComplete(todoId: focusTaskId)
-                    try? self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+                    do {
+                        try self?.markComplete(todoId: focusTaskId)
+                        try self?.updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+                    } catch {
+                        self?.setMutationError(error, context: "Failed to finalize focus task")
+                    }
                     Task { @MainActor [weak self] in
-                        try? await self?.hardFocusManager.emergencyEndSession()
+                        do {
+                            try await self?.hardFocusManager.emergencyEndSession()
+                        } catch {
+                            self?.setMutationError(error, context: "Failed to end Hard Focus session")
+                        }
                     }
                 }
             )
@@ -310,15 +363,27 @@ final class TodoAppStore {
            let duration = configuredDuration,
            report.duration + 0.5 >= duration,
            let focusTaskId = report.focusTaskId {
-            try? markComplete(todoId: focusTaskId)
+            do {
+                try markComplete(todoId: focusTaskId)
+            } catch {
+                setMutationError(error, context: "Failed to complete focus task")
+            }
         }
 
         if let focusTaskId = report.focusTaskId {
-            try? updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+            do {
+                try updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+            } catch {
+                setMutationError(error, context: "Failed to update focus time")
+            }
         }
 
         if hardFocusManager.isEnforcing {
-            try? await hardFocusManager.emergencyEndSession()
+            do {
+                try await hardFocusManager.emergencyEndSession()
+            } catch {
+                setMutationError(error, context: "Failed to end Hard Focus session")
+            }
         }
 
         return report
@@ -334,7 +399,11 @@ final class TodoAppStore {
         }
 
         if let focusTaskId = report.focusTaskId {
-            try? updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+            do {
+                try updateFocusTime(todoId: focusTaskId, additionalSeconds: Int(report.duration))
+            } catch {
+                setMutationError(error, context: "Failed to update focus time")
+            }
         }
 
         return report
@@ -347,7 +416,11 @@ final class TodoAppStore {
         }
 
         if hardFocusManager.isEnforcing {
-            try? await hardFocusManager.emergencyEndSession()
+            do {
+                try await hardFocusManager.emergencyEndSession()
+            } catch {
+                setMutationError(error, context: "Failed to end Hard Focus session")
+            }
         }
     }
 
@@ -356,9 +429,9 @@ final class TodoAppStore {
             return
         }
         var input = UpdateTodoInput()
-        input.focusTimeSeconds = (current.focusTimeSeconds ?? 0) + additionalSeconds
+        input.focusTimeSeconds = current.focusTimeSeconds + additionalSeconds
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reload()
+        try reloadTodos()
     }
 
     func formatFocusTime(_ seconds: Int) -> String {
@@ -387,14 +460,18 @@ final class TodoAppStore {
         } else {
             let captureText = text.trimmingCharacters(in: .whitespacesAndNewlines)
             let title = captureText.components(separatedBy: .newlines).first ?? captureText
-            
-            _ = try? quickAdd(
-                title: title,
-                planned: false,
-                isImportant: false,
-                isMyDay: false,
-                list: nil
-            )
+
+            do {
+                _ = try quickAdd(
+                    title: title,
+                    planned: false,
+                    isImportant: false,
+                    isMyDay: false,
+                    list: nil
+                )
+            } catch {
+                setMutationError(error, context: "Failed to capture quick note")
+            }
         }
     }
 }

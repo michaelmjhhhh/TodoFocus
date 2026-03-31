@@ -22,10 +22,14 @@ struct DailyReviewView: View {
     @Environment(\.themeTokens) private var tokens
 
     @State private var boardViewModel = DailyReviewBoardViewModel()
+    @State private var actionErrorMessage: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             header
+            if let errorMessage = actionErrorMessage ?? store.mutationErrorMessage {
+                errorBanner(errorMessage)
+            }
 
             if store.todos.isEmpty {
                 emptyState
@@ -60,6 +64,10 @@ struct DailyReviewView: View {
         .onChange(of: store.todos) { _, newTodos in
             boardViewModel.recompute(todos: newTodos)
         }
+    }
+
+    private var listNameByID: [String: String] {
+        Dictionary(uniqueKeysWithValues: store.lists.map { ($0.id, $0.name) })
     }
 
     private var header: some View {
@@ -172,15 +180,11 @@ struct DailyReviewView: View {
                     .padding(.vertical, 10)
                     .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             } else {
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 8) {
-                        ForEach(column.todos) { todo in
-                            reviewCard(todo, isCompletedLane: isCompletedLane)
-                        }
+                LazyVStack(spacing: 8) {
+                    ForEach(column.todos) { todo in
+                        reviewCard(todo, isCompletedLane: isCompletedLane)
                     }
                 }
-                .scrollIndicators(.visible)
-                .frame(maxHeight: 280)
             }
         }
         .padding(10)
@@ -246,6 +250,33 @@ struct DailyReviewView: View {
         .background(tokens.sectionBackground, in: Capsule())
         .overlay {
             Capsule()
+                .stroke(tokens.sectionBorder, lineWidth: 1)
+        }
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(tokens.danger)
+            Text(message)
+                .font(.caption)
+                .foregroundStyle(tokens.textSecondary)
+                .lineLimit(2)
+            Spacer(minLength: 6)
+            Button("Dismiss") {
+                actionErrorMessage = nil
+                store.clearMutationError()
+            }
+            .buttonStyle(.plain)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(tokens.accentTerracotta)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
@@ -369,14 +400,21 @@ struct DailyReviewView: View {
     }
 
     private func listName(for listID: String) -> String? {
-        store.lists.first(where: { $0.id == listID })?.name
+        listNameByID[listID]
     }
 
     private func runAction(on todoID: String, _ action: () throws -> Void) {
         do {
             try action()
+            actionErrorMessage = nil
+            store.clearMutationError()
         } catch {
             _ = todoID
+            if let localized = error as? LocalizedError, let description = localized.errorDescription, !description.isEmpty {
+                actionErrorMessage = description
+            } else {
+                actionErrorMessage = error.localizedDescription
+            }
         }
     }
 

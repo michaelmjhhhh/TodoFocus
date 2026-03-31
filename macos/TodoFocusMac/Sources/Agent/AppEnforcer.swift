@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 
-final class AppEnforcer {
+final class AppEnforcer: @unchecked Sendable {
     private var launchObserver: NSObjectProtocol?
     private var activationObserver: NSObjectProtocol?
     private var blockedApps: [String] = []

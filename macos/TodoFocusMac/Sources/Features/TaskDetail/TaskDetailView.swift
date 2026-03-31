@@ -499,6 +499,7 @@ struct StepsEditorView: View {
     @Bindable var store: TodoAppStore
     @State private var steps: [TodoStep] = []
     @State private var newStepTitle: String = ""
+    @State private var stepErrorMessage: String?
     @Environment(\.themeTokens) private var tokens
 
     init(todoId: String, store: TodoAppStore) {
@@ -540,6 +541,12 @@ struct StepsEditorView: View {
                     .stroke(tokens.sectionBorder, lineWidth: 1)
             }
             .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            if let stepErrorMessage {
+                Text(stepErrorMessage)
+                    .font(.caption)
+                    .foregroundStyle(tokens.danger)
+            }
 
             if steps.isEmpty {
                 Text("No steps yet")
@@ -623,9 +630,10 @@ struct StepsEditorView: View {
         do {
             try store.addStep(todoId: todoId, title: trimmedTitle)
             newStepTitle = ""
+            stepErrorMessage = nil
             reloadSteps()
         } catch {
-            // TODO: Surface error to user via feedback mechanism
+            stepErrorMessage = "Failed to add step. Please try again."
         }
     }
 

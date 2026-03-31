@@ -236,7 +236,7 @@ final class ExportService {
                 let now = Date()
                 let existingTodo = (mode == .merge) ? try TodoRecord.fetchOne(db, key: todo.id) : nil
                 let createdAt = existingTodo?.createdAt ?? now
-                var record = TodoRecord(
+                let record = TodoRecord(
                     id: todo.id,
                     title: todo.title,
                     isCompleted: todo.isCompleted,

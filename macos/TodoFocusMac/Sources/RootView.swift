@@ -119,7 +119,11 @@ struct RootView: View {
             }
         }
         .task {
-            try? store.reload()
+            do {
+                try store.reload()
+            } catch {
+                store.mutationErrorMessage = "Failed to load data: \(error.localizedDescription)"
+            }
         }
         .onReceive(store.hardFocusManager.$isEnforcing) { isEnforcing in
             if isHardFocusActive && !isEnforcing && store.deepFocusService.isActive {

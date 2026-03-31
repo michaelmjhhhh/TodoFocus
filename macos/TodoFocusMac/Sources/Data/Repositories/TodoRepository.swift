@@ -46,7 +46,7 @@ struct TodoRepository {
 
         let created = try dbQueue.write { db in
             let count = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM todo") ?? 0
-            var record = TodoRecord(
+            let record = TodoRecord(
                 id: UUID().uuidString,
                 title: trimmedTitle,
                 isCompleted: false,
