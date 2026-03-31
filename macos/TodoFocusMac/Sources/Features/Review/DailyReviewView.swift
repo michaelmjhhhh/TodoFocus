@@ -108,7 +108,7 @@ struct DailyReviewView: View {
                         .foregroundStyle(tokens.textSecondary)
                     Text(title)
                         .font(.headline.weight(.semibold))
-                        .foregroundStyle(tokens.textPrimary)
+                        .foregroundStyle(Color.white)
                     Text("\(columns.reduce(0) { $0 + $1.todos.count })")
                         .font(.caption.weight(.bold))
                         .monospacedDigit()
@@ -270,6 +270,18 @@ struct DailyReviewView: View {
                 doneActionButton(todo, compact: true)
                 myDayActionButton(todo, compact: true)
                 rescheduleMenu(todo, compact: true)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    doneActionButton(todo, compact: true)
+                    myDayActionButton(todo, compact: true)
+                    Spacer(minLength: 0)
+                }
+                HStack(spacing: 6) {
+                    rescheduleMenu(todo, compact: true)
+                    Spacer(minLength: 0)
+                }
             }
         }
     }
