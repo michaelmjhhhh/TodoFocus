@@ -172,11 +172,15 @@ struct DailyReviewView: View {
                     .padding(.vertical, 10)
                     .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             } else {
-                LazyVStack(spacing: 8) {
-                    ForEach(column.todos) { todo in
-                        reviewCard(todo, isCompletedLane: isCompletedLane)
+                ScrollView(.vertical) {
+                    LazyVStack(spacing: 8) {
+                        ForEach(column.todos) { todo in
+                            reviewCard(todo, isCompletedLane: isCompletedLane)
+                        }
                     }
                 }
+                .scrollIndicators(.visible)
+                .frame(maxHeight: 280)
             }
         }
         .padding(10)
