@@ -11,21 +11,7 @@ struct DailyReviewView: View {
     @State private var lastActionText: String?
 
     private var reviewTodos: [Todo] {
-        store.todos.sorted { lhs, rhs in
-            if lhs.isCompleted != rhs.isCompleted {
-                return !lhs.isCompleted && rhs.isCompleted
-            }
-            switch (lhs.dueDate, rhs.dueDate) {
-            case let (l?, r?):
-                return l < r
-            case (.some, .none):
-                return true
-            case (.none, .some):
-                return false
-            case (.none, .none):
-                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
-            }
-        }
+        Self.sortedForReview(store.todos)
     }
 
     var body: some View {
@@ -239,15 +225,7 @@ struct DailyReviewView: View {
     }
 
     private func dueText(for dueDate: Date?) -> String {
-        guard let dueDate else { return "No Date" }
-        let cal = Calendar.current
-        if cal.isDateInToday(dueDate) { return "Today" }
-        if cal.isDateInTomorrow(dueDate) { return "Tomorrow" }
-        if dueDate < Date() { return "Overdue" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: dueDate)
+        Self.dueText(for: dueDate)
     }
 
     private func listName(for listID: String) -> String? {
@@ -291,5 +269,37 @@ struct DailyReviewView: View {
             rescheduledCount += 1
             lastActionText = "Rescheduled: \(todo.title)"
         }
+    }
+}
+
+extension DailyReviewView {
+    static func sortedForReview(_ todos: [Todo]) -> [Todo] {
+        todos.sorted { lhs, rhs in
+            if lhs.isCompleted != rhs.isCompleted {
+                return !lhs.isCompleted && rhs.isCompleted
+            }
+            switch (lhs.dueDate, rhs.dueDate) {
+            case let (l?, r?):
+                return l < r
+            case (.some, .none):
+                return true
+            case (.none, .some):
+                return false
+            case (.none, .none):
+                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
+            }
+        }
+    }
+
+    static func dueText(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> String {
+        guard let dueDate else { return "No Date" }
+        if calendar.isDate(dueDate, inSameDayAs: now) { return "Today" }
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
+        if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return "Tomorrow" }
+        if dueDate < now { return "Overdue" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: dueDate)
     }
 }
