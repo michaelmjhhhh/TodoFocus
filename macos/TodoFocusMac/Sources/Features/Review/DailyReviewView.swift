@@ -15,7 +15,7 @@ struct DailyReviewView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             header
             summaryPanel
 
@@ -23,79 +23,122 @@ struct DailyReviewView: View {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 8) {
+                    LazyVStack(spacing: 10) {
                         ForEach(reviewTodos) { todo in
                             reviewRow(todo)
                         }
                     }
-                    .padding(.top, 2)
+                    .padding(.bottom, 10)
                 }
+                .scrollIndicators(.visible)
             }
         }
         .padding(16)
     }
 
     private var header: some View {
-        HStack(spacing: 10) {
-            Text("Daily Review")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(tokens.textPrimary)
-            Text("Manual")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(tokens.textSecondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(tokens.bgFloating.opacity(0.78), in: Capsule())
-                .overlay {
-                    Capsule()
-                        .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+        HStack(alignment: .center, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 8) {
+                    Text("Daily Review")
+                        .font(.system(size: 23, weight: .bold, design: .rounded))
+                        .foregroundStyle(tokens.textPrimary)
+                    Text("Manual")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(tokens.textSecondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(tokens.bgFloating.opacity(0.82), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                        }
                 }
-            Spacer()
-            Text("All Tasks: \(store.todoCount)")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(tokens.textSecondary)
+                Text("Review, clean up, and plan your next sprint of tasks.")
+                    .font(.caption)
+                    .foregroundStyle(tokens.textTertiary)
+            }
+            Spacer(minLength: 8)
+            metricPill(title: "All Tasks", value: store.todoCount)
         }
     }
 
     private var summaryPanel: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                summaryChip("Reviewed", value: touchedTaskIDs.count)
-                summaryChip("Done", value: completedCount)
-                summaryChip("Rescheduled", value: rescheduledCount)
-                summaryChip("My Day", value: addedToMyDayCount)
+                summaryChip("Reviewed", value: touchedTaskIDs.count, systemImage: "eye")
+                summaryChip("Done", value: completedCount, systemImage: "checkmark")
+                summaryChip("Rescheduled", value: rescheduledCount, systemImage: "calendar.badge.clock")
+                summaryChip("My Day", value: addedToMyDayCount, systemImage: "sun.max")
             }
 
             if let lastActionText {
-                Text(lastActionText)
-                    .font(.caption)
-                    .foregroundStyle(tokens.textSecondary)
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(tokens.accentTerracotta.opacity(0.85))
+                        .frame(width: 6, height: 6)
+                    Text(lastActionText)
+                        .font(.caption)
+                        .foregroundStyle(tokens.textSecondary)
+                        .lineLimit(1)
+                }
             }
         }
-        .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(tokens.sectionBackground)
+        )
         .overlay {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
 
-    private func summaryChip(_ label: String, value: Int) -> some View {
+    private func summaryChip(_ label: String, value: Int, systemImage: String) -> some View {
         HStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(tokens.textTertiary)
             Text(label)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(tokens.textSecondary)
             Text("\(value)")
-                .font(.caption.weight(.semibold))
+                .font(.caption.weight(.bold))
                 .monospacedDigit()
                 .foregroundStyle(tokens.textPrimary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(tokens.bgFloating.opacity(0.95), in: Capsule())
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(tokens.bgFloating.opacity(0.82), in: Capsule())
+        .padding(.horizontal, 9)
+        .padding(.vertical, 6)
+        .background(tokens.bgFloating.opacity(0.72), in: Capsule())
         .overlay {
             Capsule()
-                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                .stroke(tokens.sectionBorder.opacity(0.85), lineWidth: 1)
+        }
+    }
+
+    private func metricPill(title: String, value: Int) -> some View {
+        HStack(spacing: 7) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(tokens.textSecondary)
+            Text("\(value)")
+                .font(.caption.weight(.bold))
+                .monospacedDigit()
+                .foregroundStyle(tokens.textPrimary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(tokens.bgFloating.opacity(0.9), in: Capsule())
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(tokens.sectionBackground, in: Capsule())
+        .overlay {
+            Capsule()
+                .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
 
@@ -112,33 +155,36 @@ struct DailyReviewView: View {
     }
 
     private func reviewRow(_ todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(todo.title)
-                    .font(.body.weight(todo.isCompleted ? .regular : .semibold))
-                    .foregroundStyle(todo.isCompleted ? tokens.textTertiary : tokens.textPrimary)
+                    .font(.body.weight(todo.isCompleted ? .medium : .semibold))
+                    .foregroundStyle(todo.isCompleted ? tokens.textSecondary : tokens.textPrimary)
                     .strikethrough(todo.isCompleted)
-                    .lineLimit(1)
-                Spacer()
-                if todo.isCompleted {
-                    Text("Completed")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(tokens.textTertiary)
-                }
+                    .lineLimit(2)
+
+                Spacer(minLength: 8)
+
+                Text(todo.isCompleted ? "Completed" : "Open")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(todo.isCompleted ? tokens.textTertiary : tokens.accentTerracotta)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(tokens.bgFloating.opacity(todo.isCompleted ? 0.55 : 0.9), in: Capsule())
             }
 
             HStack(spacing: 8) {
                 metaChip(label: todo.listId.flatMap(listName(for:)) ?? "Inbox")
                 metaChip(label: dueText(for: todo.dueDate))
                 if todo.isMyDay {
-                    metaChip(label: "My Day")
+                    metaChip(label: "My Day", accent: true)
                 }
-                Spacer()
+                Spacer(minLength: 8)
             }
 
             if !todo.isCompleted {
                 HStack(spacing: 8) {
-                    quickActionButton("Done", systemImage: "checkmark") {
+                    quickActionButton("Done", systemImage: "checkmark", emphasize: true) {
                         runAction(on: todo.id) {
                             try store.markComplete(todoId: todo.id)
                             completedCount += 1
@@ -146,7 +192,7 @@ struct DailyReviewView: View {
                         }
                     }
 
-                    quickActionButton("My Day", systemImage: "sun.max") {
+                    quickActionButton("My Day", systemImage: "sun.max", emphasize: false) {
                         runAction(on: todo.id) {
                             if !todo.isMyDay {
                                 try store.setMyDay(todoId: todo.id, isMyDay: true)
@@ -176,8 +222,8 @@ struct DailyReviewView: View {
                         }
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 7)
                         .background(tokens.bgFloating.opacity(0.8), in: Capsule())
                         .overlay {
                             Capsule()
@@ -188,40 +234,56 @@ struct DailyReviewView: View {
                 }
             }
         }
-        .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(tokens.sectionBackground)
+        )
+        .overlay(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(todo.isCompleted ? tokens.textTertiary.opacity(0.45) : tokens.accentTerracotta.opacity(0.92))
+                .frame(width: 3)
+                .padding(.vertical, 9)
+                .padding(.leading, 5)
+        }
         .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
+        .opacity(todo.isCompleted ? 0.72 : 1.0)
     }
 
-    private func quickActionButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+    private func quickActionButton(_ title: String, systemImage: String, emphasize: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 6) {
                 Image(systemName: systemImage)
                 Text(title)
             }
             .font(.caption.weight(.semibold))
-            .foregroundStyle(tokens.textSecondary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+            .foregroundStyle(emphasize ? Color.white : tokens.textSecondary)
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
+            .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgFloating.opacity(0.8)), in: Capsule())
             .overlay {
                 Capsule()
-                    .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                    .stroke(tokens.sectionBorder.opacity(emphasize ? 0.0 : 0.9), lineWidth: 1)
             }
         }
         .buttonStyle(.plain)
     }
 
-    private func metaChip(label: String) -> some View {
+    private func metaChip(label: String, accent: Bool = false) -> some View {
         Text(label)
             .font(.caption2.weight(.medium))
-            .foregroundStyle(tokens.textTertiary)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 3)
-            .background(tokens.bgFloating.opacity(0.6), in: Capsule())
+            .foregroundStyle(accent ? tokens.accentTerracotta : tokens.textTertiary)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(tokens.bgFloating.opacity(accent ? 0.82 : 0.62), in: Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(tokens.sectionBorder.opacity(accent ? 0.35 : 0.0), lineWidth: 1)
+            }
     }
 
     private func dueText(for dueDate: Date?) -> String {

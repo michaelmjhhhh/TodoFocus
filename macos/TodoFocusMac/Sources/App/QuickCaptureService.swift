@@ -7,8 +7,7 @@ import Speech
 @MainActor
 final class QuickCaptureService {
     private static let primaryLocaleID = "en-US"
-    private static let fallbackLocaleID = "zh-CN"
-    private static let silenceAutoFinalizeSeconds: TimeInterval = 1.2
+    private static let silenceAutoFinalizeSeconds: TimeInterval = 1.6
 
     var isVisible: Bool = false
     var needsAccessibilityPermission: Bool = false
@@ -170,7 +169,7 @@ final class QuickCaptureService {
             try beginRecognitionPipeline()
             isRecordingVoice = true
             needsVoicePermission = false
-            voiceStatusMessage = "Listening… English primary, Chinese fallback"
+            voiceStatusMessage = "Listening… English only"
         } catch {
             isRecordingVoice = false
             voiceStatusMessage = nil
@@ -196,6 +195,8 @@ final class QuickCaptureService {
         let best = bestFinalTranscript()
         if !best.isEmpty {
             draftText = best
+        } else if let preview = bestPartialPreview(), !preview.isEmpty {
+            draftText = preview
         }
 
         teardownRecognitionPipeline(cancelTasks: true)
@@ -204,7 +205,7 @@ final class QuickCaptureService {
     private func beginRecognitionPipeline() throws {
         teardownRecognitionPipeline(cancelTasks: true)
 
-        let localeIDs = [Self.primaryLocaleID, Self.fallbackLocaleID]
+        let localeIDs = [Self.primaryLocaleID]
 
         for localeID in localeIDs {
             guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeID)),
@@ -270,7 +271,7 @@ final class QuickCaptureService {
     }
 
     private func bestFinalTranscript() -> String {
-        for localeID in [Self.primaryLocaleID, Self.fallbackLocaleID] {
+        for localeID in [Self.primaryLocaleID] {
             if let text = finalTranscriptsByLocale[localeID], !text.isEmpty {
                 return text
             }
@@ -279,7 +280,7 @@ final class QuickCaptureService {
     }
 
     private func bestPartialPreview() -> String? {
-        for localeID in [Self.primaryLocaleID, Self.fallbackLocaleID] {
+        for localeID in [Self.primaryLocaleID] {
             if let text = partialTranscriptsByLocale[localeID], !text.isEmpty {
                 return text
             }
