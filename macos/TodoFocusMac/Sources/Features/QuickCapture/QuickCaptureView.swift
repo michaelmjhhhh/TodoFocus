@@ -24,7 +24,7 @@ struct QuickCaptureView: View {
                     .foregroundStyle(tokens.textSecondary)
             }
 
-            Text("Voice mode reminder: English is primary, Chinese is fallback.")
+            Text("Voice mode reminder: English only.")
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(tokens.textTertiary)
                 .frame(maxWidth: .infinity, alignment: .leading)

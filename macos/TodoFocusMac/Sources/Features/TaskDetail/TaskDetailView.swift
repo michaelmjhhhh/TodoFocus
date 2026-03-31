@@ -183,15 +183,6 @@ struct TaskDetailView: View {
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .overlay(alignment: .trailing) {
-                    LinearGradient(
-                        colors: [Color.clear, tokens.sectionBackground.opacity(0.78)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                    .frame(width: 18)
-                    .allowsHitTesting(false)
-                }
 
                 HStack(spacing: 10) {
                     Button {
@@ -229,12 +220,13 @@ struct TaskDetailView: View {
                 .padding(.vertical, 4)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color.white.opacity(0.035))
+                        .fill(Color.white.opacity(isTitleFocused ? 0.11 : 0.05))
                 )
                 .overlay {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(tokens.sectionBorder.opacity(0.78), lineWidth: 1)
+                        .stroke(titleStrokeColor, lineWidth: titleStrokeWidth)
                 }
+                .animation(MotionTokens.focusEase, value: isTitleFocused)
             }
         }
         .padding(.horizontal, 12)
