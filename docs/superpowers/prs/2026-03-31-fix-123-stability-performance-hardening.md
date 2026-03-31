@@ -19,6 +19,7 @@
   - Surfaced add-step error message (replaced prior TODO).
 - Minor cleanups
   - `DeepFocusService`: removed unused `sessionId` binding.
+  - `AppEnforcer`: restored explicit sendable annotation to satisfy strict concurrency checks in observer callbacks.
   - `ExportService`, `ListRepository`, `TodoRepository`: replaced non-mutated `var` with `let`.
   - `RootView`: replaced startup `try? reload` with `do/catch` and user-visible error state.
 
