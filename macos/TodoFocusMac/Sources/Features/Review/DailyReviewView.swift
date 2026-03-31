@@ -1,39 +1,71 @@
 import SwiftUI
+import Observation
+
+@Observable
+@MainActor
+final class DailyReviewBoardViewModel {
+    var board: DailyReviewView.ReviewBoard = .empty
+    var isCompletedCollapsed: Bool = true
+
+    func recompute(todos: [Todo], now: Date = Date(), calendar: Calendar = .current) {
+        board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
+    }
+
+    func toggleCompletedLane() {
+        isCompletedCollapsed.toggle()
+    }
+}
 
 struct DailyReviewView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
     @Environment(\.themeTokens) private var tokens
+
+    @State private var boardViewModel = DailyReviewBoardViewModel()
     @State private var touchedTaskIDs: Set<String> = []
     @State private var completedCount: Int = 0
     @State private var rescheduledCount: Int = 0
     @State private var addedToMyDayCount: Int = 0
     @State private var lastActionText: String?
 
-    private var reviewTodos: [Todo] {
-        Self.sortedForReview(store.todos)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             header
             summaryPanel
 
-            if reviewTodos.isEmpty {
+            if store.todos.isEmpty {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 10) {
-                        ForEach(reviewTodos) { todo in
-                            reviewRow(todo)
-                        }
+                    LazyVStack(alignment: .leading, spacing: 14) {
+                        laneSection(
+                            title: "Open",
+                            systemImage: "tray",
+                            columns: boardViewModel.board.openColumns,
+                            collapsed: false,
+                            isCompletedLane: false
+                        )
+
+                        laneSection(
+                            title: "Completed",
+                            systemImage: "checkmark.circle",
+                            columns: boardViewModel.board.completedColumns,
+                            collapsed: boardViewModel.isCompletedCollapsed,
+                            isCompletedLane: true
+                        )
                     }
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 12)
                 }
                 .scrollIndicators(.visible)
             }
         }
         .padding(16)
+        .onAppear {
+            boardViewModel.recompute(todos: store.todos)
+        }
+        .onChange(of: store.todos) { _, newTodos in
+            boardViewModel.recompute(todos: newTodos)
+        }
     }
 
     private var header: some View {
@@ -54,7 +86,7 @@ struct DailyReviewView: View {
                                 .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
                         }
                 }
-                Text("Review, clean up, and plan your next sprint of tasks.")
+                Text("Kanban review by status and time horizon.")
                     .font(.caption)
                     .foregroundStyle(tokens.textTertiary)
             }
@@ -92,6 +124,181 @@ struct DailyReviewView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
+        }
+    }
+
+    private func laneSection(
+        title: String,
+        systemImage: String,
+        columns: [ReviewColumn],
+        collapsed: Bool,
+        isCompletedLane: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                if isCompletedLane {
+                    boardViewModel.toggleCompletedLane()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: systemImage)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(isCompletedLane ? tokens.textSecondary : tokens.accentTerracotta)
+                    Text(title)
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(tokens.textPrimary)
+                    Text("\(columns.reduce(0) { $0 + $1.todos.count })")
+                        .font(.caption.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(tokens.textSecondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                    Spacer(minLength: 8)
+                    if isCompletedLane {
+                        Image(systemName: collapsed ? "chevron.down" : "chevron.up")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(tokens.textSecondary)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(tokens.sectionBorder, lineWidth: 1)
+                }
+            }
+            .buttonStyle(.plain)
+            .disabled(!isCompletedLane)
+
+            if !collapsed {
+                ScrollView(.horizontal) {
+                    LazyHStack(alignment: .top, spacing: 10) {
+                        ForEach(columns) { column in
+                            reviewColumnView(column, isCompletedLane: isCompletedLane)
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+                .scrollIndicators(.visible)
+            }
+        }
+    }
+
+    private func reviewColumnView(_ column: ReviewColumn, isCompletedLane: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Text(column.bucket.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(tokens.textPrimary)
+                Text("\(column.todos.count)")
+                    .font(.caption.weight(.bold))
+                    .monospacedDigit()
+                    .foregroundStyle(tokens.textSecondary)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 2)
+                    .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+            }
+
+            if column.todos.isEmpty {
+                Text("No tasks")
+                    .font(.caption)
+                    .foregroundStyle(tokens.textTertiary)
+                    .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
+                    .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            } else {
+                LazyVStack(spacing: 8) {
+                    ForEach(column.todos) { todo in
+                        reviewCard(todo, isCompletedLane: isCompletedLane)
+                    }
+                }
+            }
+        }
+        .padding(10)
+        .frame(width: 300, alignment: .topLeading)
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(tokens.sectionBorder, lineWidth: 1)
+        }
+    }
+
+    private func reviewCard(_ todo: Todo, isCompletedLane: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(todo.title)
+                    .font(.subheadline.weight(todo.isCompleted ? .medium : .semibold))
+                    .foregroundStyle(todo.isCompleted ? tokens.textSecondary : tokens.textPrimary)
+                    .strikethrough(todo.isCompleted)
+                    .lineLimit(2)
+                Spacer(minLength: 8)
+            }
+
+            HStack(spacing: 8) {
+                metaChip(label: todo.listId.flatMap(listName(for:)) ?? "Inbox")
+                metaChip(label: dueText(for: todo.dueDate))
+                if todo.isMyDay {
+                    metaChip(label: "My Day", accent: true)
+                }
+                Spacer(minLength: 8)
+            }
+
+            if !isCompletedLane {
+                HStack(spacing: 8) {
+                    quickActionButton("Done", systemImage: "checkmark", emphasize: true) {
+                        runAction(on: todo.id) {
+                            try store.markComplete(todoId: todo.id)
+                            completedCount += 1
+                            lastActionText = "Marked done: \(todo.title)"
+                        }
+                    }
+
+                    quickActionButton("My Day", systemImage: "sun.max", emphasize: false) {
+                        runAction(on: todo.id) {
+                            if !todo.isMyDay {
+                                try store.setMyDay(todoId: todo.id, isMyDay: true)
+                                addedToMyDayCount += 1
+                                lastActionText = "Added to My Day: \(todo.title)"
+                            }
+                        }
+                    }
+
+                    Menu {
+                        Button("Today") { reschedule(todo: todo, to: .today) }
+                        Button("Tomorrow") { reschedule(todo: todo, to: .tomorrow) }
+                        Button("Next 7 Days") { reschedule(todo: todo, to: .next7) }
+                        Button("No Date") { reschedule(todo: todo, to: .none) }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "calendar.badge.clock")
+                            Text("Reschedule")
+                        }
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(tokens.textSecondary)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 7)
+                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
+                        }
+                    }
+                    .menuStyle(.borderlessButton)
+                }
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 9)
+        .background(tokens.bgFloating.opacity(isCompletedLane ? 0.42 : 0.58), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(isCompletedLane ? tokens.textTertiary.opacity(0.5) : tokens.accentTerracotta.opacity(0.92))
+                .frame(width: 3)
+                .padding(.vertical, 7)
+                .padding(.leading, 5)
         }
     }
 
@@ -152,106 +359,6 @@ struct DailyReviewView: View {
                 .foregroundStyle(tokens.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private func reviewRow(_ todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(todo.title)
-                    .font(.body.weight(todo.isCompleted ? .medium : .semibold))
-                    .foregroundStyle(todo.isCompleted ? tokens.textSecondary : tokens.textPrimary)
-                    .strikethrough(todo.isCompleted)
-                    .lineLimit(2)
-
-                Spacer(minLength: 8)
-
-                Text(todo.isCompleted ? "Completed" : "Open")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(todo.isCompleted ? tokens.textTertiary : tokens.accentTerracotta)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(tokens.bgFloating.opacity(todo.isCompleted ? 0.55 : 0.9), in: Capsule())
-            }
-
-            HStack(spacing: 8) {
-                metaChip(label: todo.listId.flatMap(listName(for:)) ?? "Inbox")
-                metaChip(label: dueText(for: todo.dueDate))
-                if todo.isMyDay {
-                    metaChip(label: "My Day", accent: true)
-                }
-                Spacer(minLength: 8)
-            }
-
-            if !todo.isCompleted {
-                HStack(spacing: 8) {
-                    quickActionButton("Done", systemImage: "checkmark", emphasize: true) {
-                        runAction(on: todo.id) {
-                            try store.markComplete(todoId: todo.id)
-                            completedCount += 1
-                            lastActionText = "Marked done: \(todo.title)"
-                        }
-                    }
-
-                    quickActionButton("My Day", systemImage: "sun.max", emphasize: false) {
-                        runAction(on: todo.id) {
-                            if !todo.isMyDay {
-                                try store.setMyDay(todoId: todo.id, isMyDay: true)
-                                addedToMyDayCount += 1
-                                lastActionText = "Added to My Day: \(todo.title)"
-                            }
-                        }
-                    }
-
-                    Menu {
-                        Button("Today") {
-                            reschedule(todo: todo, to: .today)
-                        }
-                        Button("Tomorrow") {
-                            reschedule(todo: todo, to: .tomorrow)
-                        }
-                        Button("Next 7 Days") {
-                            reschedule(todo: todo, to: .next7)
-                        }
-                        Button("No Date") {
-                            reschedule(todo: todo, to: .none)
-                        }
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "calendar.badge.clock")
-                            Text("Reschedule")
-                        }
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 7)
-                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
-                        .overlay {
-                            Capsule()
-                                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-                        }
-                    }
-                    .menuStyle(.borderlessButton)
-                }
-            }
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 11)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(tokens.sectionBackground)
-        )
-        .overlay(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 2, style: .continuous)
-                .fill(todo.isCompleted ? tokens.textTertiary.opacity(0.45) : tokens.accentTerracotta.opacity(0.92))
-                .frame(width: 3)
-                .padding(.vertical, 9)
-                .padding(.leading, 5)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
-        .opacity(todo.isCompleted ? 0.72 : 1.0)
     }
 
     private func quickActionButton(_ title: String, systemImage: String, emphasize: Bool, action: @escaping () -> Void) -> some View {
@@ -335,6 +442,41 @@ struct DailyReviewView: View {
 }
 
 extension DailyReviewView {
+    enum ReviewTimeBucket: String, CaseIterable, Identifiable {
+        case overdue
+        case today
+        case tomorrow
+        case later
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .overdue: return "Overdue"
+            case .today: return "Today"
+            case .tomorrow: return "Tomorrow"
+            case .later: return "Later"
+            }
+        }
+    }
+
+    struct ReviewColumn: Identifiable {
+        let bucket: ReviewTimeBucket
+        let todos: [Todo]
+
+        var id: String { bucket.rawValue }
+    }
+
+    struct ReviewBoard {
+        let openColumns: [ReviewColumn]
+        let completedColumns: [ReviewColumn]
+
+        static let empty = ReviewBoard(
+            openColumns: ReviewTimeBucket.allCases.map { ReviewColumn(bucket: $0, todos: []) },
+            completedColumns: ReviewTimeBucket.allCases.map { ReviewColumn(bucket: $0, todos: []) }
+        )
+    }
+
     static func sortedForReview(_ todos: [Todo]) -> [Todo] {
         todos.sorted { lhs, rhs in
             if lhs.isCompleted != rhs.isCompleted {
@@ -363,5 +505,57 @@ extension DailyReviewView {
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: dueDate)
+    }
+
+    static func dueBucket(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> ReviewTimeBucket {
+        guard let dueDate else { return .later }
+        if calendar.isDate(dueDate, inSameDayAs: now) { return .today }
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
+        if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return .tomorrow }
+        if dueDate < now { return .overdue }
+        return .later
+    }
+
+    static func buildBoard(_ todos: [Todo], now: Date = Date(), calendar: Calendar = .current) -> ReviewBoard {
+        var openMap: [ReviewTimeBucket: [Todo]] = [:]
+        var completedMap: [ReviewTimeBucket: [Todo]] = [:]
+        ReviewTimeBucket.allCases.forEach {
+            openMap[$0] = []
+            completedMap[$0] = []
+        }
+
+        for todo in todos {
+            let bucket = dueBucket(for: todo.dueDate, now: now, calendar: calendar)
+            if todo.isCompleted {
+                completedMap[bucket, default: []].append(todo)
+            } else {
+                openMap[bucket, default: []].append(todo)
+            }
+        }
+
+        let openColumns = ReviewTimeBucket.allCases.map { bucket in
+            ReviewColumn(bucket: bucket, todos: sortColumnTodos(openMap[bucket] ?? []))
+        }
+        let completedColumns = ReviewTimeBucket.allCases.map { bucket in
+            ReviewColumn(bucket: bucket, todos: sortColumnTodos(completedMap[bucket] ?? []))
+        }
+
+        return ReviewBoard(openColumns: openColumns, completedColumns: completedColumns)
+    }
+
+    static func sortColumnTodos(_ todos: [Todo]) -> [Todo] {
+        todos.sorted { lhs, rhs in
+            switch (lhs.dueDate, rhs.dueDate) {
+            case let (l?, r?):
+                if l != r { return l < r }
+                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
+            case (.some, .none):
+                return true
+            case (.none, .some):
+                return false
+            case (.none, .none):
+                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
+            }
+        }
     }
 }

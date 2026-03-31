@@ -36,4 +36,32 @@ final class DailyReviewViewTests: XCTestCase {
         let noDateLabel = DailyReviewView.dueText(for: nil, now: now, calendar: calendar)
         XCTAssertEqual(noDateLabel, "No Date")
     }
+
+    func testBuildBoardGroupsByLaneAndTimeBucket() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let now = Date(timeIntervalSince1970: 1_765_000_000)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: now)!
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
+        let nextWeek = calendar.date(byAdding: .day, value: 7, to: now)!
+
+        let todos: [Todo] = [
+            Todo(id: "open-overdue", title: "Open Overdue", isCompleted: false, isImportant: false, isMyDay: false, dueDate: yesterday, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "open-today", title: "Open Today", isCompleted: false, isImportant: false, isMyDay: false, dueDate: now, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "open-tomorrow", title: "Open Tomorrow", isCompleted: false, isImportant: false, isMyDay: false, dueDate: tomorrow, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "open-later", title: "Open Later", isCompleted: false, isImportant: false, isMyDay: false, dueDate: nextWeek, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "completed-overdue", title: "Completed Overdue", isCompleted: true, isImportant: false, isMyDay: false, dueDate: yesterday, notes: "", listId: nil, launchResourcesRaw: ""),
+            Todo(id: "completed-later", title: "Completed Later", isCompleted: true, isImportant: false, isMyDay: false, dueDate: nextWeek, notes: "", listId: nil, launchResourcesRaw: "")
+        ]
+
+        let board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
+
+        XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .overdue })?.todos.map(\.id), ["open-overdue"])
+        XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .today })?.todos.map(\.id), ["open-today"])
+        XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .tomorrow })?.todos.map(\.id), ["open-tomorrow"])
+        XCTAssertEqual(board.openColumns.first(where: { $0.bucket == .later })?.todos.map(\.id), ["open-later"])
+
+        XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .overdue })?.todos.map(\.id), ["completed-overdue"])
+        XCTAssertEqual(board.completedColumns.first(where: { $0.bucket == .later })?.todos.map(\.id), ["completed-later"])
+    }
 }
