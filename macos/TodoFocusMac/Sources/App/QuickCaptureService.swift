@@ -35,6 +35,7 @@ final class QuickCaptureService {
     @ObservationIgnored private var silenceAutoFinalizeWorkItem: DispatchWorkItem?
     @ObservationIgnored private var hasDetectedSpeechSinceRecordingStart: Bool = false
     @ObservationIgnored private var failedLocaleIDs: Set<String> = []
+    @ObservationIgnored private var isCleaningUpHotkey: Bool = false
 
     func setup() {
         checkAndRequestAccessibility()
@@ -85,23 +86,17 @@ final class QuickCaptureService {
             return Unmanaged.passUnretained(event)
         }
 
-        let retainedSelf = Unmanaged.passRetained(self).toOpaque()
+        let serviceRef = Unmanaged.passUnretained(self).toOpaque()
         guard let eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: eventMask,
             callback: callback,
-            userInfo: retainedSelf
+            userInfo: serviceRef
         ) else {
-            Unmanaged<QuickCaptureService>.fromOpaque(retainedSelf).release()
             isHotkeyReady = false
             return
-        }
-
-        CFMachPortSetInvalidationCallBack(eventTap) { _, refcon in
-            guard let refcon else { return }
-            Unmanaged<QuickCaptureService>.fromOpaque(refcon).release()
         }
 
         guard let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0) else {
@@ -424,6 +419,12 @@ final class QuickCaptureService {
     }
 
     func cleanup() {
+        if isCleaningUpHotkey {
+            return
+        }
+        isCleaningUpHotkey = true
+        defer { isCleaningUpHotkey = false }
+
         stopVoiceCapture()
         if let eventTap = eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: false)

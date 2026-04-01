@@ -169,6 +169,7 @@ struct LaunchResourceEditorView: View {
                 Spacer()
 
                 Button("Add") {
+                    NSApp.keyWindow?.makeFirstResponder(nil)
                     addDraftResource()
                 }
                 .buttonStyle(.plain)
@@ -181,7 +182,14 @@ struct LaunchResourceEditorView: View {
                     Capsule()
                         .stroke(tokens.accentTerracotta.opacity(0.65), lineWidth: 1)
                 }
-                .disabled(labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || valueText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(isAddDisabled)
+            }
+
+            if let statusText {
+                Text(statusText)
+                    .font(.caption2)
+                    .foregroundStyle(tokens.textTertiary)
+                    .lineLimit(2)
             }
         }
         .padding(14)
@@ -293,15 +301,22 @@ struct LaunchResourceEditorView: View {
     }
 
     private func addDraftResource() {
+        let trimmedLabel = labelText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedValue = valueText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedLabel.isEmpty, !trimmedValue.isEmpty else {
+            statusText = "Label and value are required"
+            return
+        }
+
         let candidate = LaunchResource(
             id: UUID().uuidString,
             type: selectedType,
-            label: labelText,
-            value: valueText,
+            label: trimmedLabel,
+            value: trimmedValue,
             createdAt: Date()
         )
         guard case let .success(valid) = validateLaunchResource(candidate) else {
-            statusText = "Invalid resource"
+            statusText = invalidMessage(for: selectedType)
             return
         }
         guard draft.count < 12 else {
@@ -312,21 +327,46 @@ struct LaunchResourceEditorView: View {
         withAnimation {
             draft.append(valid)
         }
-        saveDraft()
-        cancelAdd()
+        if saveDraft() {
+            cancelAdd()
+        } else {
+            withAnimation {
+                draft.removeAll { $0.id == valid.id }
+            }
+        }
     }
 
-    private func saveDraft() {
+    @discardableResult
+    private func saveDraft() -> Bool {
         let result = store.saveLaunchResources(todoId: todo.id, items: draft)
         switch result {
         case .success:
             if !draft.isEmpty {
                 statusText = "\(draft.count) resource\(draft.count == 1 ? "" : "s")"
             }
+            return true
         case .failure(.launchResourcesTooLarge):
             statusText = "Payload too large"
+            return false
         case .failure:
             statusText = "Save failed"
+            return false
+        }
+    }
+
+    private var isAddDisabled: Bool {
+        labelText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || valueText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func invalidMessage(for type: LaunchResourceType) -> String {
+        switch type {
+        case .url:
+            return "Invalid URL (must start with http/https)"
+        case .file:
+            return "Invalid file path (must be absolute)"
+        case .app:
+            return "Invalid app path (.app) or unsupported deep link"
         }
     }
 
