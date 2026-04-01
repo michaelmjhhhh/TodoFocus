@@ -60,12 +60,14 @@ final class UIInteractionTokensTests: XCTestCase {
         XCTAssertGreaterThan(accentBlue, neutral)
     }
 
+    @MainActor
     func testRowSecondaryControlsStayVisibleForSelection() {
         XCTAssertTrue(TodoRowView.shouldShowSecondaryControls(isHovered: true, isSelected: false))
         XCTAssertTrue(TodoRowView.shouldShowSecondaryControls(isHovered: false, isSelected: true))
         XCTAssertFalse(TodoRowView.shouldShowSecondaryControls(isHovered: false, isSelected: false))
     }
 
+    @MainActor
     func testLaunchpadHintCopyIsExplicitAndStable() {
         XCTAssertEqual(TaskDetailView.launchpadHintTitle, "Open everything in one action")
         XCTAssertEqual(TaskDetailView.launchpadHintSubtitle, "Add URL, file, or app resources, then choose Launch All.")
