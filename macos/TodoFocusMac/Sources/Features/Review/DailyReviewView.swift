@@ -480,6 +480,13 @@ struct DailyReviewView: View {
 }
 
 extension DailyReviewView {
+    private static let dueDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
+
     enum ReviewLane: String {
         case open
         case completed
@@ -551,10 +558,7 @@ extension DailyReviewView {
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
         if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return "Tomorrow" }
         if dueDate < now { return "Overdue" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: dueDate)
+        return dueDateFormatter.string(from: dueDate)
     }
 
     static func dueBucket(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> ReviewTimeBucket {

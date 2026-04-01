@@ -72,6 +72,19 @@ final class TodoAppStore {
         return todos.filter { visibleIDs.contains($0.id) }
     }
 
+    func filteredVisibleTodos(searchQuery: String) -> [Todo] {
+        let trimmedQuery = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        let visible = visibleTodos
+        guard !trimmedQuery.isEmpty else {
+            return visible
+        }
+
+        return visible.filter {
+            $0.title.localizedCaseInsensitiveContains(trimmedQuery) ||
+            $0.notes.localizedCaseInsensitiveContains(trimmedQuery)
+        }
+    }
+
     var selectedTodo: Todo? {
         guard let id = appModel.selectedTodoID else {
             return nil

@@ -65,9 +65,12 @@ struct RootView: View {
                                     }
                                     let startWidth = detailPanelDragStartWidth ?? appModel.detailPanelWidth
                                     let next = startWidth - value.translation.width
-                                    appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
+                                    appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width, persist: false)
                                 }
-                                .onEnded { _ in
+                                .onEnded { value in
+                                    let startWidth = detailPanelDragStartWidth ?? appModel.detailPanelWidth
+                                    let next = startWidth - value.translation.width
+                                    appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
                                     detailPanelDragStartWidth = nil
                                 }
                         )

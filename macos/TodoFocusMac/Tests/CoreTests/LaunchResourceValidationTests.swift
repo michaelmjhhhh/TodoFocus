@@ -5,6 +5,15 @@ import XCTest
 final class LaunchResourceValidationTests: XCTestCase {
     private let now = Date(timeIntervalSince1970: 1_763_520_000)
 
+    private func makeManager() throws -> DatabaseManager {
+        let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
+        return try DatabaseManager(databasePath: path)
+    }
+
+    private func makeExportService(_ manager: DatabaseManager) -> ExportService {
+        ExportService(dbQueue: manager.dbQueue)
+    }
+
     func testValidateURLAcceptsHTTPSAndTrimsFields() {
         let resource = makeResource(
             id: " ",
@@ -167,6 +176,81 @@ final class LaunchResourceValidationTests: XCTestCase {
 
         let result = trySerializeLaunchResources(items)
         XCTAssertEqual(result, .payloadTooLarge)
+    }
+
+    func testImportRejectsAndReportsInvalidURLLaunchResourcePayload() throws {
+        let manager = try makeManager()
+        let service = makeExportService(manager)
+        let payload = try makeImportPayload(launchResources: [
+            ["type": "url", "value": "https://example.com", "label": "Docs"],
+            ["type": "url", "value": "javascript:alert(1)", "label": "Unsafe"]
+        ])
+
+        let report = try service.executeImportJSON(payload, mode: .replace)
+
+        XCTAssertEqual(report.created.launchResources, 1)
+        XCTAssertEqual(report.skipped.launchResources, 1)
+        XCTAssertTrue(report.errors.contains(where: { $0.contains("Invalid URL launch resource") }))
+
+        let todo = try XCTUnwrap(TodoRepository(dbQueue: manager.dbQueue).fetchTodo(id: "todo-1"))
+        let decoded = try JSONDecoder().decode([LaunchResource].self, from: Data(todo.launchResources.utf8))
+        XCTAssertEqual(decoded.count, 1)
+        XCTAssertEqual(decoded.first?.value, "https://example.com")
+    }
+
+    func testImportKeepsValidURLAndSkipsNonPortableResources() throws {
+        let manager = try makeManager()
+        let service = makeExportService(manager)
+        let payload = try makeImportPayload(launchResources: [
+            ["type": "url", "value": "https://example.com/docs", "label": "Docs"],
+            ["type": "file", "value": "/tmp/spec.md", "label": "Spec"]
+        ])
+
+        let report = try service.executeImportJSON(payload, mode: .replace)
+
+        XCTAssertEqual(report.created.launchResources, 1)
+        XCTAssertEqual(report.skipped.launchResources, 1)
+        XCTAssertTrue(report.errors.isEmpty)
+
+        let todo = try XCTUnwrap(TodoRepository(dbQueue: manager.dbQueue).fetchTodo(id: "todo-1"))
+        let decoded = try JSONDecoder().decode([LaunchResource].self, from: Data(todo.launchResources.utf8))
+        XCTAssertEqual(decoded.count, 1)
+        XCTAssertEqual(decoded.first?.value, "https://example.com/docs")
+    }
+
+    private func makeImportPayload(launchResources: [[String: String]]) throws -> Data {
+        let payload: [String: Any] = [
+            "version": "1.2",
+            "exportedAt": "2026-03-30T12:00:00Z",
+            "lists": [
+                [
+                    "id": "list-1",
+                    "name": "Work",
+                    "color": "#C46849",
+                    "sortOrder": 0
+                ]
+            ],
+            "todos": [
+                [
+                    "id": "todo-1",
+                    "title": "Imported",
+                    "isCompleted": false,
+                    "isImportant": false,
+                    "isMyDay": false,
+                    "dueDate": NSNull(),
+                    "notes": "",
+                    "listId": "list-1",
+                    "focusTimeSeconds": 0,
+                    "recurrence": NSNull(),
+                    "recurrenceInterval": 1,
+                    "sortOrder": 0,
+                    "steps": [],
+                    "launchResources": launchResources
+                ]
+            ]
+        ]
+
+        return try JSONSerialization.data(withJSONObject: payload)
     }
 
     private func makeResource(

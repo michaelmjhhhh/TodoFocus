@@ -46,9 +46,11 @@ final class AppModel {
         }
     }
 
-    func updateDetailPanelWidth(_ value: Double, windowWidth: Double) {
+    func updateDetailPanelWidth(_ value: Double, windowWidth: Double, persist: Bool = true) {
         let clamped = WindowPersistence.clampDetailWidth(value, windowWidth: windowWidth)
         detailPanelWidth = clamped
-        WindowPersistence.saveDetailWidth(clamped)
+        if persist {
+            WindowPersistence.saveDetailWidth(clamped)
+        }
     }
 }
