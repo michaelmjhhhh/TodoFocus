@@ -143,7 +143,7 @@ struct DailyReviewView: View {
                         .background(tokens.bgFloating.opacity(0.8), in: Capsule())
                     Spacer(minLength: 8)
                     if isCompletedLane {
-                        Image(systemName: collapsed ? "chevron.down" : "chevron.up")
+                        Image(systemName: collapsed ? "chevron.right" : "chevron.down")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(tokens.textSecondary)
                     }
@@ -192,7 +192,7 @@ struct DailyReviewView: View {
                 Button {
                     boardViewModel.toggleColumn(bucket: column.bucket, lane: lane)
                 } label: {
-                    Image(systemName: isColumnCollapsed ? "chevron.down" : "chevron.up")
+                    Image(systemName: isColumnCollapsed ? "chevron.right" : "chevron.down")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(tokens.textSecondary)
                         .frame(width: 20, height: 20)
