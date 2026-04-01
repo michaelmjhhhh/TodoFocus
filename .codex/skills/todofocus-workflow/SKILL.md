@@ -12,7 +12,8 @@ Run one consistent path from request to PR: clarify -> plan -> issue -> branch -
 1. Run `brainstorming` before implementation to clarify requirements.
 2. Run `writing-plans` before non-trivial implementation.
 3. Run `systematic-debugging` before any bug fix or unexpected behavior change.
-4. Run verification commands before any completion claim.
+4. Run `requesting-code-review` before merge/PR-ready completion claims.
+5. Run verification commands before any completion claim.
 
 ## Required Sequence
 1. **Clarify (`brainstorming`)**
@@ -35,11 +36,15 @@ Run one consistent path from request to PR: clarify -> plan -> issue -> branch -
    - Keep edits focused and minimal; avoid unrelated refactors.
 7. **Verify (`verification-before-completion`)**
    - Run required test/build gates and capture explicit outcomes.
-8. **PR Artifact**
+8. **Review (`requesting-code-review`)**
+   - Request review on branch diff (`origin/main...HEAD`) after implementation and before PR finalization.
+   - Findings-first output: severity, file:line, concrete risk, required action.
+   - Blocker rule: do not proceed with unfixed Critical/Important findings.
+9. **PR Artifact**
    - Write PR doc:
      - `docs/superpowers/prs/YYYY-MM-DD-<topic>.md`
    - Include: `Closes #<issue>`, change summary, verification commands, verification results.
-9. **Ship (`git-commit` + `gh-cli`)**
+10. **Ship (`git-commit` + `gh-cli`)**
    - Create commit with `git-commit` skill.
    - Push branch and open PR using PR markdown body.
 
@@ -57,11 +62,30 @@ Apply all matching rules.
   - Parallel workers must use model: `gpt-5.3-codex`
 - **About to claim done/passing/fixed**
   - Required: `verification-before-completion`
+- **Before merge / PR-ready handoff**
+  - Required: `requesting-code-review`
 
 ## Subagent Constraints
 - Split ownership by disjoint file sets.
 - Tell workers they are not alone in the repo and must not revert others' edits.
 - Keep immediate critical-path work local when waiting would block progress.
+
+## Parallel Dispatch Requirements (`dispatching-parallel-agents`)
+Use this when there are 2+ independent tasks that do not share write paths or strict sequencing.
+
+Required operating rules:
+- Define independent domains first; do not parallelize tightly-coupled bugs.
+- One agent per domain with explicit file ownership and fixed deliverables.
+- Keep each prompt self-contained: scope, goal, constraints, expected output format.
+- Do not duplicate work between main thread and subagents.
+- Integrate results centrally, then run full verification on combined changes.
+
+Common patterns:
+- **Good**: `A=QuickCapture lifecycle`, `B=Export/Import correctness`, `C=UI/perf hot paths`.
+- **Good**: parallel read-only audits with centralized fix integration.
+- **Avoid**: multiple agents editing the same file set.
+- **Avoid**: \"fix everything\" prompts without boundaries.
+- **Avoid**: waiting idly; keep non-overlapping critical work local.
 
 ## SwiftUI / UX Constraints
 - Reuse `ThemeTokens` and `MotionTokens`; avoid hardcoded visual constants.
