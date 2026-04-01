@@ -55,6 +55,12 @@ final class QuickCaptureService {
     }
 
     private func setupGlobalHotkey() {
+        if let eventTap {
+            CGEvent.tapEnable(tap: eventTap, enable: true)
+            isHotkeyReady = true
+            return
+        }
+
         let eventMask: CGEventMask = (1 << CGEventType.keyDown.rawValue)
 
         let callback: CGEventTapCallBack = { proxy, type, event, refcon in
@@ -79,16 +85,36 @@ final class QuickCaptureService {
             return Unmanaged.passUnretained(event)
         }
 
-        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-        eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: callback, userInfo: selfPtr)
-
-        guard let eventTap = eventTap else {
+        let retainedSelf = Unmanaged.passRetained(self).toOpaque()
+        guard let eventTap = CGEvent.tapCreate(
+            tap: .cgSessionEventTap,
+            place: .headInsertEventTap,
+            options: .defaultTap,
+            eventsOfInterest: eventMask,
+            callback: callback,
+            userInfo: retainedSelf
+        ) else {
+            Unmanaged<QuickCaptureService>.fromOpaque(retainedSelf).release()
+            isHotkeyReady = false
             return
         }
 
-        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
+        CFMachPortSetInvalidationCallBack(eventTap) { _, refcon in
+            guard let refcon else { return }
+            Unmanaged<QuickCaptureService>.fromOpaque(refcon).release()
+        }
+
+        guard let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0) else {
+            CFMachPortInvalidate(eventTap)
+            isHotkeyReady = false
+            return
+        }
+
+        self.eventTap = eventTap
+        self.runLoopSource = runLoopSource
         CFRunLoopAddSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
+        isHotkeyReady = true
     }
 
     func showCapturePanel() {
@@ -404,8 +430,13 @@ final class QuickCaptureService {
         }
         if let runLoopSource = runLoopSource {
             CFRunLoopRemoveSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
+            CFRunLoopSourceInvalidate(runLoopSource)
+        }
+        if let eventTap = eventTap {
+            CFMachPortInvalidate(eventTap)
         }
         eventTap = nil
         runLoopSource = nil
+        isHotkeyReady = false
     }
 }

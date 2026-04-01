@@ -18,6 +18,10 @@ struct TaskListView: View {
     }
 
     var body: some View {
+        let filteredTodos = store.filteredVisibleTodos(searchQuery: commandText)
+        let activeTodos = Self.activeTodos(filteredTodos, isOverdueView: isOverdueView)
+        let completedTodos = filteredTodos.filter(\.isCompleted)
+
         VStack(spacing: 12) {
             commandBar
             if let errorMessage = store.mutationErrorMessage {
@@ -59,7 +63,7 @@ struct TaskListView: View {
                     filterPicker
                 }
 
-                Text("\(filteredVisibleTodos.count)")
+                Text("\(filteredTodos.count)")
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
                     .padding(.horizontal, 10)
@@ -149,7 +153,7 @@ struct TaskListView: View {
                         .frame(maxWidth: .infinity)
 
                     if isCompletedPanelVisible {
-                        completedColumn
+                        completedColumn(todos: completedTodos)
                             .frame(width: 260)
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                     }
@@ -165,7 +169,7 @@ struct TaskListView: View {
         )
         .padding(16)
         .foregroundStyle(.primary)
-        .animation(MotionTokens.interactiveSpring, value: filteredVisibleTodos.count)
+        .animation(MotionTokens.interactiveSpring, value: filteredTodos.count)
         .animation(MotionTokens.focusEase, value: appModel.timeFilter)
         .alert("Clear completed tasks?", isPresented: $showClearCompletedConfirmation) {
             Button("Cancel", role: .cancel) {}
@@ -258,20 +262,12 @@ struct TaskListView: View {
         appModel.selection == .overdue
     }
 
-    private var filteredVisibleTodos: [Todo] {
-        Self.filterTodos(store.visibleTodos, query: commandText)
-    }
-
-    private var activeTodos: [Todo] {
-        var todos = filteredVisibleTodos.filter { !$0.isCompleted }
+    private static func activeTodos(_ todos: [Todo], isOverdueView: Bool) -> [Todo] {
+        var todos = todos.filter { !$0.isCompleted }
         if isOverdueView {
             todos.sort { ($0.dueDate ?? .distantFuture) < ($1.dueDate ?? .distantFuture) }
         }
         return todos
-    }
-
-    private var completedTodos: [Todo] {
-        filteredVisibleTodos.filter(\.isCompleted)
     }
 
     static func filterTodos(_ todos: [Todo], query: String) -> [Todo] {
@@ -333,7 +329,7 @@ struct TaskListView: View {
         .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
     }
 
-    private var completedColumn: some View {
+    private func completedColumn(todos: [Todo]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Button {
@@ -353,7 +349,7 @@ struct TaskListView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text("\(completedTodos.count)")
+                Text("\(todos.count)")
                     .font(.caption2.weight(.medium))
                     .foregroundStyle(tokens.textTertiary)
                     .padding(.horizontal, 6)
@@ -362,7 +358,7 @@ struct TaskListView: View {
 
                 Spacer()
 
-                if !isCompletedCollapsed && !completedTodos.isEmpty {
+                if !isCompletedCollapsed && !todos.isEmpty {
                     Button {
                         showClearCompletedConfirmation = true
                     } label: {
@@ -376,7 +372,7 @@ struct TaskListView: View {
 
             ScrollView {
                 LazyVStack(spacing: 4) {
-                    ForEach(completedTodos) { todo in
+                    ForEach(todos) { todo in
                         TodoRowView(
                             todo: todo,
                             store: store,

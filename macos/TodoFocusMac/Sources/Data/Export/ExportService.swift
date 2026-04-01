@@ -63,8 +63,16 @@ final class ExportService {
     }
 
     func exportToJSON() throws -> Data {
-        let lists = try dbQueue.read { db in
-            try ListRecord.fetchAll(db).map { record in
+        let snapshot = try dbQueue.read { db -> (lists: [ExportList], todos: [ExportTodo]) in
+            let listRecords = try ListRecord.fetchAll(db)
+            let todoRecords = try TodoRecord.fetchAll(db)
+            let stepRecords = try StepRecord
+                .order(Column("todoId").asc, Column("sortOrder").asc)
+                .fetchAll(db)
+
+            let stepsByTodoID = Dictionary(grouping: stepRecords, by: \.todoId)
+
+            let lists = listRecords.map { record in
                 ExportList(
                     id: record.id,
                     name: record.name,
@@ -72,22 +80,16 @@ final class ExportService {
                     sortOrder: record.sortOrder
                 )
             }
-        }
 
-        let todos = try dbQueue.read { db in
-            try TodoRecord.fetchAll(db).map { record -> ExportTodo in
-                let steps = try StepRecord
-                    .filter(Column("todoId") == record.id)
-                    .order(Column("sortOrder").asc)
-                    .fetchAll(db)
-                    .map { step in
-                        ExportStep(
-                            id: step.id,
-                            title: step.title,
-                            isCompleted: step.isCompleted,
-                            sortOrder: step.sortOrder
-                        )
-                    }
+            let todos = todoRecords.map { record -> ExportTodo in
+                let steps = (stepsByTodoID[record.id] ?? []).map { step in
+                    ExportStep(
+                        id: step.id,
+                        title: step.title,
+                        isCompleted: step.isCompleted,
+                        sortOrder: step.sortOrder
+                    )
+                }
 
                 let resources = (try? decodeLaunchResources(record.launchResources)) ?? []
                 let portableResources = resources.filter { $0.type == .url }
@@ -109,6 +111,8 @@ final class ExportService {
                     launchResources: portableResources.map { ExportLaunchResource(type: $0.type.rawValue, value: $0.value, label: $0.label) }
                 )
             }
+
+            return (lists: lists, todos: todos)
         }
 
         let exportData = ExportData(
@@ -124,8 +128,8 @@ final class ExportService {
                     "deviceLocalStateExcluded:true"
                 ]
             ),
-            lists: lists,
-            todos: todos
+            lists: snapshot.lists,
+            todos: snapshot.todos
         )
 
         return try exportData.encode()
@@ -297,6 +301,15 @@ final class ExportService {
                         value: er.value,
                         createdAt: Date()
                     )
+                }.compactMap { candidate -> LaunchResource? in
+                    switch validateLaunchResource(candidate) {
+                    case .success(let validated):
+                        return validated
+                    case .failure(let error):
+                        report.skipped.launchResources += 1
+                        report.errors.append("Invalid URL launch resource for todo \(todo.id): \(launchResourceValidationErrorDescription(error))")
+                        return nil
+                    }
                 }
                 let encoded = try JSONEncoder().encode(validResources)
                 try db.execute(
@@ -321,6 +334,23 @@ final class ExportService {
     private func decodeLaunchResources(_ raw: String?) throws -> [LaunchResource] {
         guard let raw, !raw.isEmpty else { return [] }
         return try JSONDecoder().decode([LaunchResource].self, from: Data(raw.utf8))
+    }
+
+    private func launchResourceValidationErrorDescription(_ error: LaunchResourceValidationError) -> String {
+        switch error {
+        case .invalidType:
+            return "invalid type"
+        case .invalidLabel:
+            return "invalid label"
+        case .invalidValue:
+            return "invalid value"
+        case .invalidURL:
+            return "invalid URL"
+        case .invalidFilePath:
+            return "invalid file path"
+        case .invalidAppTarget:
+            return "invalid app target"
+        }
     }
 
     private func createBackupSnapshot() throws -> String {
