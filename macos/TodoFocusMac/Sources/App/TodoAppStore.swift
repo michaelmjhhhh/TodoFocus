@@ -152,6 +152,38 @@ final class TodoAppStore {
         return created.todo
     }
 
+    @discardableResult
+    func quickAddNaturalLanguage(
+        input: String,
+        defaultPlanned: Bool,
+        defaultIsImportant: Bool,
+        defaultIsMyDay: Bool,
+        defaultList: TodoList?,
+        calendar: Calendar = .current
+    ) throws -> Todo {
+        let parsed = QuickAddNaturalLanguageParser.parse(input, now: now(), calendar: calendar)
+        let resolvedImportant = parsed.isImportant || defaultIsImportant
+        let resolvedMyDay = parsed.isMyDay || defaultIsMyDay
+        let resolvedList = resolveList(for: parsed.listName) ?? defaultList
+        let planned = defaultPlanned || parsed.dueDate != nil
+
+        let created = try quickAdd(
+            title: parsed.title,
+            planned: planned,
+            isImportant: resolvedImportant,
+            isMyDay: resolvedMyDay,
+            list: resolvedList
+        )
+
+        if let dueDate = parsed.dueDate {
+            try setDueDate(todoId: created.id, date: dueDate)
+            if let refreshed = todos.first(where: { $0.id == created.id }) {
+                return refreshed
+            }
+        }
+        return created
+    }
+
     func toggleComplete(todoId: String) throws {
         guard let current = try todoRepository.fetchTodo(id: todoId) else {
             return
@@ -199,6 +231,13 @@ final class TodoAppStore {
             appModel.selectedTodoID = nil
         }
         try reloadTodos()
+    }
+
+    private func resolveList(for parsedName: String?) -> TodoList? {
+        guard let parsedName else { return nil }
+        return lists.first { list in
+            list.name.compare(parsedName, options: [.caseInsensitive, .diacriticInsensitive]) == .orderedSame
+        }
     }
 
     func selectTodo(todoId: String) {
