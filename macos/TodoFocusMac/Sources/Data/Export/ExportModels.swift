@@ -53,6 +53,49 @@ struct ExportTodo: Codable {
     let launchResources: [ExportLaunchResource]
 }
 
+extension ExportTodo {
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case isCompleted
+        case isImportant
+        case isMyDay
+        case dueDate
+        case notes
+        case listId
+        case focusTimeSeconds
+        case recurrence
+        case recurrenceInterval
+        case sortOrder
+        case createdAt
+        case updatedAt
+        case lastCompletedAt
+        case steps
+        case launchResources
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
+        isImportant = try container.decode(Bool.self, forKey: .isImportant)
+        isMyDay = try container.decode(Bool.self, forKey: .isMyDay)
+        dueDate = try container.decodeIfPresent(Date.self, forKey: .dueDate)
+        notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
+        listId = try container.decodeIfPresent(String.self, forKey: .listId)
+        focusTimeSeconds = try container.decodeIfPresent(Int.self, forKey: .focusTimeSeconds)
+        recurrence = try container.decodeIfPresent(String.self, forKey: .recurrence)
+        recurrenceInterval = max(1, try container.decodeIfPresent(Int.self, forKey: .recurrenceInterval) ?? 1)
+        sortOrder = try container.decodeIfPresent(Int.self, forKey: .sortOrder) ?? 0
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+        updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
+        lastCompletedAt = try container.decodeIfPresent(Date.self, forKey: .lastCompletedAt)
+        steps = try container.decodeIfPresent([ExportStep].self, forKey: .steps) ?? []
+        launchResources = try container.decodeIfPresent([ExportLaunchResource].self, forKey: .launchResources) ?? []
+    }
+}
+
 struct ExportStep: Codable {
     let id: String
     let title: String
