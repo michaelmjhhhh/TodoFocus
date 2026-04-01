@@ -112,7 +112,7 @@
 4. If the tag itself is wrong, remove and recreate it:
    - `git tag -d vX.Y.Z`
    - `git push origin :refs/tags/vX.Y.Z`
-   - Create the corrected tag and rerun `release-macos`.
+   - Create the corrected tag and rerun `release-macos-native`.
 
 ### Emergency-Only Manual Upload (Exception)
 
