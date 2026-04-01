@@ -8,20 +8,13 @@ struct TaskListView: View {
     @State private var isCompletedCollapsed: Bool = false
     @State private var isCompletedPanelVisible: Bool = true
     @State private var showClearCompletedConfirmation: Bool = false
+    @State private var filteredTodosCache: [Todo] = []
+    @State private var activeTodosCache: [Todo] = []
+    @State private var completedTodosCache: [Todo] = []
+    @State private var listColorCache: [String: Color] = [:]
     @FocusState private var isCommandFocused: Bool
 
-    private var listColorMap: [String: Color] {
-        Dictionary(uniqueKeysWithValues: store.lists.compactMap { list in
-            guard let color = Color(hex: list.color) as Color? else { return nil }
-            return (list.id, color)
-        })
-    }
-
     var body: some View {
-        let filteredTodos = store.filteredVisibleTodos(searchQuery: commandText)
-        let activeTodos = Self.activeTodos(filteredTodos, isOverdueView: isOverdueView)
-        let completedTodos = filteredTodos.filter(\.isCompleted)
-
         VStack(spacing: 12) {
             commandBar
             if let errorMessage = store.mutationErrorMessage {
@@ -63,7 +56,7 @@ struct TaskListView: View {
                     filterPicker
                 }
 
-                Text("\(filteredTodos.count)")
+                Text("\(filteredTodosCache.count)")
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
                     .padding(.horizontal, 10)
@@ -89,7 +82,7 @@ struct TaskListView: View {
                         Text("Completed")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
-                        Text("\(completedTodos.count)")
+                        Text("\(completedTodosCache.count)")
                             .font(.caption.weight(.semibold))
                             .monospacedDigit()
                             .padding(.horizontal, 6)
@@ -134,7 +127,7 @@ struct TaskListView: View {
             }
             .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
 
-            if isOverdueView && activeTodos.isEmpty {
+            if isOverdueView && activeTodosCache.isEmpty {
                 Spacer()
                 VStack(spacing: 12) {
                     Image(systemName: "checkmark.circle")
@@ -149,11 +142,11 @@ struct TaskListView: View {
                 Spacer()
             } else {
                 HStack(spacing: 12) {
-                    todoColumn(title: "Active", todos: activeTodos)
+                    todoColumn(title: "Active", todos: activeTodosCache)
                         .frame(maxWidth: .infinity)
 
                     if isCompletedPanelVisible {
-                        completedColumn(todos: completedTodos)
+                        completedColumn(todos: completedTodosCache)
                             .frame(width: 260)
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                     }
@@ -169,8 +162,27 @@ struct TaskListView: View {
         )
         .padding(16)
         .foregroundStyle(.primary)
-        .animation(MotionTokens.interactiveSpring, value: filteredTodos.count)
+        .animation(MotionTokens.interactiveSpring, value: filteredTodosCache.count)
         .animation(MotionTokens.focusEase, value: appModel.timeFilter)
+        .onAppear {
+            recalculateCaches()
+            rebuildListColorCache()
+        }
+        .onChange(of: commandText) { _, _ in
+            recalculateCaches()
+        }
+        .onChange(of: store.todos) { _, _ in
+            recalculateCaches()
+        }
+        .onChange(of: appModel.selection) { _, _ in
+            recalculateCaches()
+        }
+        .onChange(of: appModel.timeFilter) { _, _ in
+            recalculateCaches()
+        }
+        .onChange(of: store.lists) { _, _ in
+            rebuildListColorCache()
+        }
         .alert("Clear completed tasks?", isPresented: $showClearCompletedConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
@@ -260,6 +272,20 @@ struct TaskListView: View {
 
     private var isOverdueView: Bool {
         appModel.selection == .overdue
+    }
+
+    private func recalculateCaches() {
+        let filtered = store.filteredVisibleTodos(searchQuery: commandText)
+        filteredTodosCache = filtered
+        activeTodosCache = Self.activeTodos(filtered, isOverdueView: isOverdueView)
+        completedTodosCache = filtered.filter(\.isCompleted)
+    }
+
+    private func rebuildListColorCache() {
+        listColorCache = Dictionary(uniqueKeysWithValues: store.lists.compactMap { list in
+            guard let color = Color(hex: list.color) as Color? else { return nil }
+            return (list.id, color)
+        })
     }
 
     private static func activeTodos(_ todos: [Todo], isOverdueView: Bool) -> [Todo] {
@@ -370,33 +396,33 @@ struct TaskListView: View {
                 }
             }
 
-            ScrollView {
-                LazyVStack(spacing: 4) {
-                    ForEach(todos) { todo in
-                        TodoRowView(
-                            todo: todo,
-                            store: store,
-                            listColor: colorForList(listId: todo.listId),
-                            isSelected: appModel.selectedTodoID == todo.id,
-                            onSelect: {
-                                store.selectTodo(todoId: todo.id)
-                            },
-                            onToggleComplete: {
-                                try? store.toggleComplete(todoId: todo.id)
-                            },
-                            onToggleImportant: {
-                                try? store.toggleImportant(todoId: todo.id)
-                            },
-                            onDelete: {
-                                try? store.deleteTodo(todoId: todo.id)
-                            }
-                        )
+            if !isCompletedCollapsed {
+                ScrollView {
+                    LazyVStack(spacing: 4) {
+                        ForEach(todos) { todo in
+                            TodoRowView(
+                                todo: todo,
+                                store: store,
+                                listColor: colorForList(listId: todo.listId),
+                                isSelected: appModel.selectedTodoID == todo.id,
+                                onSelect: {
+                                    store.selectTodo(todoId: todo.id)
+                                },
+                                onToggleComplete: {
+                                    try? store.toggleComplete(todoId: todo.id)
+                                },
+                                onToggleImportant: {
+                                    try? store.toggleImportant(todoId: todo.id)
+                                },
+                                onDelete: {
+                                    try? store.deleteTodo(todoId: todo.id)
+                                }
+                            )
+                        }
                     }
+                    .padding(2)
                 }
-                .padding(2)
             }
-            .opacity(isCompletedCollapsed ? 0 : 1)
-            .clipped()
         }
         .padding(10)
         .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
@@ -451,6 +477,6 @@ struct TaskListView: View {
 
     private func colorForList(listId: String?) -> Color? {
         guard let listId else { return nil }
-        return listColorMap[listId]
+        return listColorCache[listId]
     }
 }

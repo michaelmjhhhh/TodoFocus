@@ -78,7 +78,11 @@ struct TodoRepository {
             }
 
             if let title = input.title {
-                current.title = title
+                let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmedTitle.isEmpty else {
+                    throw TodoRepositoryError.invalidTitle
+                }
+                current.title = trimmedTitle
             }
             if let isCompleted = input.isCompleted {
                 current.isCompleted = isCompleted
@@ -116,7 +120,7 @@ struct TodoRepository {
                 current.listId = (listID?.isEmpty == true) ? nil : listID
             }
             if let focusTimeSeconds = input.focusTimeSeconds {
-                current.focusTimeSeconds = focusTimeSeconds
+                current.focusTimeSeconds = max(0, focusTimeSeconds)
             }
 
             current.updatedAt = now
@@ -194,10 +198,24 @@ struct TodoRepository {
 
         guard let data = trimmed.data(using: .utf8),
               let object = try? JSONSerialization.jsonObject(with: data),
-              object is [Any] else {
+              let rawArray = object as? [Any] else {
             throw TodoRepositoryError.invalidLaunchResources
         }
 
-        return trimmed
+        if rawArray.count > 12 {
+            throw TodoRepositoryError.invalidLaunchResources
+        }
+
+        let parsed = parseLaunchResources(raw: trimmed)
+        if parsed.count != rawArray.count {
+            throw TodoRepositoryError.invalidLaunchResources
+        }
+
+        switch trySerializeLaunchResources(parsed) {
+        case .payloadTooLarge:
+            throw TodoRepositoryError.launchResourcesTooLarge
+        case let .ok(serialized):
+            return serialized
+        }
     }
 }

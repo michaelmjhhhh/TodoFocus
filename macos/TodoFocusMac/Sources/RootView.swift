@@ -12,6 +12,7 @@ struct RootView: View {
     @State private var themeTokens: ThemeTokens
     @State private var isHardFocusActive: Bool = false
     @State private var detailPanelDragStartWidth: Double?
+    @State private var detailPanelLiveWidth: Double = WindowPersistence.loadDetailWidth()
 
     init(appModel: AppModel, store: TodoAppStore, launchpadService: LaunchpadService, databasePath: String, themeStore: ThemeStore) {
         self._appModel = Bindable(appModel)
@@ -61,16 +62,17 @@ struct RootView: View {
                             DragGesture(minimumDistance: 0)
                                 .onChanged { value in
                                     if detailPanelDragStartWidth == nil {
-                                        detailPanelDragStartWidth = appModel.detailPanelWidth
+                                        detailPanelDragStartWidth = detailPanelLiveWidth
                                     }
-                                    let startWidth = detailPanelDragStartWidth ?? appModel.detailPanelWidth
+                                    let startWidth = detailPanelDragStartWidth ?? detailPanelLiveWidth
                                     let next = startWidth - value.translation.width
-                                    appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width, persist: false)
+                                    detailPanelLiveWidth = WindowPersistence.clampDetailWidth(next, windowWidth: proxy.size.width)
                                 }
                                 .onEnded { value in
-                                    let startWidth = detailPanelDragStartWidth ?? appModel.detailPanelWidth
+                                    let startWidth = detailPanelDragStartWidth ?? detailPanelLiveWidth
                                     let next = startWidth - value.translation.width
                                     appModel.updateDetailPanelWidth(next, windowWidth: proxy.size.width)
+                                    detailPanelLiveWidth = appModel.detailPanelWidth
                                     detailPanelDragStartWidth = nil
                                 }
                         )
@@ -86,7 +88,7 @@ struct RootView: View {
                             }
                         }
                     )
-                    .frame(width: appModel.detailPanelWidth)
+                    .frame(width: detailPanelLiveWidth)
                     .background(themeTokens.panelBackground)
                     .overlay(alignment: .leading) {
                         Rectangle()
@@ -104,6 +106,7 @@ struct RootView: View {
             .onAppear {
                 containerWidth = proxy.size.width
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)
+                detailPanelLiveWidth = appModel.detailPanelWidth
                 appModel.quickCaptureService.deepFocusService = appModel.deepFocusService
                 appModel.quickCaptureService.onCapture = { [weak store] text in
                     store?.appendToFocusTaskNotes(text)
@@ -116,9 +119,13 @@ struct RootView: View {
             .onChange(of: proxy.size.width) { _, newValue in
                 containerWidth = newValue
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: newValue)
+                detailPanelLiveWidth = appModel.detailPanelWidth
             }
             .onChange(of: themeStore.theme) { _, newTheme in
                 themeTokens = ThemeTokens(theme: newTheme)
+            }
+            .onChange(of: appModel.detailPanelWidth) { _, newValue in
+                detailPanelLiveWidth = newValue
             }
         }
         .task {

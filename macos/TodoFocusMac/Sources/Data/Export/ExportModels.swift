@@ -4,10 +4,11 @@ enum ExportFormatVersion {
     static let v1_0 = "1.0"
     static let v1_1 = "1.1"
     static let v1_2 = "1.2"
-    static let current = v1_2
+    static let v1_3 = "1.3"
+    static let current = v1_3
 
     static func isSupported(_ version: String) -> Bool {
-        version == v1_0 || version == v1_1 || version == v1_2
+        version == v1_0 || version == v1_1 || version == v1_2 || version == v1_3
     }
 }
 
@@ -45,6 +46,9 @@ struct ExportTodo: Codable {
     let recurrence: String?
     let recurrenceInterval: Int
     let sortOrder: Int
+    let createdAt: Date?
+    let updatedAt: Date?
+    let lastCompletedAt: Date?
     let steps: [ExportStep]
     let launchResources: [ExportLaunchResource]
 }

@@ -73,7 +73,7 @@ struct HardFocusLockView: View {
             titleVisibility: .visible
         ) {
             Button("End Session", role: .destructive) {
-                Task {
+                Task { @MainActor in
                     try? await sessionManager.emergencyEndSession()
                 }
             }
@@ -145,7 +145,7 @@ struct HardFocusLockView: View {
     }
 
     private func submitUnlock() {
-        Task {
+        Task { @MainActor in
             do {
                 try await sessionManager.endSession(passphrase: passphrase)
                 showUnlockPopover = false

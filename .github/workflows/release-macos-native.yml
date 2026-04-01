@@ -19,10 +19,33 @@ jobs:
       contents: write
 
     steps:
+      - name: Determine release tag
+        id: tag
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="${{ inputs.tag }}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Validate manual tag input
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          if ! [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+){1,2}([.-][A-Za-z0-9]+)?$ ]]; then
+            echo "Invalid tag format: $TAG"
+            exit 1
+          fi
+          if ! git ls-remote --exit-code --tags "https://github.com/${{ github.repository }}.git" "refs/tags/$TAG" >/dev/null; then
+            echo "Tag does not exist on remote: $TAG"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'push' && github.ref || format('refs/tags/{0}', steps.tag.outputs.tag) }}
           submodules: true
 
       - name: Install XcodeGen
@@ -36,13 +59,13 @@ jobs:
         run: xcodegen generate
         working-directory: macos/TodoFocusMac
 
-      # - name: Run tests
-      #   run: |
-      #     xcodebuild test \
-      #       -project "TodoFocusMac.xcodeproj" \
-      #       -scheme "TodoFocusMac" \
-      #       -destination "platform=macOS"
-      #   working-directory: macos/TodoFocusMac
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -project "TodoFocusMac.xcodeproj" \
+            -scheme "TodoFocusMac" \
+            -destination "platform=macOS"
+        working-directory: macos/TodoFocusMac
 
       - name: Build release app
         run: |
@@ -60,16 +83,6 @@ jobs:
           APP_PATH="macos/TodoFocusMac/build/DerivedData/Build/Products/Release/TodoFocusMac.app"
           ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "dist-native/TodoFocus-macos-universal.zip"
           shasum -a 256 "dist-native/TodoFocus-macos-universal.zip" > "dist-native/TodoFocus-macos-universal.zip.sha256"
-
-      - name: Determine release tag
-        id: tag
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-          else
-            TAG="${{ inputs.tag }}"
-          fi
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Create or upload release
         env:

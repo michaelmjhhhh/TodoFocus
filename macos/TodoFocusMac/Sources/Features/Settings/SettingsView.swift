@@ -90,7 +90,7 @@ struct SettingsView: View {
             if response == .OK, let url = panel.url {
                 do {
                     let data = try Data(contentsOf: url)
-                    let preflight = try service.preflightImportJSON(data)
+                    let preflight = try service.preflightImportJSON(data, mode: selectedImportMode)
                     if !preflight.blockingErrors.isEmpty {
                         importError = preflight.blockingErrors.joined(separator: "\n")
                         showImportError = true

@@ -10,7 +10,8 @@ final class TodoAppStore {
     private let todoRepository: TodoRepository
     private let stepRepository: StepRepository
     private let now: () -> Date
-    private var notesUpdateWorkItems: [String: DispatchWorkItem] = [:]
+    @ObservationIgnored private var notesUpdateTasks: [String: Task<Void, Never>] = [:]
+    @ObservationIgnored private var notesUpdateTokens: [String: UUID] = [:]
 
     var lists: [TodoList] = []
     var todos: [Todo] = []
@@ -105,6 +106,18 @@ final class TodoAppStore {
         todos = try todoRepository.fetchTodosOrdered().map { $0.todo }
     }
 
+    private func refreshTodo(todoId: String) throws {
+        guard let record = try todoRepository.fetchTodo(id: todoId) else {
+            todos.removeAll { $0.id == todoId }
+            return
+        }
+        if let idx = todos.firstIndex(where: { $0.id == todoId }) {
+            todos[idx] = record.todo
+        } else {
+            todos.append(record.todo)
+        }
+    }
+
     func clearMutationError() {
         mutationErrorMessage = nil
     }
@@ -197,30 +210,44 @@ final class TodoAppStore {
     }
 
     func updateNotesDebounced(todoId: String, notes: String) {
-        notesUpdateWorkItems[todoId]?.cancel()
+        if let idx = todos.firstIndex(where: { $0.id == todoId }) {
+            var updated = todos[idx]
+            updated.notes = notes
+            todos[idx] = updated
+        }
 
-        let workItem = DispatchWorkItem { [weak self] in
+        notesUpdateTasks[todoId]?.cancel()
+        let token = UUID()
+        notesUpdateTokens[todoId] = token
+
+        notesUpdateTasks[todoId] = Task { [weak self] in
             guard let self else { return }
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard !Task.isCancelled else { return }
+            guard self.notesUpdateTokens[todoId] == token else { return }
+
             var input = UpdateTodoInput()
             input.notes = notes
             do {
                 try self.todoRepository.updateTodo(id: todoId, input: input, now: self.now())
-                try self.reloadTodos()
+                try self.refreshTodo(todoId: todoId)
             } catch {
                 self.setMutationError(error, context: "Failed to save notes")
+                try? self.refreshTodo(todoId: todoId)
             }
-            self.notesUpdateWorkItems[todoId] = nil
-        }
 
-        notesUpdateWorkItems[todoId] = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+            if self.notesUpdateTokens[todoId] == token {
+                self.notesUpdateTasks[todoId] = nil
+                self.notesUpdateTokens[todoId] = nil
+            }
+        }
     }
 
     func setDueDate(todoId: String, date: Date?) throws {
         var input = UpdateTodoInput()
         input.dueDate = date
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reloadTodos()
+        try refreshTodo(todoId: todoId)
     }
 
     func setMyDay(todoId: String, isMyDay: Bool) throws {
@@ -444,7 +471,7 @@ final class TodoAppStore {
         var input = UpdateTodoInput()
         input.focusTimeSeconds = current.focusTimeSeconds + additionalSeconds
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
-        try reloadTodos()
+        try refreshTodo(todoId: todoId)
     }
 
     func formatFocusTime(_ seconds: Int) -> String {

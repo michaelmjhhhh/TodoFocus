@@ -173,6 +173,48 @@ final class TodoRepositoryTests: XCTestCase {
         XCTAssertNil(updated.listId)
     }
 
+    func testUpdateTodoTitleTrimsWhitespace() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Original", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.title = "  Renamed  "
+        try repo.updateTodo(id: created.id, input: patch)
+
+        let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
+        XCTAssertEqual(updated.title, "Renamed")
+    }
+
+    func testUpdateTodoRejectsBlankTitleAfterTrim() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Original", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.title = "   "
+
+        XCTAssertThrowsError(try repo.updateTodo(id: created.id, input: patch)) { error in
+            XCTAssertEqual(error as? TodoRepositoryError, .invalidTitle)
+        }
+    }
+
+    func testUpdateTodoClampsNegativeFocusTimeToZero() throws {
+        let repo = try makeRepository()
+        let created = try repo.addTodo(
+            AddTodoInput(title: "Focus", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var patch = UpdateTodoInput()
+        patch.focusTimeSeconds = -120
+        try repo.updateTodo(id: created.id, input: patch)
+
+        let updated = try XCTUnwrap(repo.fetchTodo(id: created.id))
+        XCTAssertEqual(updated.focusTimeSeconds, 0)
+    }
+
     func testDeleteTodoRemovesRecord() throws {
         let repo = try makeRepository()
         let created = try repo.addTodo(

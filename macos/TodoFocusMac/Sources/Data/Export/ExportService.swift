@@ -5,6 +5,7 @@ enum ExportError: Error, LocalizedError {
     case unsupportedVersion
     case invalidImportData([String])
     case backupFailed(String)
+    case invalidStoredLaunchResources(String)
 
     var errorDescription: String? {
         switch self {
@@ -14,6 +15,8 @@ enum ExportError: Error, LocalizedError {
             return errors.joined(separator: "\n")
         case .backupFailed(let message):
             return message
+        case .invalidStoredLaunchResources(let todoID):
+            return "Stored launch resources for todo \(todoID) are invalid"
         }
     }
 }
@@ -62,7 +65,7 @@ final class ExportService {
         self.dbQueue = dbQueue
     }
 
-    func exportToJSON() throws -> Data {
+    func exportToJSON(strictLaunchResourceValidation: Bool = true) throws -> Data {
         let snapshot = try dbQueue.read { db -> (lists: [ExportList], todos: [ExportTodo]) in
             let listRecords = try ListRecord.fetchAll(db)
             let todoRecords = try TodoRecord.fetchAll(db)
@@ -81,7 +84,7 @@ final class ExportService {
                 )
             }
 
-            let todos = todoRecords.map { record -> ExportTodo in
+            let todos = try todoRecords.map { record -> ExportTodo in
                 let steps = (stepsByTodoID[record.id] ?? []).map { step in
                     ExportStep(
                         id: step.id,
@@ -91,7 +94,11 @@ final class ExportService {
                     )
                 }
 
-                let resources = (try? decodeLaunchResources(record.launchResources)) ?? []
+                let resources = try decodeLaunchResourcesForExport(
+                    record.launchResources,
+                    todoID: record.id,
+                    strict: strictLaunchResourceValidation
+                )
                 let portableResources = resources.filter { $0.type == .url }
 
                 return ExportTodo(
@@ -107,6 +114,9 @@ final class ExportService {
                     recurrence: record.recurrence,
                     recurrenceInterval: record.recurrenceInterval,
                     sortOrder: record.sortOrder,
+                    createdAt: record.createdAt,
+                    updatedAt: record.updatedAt,
+                    lastCompletedAt: record.lastCompletedAt,
                     steps: steps,
                     launchResources: portableResources.map { ExportLaunchResource(type: $0.type.rawValue, value: $0.value, label: $0.label) }
                 )
@@ -135,7 +145,7 @@ final class ExportService {
         return try exportData.encode()
     }
 
-    func preflightImportJSON(_ data: Data) throws -> ImportPreflightResult {
+    func preflightImportJSON(_ data: Data, mode: ImportMode = .replace) throws -> ImportPreflightResult {
         let importData = try ExportData.decode(from: data)
         var warnings: [String] = []
         var blockingErrors: [String] = []
@@ -158,6 +168,21 @@ final class ExportService {
         let rawStepCount = importData.todos.reduce(0) { $0 + $1.steps.count }
         if stepIDs.count != rawStepCount {
             blockingErrors.append("Duplicate step IDs detected in import file")
+        }
+
+        let importedListIDs = Set(importData.lists.map(\.id))
+        let existingListIDs = try dbQueue.read { db -> Set<String> in
+            Set(try ListRecord.fetchAll(db).map(\.id))
+        }
+        for todo in importData.todos {
+            guard let listID = todo.listId else { continue }
+            if importedListIDs.contains(listID) {
+                continue
+            }
+            if mode == .merge, existingListIDs.contains(listID) {
+                continue
+            }
+            blockingErrors.append("Todo \(todo.id) references missing listId '\(listID)'")
         }
 
         if importData.lists.isEmpty && importData.todos.isEmpty {
@@ -188,7 +213,7 @@ final class ExportService {
     }
 
     func executeImportJSON(_ data: Data, mode: ImportMode) throws -> ImportExecutionReport {
-        let preflight = try preflightImportJSON(data)
+        let preflight = try preflightImportJSON(data, mode: mode)
         if !preflight.blockingErrors.isEmpty {
             throw ExportError.invalidImportData(preflight.blockingErrors)
         }
@@ -212,6 +237,8 @@ final class ExportService {
                 try db.execute(sql: "DELETE FROM step")
                 try db.execute(sql: "DELETE FROM todo")
                 try db.execute(sql: "DELETE FROM list")
+                try db.execute(sql: "DELETE FROM hardfocus_session")
+                try db.execute(sql: "DELETE FROM agent_heartbeat")
             }
 
             for list in importData.lists {
@@ -239,7 +266,8 @@ final class ExportService {
             for todo in importData.todos {
                 let now = Date()
                 let existingTodo = (mode == .merge) ? try TodoRecord.fetchOne(db, key: todo.id) : nil
-                let createdAt = existingTodo?.createdAt ?? now
+                let createdAt = todo.createdAt ?? existingTodo?.createdAt ?? now
+                let updatedAt = todo.updatedAt ?? now
                 let record = TodoRecord(
                     id: todo.id,
                     title: todo.title,
@@ -248,13 +276,13 @@ final class ExportService {
                     isMyDay: todo.isMyDay,
                     recurrence: todo.recurrence,
                     recurrenceInterval: max(1, todo.recurrenceInterval),
-                    lastCompletedAt: existingTodo?.lastCompletedAt,
+                    lastCompletedAt: todo.lastCompletedAt ?? existingTodo?.lastCompletedAt,
                     notes: todo.notes,
                     launchResources: "[]",
                     dueDate: todo.dueDate,
                     sortOrder: todo.sortOrder,
                     createdAt: createdAt,
-                    updatedAt: now,
+                    updatedAt: updatedAt,
                     listId: todo.listId,
                     focusTimeSeconds: todo.focusTimeSeconds ?? 0
                 )
@@ -275,7 +303,12 @@ final class ExportService {
                         sortOrder: step.sortOrder,
                         todoId: todo.id
                     )
-                    if mode == .merge, try StepRecord.fetchOne(db, key: step.id) != nil {
+                    if mode == .merge, let existingStep = try StepRecord.fetchOne(db, key: step.id) {
+                        if existingStep.todoId != todo.id {
+                            report.skipped.steps += 1
+                            report.errors.append("Skipped step \(step.id): belongs to another todo (\(existingStep.todoId))")
+                            continue
+                        }
                         try stepRecord.update(db)
                         report.updated.steps += 1
                     } else {
@@ -331,9 +364,26 @@ final class ExportService {
         _ = try executeImportJSON(data, mode: .replace)
     }
 
-    private func decodeLaunchResources(_ raw: String?) throws -> [LaunchResource] {
-        guard let raw, !raw.isEmpty else { return [] }
-        return try JSONDecoder().decode([LaunchResource].self, from: Data(raw.utf8))
+    private func decodeLaunchResourcesForExport(_ raw: String?, todoID: String, strict: Bool) throws -> [LaunchResource] {
+        guard let raw else { return [] }
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+
+        if !strict {
+            return parseLaunchResources(raw: trimmed)
+        }
+
+        guard let data = trimmed.data(using: .utf8),
+              let object = try? JSONSerialization.jsonObject(with: data),
+              let array = object as? [Any] else {
+            throw ExportError.invalidStoredLaunchResources(todoID)
+        }
+
+        let parsed = parseLaunchResources(raw: trimmed)
+        if parsed.count != array.count {
+            throw ExportError.invalidStoredLaunchResources(todoID)
+        }
+        return parsed
     }
 
     private func launchResourceValidationErrorDescription(_ error: LaunchResourceValidationError) -> String {
@@ -356,7 +406,8 @@ final class ExportService {
     private func createBackupSnapshot() throws -> String {
         let backupData: Data
         do {
-            backupData = try exportToJSON()
+            // Recovery backups should not be blocked by malformed legacy launch-resource payloads.
+            backupData = try exportToJSON(strictLaunchResourceValidation: false)
         } catch {
             throw ExportError.backupFailed("Failed to create backup snapshot before replace import")
         }

@@ -211,7 +211,7 @@ struct DailyReviewView: View {
                         .padding(.vertical, 10)
                         .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 } else {
-                    VStack(spacing: 8) {
+                    LazyVStack(spacing: 8) {
                         ForEach(column.todos) { todo in
                             reviewCard(todo, isCompletedLane: isCompletedLane)
                         }

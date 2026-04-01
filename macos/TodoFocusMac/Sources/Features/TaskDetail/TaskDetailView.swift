@@ -125,6 +125,9 @@ struct TaskDetailView: View {
                 }
             }
         }
+        .onDisappear {
+            store.deepFocusService.onEndFocusSession = nil
+        }
     }
 
     private func header(todo: Todo) -> some View {

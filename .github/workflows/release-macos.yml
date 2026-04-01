@@ -1,4 +1,4 @@
-name: release-macos
+name: release-macos-legacy-electron
 
 on:
   workflow_dispatch:
@@ -16,6 +16,11 @@ jobs:
       contents: write
 
     steps:
+      - name: Legacy workflow warning
+        run: |
+          echo "This is the legacy Electron release pipeline."
+          echo "Use release-macos-native for current TodoFocus native macOS releases."
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
