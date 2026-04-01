@@ -130,6 +130,13 @@ final class TodoAppStore {
         mutationErrorMessage = "\(context): \(error.localizedDescription)"
     }
 
+    static func shouldSuppressHardFocusTeardownError(_ error: Error) -> Bool {
+        guard let hardFocusError = error as? HardFocusError else {
+            return false
+        }
+        return hardFocusError == .noActiveSession
+    }
+
     @discardableResult
     func quickAdd(
         title: String,
@@ -383,9 +390,13 @@ final class TodoAppStore {
                     }
                     Task { @MainActor [weak self] in
                         do {
-                            try await self?.hardFocusManager.emergencyEndSession()
+                            if self?.hardFocusManager.isEnforcing == true {
+                                try await self?.hardFocusManager.emergencyEndSession()
+                            }
                         } catch {
-                            self?.setMutationError(error, context: "Failed to end Hard Focus session")
+                            if !Self.shouldSuppressHardFocusTeardownError(error) {
+                                self?.setMutationError(error, context: "Failed to end Hard Focus session")
+                            }
                         }
                     }
                 }
@@ -422,7 +433,9 @@ final class TodoAppStore {
             do {
                 try await hardFocusManager.emergencyEndSession()
             } catch {
-                setMutationError(error, context: "Failed to end Hard Focus session")
+                if !Self.shouldSuppressHardFocusTeardownError(error) {
+                    setMutationError(error, context: "Failed to end Hard Focus session")
+                }
             }
         }
 
@@ -459,7 +472,9 @@ final class TodoAppStore {
             do {
                 try await hardFocusManager.emergencyEndSession()
             } catch {
-                setMutationError(error, context: "Failed to end Hard Focus session")
+                if !Self.shouldSuppressHardFocusTeardownError(error) {
+                    setMutationError(error, context: "Failed to end Hard Focus session")
+                }
             }
         }
     }
