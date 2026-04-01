@@ -63,6 +63,23 @@ Apply all matching rules.
 - Tell workers they are not alone in the repo and must not revert others' edits.
 - Keep immediate critical-path work local when waiting would block progress.
 
+## Parallel Dispatch Requirements (`dispatching-parallel-agents`)
+Use this when there are 2+ independent tasks that do not share write paths or strict sequencing.
+
+Required operating rules:
+- Define independent domains first; do not parallelize tightly-coupled bugs.
+- One agent per domain with explicit file ownership and fixed deliverables.
+- Keep each prompt self-contained: scope, goal, constraints, expected output format.
+- Do not duplicate work between main thread and subagents.
+- Integrate results centrally, then run full verification on combined changes.
+
+Common patterns:
+- **Good**: `A=QuickCapture lifecycle`, `B=Export/Import correctness`, `C=UI/perf hot paths`.
+- **Good**: parallel read-only audits with centralized fix integration.
+- **Avoid**: multiple agents editing the same file set.
+- **Avoid**: \"fix everything\" prompts without boundaries.
+- **Avoid**: waiting idly; keep non-overlapping critical work local.
+
 ## SwiftUI / UX Constraints
 - Reuse `ThemeTokens` and `MotionTokens`; avoid hardcoded visual constants.
 - Preserve smooth, deterministic interactions and macOS-native behavior.
