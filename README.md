@@ -1,7 +1,7 @@
 # TodoFocus
 
 <p align="center">
-  <img src="macos/TodoFocusMac/Assets.xcassets/AppIcon.appiconset/AppIcon.png" alt="TodoFocus Icon" width="108" style="border-radius: 24px;" />
+  <img src="assets/readme-logo.png" alt="TodoFocus Icon" width="108" />
 </p>
 
 <p align="center">
