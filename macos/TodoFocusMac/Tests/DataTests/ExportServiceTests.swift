@@ -95,6 +95,38 @@ final class ExportServiceTests: XCTestCase {
         XCTAssertEqual(decoded.version, "1.0")
     }
 
+    func testDecodeV1_0PayloadWithLegacyTodoDefaultsMissingFields() throws {
+        let payload = """
+        {
+          "version": "1.0",
+          "exportedAt": "2026-03-28T12:00:00Z",
+          "lists": [],
+          "todos": [
+            {
+              "id": "todo-legacy",
+              "title": "Legacy Todo",
+              "isCompleted": false,
+              "isImportant": true,
+              "isMyDay": false,
+              "dueDate": null,
+              "notes": "legacy note",
+              "listId": null,
+              "focusTimeSeconds": 15
+            }
+          ]
+        }
+        """.data(using: .utf8)!
+
+        let decoded = try ExportData.decode(from: payload)
+        let todo = try XCTUnwrap(decoded.todos.first)
+
+        XCTAssertEqual(todo.id, "todo-legacy")
+        XCTAssertEqual(todo.recurrenceInterval, 1)
+        XCTAssertEqual(todo.sortOrder, 0)
+        XCTAssertEqual(todo.steps.count, 0)
+        XCTAssertEqual(todo.launchResources.count, 0)
+    }
+
     func testPreflightRejectsUnsupportedVersion() throws {
         let manager = try makeManager()
         let service = makeService(manager)
@@ -232,6 +264,22 @@ final class ExportServiceTests: XCTestCase {
 
         XCTAssertNotNil(report.backupFilePath)
         XCTAssertTrue(FileManager.default.fileExists(atPath: report.backupFilePath ?? ""))
+    }
+
+    func testReplaceImportBackupFilenameContainsMillisAndEntropySuffix() throws {
+        let manager = try makeManager()
+        try seedBasicData(manager)
+        let service = makeService(manager)
+
+        let data = try service.exportToJSON()
+        let report = try service.executeImportJSON(data, mode: .replace)
+        let backupPath = try XCTUnwrap(report.backupFilePath)
+        let filename = URL(fileURLWithPath: backupPath).lastPathComponent
+
+        let pattern = #"^todofocus-backup-\d{8}-\d{6}-\d{3}-[a-f0-9]{8}\.json$"#
+        let regex = try NSRegularExpression(pattern: pattern)
+        let range = NSRange(location: 0, length: filename.utf16.count)
+        XCTAssertNotNil(regex.firstMatch(in: filename, range: range))
     }
 
     func testMergeImportKeepsUnrelatedLocalRows() throws {

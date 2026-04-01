@@ -418,8 +418,9 @@ final class ExportService {
         try fm.createDirectory(at: base, withIntermediateDirectories: true)
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd-HHmmss"
-        let filename = "todofocus-backup-\(formatter.string(from: Date())).json"
+        formatter.dateFormat = "yyyyMMdd-HHmmss-SSS"
+        let suffix = UUID().uuidString.prefix(8).lowercased()
+        let filename = "todofocus-backup-\(formatter.string(from: Date()))-\(suffix).json"
         let path = base.appendingPathComponent(filename)
         do {
             try backupData.write(to: path, options: .atomic)
