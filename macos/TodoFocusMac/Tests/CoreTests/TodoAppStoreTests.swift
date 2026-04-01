@@ -441,6 +441,15 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "").map(\.id), ["a", "b"])
         XCTAssertEqual(TaskListView.filterTodos(preFiltered, query: "vendor").map(\.id), [])
     }
+
+    func testShouldSuppressHardFocusTeardownErrorReturnsTrueForNoActiveSession() {
+        XCTAssertTrue(TodoAppStore.shouldSuppressHardFocusTeardownError(HardFocusError.noActiveSession))
+    }
+
+    func testShouldSuppressHardFocusTeardownErrorReturnsFalseForNonBenignErrors() {
+        XCTAssertFalse(TodoAppStore.shouldSuppressHardFocusTeardownError(HardFocusError.invalidPassphrase))
+        XCTAssertFalse(TodoAppStore.shouldSuppressHardFocusTeardownError(NSError(domain: "x", code: 1)))
+    }
 }
 
 private final class MockTestHardFocusAgentManager: HardFocusAgentControlling {
