@@ -6,11 +6,12 @@
 
 <p align="center">
   <strong>Stop collecting tasks. Start finishing them.</strong><br/>
-  A local-first macOS task app built for real focus.
+  A local-first macOS task app that actually helps you finish things.
 </p>
 
 <p align="center">
   <a href="https://github.com/michaelmjhhhh/TodoFocus/releases"><img src="https://img.shields.io/badge/Download-Latest%20Release-0A84FF?style=for-the-badge" /></a>
+  <a href="https://github.com/michaelmjhhhh/TodoFocus"><img src="https://img.shields.io/badge/Source-Code-View%20on%20GitHub-24292F?style=for-the-badge" /></a>
   <a href="#build-from-source"><img src="https://img.shields.io/badge/Build-From%20Source-2F855A?style=for-the-badge" /></a>
 </p>
 
@@ -31,18 +32,48 @@
 
 You’re in the middle of something.
 
-- Thoughts are messy  
-- Tasks are everywhere  
-- Tabs are out of control  
+- Too many thoughts  
+- Too many tabs  
+- Nothing actually getting done  
 
 Then:
 
-1. Hit `⌘⇧T` → dump everything instantly  
-2. Attach links / files to your task  
-3. Start a Deep Focus session  
-4. Come back and clean your day in Kanban  
+⌘⇧T → capture everything  
+Start Focus → lock in  
+Come back → clean your day  
 
-No friction. No distractions. Just flow.
+Flow.
+
+---
+
+## 🧭 Philosophy
+
+Most productivity tools optimize for organization.
+
+TodoFocus optimizes for momentum.
+
+Because the real problem isn’t knowing what to do.
+
+It’s starting.
+
+---
+
+## 😤 The real problem
+
+You don’t need another task manager.
+
+You already know what to do.
+
+You just… don’t do it.
+
+- tasks pile up  
+- tabs multiply  
+- context disappears  
+- focus breaks  
+
+And suddenly the day is gone.
+
+TodoFocus exists for that moment.
 
 ---
 
@@ -52,79 +83,114 @@ Most task apps are built to **store tasks**.
 
 TodoFocus is built to **finish them**.
 
-- ⚡ Instant capture (no context switching)
-- 🎯 Built-in focus sessions
-- 🚀 Launch everything you need in one click
-- 🧹 End your day with clarity
+- ⚡ Instant capture (no context switching)  
+- 🎯 Built-in focus sessions  
+- 🚀 Launch everything you need in one click  
+- 🧹 End your day with clarity  
 
 > No login. No cloud. No nonsense.  
 > Just you and your work.
 
 ---
 
-## 🚀 Core Features
+## ⚡ Capture
 
-| Area | What you get |
-|---|---|
-| Quick Capture | Global shortcut `⌘⇧T` to capture from anywhere |
-| Voice Capture | Speak your tasks (English `en-US`) |
-| Deep Focus | Timer-based focus sessions with stats |
-| Hard Focus | App blocking with enforced exit flow |
-| Launchpad | Attach URL/file/app → run everything instantly |
-| Daily Review | Kanban cleanup: Open vs Completed |
-| Smart Views | `My Day`, `Important`, `Overdue`, and more |
-| Search | `⌘K` to instantly find anything |
-| Portability | JSON import/export (local-first) |
+- ⌘⇧T global capture  
+- Voice input (English `en-US`)  
+- Fast task entry from anywhere  
+
+Capture first. Organize later.
 
 ---
 
-## 🔥 What makes it different
+## 🎯 Focus
 
-### 🧩 Context is built-in
-Tasks aren’t just text.
+### Deep Focus
+
+A built-in focus timer with session stats, menu bar controls, and a workflow that helps you stay with the task.
+
+---
+
+### 🚫 Hard Focus
+
+This is not a timer.
+
+This is a commitment.
+
+Once you start:
+
+- distractions can be blocked  
+- quitting requires intention  
+- focus becomes harder to escape  
+
+Because focus should not be easy to break.
+
+---
+
+## 🚀 Execute
+
+### Launchpad
+
+Tasks are not just text.
 
 Attach:
+
 - links  
 - files  
 - apps  
 
-→ and launch everything in one click.
+Then launch everything you need in one click.
+
+No hunting. No tab archaeology. No “wait, where was that again?”
 
 ---
 
-### 🎯 Focus is not optional
-Deep Focus + Hard Focus:
+## 🧹 Review
 
-- timer  
-- menu bar control  
-- optional app blocking  
+### Daily Review
 
-→ designed to actually keep you working
-
----
-
-### 🧹 Daily Review that you’ll actually use
-Not analytics.
+Not analytics. Not dashboards. Not guilt.
 
 Just:
+
 - Overdue  
 - Today  
 - Tomorrow  
 - Done  
 
-→ clean, fast, and honest
+A clean, fast, honest way to reset your day.
 
 ---
 
-## ⚡ Quick Start
+## 🪟 Smart Views
 
-1. Download latest release  
-2. Move app to `Applications`  
-3. Open and grant permissions  
-4. Hit `⌘⇧T` → add your first task  
-5. Start one Deep Focus session  
+- `My Day`  
+- `Important`  
+- `Overdue`  
+- Search with `⌘K`  
+- Kanban cleanup for Open vs Completed  
 
-You’re in.
+Everything stays close. Nothing feels buried.
+
+---
+
+## 🧨 What makes this different
+
+Most productivity apps try to organize your chaos.
+
+TodoFocus tries to remove it.
+
+No:
+
+- complex systems  
+- endless configuration  
+- productivity theater  
+
+Just:
+
+- capture  
+- focus  
+- finish  
 
 ---
 
@@ -133,12 +199,25 @@ You’re in.
 - 100% local SQLite  
 - No account required  
 - No cloud dependency  
+- JSON import/export for portability  
 
-Data lives in:
+Your data lives here:
 
-```
+```bash
 ~/Library/Application Support/todofocus/
 ```
+
+---
+
+## ⚡ Quick Start
+
+1. Download the latest release  
+2. Move the app to `Applications`  
+3. Open it and grant permissions  
+4. Hit `⌘⇧T` to add your first task  
+5. Start one Focus session  
+
+You’re in.
 
 ---
 
@@ -153,6 +232,10 @@ xcodegen generate
 xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac"
 ```
 
+If you want to inspect or modify the app, the full source code is available here:
+
+- Repository: `https://github.com/michaelmjhhhh/TodoFocus`
+
 ---
 
 ## 🎬 Demo
@@ -165,15 +248,20 @@ xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac"
 
 ## 💬 Feedback
 
-Issues & ideas:  
-https://github.com/michaelmjhhhh/TodoFocus/issues
+Issues and ideas:
+
+- `https://github.com/michaelmjhhhh/TodoFocus/issues`
 
 ---
 
 ## ⭐ If this helped you
 
-If TodoFocus saved you even **10 minutes today**:
+If TodoFocus helped you finish something you would have procrastinated on:
 
 👉 give it a ⭐
 
-It really helps the project grow.
+That’s how this grows.
+
+---
+
+task manager macOS, productivity app mac, focus timer app mac, local first todo app
