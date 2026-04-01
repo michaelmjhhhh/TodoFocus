@@ -653,6 +653,11 @@ struct DeepFocusSetupSheet: View {
     @State private var isTimedMode: Bool = true
     @State private var minutes: Int = 25
     @State private var passphrase: String = ""
+    @State private var templateStore = DeepFocusTemplateStore()
+    @State private var isCreatingTemplate: Bool = false
+    @State private var newTemplateName: String = ""
+    @State private var renamingTemplateID: String?
+    @State private var renameTemplateName: String = ""
     @FocusState private var isPassphraseFocused: Bool
     @Environment(\.themeTokens) private var tokens
 
@@ -694,8 +699,178 @@ struct DeepFocusSetupSheet: View {
         }
     }
 
+    private func addMissingCustomApps(for bundleIDs: [String]) {
+        let known = Set((availableApps + customApps).map(\.bundleId))
+        for bundleID in bundleIDs where !known.contains(bundleID) {
+            let fallbackName = bundleID.components(separatedBy: ".").last?.capitalized ?? bundleID
+            customApps.append((name: fallbackName, bundleId: bundleID))
+        }
+    }
+
+    private func applyTemplate(_ template: DeepFocusSessionTemplate) {
+        selectedApps = Set(template.blockedApps)
+        addMissingCustomApps(for: template.blockedApps)
+        if let duration = template.durationMinutes {
+            isTimedMode = true
+            minutes = max(1, min(480, duration))
+        } else {
+            isTimedMode = false
+        }
+    }
+
+    private func startFromTemplate(_ template: DeepFocusSessionTemplate) {
+        let trimmed = passphrase.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            isPassphraseFocused = true
+            return
+        }
+        applyTemplate(template)
+        let duration = template.durationMinutes.map { TimeInterval($0 * 60) }
+        onStart(duration, trimmed)
+    }
+
+    private func saveCurrentAsTemplate() {
+        let trimmed = newTemplateName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        _ = templateStore.createTemplate(
+            name: trimmed,
+            durationMinutes: isTimedMode ? minutes : nil,
+            blockedApps: Array(selectedApps)
+        )
+        newTemplateName = ""
+        isCreatingTemplate = false
+    }
+
+    private var templateSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Templates")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(tokens.textPrimary)
+                Spacer()
+                Button {
+                    isCreatingTemplate.toggle()
+                    if !isCreatingTemplate {
+                        newTemplateName = ""
+                    }
+                } label: {
+                    Label("Save Current", systemImage: "plus")
+                        .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(tokens.accentTerracotta)
+            }
+
+            if isCreatingTemplate {
+                HStack(spacing: 8) {
+                    TextField("Template name", text: $newTemplateName)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(tokens.sectionBorder, lineWidth: 1)
+                        }
+
+                    Button("Save") { saveCurrentAsTemplate() }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                        .foregroundStyle(.white)
+
+                    Button("Cancel") {
+                        isCreatingTemplate = false
+                        newTemplateName = ""
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(tokens.textSecondary)
+                }
+            }
+
+            if let renamingTemplateID {
+                HStack(spacing: 8) {
+                    TextField("Rename template", text: $renameTemplateName)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(tokens.sectionBorder, lineWidth: 1)
+                        }
+                    Button("Apply") {
+                        templateStore.renameTemplate(id: renamingTemplateID, name: renameTemplateName)
+                        self.renamingTemplateID = nil
+                        renameTemplateName = ""
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(tokens.accentTerracotta)
+                    Button("Cancel") {
+                        self.renamingTemplateID = nil
+                        renameTemplateName = ""
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(tokens.textSecondary)
+                }
+            }
+
+            if templateStore.templates.isEmpty {
+                Text("No templates yet")
+                    .font(.caption)
+                    .foregroundStyle(tokens.textSecondary)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(templateStore.templates) { template in
+                            HStack(spacing: 6) {
+                                Button {
+                                    applyTemplate(template)
+                                } label: {
+                                    Text(template.name)
+                                        .font(.caption.weight(.semibold))
+                                        .lineLimit(1)
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(tokens.textPrimary)
+
+                                Button {
+                                    startFromTemplate(template)
+                                } label: {
+                                    Image(systemName: "play.fill")
+                                        .font(.system(size: 10, weight: .bold))
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(tokens.accentTerracotta)
+                                .help("Start with this template")
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 7)
+                            .background(tokens.bgFloating, in: Capsule())
+                            .overlay {
+                                Capsule()
+                                    .stroke(tokens.sectionBorder, lineWidth: 1)
+                            }
+                            .contextMenu {
+                                Button("Rename") {
+                                    renamingTemplateID = template.id
+                                    renameTemplateName = template.name
+                                }
+                                Button("Delete", role: .destructive) {
+                                    templateStore.deleteTemplate(id: template.id)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+    }
+
     var body: some View {
-        VStack(spacing: 20) {
+            VStack(spacing: 20) {
             Text("Start Hard Focus")
                 .font(.headline)
                 .padding(.top, 20)
@@ -802,6 +977,8 @@ struct DeepFocusSetupSheet: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: isTimedMode)
+
+            templateSection
 
             Text("Select apps to block during focus session")
                 .font(.subheadline)
