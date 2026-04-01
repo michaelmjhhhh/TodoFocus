@@ -840,6 +840,8 @@ struct DeepFocusSetupSheet: View {
                                 } label: {
                                     Image(systemName: "play.fill")
                                         .font(.system(size: 10, weight: .bold))
+                                        .frame(width: 28, height: 28)
+                                        .contentShape(Rectangle())
                                 }
                                 .buttonStyle(.plain)
                                 .foregroundStyle(tokens.accentTerracotta)
