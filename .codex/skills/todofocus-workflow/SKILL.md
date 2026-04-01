@@ -12,7 +12,8 @@ Run one consistent path from request to PR: clarify -> plan -> issue -> branch -
 1. Run `brainstorming` before implementation to clarify requirements.
 2. Run `writing-plans` before non-trivial implementation.
 3. Run `systematic-debugging` before any bug fix or unexpected behavior change.
-4. Run verification commands before any completion claim.
+4. Run `requesting-code-review` before merge/PR-ready completion claims.
+5. Run verification commands before any completion claim.
 
 ## Required Sequence
 1. **Clarify (`brainstorming`)**
@@ -35,11 +36,15 @@ Run one consistent path from request to PR: clarify -> plan -> issue -> branch -
    - Keep edits focused and minimal; avoid unrelated refactors.
 7. **Verify (`verification-before-completion`)**
    - Run required test/build gates and capture explicit outcomes.
-8. **PR Artifact**
+8. **Review (`requesting-code-review`)**
+   - Request review on branch diff (`origin/main...HEAD`) after implementation and before PR finalization.
+   - Findings-first output: severity, file:line, concrete risk, required action.
+   - Blocker rule: do not proceed with unfixed Critical/Important findings.
+9. **PR Artifact**
    - Write PR doc:
      - `docs/superpowers/prs/YYYY-MM-DD-<topic>.md`
    - Include: `Closes #<issue>`, change summary, verification commands, verification results.
-9. **Ship (`git-commit` + `gh-cli`)**
+10. **Ship (`git-commit` + `gh-cli`)**
    - Create commit with `git-commit` skill.
    - Push branch and open PR using PR markdown body.
 
@@ -57,6 +62,8 @@ Apply all matching rules.
   - Parallel workers must use model: `gpt-5.3-codex`
 - **About to claim done/passing/fixed**
   - Required: `verification-before-completion`
+- **Before merge / PR-ready handoff**
+  - Required: `requesting-code-review`
 
 ## Subagent Constraints
 - Split ownership by disjoint file sets.
