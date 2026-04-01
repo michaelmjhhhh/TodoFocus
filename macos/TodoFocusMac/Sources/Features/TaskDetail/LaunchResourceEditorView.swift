@@ -33,6 +33,15 @@ struct LaunchResourceEditorView: View {
         .onChange(of: todo.launchResourcesRaw) { _, newValue in
             draft = parseLaunchResources(raw: newValue)
         }
+        .onChange(of: labelText) { _, _ in
+            statusText = nil
+        }
+        .onChange(of: valueText) { _, _ in
+            statusText = nil
+        }
+        .onChange(of: selectedType) { _, _ in
+            statusText = nil
+        }
     }
 
     private var headerRow: some View {
@@ -315,8 +324,13 @@ struct LaunchResourceEditorView: View {
             value: trimmedValue,
             createdAt: Date()
         )
-        guard case let .success(valid) = validateLaunchResource(candidate) else {
-            statusText = invalidMessage(for: selectedType)
+        let validation = validateLaunchResource(candidate)
+        guard case let .success(valid) = validation else {
+            if case let .failure(error) = validation {
+                statusText = invalidMessage(for: error)
+            } else {
+                statusText = "Invalid resource"
+            }
             return
         }
         guard draft.count < 12 else {
@@ -359,13 +373,19 @@ struct LaunchResourceEditorView: View {
             || valueText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    private func invalidMessage(for type: LaunchResourceType) -> String {
-        switch type {
-        case .url:
+    private func invalidMessage(for error: LaunchResourceValidationError) -> String {
+        switch error {
+        case .invalidType:
+            return "Invalid resource type"
+        case .invalidLabel:
+            return "Label must be 1-80 characters"
+        case .invalidValue:
+            return "Value cannot be empty"
+        case .invalidURL:
             return "Invalid URL (must start with http/https)"
-        case .file:
-            return "Invalid file path (must be absolute)"
-        case .app:
+        case .invalidFilePath:
+            return "Invalid file path (must start with /)"
+        case .invalidAppTarget:
             return "Invalid app path (.app) or unsupported deep link"
         }
     }
