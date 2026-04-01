@@ -109,12 +109,12 @@ struct TaskListView: View {
 
             QuickAddView { title in
                 do {
-                    try store.quickAdd(
-                        title: title,
-                        planned: appModel.selection == .planned,
-                        isImportant: appModel.selection == .important,
-                        isMyDay: appModel.selection == .myDay,
-                        list: selectedList
+                    try store.quickAddNaturalLanguage(
+                        input: title,
+                        defaultPlanned: appModel.selection == .planned,
+                        defaultIsImportant: appModel.selection == .important,
+                        defaultIsMyDay: appModel.selection == .myDay,
+                        defaultList: selectedList
                     )
                 } catch {
                 }

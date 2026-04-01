@@ -302,6 +302,36 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertEqual(persisted.dueDate, now)
     }
 
+    func testQuickAddNaturalLanguageParsesMetadataAndOverridesDefaults() throws {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        let now = Date(timeIntervalSince1970: 1_763_552_400) // 2025-11-03T09:00:00Z
+        let (store, _, listRepository, todoRepository) = try makeStore(now: now)
+        let listRecord = try listRepository.createList(name: "Work", now: now)
+        try store.reload()
+        let defaultList = TodoList(id: "fallback", name: "Fallback", color: "#C46849", sortOrder: 0)
+
+        let created = try store.quickAddNaturalLanguage(
+            input: "Ship release #Work ! @myday tomorrow 9:30am",
+            defaultPlanned: false,
+            defaultIsImportant: false,
+            defaultIsMyDay: false,
+            defaultList: defaultList,
+            calendar: cal
+        )
+
+        let persisted = try XCTUnwrap(todoRepository.fetchTodo(id: created.id))
+        XCTAssertEqual(persisted.title, "Ship release")
+        XCTAssertTrue(persisted.isImportant)
+        XCTAssertTrue(persisted.isMyDay)
+        XCTAssertEqual(persisted.listId, listRecord.id)
+        let expectedDay = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: now))
+        XCTAssertEqual(cal.startOfDay(for: try XCTUnwrap(persisted.dueDate)), expectedDay)
+        let components = cal.dateComponents([.hour, .minute], from: try XCTUnwrap(persisted.dueDate))
+        XCTAssertEqual(components.hour, 9)
+        XCTAssertEqual(components.minute, 30)
+    }
+
     func testUpdateNotesDebouncedPersistsLatestValue() throws {
         let now = Date(timeIntervalSince1970: 1_763_520_000)
         let (store, _, _, todoRepository) = try makeStore(now: now)
