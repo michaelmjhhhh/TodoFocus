@@ -11,7 +11,6 @@
 
 <p align="center">
   <a href="https://github.com/michaelmjhhhh/TodoFocus/releases"><img src="https://img.shields.io/badge/Download-Latest%20Release-0A84FF?style=for-the-badge" /></a>
-  <a href="https://github.com/michaelmjhhhh/TodoFocus"><img src="https://img.shields.io/badge/Source-Code-View%20on%20GitHub-24292F?style=for-the-badge" /></a>
   <a href="#build-from-source"><img src="https://img.shields.io/badge/Build-From%20Source-2F855A?style=for-the-badge" /></a>
 </p>
 
