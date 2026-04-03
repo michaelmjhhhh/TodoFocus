@@ -86,7 +86,10 @@ struct ShortcutHintBarModifier: ViewModifier {
 }
 
 extension View {
-    func shortcutHintBar(needsAccessibilityPermission: Bool = false, onRequestPermission: (() -> Void)? = nil) -> some View {
+    func shortcutHintBar(
+        needsAccessibilityPermission: Bool = false,
+        onRequestPermission: (() -> Void)? = nil
+    ) -> some View {
         modifier(ShortcutHintBarModifier(
             needsAccessibilityPermission: needsAccessibilityPermission,
             onRequestPermission: onRequestPermission
