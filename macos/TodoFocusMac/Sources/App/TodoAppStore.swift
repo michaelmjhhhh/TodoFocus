@@ -171,7 +171,7 @@ final class TodoAppStore {
         let parsed = QuickAddNaturalLanguageParser.parse(input, now: now(), calendar: calendar)
         let resolvedImportant = parsed.isImportant || defaultIsImportant
         let resolvedMyDay = parsed.isMyDay || defaultIsMyDay
-        let resolvedList = resolveList(for: parsed.listName) ?? defaultList
+        let resolvedList = defaultList
         let planned = defaultPlanned || parsed.dueDate != nil
 
         let created = try quickAdd(

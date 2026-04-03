@@ -10,6 +10,13 @@ struct QuickAddView: View {
         !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    private var focusBinding: Binding<Bool> {
+        Binding(
+            get: { isInputFocused },
+            set: { isInputFocused = $0 }
+        )
+    }
+
     var body: some View {
         HStack(spacing: 10) {
             HStack(spacing: 8) {
@@ -18,10 +25,15 @@ struct QuickAddView: View {
                     .foregroundStyle(isInputFocused ? tokens.accentTerracotta : tokens.textTertiary)
                     .accessibilityHidden(true)
 
-                TextField("Add a task (⌘⇧N)", text: $text)
-                    .textFieldStyle(.plain)
-                    .focused($isInputFocused)
-                    .onSubmit(submit)
+                QuickAddHighlightingTextField(
+                    text: $text,
+                    isFocused: focusBinding,
+                    placeholder: "Add a task (⌘⇧N)",
+                    highlightColor: NSColor(tokens.accentTerracotta)
+                ) {
+                    submit()
+                }
+                .frame(height: 20)
                     .accessibilityLabel("Task title")
             }
             .padding(.horizontal, 12)
@@ -66,6 +78,7 @@ struct QuickAddView: View {
             .keyboardShortcut("n", modifiers: [.command, .shift])
             .opacity(0)
             .allowsHitTesting(false)
+            .accessibilityHidden(true)
         }
     }
 
