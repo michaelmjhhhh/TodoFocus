@@ -80,6 +80,10 @@ enum Migrations {
             )
         }
 
+        migrator.registerMigration("v4_add_salt_to_hardfocus") { db in
+            try db.execute(sql: "ALTER TABLE hardfocus_session ADD COLUMN unlock_phrase_salt TEXT NOT NULL DEFAULT ''")
+        }
+
         return migrator
     }
 }

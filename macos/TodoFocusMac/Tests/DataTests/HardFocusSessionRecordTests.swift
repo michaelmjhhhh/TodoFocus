@@ -13,6 +13,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
             plannedEndTime: plannedEnd,
             actualEndTime: nil,
             unlockPhraseHash: "argon2hash",
+            unlockPhraseSalt: "test-salt",
             blockedApps: #"["com.apple.Safari"]"#,
             focusTaskId: nil,
             graceSeconds: 300,
@@ -26,6 +27,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
         XCTAssertEqual(record.plannedEndTime.timeIntervalSince1970, plannedEnd.timeIntervalSince1970, accuracy: 1)
         XCTAssertNil(record.actualEndTime)
         XCTAssertEqual(record.unlockPhraseHash, "argon2hash")
+        XCTAssertEqual(record.unlockPhraseSalt, "test-salt")
         XCTAssertEqual(record.blockedApps, #"["com.apple.Safari"]"#)
         XCTAssertNil(record.focusTaskId)
         XCTAssertEqual(record.graceSeconds, 300)
@@ -41,6 +43,7 @@ final class HardFocusSessionRecordTests: XCTestCase {
             plannedEndTime: Date().addingTimeInterval(3600),
             actualEndTime: nil,
             unlockPhraseHash: "argon2hash",
+            unlockPhraseSalt: "test-salt",
             blockedApps: #"["com.google.Chrome","com.hnc.Discord"]"#,
             focusTaskId: nil,
             graceSeconds: 300,

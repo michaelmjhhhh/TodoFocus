@@ -14,6 +14,7 @@ final class HardFocusSessionManagerTests: XCTestCase {
             plannedEndTime: Date().addingTimeInterval(-60),
             actualEndTime: nil,
             unlockPhraseHash: "hash",
+            unlockPhraseSalt: "salt",
             blockedApps: #"["com.apple.Safari"]"#,
             focusTaskId: "task-1",
             graceSeconds: 300,

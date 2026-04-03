@@ -19,6 +19,7 @@ struct HardFocusSessionRecord: Codable, FetchableRecord, PersistableRecord, Equa
     var plannedEndTime: Date
     var actualEndTime: Date?
     var unlockPhraseHash: String
+    var unlockPhraseSalt: String
     var blockedApps: String
     var focusTaskId: String?
     var graceSeconds: Int
@@ -32,6 +33,7 @@ struct HardFocusSessionRecord: Codable, FetchableRecord, PersistableRecord, Equa
         case plannedEndTime = "planned_end_time"
         case actualEndTime = "actual_end_time"
         case unlockPhraseHash = "unlock_phrase_hash"
+        case unlockPhraseSalt = "unlock_phrase_salt"
         case blockedApps = "blocked_apps"
         case focusTaskId = "focus_task_id"
         case graceSeconds = "grace_seconds"

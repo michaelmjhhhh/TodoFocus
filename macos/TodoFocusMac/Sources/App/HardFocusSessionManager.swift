@@ -95,7 +95,8 @@ final class HardFocusSessionManager: ObservableObject {
             endTime = Date.distantFuture
         }
 
-        let passphraseHash = hashPassphrase(passphrase)
+        let salt = UUID().uuidString.prefix(16).lowercased()
+        let passphraseHash = hashPassphrase(passphrase, salt: salt)
         let blockedAppsJson = try JSONEncoder().encode(blockedApps)
         guard let blockedAppsString = String(data: blockedAppsJson, encoding: .utf8) else {
             throw HardFocusError.encodingFailed
@@ -109,6 +110,7 @@ final class HardFocusSessionManager: ObservableObject {
             plannedEndTime: endTime,
             actualEndTime: nil,
             unlockPhraseHash: passphraseHash,
+            unlockPhraseSalt: salt,
             blockedApps: blockedAppsString,
             focusTaskId: focusTaskId,
             graceSeconds: 300,
@@ -138,7 +140,7 @@ final class HardFocusSessionManager: ObservableObject {
             throw HardFocusError.noActiveSession
         }
 
-        guard verifyPassphrase(passphrase, hash: session.unlockPhraseHash) else {
+        guard verifyPassphrase(passphrase, salt: session.unlockPhraseSalt, hash: session.unlockPhraseHash) else {
             throw HardFocusError.invalidPassphrase
         }
 
@@ -210,14 +212,16 @@ final class HardFocusSessionManager: ObservableObject {
         }
     }
 
-    private func hashPassphrase(_ phrase: String) -> String {
+    private func hashPassphrase(_ phrase: String, salt: String) -> String {
         // SHA256 as a placeholder - full Argon2 requires third-party library
-        let data = Data(phrase.utf8)
+        // Prepending salt before hashing to improve security
+        let saltedPhrase = salt + phrase
+        let data = Data(saltedPhrase.utf8)
         let hash = SHA256.hash(data: data)
         return hash.compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    private func verifyPassphrase(_ phrase: String, hash: String) -> Bool {
-        return hashPassphrase(phrase) == hash
+    private func verifyPassphrase(_ phrase: String, salt: String, hash: String) -> Bool {
+        return hashPassphrase(phrase, salt: salt) == hash
     }
 }
