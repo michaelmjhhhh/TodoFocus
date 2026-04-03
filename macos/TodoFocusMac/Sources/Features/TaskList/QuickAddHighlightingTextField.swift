@@ -50,6 +50,7 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
         }
     }
 
+    @MainActor
     final class Coordinator: NSObject, NSTextFieldDelegate {
         var parent: QuickAddHighlightingTextField
         private var isProgrammaticChange = false
