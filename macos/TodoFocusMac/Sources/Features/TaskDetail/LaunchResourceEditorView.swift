@@ -68,6 +68,8 @@ struct LaunchResourceEditorView: View {
                     .background(tokens.accentTerracotta, in: Capsule())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Launch all resources")
+                .help("Launch all resources")
             }
 
             Button {
@@ -86,6 +88,8 @@ struct LaunchResourceEditorView: View {
                     }
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Add resource")
+            .help("Add resource")
             .disabled(draft.count >= 12)
             .opacity(draft.count >= 12 ? 0.5 : 1)
         }
@@ -273,6 +277,8 @@ struct LaunchResourceEditorView: View {
                     .background(tokens.bgFloating, in: Circle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Launch resource")
+            .help("Launch resource")
 
             Button {
                 withAnimation {
@@ -286,6 +292,8 @@ struct LaunchResourceEditorView: View {
                     .frame(width: 24, height: 24)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Remove resource")
+            .help("Remove resource")
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)

@@ -237,6 +237,7 @@ struct SidebarView: View {
                 .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 6))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(themeTooltip)
         .help(themeTooltip)
     }
 }

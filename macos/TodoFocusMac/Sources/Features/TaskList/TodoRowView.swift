@@ -61,6 +61,7 @@ struct TodoRowView: View {
                     .padding(2)
             }
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
+            .help(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(todo.title)
@@ -89,12 +90,16 @@ struct TodoRowView: View {
                 }
                 .buttonStyle(AppIconButtonStyle())
                 .foregroundStyle(todo.isImportant ? Color.yellow : tokens.mutedText)
+                .accessibilityLabel(todo.isImportant ? "Mark as not important" : "Mark as important")
+                .help(todo.isImportant ? "Mark as not important" : "Mark as important")
 
                 Button(action: onDelete) {
                     Image(systemName: "trash")
                 }
                 .buttonStyle(AppIconButtonStyle())
                 .foregroundStyle(tokens.mutedText)
+                .accessibilityLabel("Delete task")
+                .help("Delete task")
             }
             .frame(width: 62, alignment: .trailing)
             .opacity(isSecondaryControlsVisible ? 1 : 0.001)

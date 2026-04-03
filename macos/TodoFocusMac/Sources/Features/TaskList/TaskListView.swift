@@ -104,6 +104,7 @@ struct TaskListView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
                 .help(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
             }
 
