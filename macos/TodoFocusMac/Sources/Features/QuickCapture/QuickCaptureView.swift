@@ -57,6 +57,7 @@ struct QuickCaptureView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(service.isRecordingVoice ? "Stop recording" : "Start recording")
+                .help(service.isRecordingVoice ? "Stop recording" : "Start recording")
 
                 if showSuccess {
                     Image(systemName: "checkmark.circle.fill")

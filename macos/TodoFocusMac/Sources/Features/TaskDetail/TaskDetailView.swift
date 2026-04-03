@@ -218,6 +218,8 @@ struct TaskDetailView: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(tokens.mutedText)
+                    .accessibilityLabel("Close detail")
+                    .help("Close detail")
                 }
                 .padding(.horizontal, 6)
                 .padding(.vertical, 4)
@@ -614,6 +616,8 @@ struct StepsEditorView: View {
                     }
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Delete step")
+            .help("Delete step")
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
