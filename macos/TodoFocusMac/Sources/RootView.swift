@@ -28,11 +28,11 @@ struct RootView: View {
             HStack(spacing: 0) {
                 if isSidebarVisible {
                     SidebarView(appModel: appModel, store: store, lists: store.lists, themeStore: themeStore)
-                        .frame(width: 250)
+                        .frame(width: 264)
                         .background(themeTokens.bgElevated)
                         .overlay(alignment: .trailing) {
                             Rectangle()
-                                .fill(themeTokens.sectionBorder.opacity(0.9))
+                                .fill(themeTokens.sectionSeparator.opacity(0.95))
                                 .frame(width: 1)
                         }
 
@@ -50,11 +50,11 @@ struct RootView: View {
 
                 if store.selectedTodo != nil {
                     Rectangle()
-                        .fill(.clear)
-                        .frame(width: 14)
+                        .fill(themeTokens.bgBase.opacity(0.01))
+                        .frame(width: 16)
                         .overlay {
                             Rectangle()
-                                .fill(themeTokens.sectionBorder.opacity(0.9))
+                                .fill(themeTokens.sectionSeparator.opacity(0.95))
                                 .frame(width: 3)
                         }
                         .contentShape(Rectangle())
@@ -92,10 +92,10 @@ struct RootView: View {
                     .background(themeTokens.panelBackground)
                     .overlay(alignment: .leading) {
                         Rectangle()
-                            .fill(themeTokens.sectionBorder)
+                            .fill(themeTokens.sectionSeparator)
                             .frame(width: 1)
                     }
-                    .shadow(color: Color.black.opacity(0.30), radius: 12, x: -6, y: 0)
+                    .shadow(color: Color.black.opacity(0.22), radius: 9, x: -5, y: 0)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }

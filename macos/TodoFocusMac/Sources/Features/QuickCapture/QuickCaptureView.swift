@@ -16,16 +16,16 @@ struct QuickCaptureView: View {
                     .foregroundStyle(tokens.accentTerracotta)
                     .font(.system(size: 16, weight: .semibold))
                 Text("Quick Capture")
-                    .font(.headline)
+                    .font(tokens.editorialTitle(18, weight: .semibold))
                     .foregroundStyle(tokens.textPrimary)
                 Spacer()
                 Text(targetInfo)
-                    .font(.caption)
+                    .font(tokens.uiLabel(11, weight: .medium))
                     .foregroundStyle(tokens.textSecondary)
             }
 
             Text("Voice mode reminder: English only.")
-                .font(.caption2.weight(.medium))
+                .font(tokens.uiLabel(11, weight: .medium))
                 .foregroundStyle(tokens.textTertiary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -33,12 +33,11 @@ struct QuickCaptureView: View {
                 TextField("Capture a thought...", text: $service.draftText)
                     .textFieldStyle(.plain)
                     .padding(10)
-                    .background(tokens.inputSurface)
+                    .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .stroke(tokens.inputBorder, lineWidth: 1)
                     )
-                    .cornerRadius(8)
                     .foregroundStyle(tokens.textPrimary)
                     .scaleEffect(isSubmitting ? 0.98 : 1.0)
                     .animation(.easeInOut(duration: 0.1), value: isSubmitting)
@@ -121,8 +120,11 @@ struct QuickCaptureView: View {
                 Button("Add") {
                     handleSubmit()
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(tokens.accentTerracotta)
+                .buttonStyle(.plain)
+                .foregroundStyle(tokens.textPrimary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(tokens.accentTerracotta.opacity(0.94), in: Capsule())
                 .keyboardShortcut(.return)
             }
         }

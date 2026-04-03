@@ -170,10 +170,10 @@ struct GeneralSettingsView: View {
 
                 settingsCard(title: "Data Import & Export", icon: "arrow.left.arrow.right.circle") {
                     Text("Portable transfer: lists, tasks, steps, and URL launch resources.")
-                        .font(.caption)
+                        .font(tokens.uiLabel(12, weight: .regular))
                         .foregroundStyle(tokens.textSecondary)
                     Text("Reminder: file and app launch resources are device-local and are intentionally skipped during import/export.")
-                        .font(.caption)
+                        .font(tokens.uiLabel(12, weight: .regular))
                         .foregroundStyle(tokens.warning)
                         .padding(.bottom, 4)
 
@@ -188,12 +188,24 @@ struct GeneralSettingsView: View {
                         Button("Export Data") {
                             onExport()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(tokens.textPrimary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(tokens.accentTerracotta.opacity(0.94), in: Capsule())
 
                         Button("Import Data") {
                             onImport()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(tokens.accentSecondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(tokens.bgFloating.opacity(0.9), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(tokens.sectionBorder, lineWidth: 1)
+                        }
                     }
                 }
 
@@ -258,7 +270,7 @@ struct GeneralSettingsView: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(tokens.accentTerracotta)
                 Text(title)
-                    .font(.headline)
+                    .font(tokens.editorialTitle(17, weight: .semibold))
                     .foregroundStyle(tokens.textPrimary)
             }
             content()

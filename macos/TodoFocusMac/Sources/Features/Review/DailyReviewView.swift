@@ -91,10 +91,10 @@ struct DailyReviewView: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text("Daily Review")
-                        .font(.system(size: 23, weight: .bold, design: .rounded))
+                        .font(tokens.editorialTitle(24, weight: .bold))
                         .foregroundStyle(tokens.textPrimary)
                     Text("Manual")
-                        .font(.caption2.weight(.semibold))
+                        .font(tokens.uiLabel(11, weight: .semibold))
                         .foregroundStyle(tokens.textSecondary)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -105,7 +105,7 @@ struct DailyReviewView: View {
                         }
                 }
                 Text("Kanban review by status and time horizon.")
-                    .font(.caption)
+                    .font(tokens.uiLabel(12, weight: .regular))
                     .foregroundStyle(tokens.textTertiary)
             }
             Spacer(minLength: 8)
@@ -132,8 +132,8 @@ struct DailyReviewView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(tokens.textSecondary)
                     Text(title)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(Color.white)
+                        .font(tokens.editorialTitle(17, weight: .semibold))
+                        .foregroundStyle(tokens.textPrimary)
                     Text("\(columns.reduce(0) { $0 + $1.todos.count })")
                         .font(.caption.weight(.bold))
                         .monospacedDigit()
@@ -179,7 +179,7 @@ struct DailyReviewView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
                 Text(column.bucket.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(tokens.editorialTitle(14, weight: .semibold))
                     .foregroundStyle(tokens.textPrimary)
                 Text("\(column.todos.count)")
                     .font(.caption.weight(.bold))
@@ -232,7 +232,7 @@ struct DailyReviewView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(todo.title)
-                    .font(.subheadline.weight(todo.isCompleted ? .medium : .semibold))
+                    .font(tokens.uiLabel(14, weight: todo.isCompleted ? .medium : .semibold))
                     .foregroundStyle(todo.isCompleted ? tokens.textSecondary : tokens.textPrimary)
                     .strikethrough(todo.isCompleted)
                     .lineLimit(2)
@@ -267,7 +267,7 @@ struct DailyReviewView: View {
     private func metricPill(title: String, value: Int) -> some View {
         HStack(spacing: 7) {
             Text(title)
-                .font(.caption.weight(.semibold))
+                .font(tokens.uiLabel(12, weight: .semibold))
                 .foregroundStyle(tokens.textSecondary)
             Text("\(value)")
                 .font(.caption.weight(.bold))
@@ -402,7 +402,7 @@ struct DailyReviewView: View {
                 Text(title)
             }
             .font(.caption.weight(.semibold))
-            .foregroundStyle(emphasize ? Color.white : tokens.textSecondary)
+            .foregroundStyle(emphasize ? tokens.textPrimary : tokens.textSecondary)
             .padding(.horizontal, compact ? 9 : 11)
             .padding(.vertical, compact ? 5 : 7)
             .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgFloating.opacity(0.8)), in: Capsule())

@@ -27,6 +27,11 @@ struct SidebarView: View {
                 smartRow("Planned", systemImage: "calendar", selection: .planned, count: store.plannedCount)
                 smartRow("Overdue", systemImage: "exclamationmark.triangle", selection: .overdue, count: store.overdueCount)
                 smartRow("All Tasks", systemImage: "tray.full", selection: .all, count: store.todoCount)
+            } header: {
+                Text("Focus Views")
+                    .font(tokens.editorialTitle(11, weight: .semibold))
+                    .foregroundStyle(tokens.textSecondary)
+                    .textCase(.uppercase)
             }
 
             Section {
@@ -48,6 +53,11 @@ struct SidebarView: View {
                 } else {
                     addListButton
                 }
+            } header: {
+                Text("Lists")
+                    .font(tokens.editorialTitle(11, weight: .semibold))
+                    .foregroundStyle(tokens.textSecondary)
+                    .textCase(.uppercase)
             } footer: {
                 HStack {
                     Spacer()
@@ -97,7 +107,7 @@ struct SidebarView: View {
                     .frame(width: 16, alignment: .center)
 
                 Text("Add list")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(tokens.uiLabel(13, weight: .medium))
                     .foregroundStyle(tokens.textTertiary)
 
                 Spacer(minLength: 0)
@@ -107,9 +117,9 @@ struct SidebarView: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(tokens.bgFloating.opacity(0.28), in: RoundedRectangle(cornerRadius: 9))
+            .background(tokens.bgFloating.opacity(0.54), in: RoundedRectangle(cornerRadius: 10))
             .overlay {
-                RoundedRectangle(cornerRadius: 9)
+                RoundedRectangle(cornerRadius: 10)
                     .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
             }
         }
@@ -262,18 +272,18 @@ private struct SidebarRowButton: View {
 
                 Image(systemName: systemImage)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary.opacity(0.95))
                     .frame(width: 16, alignment: .center)
 
                 Text(title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
+                    .font(tokens.uiLabel(13, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary.opacity(0.95))
 
                 Spacer(minLength: 0)
 
                 if let count {
                     Text("\(count)")
-                        .font(.caption2.weight(.semibold))
+                        .font(tokens.uiLabel(11, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(isSelected ? tokens.textSecondary : tokens.textTertiary)
                         .padding(.horizontal, 7)
@@ -293,8 +303,12 @@ private struct SidebarRowButton: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(isSelected ? tokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
-            .contentShape(RoundedRectangle(cornerRadius: 9))
+            .background(isSelected ? tokens.accentAmber.opacity(0.16) : Color.clear, in: RoundedRectangle(cornerRadius: 10))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(isSelected ? tokens.accentSecondary.opacity(0.46) : Color.clear, lineWidth: 1)
+            }
+            .contentShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
         .onHover { hovering in

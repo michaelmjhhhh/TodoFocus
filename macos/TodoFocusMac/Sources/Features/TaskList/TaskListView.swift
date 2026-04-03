@@ -46,10 +46,10 @@ struct TaskListView: View {
             HStack(spacing: 10) {
                 if isOverdueView {
                     Text("Overdue \u{00b7} \(store.formatDebt(store.totalOverdueDebtSeconds)) total debt")
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(tokens.editorialTitle(19, weight: .semibold))
                 } else {
                     Text(title)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(tokens.editorialTitle(19, weight: .semibold))
                 }
                 Spacer()
                 if !isOverdueView {
@@ -126,7 +126,7 @@ struct TaskListView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(tokens.sectionBorder, lineWidth: 1)
             }
-            .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
+            .shadow(color: Color.black.opacity(0.08), radius: 5, y: 2)
 
             if isOverdueView && activeTodosCache.isEmpty {
                 Spacer()
@@ -162,7 +162,7 @@ struct TaskListView: View {
             }
         )
         .padding(16)
-        .foregroundStyle(.primary)
+        .foregroundStyle(tokens.textPrimary)
         .animation(MotionTokens.interactiveSpring, value: filteredTodosCache.count)
         .animation(MotionTokens.focusEase, value: appModel.timeFilter)
         .onAppear {
@@ -313,7 +313,7 @@ struct TaskListView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(tokens.editorialTitle(12, weight: .semibold))
                     .foregroundStyle(tokens.mutedText)
                 Spacer()
                 Text("\(todos.count)")
@@ -348,12 +348,12 @@ struct TaskListView: View {
             }
         }
         .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
         .overlay {
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 12)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
+        .shadow(color: Color.black.opacity(0.06), radius: 4, y: 1)
     }
 
     private func completedColumn(todos: [Todo]) -> some View {
@@ -426,9 +426,9 @@ struct TaskListView: View {
             }
         }
         .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
         .overlay {
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 12)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }

@@ -15,7 +15,7 @@ class QuickCapturePanel: NSPanel {
         self.titleVisibility = .hidden
         self.titlebarAppearsTransparent = true
         self.isMovableByWindowBackground = true
-        self.backgroundColor = NSColor(red: 0.07, green: 0.07, blue: 0.08, alpha: 0.94)
+        self.backgroundColor = NSColor(red: 0.102, green: 0.102, blue: 0.094, alpha: 0.96)
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         self.isOpaque = false
         self.hasShadow = true

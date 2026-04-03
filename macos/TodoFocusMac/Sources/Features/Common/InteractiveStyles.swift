@@ -2,11 +2,12 @@ import SwiftUI
 
 struct AppIconButtonStyle: ButtonStyle {
     var isEmphasized: Bool = false
+    @Environment(\.themeTokens) private var tokens
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(6)
-            .background((isEmphasized ? Color.white.opacity(0.15) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: 8))
+            .background((isEmphasized ? tokens.accentAmber.opacity(0.22) : tokens.bgFloating.opacity(0.92)), in: RoundedRectangle(cornerRadius: 8))
             .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
             .opacity(configuration.isPressed ? 0.88 : 1.0)
             .animation(MotionTokens.quickDuration == 0 ? .none : MotionTokens.hoverEase, value: configuration.isPressed)
@@ -22,14 +23,14 @@ struct RowStateModifier: ViewModifier {
         let isActive = isHovered || isSelected
         content
             .background(
-                (isSelected ? Color.white.opacity(0.20) : Color.white.opacity(isHovered ? 0.10 : 0.04)),
+                (isSelected ? tokens.accentAmber.opacity(0.20) : tokens.bgFloating.opacity(isHovered ? 0.66 : 0.40)),
                 in: RoundedRectangle(cornerRadius: 8)
             )
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
                         isSelected
-                            ? Color.white.opacity(0.22)
+                            ? tokens.accentSecondary.opacity(0.55)
                             : tokens.sectionBorder.opacity(isActive ? 0.95 : 0),
                         lineWidth: isSelected ? 1.2 : 1
                     )

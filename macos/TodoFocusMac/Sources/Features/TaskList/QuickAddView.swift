@@ -18,14 +18,19 @@ struct QuickAddView: View {
                     .foregroundStyle(isInputFocused ? tokens.accentTerracotta : tokens.textTertiary)
                     .accessibilityHidden(true)
 
-                TextField("Add a task (⌘⇧N)", text: $text)
-                    .textFieldStyle(.plain)
-                    .focused($isInputFocused)
-                    .onSubmit(submit)
-                    .accessibilityLabel("Task title")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("New Intention")
+                        .font(tokens.editorialTitle(11, weight: .semibold))
+                        .foregroundStyle(tokens.textSecondary)
+                    TextField("Add a task (⌘⇧N)", text: $text)
+                        .textFieldStyle(.plain)
+                        .focused($isInputFocused)
+                        .onSubmit(submit)
+                        .accessibilityLabel("Task title")
+                }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .padding(.vertical, 9)
             .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -42,7 +47,7 @@ struct QuickAddView: View {
                 submit()
             } label: {
                 Text("Add")
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(tokens.uiLabel(13, weight: .semibold))
                     .frame(minWidth: 54)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 9)
