@@ -70,9 +70,11 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
                     object: nil,
                     queue: .main
                 ) { [weak self] _ in
-                    guard let self, let field = self.field else { return }
-                    if let window = field.window ?? NSApp.keyWindow ?? NSApp.mainWindow {
-                        window.makeFirstResponder(field)
+                    Task { @MainActor [weak self] in
+                        guard let self, let field = self.field else { return }
+                        if let window = field.window ?? NSApp.keyWindow ?? NSApp.mainWindow {
+                            window.makeFirstResponder(field)
+                        }
                     }
                 }
             }

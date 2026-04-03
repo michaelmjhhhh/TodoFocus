@@ -71,7 +71,9 @@ final class QuickCaptureService {
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                self?.refreshAccessibilityAndHotkey()
+                Task { @MainActor [weak self] in
+                    self?.refreshAccessibilityAndHotkey()
+                }
             }
         }
 
