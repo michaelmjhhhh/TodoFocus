@@ -80,6 +80,12 @@ struct QuickAddView: View {
             .allowsHitTesting(false)
             .accessibilityHidden(true)
         }
+        .onReceive(NotificationCenter.default.publisher(for: .todoFocusQuickAddFocusRequested)) { _ in
+            isInputFocused = false
+            DispatchQueue.main.async {
+                isInputFocused = true
+            }
+        }
     }
 
     private func submit() {

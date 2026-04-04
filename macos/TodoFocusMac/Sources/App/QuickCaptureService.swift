@@ -3,6 +3,10 @@ import Observation
 import AVFoundation
 import Speech
 
+extension Notification.Name {
+    static let todoFocusQuickAddFocusRequested = Notification.Name("todoFocusQuickAddFocusRequested")
+}
+
 @Observable
 @MainActor
 final class QuickCaptureService {
@@ -27,6 +31,7 @@ final class QuickCaptureService {
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private var appDidBecomeActiveObserver: NSObjectProtocol?
     @ObservationIgnored private let audioEngine = AVAudioEngine()
     @ObservationIgnored private var recognitionRequests: [String: SFSpeechAudioBufferRecognitionRequest] = [:]
     @ObservationIgnored private var recognitionTasks: [String: SFSpeechRecognitionTask] = [:]
@@ -38,20 +43,50 @@ final class QuickCaptureService {
     @ObservationIgnored private var isCleaningUpHotkey: Bool = false
 
     func setup() {
-        checkAndRequestAccessibility()
-        setupGlobalHotkey()
+        ensureLifecycleObservers()
+        refreshAccessibilityAndHotkey()
     }
 
-    private func checkAndRequestAccessibility() {
+    private func refreshAccessibilityAndHotkey() {
         let trusted = AXIsProcessTrusted()
-        if !trusted {
-            needsAccessibilityPermission = true
+        needsAccessibilityPermission = !trusted
+        if trusted {
+            setupGlobalHotkey()
+        } else {
+            isHotkeyReady = false
         }
     }
 
     func requestAccessibilityPermission() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
             NSWorkspace.shared.open(url)
+        }
+        scheduleAccessibilityRecheck()
+    }
+
+    private func ensureLifecycleObservers() {
+        if appDidBecomeActiveObserver == nil {
+            appDidBecomeActiveObserver = NotificationCenter.default.addObserver(
+                forName: NSApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.refreshAccessibilityAndHotkey()
+                }
+            }
+        }
+
+    }
+
+    private func scheduleAccessibilityRecheck(attemptsRemaining: Int = 6) {
+        guard attemptsRemaining > 0 else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+            guard let self else { return }
+            self.refreshAccessibilityAndHotkey()
+            if self.needsAccessibilityPermission {
+                self.scheduleAccessibilityRecheck(attemptsRemaining: attemptsRemaining - 1)
+            }
         }
     }
 
@@ -68,16 +103,36 @@ final class QuickCaptureService {
             guard let refcon = refcon else { return Unmanaged.passUnretained(event) }
             let service = Unmanaged<QuickCaptureService>.fromOpaque(refcon).takeUnretainedValue()
 
+            if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+                DispatchQueue.main.async {
+                    if let existingTap = service.eventTap {
+                        CGEvent.tapEnable(tap: existingTap, enable: true)
+                    }
+                }
+                return Unmanaged.passUnretained(event)
+            }
+
             if type == .keyDown {
                 let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
                 let flags = event.flags
 
                 let hasCmd = flags.contains(.maskCommand)
                 let hasShift = flags.contains(.maskShift)
+                let charsIgnoringModifiers = NSEvent(cgEvent: event)?.charactersIgnoringModifiers?.lowercased() ?? ""
 
-                if hasCmd && hasShift && keyCode == 17 {
-                    Task { @MainActor in
+                let isQuickCaptureKey = charsIgnoringModifiers == "t" || keyCode == 17
+
+                if hasCmd && hasShift && isQuickCaptureKey {
+                    DispatchQueue.main.async {
                         service.showCapturePanel()
+                    }
+                    return nil
+                }
+
+                let isQuickAddKey = charsIgnoringModifiers == "n" || keyCode == 45
+                if hasCmd && hasShift && isQuickAddKey && NSApp.isActive {
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .todoFocusQuickAddFocusRequested, object: nil)
                     }
                     return nil
                 }
@@ -436,6 +491,10 @@ final class QuickCaptureService {
         if let eventTap = eventTap {
             CFMachPortInvalidate(eventTap)
         }
+        if let observer = appDidBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        appDidBecomeActiveObserver = nil
         eventTap = nil
         runLoopSource = nil
         isHotkeyReady = false

@@ -27,6 +27,7 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
         field.maximumNumberOfLines = 1
         field.cell?.usesSingleLineMode = true
         field.cell?.wraps = false
+        context.coordinator.attachField(field)
         context.coordinator.applyHighlight(to: field, text: text, preserveSelection: false)
         return field
     }
@@ -54,9 +55,29 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
     final class Coordinator: NSObject, NSTextFieldDelegate {
         var parent: QuickAddHighlightingTextField
         private var isProgrammaticChange = false
+        private weak var field: NSTextField?
+        private var quickAddFocusObserver: NSObjectProtocol?
 
         init(parent: QuickAddHighlightingTextField) {
             self.parent = parent
+        }
+
+        func attachField(_ field: NSTextField) {
+            self.field = field
+            if quickAddFocusObserver == nil {
+                quickAddFocusObserver = NotificationCenter.default.addObserver(
+                    forName: .todoFocusQuickAddFocusRequested,
+                    object: nil,
+                    queue: .main
+                ) { [weak self] _ in
+                    Task { @MainActor [weak self] in
+                        guard let self, let field = self.field else { return }
+                        if let window = field.window ?? NSApp.keyWindow ?? NSApp.mainWindow {
+                            window.makeFirstResponder(field)
+                        }
+                    }
+                }
+            }
         }
 
         func controlTextDidBeginEditing(_ obj: Notification) {

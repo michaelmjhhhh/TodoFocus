@@ -80,6 +80,7 @@ struct TodoFocusMacApp: App {
                     .themeMode(themeStore.theme)
                     .task {
                         appDelegate.onTerminateRequested = { [weak store] in
+                            appModel.quickCaptureService.cleanup()
                             await store?.endFocusForAppTermination()
                         }
                     }
