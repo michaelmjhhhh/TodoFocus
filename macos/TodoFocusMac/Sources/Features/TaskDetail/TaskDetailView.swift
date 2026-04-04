@@ -145,7 +145,25 @@ struct TaskDetailView: View {
         let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.10 : 0
 
         return VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
+            HStack(spacing: 12) {
+                Button {
+                    try? store.toggleComplete(todoId: todo.id)
+                } label: {
+                    Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 17, weight: .semibold))
+                        .padding(5)
+                        .background(todo.isCompleted ? Color.green.opacity(0.22) : Color.white.opacity(0.12), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(todo.isCompleted ? Color.green : Color.white.opacity(0.94))
+                .overlay {
+                    Circle()
+                        .stroke(Color.white.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
+                        .padding(2)
+                }
+                .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
+                .help(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
+
                 VStack(alignment: .leading, spacing: 6) {
                     TextField("Task title", text: $titleText)
                         .textFieldStyle(.plain)
@@ -592,6 +610,8 @@ struct StepsEditorView: View {
                     .foregroundStyle(step.isCompleted ? tokens.success : tokens.textTertiary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(step.isCompleted ? "Mark step as not completed" : "Mark step as completed")
+            .help(step.isCompleted ? "Mark step as not completed" : "Mark step as completed")
 
             Text(step.title)
                 .font(.subheadline)
