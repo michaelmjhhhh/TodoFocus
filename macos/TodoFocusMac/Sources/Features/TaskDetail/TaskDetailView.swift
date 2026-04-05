@@ -134,7 +134,7 @@ struct TaskDetailView: View {
         let hasValidationError = titleValidationMessage != nil
         let titleStrokeColor: Color = {
             if hasValidationError {
-                return Color.red.opacity(0.70)
+                return tokens.danger.opacity(0.70)
             }
             if isTitleFocused {
                 return Color.white.opacity(0.26)
@@ -163,7 +163,7 @@ struct TaskDetailView: View {
                     if let titleValidationMessage {
                         Text(titleValidationMessage)
                             .font(.caption)
-                            .foregroundStyle(Color.red.opacity(0.92))
+                            .foregroundStyle(tokens.danger.opacity(0.92))
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
@@ -182,7 +182,7 @@ struct TaskDetailView: View {
                         .stroke(Color.white.opacity(titleGlowOpacity), lineWidth: 4)
                         .blur(radius: 0.4)
                 }
-                .shadow(color: hasValidationError ? Color.red.opacity(0.16) : .clear, radius: 6)
+                .shadow(color: hasValidationError ? tokens.danger.opacity(0.16) : .clear, radius: 6)
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -533,6 +533,8 @@ struct StepsEditorView: View {
                     addStep()
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Add step")
+                .help("Add step")
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                     .background(tokens.accentTerracotta)

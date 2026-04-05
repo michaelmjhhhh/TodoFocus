@@ -2,14 +2,15 @@ import SwiftUI
 
 struct DebtBadge: View {
     let timeString: String
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
         Text("Overdue \(timeString)")
             .font(.caption2.weight(.medium))
-            .foregroundStyle(Color.red)
+            .foregroundStyle(tokens.danger)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(Color.red.opacity(0.12))
+            .background(tokens.danger.opacity(0.12))
             .cornerRadius(4)
     }
 }

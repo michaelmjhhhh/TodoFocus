@@ -69,6 +69,7 @@ struct QuickAddView: View {
             .opacity(canSubmit ? 1 : 0.72)
             .disabled(!canSubmit)
             .accessibilityLabel("Add task")
+            .help("Add task")
             .animation(MotionTokens.focusEase, value: canSubmit)
         }
         .background {
