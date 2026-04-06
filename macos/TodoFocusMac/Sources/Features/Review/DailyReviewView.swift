@@ -133,7 +133,7 @@ struct DailyReviewView: View {
                         .foregroundStyle(tokens.textSecondary)
                     Text(title)
                         .font(.headline.weight(.semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(tokens.textPrimary)
                     Text("\(columns.reduce(0) { $0 + $1.todos.count })")
                         .font(.caption.weight(.bold))
                         .monospacedDigit()
@@ -402,7 +402,7 @@ struct DailyReviewView: View {
                 Text(title)
             }
             .font(.caption.weight(.semibold))
-            .foregroundStyle(emphasize ? Color.white : tokens.textSecondary)
+            .foregroundStyle(emphasize ? tokens.textPrimary : tokens.textSecondary)
             .padding(.horizontal, compact ? 9 : 11)
             .padding(.vertical, compact ? 5 : 7)
             .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgFloating.opacity(0.8)), in: Capsule())
