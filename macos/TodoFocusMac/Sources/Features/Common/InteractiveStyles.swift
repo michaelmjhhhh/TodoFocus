@@ -22,14 +22,14 @@ struct RowStateModifier: ViewModifier {
         let isActive = isHovered || isSelected
         content
             .background(
-                (isSelected ? Color.white.opacity(0.20) : Color.white.opacity(isHovered ? 0.10 : 0.04)),
+                (isSelected ? tokens.textPrimary.opacity(0.20) : tokens.textPrimary.opacity(isHovered ? 0.10 : 0.04)),
                 in: RoundedRectangle(cornerRadius: 8)
             )
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
                         isSelected
-                            ? Color.white.opacity(0.22)
+                            ? tokens.textPrimary.opacity(0.22)
                             : tokens.sectionBorder.opacity(isActive ? 0.95 : 0),
                         lineWidth: isSelected ? 1.2 : 1
                     )
