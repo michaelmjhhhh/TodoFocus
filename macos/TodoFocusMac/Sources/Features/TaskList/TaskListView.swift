@@ -215,6 +215,7 @@ struct TaskListView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Clear search")
+                    .help("Clear search")
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
