@@ -24,6 +24,7 @@ struct ImmersiveHeaderView: View {
             Image(systemName: "checkmark")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(tokens.accentTerracotta)
+                .accessibilityHidden(true)
 
             Text("TodoFocus.")
                 .font(.system(size: 13, weight: .medium, design: .default))
@@ -43,6 +44,8 @@ struct ImmersiveHeaderView: View {
                 .frame(width: 24, height: 24)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(isSidebarVisible ? "Hide sidebar" : "Show sidebar")
+        .help(isSidebarVisible ? "Hide sidebar" : "Show sidebar")
         .opacity(isExpanded ? 1 : 0)
     }
 }
