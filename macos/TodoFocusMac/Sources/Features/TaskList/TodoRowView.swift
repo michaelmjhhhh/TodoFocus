@@ -2,14 +2,15 @@ import SwiftUI
 
 struct DebtBadge: View {
     let timeString: String
+    @Environment(\.themeTokens) private var tokens
 
     var body: some View {
         Text("Overdue \(timeString)")
             .font(.caption2.weight(.medium))
-            .foregroundStyle(Color.red)
+            .foregroundStyle(tokens.danger)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(Color.red.opacity(0.12))
+            .background(tokens.danger.opacity(0.12))
             .cornerRadius(4)
     }
 }
@@ -36,7 +37,7 @@ struct TodoRowView: View {
 
     private var indicatorColor: Color {
         if todo.isImportant {
-            return .yellow
+            return tokens.accentAmber
         }
         return listColor ?? tokens.accentTerracotta
     }
@@ -51,13 +52,13 @@ struct TodoRowView: View {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 17, weight: .semibold))
                     .padding(5)
-                    .background(todo.isCompleted ? Color.green.opacity(0.22) : Color.white.opacity(0.12), in: Circle())
+                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.12), in: Circle())
             }
             .buttonStyle(.plain)
-            .foregroundStyle(todo.isCompleted ? Color.green : Color.white.opacity(0.94))
+            .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary.opacity(0.94))
             .overlay {
                 Circle()
-                    .stroke(Color.white.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
+                    .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
                     .padding(2)
             }
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
@@ -67,7 +68,7 @@ struct TodoRowView: View {
                 Text(todo.title)
                     .strikethrough(todo.isCompleted)
                     .font(.body.weight(todo.isCompleted ? .regular : .medium))
-                    .foregroundStyle(isSelected ? Color.white : .primary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : .primary)
                 if let dueDate = todo.dueDate {
                     Label {
                         Text(dueDate, style: .date)
@@ -75,7 +76,7 @@ struct TodoRowView: View {
                         Image(systemName: "calendar")
                     }
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? Color.white.opacity(0.82) : tokens.mutedText)
+                    .foregroundStyle(isSelected ? tokens.textPrimary.opacity(0.82) : tokens.mutedText)
                 }
                 if todo.isOverdue {
                     DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
@@ -89,7 +90,7 @@ struct TodoRowView: View {
                     Image(systemName: todo.isImportant ? "star.fill" : "star")
                 }
                 .buttonStyle(AppIconButtonStyle())
-                .foregroundStyle(todo.isImportant ? Color.yellow : tokens.mutedText)
+                .foregroundStyle(todo.isImportant ? tokens.accentAmber : tokens.mutedText)
                 .accessibilityLabel(todo.isImportant ? "Mark as not important" : "Mark as important")
                 .help(todo.isImportant ? "Mark as not important" : "Mark as important")
 
