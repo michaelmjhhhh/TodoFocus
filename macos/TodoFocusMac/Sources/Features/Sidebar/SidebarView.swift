@@ -413,8 +413,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Cancel edit list")
-                .help("Cancel edit list")
+                .accessibilityLabel("Cancel rename list")
+                .help("Cancel rename list")
             }
 
             colorPickerRow(selectedColor: $editingListColor)
