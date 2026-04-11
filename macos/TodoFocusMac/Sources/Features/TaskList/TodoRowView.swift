@@ -68,7 +68,7 @@ struct TodoRowView: View {
                 Text(todo.title)
                     .strikethrough(todo.isCompleted)
                     .font(.body.weight(todo.isCompleted ? .regular : .medium))
-                    .foregroundStyle(tokens.textPrimary)
+                    .foregroundStyle(isSelected ? tokens.textPrimary : .primary)
                 if let dueDate = todo.dueDate {
                     Label {
                         Text(dueDate, style: .date)
