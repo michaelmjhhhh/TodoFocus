@@ -1,4 +1,5 @@
 import XCTest
+import CryptoKit
 @testable import TodoFocusMac
 
 @MainActor
@@ -112,6 +113,65 @@ final class HardFocusSessionManagerTests: XCTestCase {
         XCTAssertEqual(agent.registerCallCount, 1)
         XCTAssertTrue(manager.isEnforcing)
         XCTAssertNotNil(try repository.activeSession())
+    }
+
+    func testStartSessionPersistsNonEmptySalt() async throws {
+        let dbManager = try DatabaseManager(databasePath: ":memory:")
+        let repository = HardFocusSessionRepository(dbQueue: dbManager.dbQueue)
+        let manager = HardFocusSessionManager(
+            repository: repository,
+            agentManager: MockHardFocusAgentManager(isRegistered: true, isRunning: true),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        try await manager.startSession(
+            blockedApps: ["com.apple.Safari"],
+            duration: 60,
+            focusTaskId: "task-1",
+            passphrase: "unlock"
+        )
+
+        let active = try repository.activeSession()
+        XCTAssertNotNil(active)
+        XCTAssertFalse(active?.unlockPhraseSalt.isEmpty ?? true)
+    }
+
+    func testEndSessionSupportsLegacyUnsaltedHashes() async throws {
+        let dbManager = try DatabaseManager(databasePath: ":memory:")
+        let repository = HardFocusSessionRepository(dbQueue: dbManager.dbQueue)
+        let passphrase = "unlock"
+        let legacyHash = SHA256.hash(data: Data(passphrase.utf8)).compactMap { String(format: "%02x", $0) }.joined()
+        let session = HardFocusSessionRecord(
+            sessionId: "legacy-session",
+            mode: "hard",
+            status: .active,
+            startTime: Date().addingTimeInterval(-60),
+            plannedEndTime: Date().addingTimeInterval(600),
+            actualEndTime: nil,
+            unlockPhraseHash: legacyHash,
+            unlockPhraseSalt: "",
+            blockedApps: #"["com.apple.Safari"]"#,
+            focusTaskId: "task-1",
+            graceSeconds: 300,
+            createdAt: Date().addingTimeInterval(-60)
+        )
+        try repository.create(session)
+
+        let manager = HardFocusSessionManager(
+            repository: repository,
+            agentManager: MockHardFocusAgentManager(isRegistered: true, isRunning: true),
+            isAccessibilityTrusted: { true },
+            agentStartupTimeout: 0,
+            agentPollInterval: 0.01
+        )
+
+        try await manager.endSession(passphrase: passphrase)
+
+        XCTAssertFalse(manager.isEnforcing)
+        XCTAssertNil(manager.currentSession)
+        XCTAssertNil(try repository.activeSession())
     }
 }
 

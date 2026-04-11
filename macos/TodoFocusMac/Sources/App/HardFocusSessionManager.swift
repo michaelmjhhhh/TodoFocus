@@ -95,7 +95,7 @@ final class HardFocusSessionManager: ObservableObject {
             endTime = Date.distantFuture
         }
 
-        let salt = UUID().uuidString.prefix(16).lowercased()
+        let salt = makePassphraseSalt()
         let passphraseHash = hashPassphrase(passphrase, salt: salt)
         let blockedAppsJson = try JSONEncoder().encode(blockedApps)
         guard let blockedAppsString = String(data: blockedAppsJson, encoding: .utf8) else {
@@ -214,14 +214,25 @@ final class HardFocusSessionManager: ObservableObject {
 
     private func hashPassphrase(_ phrase: String, salt: String) -> String {
         // SHA256 as a placeholder - full Argon2 requires third-party library
-        // Prepending salt before hashing to improve security
-        let saltedPhrase = salt + phrase
-        let data = Data(saltedPhrase.utf8)
+        let data = Data("\(salt):\(phrase)".utf8)
         let hash = SHA256.hash(data: data)
         return hash.compactMap { String(format: "%02x", $0) }.joined()
     }
 
+    private func hashPassphraseLegacy(_ phrase: String) -> String {
+        let data = Data(phrase.utf8)
+        let hash = SHA256.hash(data: data)
+        return hash.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    private func makePassphraseSalt() -> String {
+        UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
+    }
+
     private func verifyPassphrase(_ phrase: String, salt: String, hash: String) -> Bool {
+        if salt.isEmpty {
+            return hashPassphraseLegacy(phrase) == hash
+        }
         return hashPassphrase(phrase, salt: salt) == hash
     }
 }
