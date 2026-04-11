@@ -592,6 +592,8 @@ struct StepsEditorView: View {
                     .foregroundStyle(step.isCompleted ? tokens.success : tokens.textTertiary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(step.isCompleted ? "Mark step as not completed" : "Mark step as completed")
+            .help(step.isCompleted ? "Mark step as not completed" : "Mark step as completed")
 
             Text(step.title)
                 .font(.subheadline)

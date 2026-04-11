@@ -146,6 +146,8 @@ struct SidebarView: View {
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Confirm add list")
+                .help("Confirm add list")
                 .disabled(newListName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
                 Button {
@@ -159,6 +161,8 @@ struct SidebarView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Cancel add list")
+                .help("Cancel add list")
             }
 
             colorPickerRow(selectedColor: $newListColor)
@@ -397,6 +401,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Confirm rename")
+                .help("Confirm rename")
 
                 Button {
                     editingListId = nil
@@ -407,6 +413,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Cancel rename")
+                .help("Cancel rename")
             }
 
             colorPickerRow(selectedColor: $editingListColor)
