@@ -401,8 +401,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Confirm rename")
-                .help("Confirm rename")
+                .accessibilityLabel("Confirm rename list")
+                .help("Confirm rename list")
 
                 Button {
                     editingListId = nil
@@ -413,8 +413,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Cancel rename")
-                .help("Cancel rename")
+                .accessibilityLabel("Cancel rename list")
+                .help("Cancel rename list")
             }
 
             colorPickerRow(selectedColor: $editingListColor)
