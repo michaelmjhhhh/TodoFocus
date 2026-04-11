@@ -152,13 +152,13 @@ struct TaskDetailView: View {
                     Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 17, weight: .semibold))
                         .padding(5)
-                        .background(todo.isCompleted ? Color.green.opacity(0.22) : Color.white.opacity(0.12), in: Circle())
+                        .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.12), in: Circle())
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(todo.isCompleted ? Color.green : Color.white.opacity(0.94))
+                .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary.opacity(0.94))
                 .overlay {
                     Circle()
-                        .stroke(Color.white.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
+                        .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
                         .padding(2)
                 }
                 .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
