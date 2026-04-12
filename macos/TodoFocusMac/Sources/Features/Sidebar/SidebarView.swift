@@ -13,11 +13,6 @@ struct SidebarView: View {
     @State private var editingListName: String = ""
     @State private var editingListColor: String = "#6366F1"
 
-    private let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         List {
             Section {
@@ -147,6 +142,8 @@ struct SidebarView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(newListName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .accessibilityLabel("Save list")
+                .help("Save list")
 
                 Button {
                     withAnimation(.easeInOut(duration: 0.15)) {
@@ -159,6 +156,8 @@ struct SidebarView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Cancel")
+                .help("Cancel")
             }
 
             colorPickerRow(selectedColor: $newListColor)
@@ -169,22 +168,26 @@ struct SidebarView: View {
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
-            ForEach(availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+            ForEach(ListColorPalette.availableColors, id: \.self) { colorHex in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = colorHex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: colorHex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == colorHex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(ListColorPalette.colorName(for: colorHex))
+                .help(ListColorPalette.colorName(for: colorHex))
             }
         }
     }
@@ -315,11 +318,6 @@ private struct SidebarListItemView: View {
     @Binding var editingListColor: String
     @Environment(\.themeTokens) private var tokens
 
-    private static let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         if isEditing {
             listEditRow
@@ -397,6 +395,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Save list")
+                .help("Save list")
 
                 Button {
                     editingListId = nil
@@ -407,6 +407,8 @@ private struct SidebarListItemView: View {
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Cancel")
+                .help("Cancel")
             }
 
             colorPickerRow(selectedColor: $editingListColor)
@@ -417,22 +419,26 @@ private struct SidebarListItemView: View {
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
-            ForEach(Self.availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+            ForEach(ListColorPalette.availableColors, id: \.self) { colorHex in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = colorHex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: colorHex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == colorHex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(ListColorPalette.colorName(for: colorHex))
+                .help(ListColorPalette.colorName(for: colorHex))
             }
         }
     }
@@ -446,5 +452,28 @@ private struct SidebarListItemView: View {
         store.renameList(listId: list.id, newName: trimmed, color: editingListColor)
         editingListId = nil
         editingListName = ""
+    }
+}
+
+private enum ListColorPalette {
+    static let availableColors: [String] = [
+        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
+        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
+    ]
+
+    static func colorName(for hex: String) -> String {
+        switch hex.uppercased() {
+        case "#EF4444": return "Red"
+        case "#F97316": return "Orange"
+        case "#EAB308": return "Yellow"
+        case "#22C55E": return "Green"
+        case "#06B6D4": return "Cyan"
+        case "#3B82F6": return "Blue"
+        case "#8B5CF6": return "Purple"
+        case "#EC4899": return "Pink"
+        case "#6366F1": return "Indigo"
+        case "#14B8A6": return "Teal"
+        default: return "Custom Color"
+        }
     }
 }
