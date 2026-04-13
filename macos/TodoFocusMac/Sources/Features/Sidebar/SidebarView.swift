@@ -170,21 +170,26 @@ struct SidebarView: View {
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
             ForEach(availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = colorHex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: colorHex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == colorHex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .accessibilityHidden(true)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(ListColor.name(for: colorHex))
+                .help(ListColor.name(for: colorHex))
             }
         }
     }
@@ -418,21 +423,26 @@ private struct SidebarListItemView: View {
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
             ForEach(Self.availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = colorHex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: colorHex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == colorHex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .accessibilityHidden(true)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(ListColor.name(for: colorHex))
+                .help(ListColor.name(for: colorHex))
             }
         }
     }
