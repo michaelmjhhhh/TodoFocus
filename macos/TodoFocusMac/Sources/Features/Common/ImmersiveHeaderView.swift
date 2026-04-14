@@ -44,6 +44,8 @@ struct ImmersiveHeaderView: View {
         }
         .buttonStyle(.plain)
         .opacity(isExpanded ? 1 : 0)
+        .accessibilityLabel(isSidebarVisible ? "Hide sidebar" : "Show sidebar")
+        .help(isSidebarVisible ? "Hide sidebar" : "Show sidebar")
     }
 }
 
