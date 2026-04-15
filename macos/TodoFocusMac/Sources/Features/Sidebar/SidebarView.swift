@@ -13,11 +13,6 @@ struct SidebarView: View {
     @State private var editingListName: String = ""
     @State private var editingListColor: String = "#6366F1"
 
-    private let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         List {
             Section {
@@ -169,22 +164,26 @@ struct SidebarView: View {
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
-            ForEach(availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+            ForEach(ListColor.all) { color in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = color.hex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: color.hex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == color.hex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(color.name)
+                .help(color.name)
             }
         }
     }
@@ -315,11 +314,6 @@ private struct SidebarListItemView: View {
     @Binding var editingListColor: String
     @Environment(\.themeTokens) private var tokens
 
-    private static let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         if isEditing {
             listEditRow
@@ -417,22 +411,26 @@ private struct SidebarListItemView: View {
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
         HStack(spacing: 6) {
-            ForEach(Self.availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+            ForEach(ListColor.all) { color in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor.wrappedValue = color.hex
                     }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
+                } label: {
+                    Circle()
+                        .fill(Color(hex: color.hex))
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor.wrappedValue == color.hex {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
-                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(color.name)
+                .help(color.name)
             }
         }
     }
