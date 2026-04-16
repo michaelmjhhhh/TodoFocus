@@ -13,11 +13,6 @@ struct SidebarView: View {
     @State private var editingListName: String = ""
     @State private var editingListColor: String = "#6366F1"
 
-    private let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         List {
             Section {
@@ -161,32 +156,10 @@ struct SidebarView: View {
                 .buttonStyle(.plain)
             }
 
-            colorPickerRow(selectedColor: $newListColor)
+            ColorPickerRow(selectedColor: $newListColor)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
-    }
-
-    private func colorPickerRow(selectedColor: Binding<String>) -> some View {
-        HStack(spacing: 6) {
-            ForEach(availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
-                        }
-                    }
-            }
-        }
     }
 
     private func commitAddList() {
@@ -315,11 +288,6 @@ private struct SidebarListItemView: View {
     @Binding var editingListColor: String
     @Environment(\.themeTokens) private var tokens
 
-    private static let availableColors: [String] = [
-        "#EF4444", "#F97316", "#EAB308", "#22C55E", "#06B6D4",
-        "#3B82F6", "#8B5CF6", "#EC4899", "#6366F1", "#14B8A6"
-    ]
-
     var body: some View {
         if isEditing {
             listEditRow
@@ -409,32 +377,10 @@ private struct SidebarListItemView: View {
                 .buttonStyle(.plain)
             }
 
-            colorPickerRow(selectedColor: $editingListColor)
+            ColorPickerRow(selectedColor: $editingListColor)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
-    }
-
-    private func colorPickerRow(selectedColor: Binding<String>) -> some View {
-        HStack(spacing: 6) {
-            ForEach(Self.availableColors, id: \.self) { colorHex in
-                Circle()
-                    .fill(Color(hex: colorHex))
-                    .frame(width: 16, height: 16)
-                    .overlay {
-                        if selectedColor.wrappedValue == colorHex {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selectedColor.wrappedValue = colorHex
-                        }
-                    }
-            }
-        }
     }
 
     private var renameList: Void {
@@ -446,5 +392,36 @@ private struct SidebarListItemView: View {
         store.renameList(listId: list.id, newName: trimmed, color: editingListColor)
         editingListId = nil
         editingListName = ""
+    }
+}
+
+private struct ColorPickerRow: View {
+    @Binding var selectedColor: String
+    @Environment(\.themeTokens) private var tokens
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach(ListColor.all) { listColor in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        selectedColor = listColor.id
+                    }
+                } label: {
+                    Circle()
+                        .fill(listColor.color)
+                        .frame(width: 16, height: 16)
+                        .overlay {
+                            if selectedColor == listColor.id {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(listColor.name) color")
+                .help("\(listColor.name) color")
+            }
+        }
     }
 }
