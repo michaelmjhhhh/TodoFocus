@@ -46,6 +46,24 @@ final class SmartListFilterTests: XCTestCase {
         XCTAssertEqual(filterTodos(todos, for: .all).map(\.id), ["a", "b"])
     }
 
+    func testAllSmartListExcludesArchivedTodos() {
+        let todos = [
+            makeTodo(id: "visible"),
+            makeTodo(id: "archived", isArchived: true)
+        ]
+
+        XCTAssertEqual(filterTodos(todos, for: .all).map(\.id), ["visible"])
+    }
+
+    func testArchiveSmartListReturnsOnlyArchivedTodos() {
+        let todos = [
+            makeTodo(id: "visible"),
+            makeTodo(id: "archived", isArchived: true)
+        ]
+
+        XCTAssertEqual(filterTodos(todos, for: .archive).map(\.id), ["archived"])
+    }
+
     func testCustomSmartListMatchesExactListId() {
         let todos = [
             makeTodo(id: "exact", listId: "list-1"),
@@ -115,6 +133,7 @@ final class SmartListFilterTests: XCTestCase {
         isMyDay: Bool = false,
         isImportant: Bool = false,
         isCompleted: Bool = false,
+        isArchived: Bool = false,
         dueDate: Date? = nil,
         listId: String? = nil
     ) -> CoreTodo {
@@ -123,6 +142,7 @@ final class SmartListFilterTests: XCTestCase {
             isMyDay: isMyDay,
             isImportant: isImportant,
             isCompleted: isCompleted,
+            isArchived: isArchived,
             dueDate: dueDate,
             listId: listId
         )

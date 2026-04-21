@@ -45,7 +45,7 @@ struct DailyReviewView: View {
                 errorBanner(errorMessage)
             }
 
-            if store.todos.isEmpty {
+            if store.reviewTodos.isEmpty {
                 emptyState
             } else {
                 ScrollView {
@@ -75,10 +75,10 @@ struct DailyReviewView: View {
         }
         .padding(16)
         .onAppear {
-            boardViewModel.recompute(todos: store.todos)
+            boardViewModel.recompute(todos: store.reviewTodos)
         }
-        .onChange(of: store.todos) { _, newTodos in
-            boardViewModel.recompute(todos: newTodos)
+        .onChange(of: store.todos) { _, _ in
+            boardViewModel.recompute(todos: store.reviewTodos)
         }
     }
 

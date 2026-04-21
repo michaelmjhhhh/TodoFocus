@@ -7,6 +7,7 @@ enum SidebarSelection: Equatable {
     case planned
     case overdue
     case all
+    case archive
     case customList(String)
 
     var smartList: SmartList {
@@ -23,6 +24,8 @@ enum SidebarSelection: Equatable {
             return .all
         case .all:
             return .all
+        case .archive:
+            return .archive
         case let .customList(id):
             return .custom(listId: id)
         }

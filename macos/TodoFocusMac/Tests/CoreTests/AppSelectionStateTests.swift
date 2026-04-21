@@ -48,6 +48,9 @@ final class AppSelectionStateTests: XCTestCase {
         model.selectSidebar(.all)
         XCTAssertEqual(model.activeViewID, "all")
 
+        model.selectSidebar(.archive)
+        XCTAssertEqual(model.activeViewID, "archive")
+
         model.selectSidebar(.customList("list-1"))
         XCTAssertEqual(model.activeViewID, "list-1")
     }

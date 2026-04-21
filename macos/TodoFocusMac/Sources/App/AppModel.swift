@@ -41,6 +41,8 @@ final class AppModel {
             return "overdue"
         case .all:
             return "all"
+        case .archive:
+            return "archive"
         case let .customList(id):
             return id
         }

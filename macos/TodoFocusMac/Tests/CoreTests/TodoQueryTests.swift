@@ -36,11 +36,36 @@ final class TodoQueryTests: XCTestCase {
         XCTAssertTrue(result.isEmpty)
     }
 
+    func testQueryExcludesArchivedTodosFromRegularViews() {
+        let todos = [
+            makeTodo(id: "visible", isImportant: true, dueDate: now),
+            makeTodo(id: "archived", isImportant: true, isArchived: true, dueDate: now)
+        ]
+
+        let query = TodoQuery(smartList: .important, timeFilter: .today)
+        let result = query.apply(todos, now: now, calendar: utcCalendar)
+
+        XCTAssertEqual(result.map(\.id), ["visible"])
+    }
+
+    func testQueryArchiveViewIncludesArchivedTodos() {
+        let todos = [
+            makeTodo(id: "visible", isCompleted: true, dueDate: now),
+            makeTodo(id: "archived", isCompleted: true, isArchived: true, dueDate: now)
+        ]
+
+        let query = TodoQuery(smartList: .archive, timeFilter: .allDates)
+        let result = query.apply(todos, now: now, calendar: utcCalendar)
+
+        XCTAssertEqual(result.map(\.id), ["archived"])
+    }
+
     private func makeTodo(
         id: String,
         isMyDay: Bool = false,
         isImportant: Bool = false,
         isCompleted: Bool = false,
+        isArchived: Bool = false,
         dueDate: Date? = nil,
         listId: String? = nil
     ) -> CoreTodo {
@@ -49,6 +74,7 @@ final class TodoQueryTests: XCTestCase {
             isMyDay: isMyDay,
             isImportant: isImportant,
             isCompleted: isCompleted,
+            isArchived: isArchived,
             dueDate: dueDate,
             listId: listId
         )

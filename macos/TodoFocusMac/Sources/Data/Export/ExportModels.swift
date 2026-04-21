@@ -5,10 +5,11 @@ enum ExportFormatVersion {
     static let v1_1 = "1.1"
     static let v1_2 = "1.2"
     static let v1_3 = "1.3"
-    static let current = v1_3
+    static let v1_4 = "1.4"
+    static let current = v1_4
 
     static func isSupported(_ version: String) -> Bool {
-        version == v1_0 || version == v1_1 || version == v1_2 || version == v1_3
+        version == v1_0 || version == v1_1 || version == v1_2 || version == v1_3 || version == v1_4
     }
 }
 
@@ -37,6 +38,7 @@ struct ExportTodo: Codable {
     let id: String
     let title: String
     let isCompleted: Bool
+    let isArchived: Bool
     let isImportant: Bool
     let isMyDay: Bool
     let dueDate: Date?
@@ -58,6 +60,7 @@ extension ExportTodo {
         case id
         case title
         case isCompleted
+        case isArchived
         case isImportant
         case isMyDay
         case dueDate
@@ -79,6 +82,7 @@ extension ExportTodo {
         id = try container.decode(String.self, forKey: .id)
         title = try container.decode(String.self, forKey: .title)
         isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
+        isArchived = try container.decodeIfPresent(Bool.self, forKey: .isArchived) ?? false
         isImportant = try container.decode(Bool.self, forKey: .isImportant)
         isMyDay = try container.decode(Bool.self, forKey: .isMyDay)
         dueDate = try container.decodeIfPresent(Date.self, forKey: .dueDate)
