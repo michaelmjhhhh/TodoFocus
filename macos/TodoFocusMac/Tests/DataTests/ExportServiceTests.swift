@@ -54,6 +54,7 @@ final class ExportServiceTests: XCTestCase {
                 id: "todo-1",
                 title: "Ship",
                 isCompleted: false,
+                isArchived: false,
                 isImportant: true,
                 isMyDay: true,
                 recurrence: nil,
@@ -156,6 +157,38 @@ final class ExportServiceTests: XCTestCase {
         XCTAssertEqual(todo.launchResources.count, 1)
         XCTAssertEqual(todo.launchResources.first?.type, LaunchResourceType.url.rawValue)
         XCTAssertEqual(todo.launchResources.first?.value, "https://example.com")
+        XCTAssertFalse(todo.isArchived)
+    }
+
+    func testDecodeLegacyTodoDefaultsMissingArchiveFlagToFalse() throws {
+        let payload = """
+        {
+          "version": "1.3",
+          "exportedAt": "2026-03-28T12:00:00Z",
+          "lists": [],
+          "todos": [
+            {
+              "id": "todo-legacy",
+              "title": "Legacy Todo",
+              "isCompleted": true,
+              "isImportant": false,
+              "isMyDay": false,
+              "dueDate": null,
+              "notes": "",
+              "listId": null,
+              "focusTimeSeconds": 0,
+              "recurrence": null,
+              "recurrenceInterval": 1,
+              "sortOrder": 0,
+              "steps": [],
+              "launchResources": []
+            }
+          ]
+        }
+        """.data(using: .utf8)!
+
+        let decoded = try ExportData.decode(from: payload)
+        XCTAssertFalse(try XCTUnwrap(decoded.todos.first).isArchived)
     }
 
     func testPreflightWarnsWhenNonPortableLaunchResourcesExist() throws {
@@ -331,6 +364,7 @@ final class ExportServiceTests: XCTestCase {
                 id: todo.id,
                 title: todo.title,
                 isCompleted: todo.isCompleted,
+                isArchived: todo.isArchived,
                 isImportant: todo.isImportant,
                 isMyDay: todo.isMyDay,
                 dueDate: todo.dueDate,
@@ -394,6 +428,7 @@ final class ExportServiceTests: XCTestCase {
                     id: "todo-1",
                     title: "Imported",
                     isCompleted: true,
+                    isArchived: false,
                     isImportant: false,
                     isMyDay: false,
                     dueDate: nil,
@@ -418,6 +453,46 @@ final class ExportServiceTests: XCTestCase {
         XCTAssertEqual(todo.createdAt, createdAt)
         XCTAssertEqual(todo.updatedAt, updatedAt)
         XCTAssertEqual(todo.lastCompletedAt, lastCompletedAt)
+    }
+
+    func testReplaceImportNormalizesArchivedTodoToCompleted() throws {
+        let manager = try makeManager()
+        let service = makeService(manager)
+
+        let payload = ExportData(
+            version: ExportFormatVersion.current,
+            exportedAt: Date(),
+            meta: nil,
+            lists: [],
+            todos: [
+                ExportTodo(
+                    id: "todo-1",
+                    title: "Imported",
+                    isCompleted: false,
+                    isArchived: true,
+                    isImportant: false,
+                    isMyDay: false,
+                    dueDate: nil,
+                    notes: "",
+                    listId: nil,
+                    focusTimeSeconds: 0,
+                    recurrence: nil,
+                    recurrenceInterval: 1,
+                    sortOrder: 0,
+                    createdAt: nil,
+                    updatedAt: nil,
+                    lastCompletedAt: nil,
+                    steps: [],
+                    launchResources: []
+                )
+            ]
+        )
+
+        _ = try service.executeImportJSON(try payload.encode(), mode: .replace)
+        let todo = try XCTUnwrap(TodoRepository(dbQueue: manager.dbQueue).fetchTodo(id: "todo-1"))
+
+        XCTAssertTrue(todo.isArchived)
+        XCTAssertTrue(todo.isCompleted)
     }
 
     func testPreflightRejectsTodoListReferenceMissingInReplaceMode() throws {
@@ -503,6 +578,7 @@ final class ExportServiceTests: XCTestCase {
                     id: "todo-import",
                     title: "Imported",
                     isCompleted: false,
+                    isArchived: false,
                     isImportant: false,
                     isMyDay: false,
                     dueDate: nil,

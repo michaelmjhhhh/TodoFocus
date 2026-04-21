@@ -80,6 +80,11 @@ enum Migrations {
             )
         }
 
+        migrator.registerMigration("v4_archive_todos") { db in
+            try db.execute(sql: "ALTER TABLE todo ADD COLUMN isArchived BOOLEAN NOT NULL DEFAULT 0")
+            try db.create(index: "idx_todo_archived_completed_sort", on: "todo", columns: ["isArchived", "isCompleted", "sortOrder", "createdAt"])
+        }
+
         return migrator
     }
 }

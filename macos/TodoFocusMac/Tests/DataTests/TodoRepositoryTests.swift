@@ -2,9 +2,13 @@ import XCTest
 @testable import TodoFocusMac
 
 final class TodoRepositoryTests: XCTestCase {
-    private func makeRepository() throws -> TodoRepository {
+    private func makeDatabaseManager() throws -> DatabaseManager {
         let path = NSTemporaryDirectory() + UUID().uuidString + ".sqlite"
-        let manager = try DatabaseManager(databasePath: path)
+        return try DatabaseManager(databasePath: path)
+    }
+
+    private func makeRepository() throws -> TodoRepository {
+        let manager = try makeDatabaseManager()
         return TodoRepository(dbQueue: manager.dbQueue)
     }
 
@@ -252,5 +256,53 @@ final class TodoRepositoryTests: XCTestCase {
         XCTAssertEqual(deletedCount, 1)
         XCTAssertNotNil(try repo.fetchTodo(id: active.id))
         XCTAssertNil(try repo.fetchTodo(id: completed.id))
+    }
+
+    func testClearCompletedTodosPreservesArchivedCompletedRows() throws {
+        let manager = try makeDatabaseManager()
+        let repo = TodoRepository(dbQueue: manager.dbQueue)
+        let archivedCompleted = try repo.addTodo(
+            AddTodoInput(title: "Archived done", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+        let plainCompleted = try repo.addTodo(
+            AddTodoInput(title: "Plain done", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var completedPatch = UpdateTodoInput()
+        completedPatch.isCompleted = true
+        try repo.updateTodo(id: archivedCompleted.id, input: completedPatch)
+        try repo.updateTodo(id: plainCompleted.id, input: completedPatch)
+
+        try manager.dbQueue.write { db in
+            try db.execute(sql: "UPDATE todo SET isArchived = 1 WHERE id = ?", arguments: [archivedCompleted.id])
+        }
+
+        let deletedCount = try repo.clearCompletedTodos()
+
+        XCTAssertEqual(deletedCount, 1)
+        XCTAssertNotNil(try repo.fetchTodo(id: archivedCompleted.id))
+        XCTAssertNil(try repo.fetchTodo(id: plainCompleted.id))
+    }
+
+    func testClearArchivedTodosDeletesOnlyArchivedRows() throws {
+        let manager = try makeDatabaseManager()
+        let repo = TodoRepository(dbQueue: manager.dbQueue)
+        let archived = try repo.addTodo(
+            AddTodoInput(title: "Archived", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+        let visible = try repo.addTodo(
+            AddTodoInput(title: "Visible", listID: nil, isMyDay: false, isImportant: false, planned: false)
+        )
+
+        var archivePatch = UpdateTodoInput()
+        archivePatch.isCompleted = true
+        archivePatch.isArchived = true
+        try repo.updateTodo(id: archived.id, input: archivePatch)
+
+        let deletedCount = try repo.clearArchivedTodos()
+
+        XCTAssertEqual(deletedCount, 1)
+        XCTAssertNil(try repo.fetchTodo(id: archived.id))
+        XCTAssertNotNil(try repo.fetchTodo(id: visible.id))
     }
 }

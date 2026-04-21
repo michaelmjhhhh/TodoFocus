@@ -4,6 +4,7 @@ struct Todo: Identifiable, Equatable {
     let id: String
     var title: String
     var isCompleted: Bool
+    var isArchived: Bool = false
     var isImportant: Bool
     var isMyDay: Bool
     var dueDate: Date?
@@ -13,7 +14,7 @@ struct Todo: Identifiable, Equatable {
     var focusTimeSeconds: Int = 0
 
     func debtSeconds(at now: Date = Date(), calendar: Calendar = .current) -> Int? {
-        guard !isCompleted, let dueDate else { return nil }
+        guard !isCompleted, !isArchived, let dueDate else { return nil }
 
         // Due date is day-based in the UI, so a task should only become overdue
         // after the local due day has fully passed.

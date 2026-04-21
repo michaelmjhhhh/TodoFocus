@@ -7,6 +7,7 @@ struct TodoRecord: Codable, FetchableRecord, PersistableRecord, Equatable {
     var id: String
     var title: String
     var isCompleted: Bool
+    var isArchived: Bool = false
     var isImportant: Bool
     var isMyDay: Bool
     var recurrence: String?

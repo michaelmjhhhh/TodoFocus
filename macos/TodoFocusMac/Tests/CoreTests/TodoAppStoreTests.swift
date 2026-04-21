@@ -388,7 +388,7 @@ final class TodoAppStoreTests: XCTestCase {
         XCTAssertFalse(store.todos.contains(where: { $0.id == created.id }))
     }
 
-    func testClearCompletedTodosRemovesCompletedAndClearsSelectionForCompletedSelection() throws {
+    func testClearCompletedTodosArchivesCompletedAndClearsSelectionForCompletedSelection() throws {
         let (store, _, _, _) = try makeStore()
         let active = try store.quickAdd(
             title: "Active",
@@ -412,7 +412,123 @@ final class TodoAppStoreTests: XCTestCase {
 
         XCTAssertNil(store.selectedTodo)
         XCTAssertTrue(store.todos.contains(where: { $0.id == active.id }))
-        XCTAssertFalse(store.todos.contains(where: { $0.id == completed.id }))
+        XCTAssertTrue(store.todos.contains(where: { $0.id == completed.id && $0.isArchived }))
+        XCTAssertFalse(store.visibleTodos.contains(where: { $0.id == completed.id }))
+    }
+
+    func testVisibleTodosExcludesArchivedItemsFromRegularViews() throws {
+        let (store, appModel, _, todoRepository) = try makeStore()
+        let archived = try store.quickAdd(
+            title: "Archived done",
+            planned: false,
+            isImportant: true,
+            isMyDay: false,
+            list: nil
+        )
+        let visible = try store.quickAdd(
+            title: "Visible done",
+            planned: false,
+            isImportant: true,
+            isMyDay: false,
+            list: nil
+        )
+
+        try store.toggleComplete(todoId: archived.id)
+        try store.toggleComplete(todoId: visible.id)
+
+        var archivePatch = UpdateTodoInput()
+        archivePatch.isArchived = true
+        try todoRepository.updateTodo(id: archived.id, input: archivePatch)
+        try store.reload()
+        appModel.selection = .all
+
+        XCTAssertEqual(store.visibleTodos.map(\.id), [visible.id])
+        XCTAssertEqual(store.todoCount, 1)
+        XCTAssertEqual(store.archivedCount, 1)
+    }
+
+    func testArchiveSelectionShowsArchivedItems() throws {
+        let (store, appModel, _, todoRepository) = try makeStore()
+        let archived = try store.quickAdd(
+            title: "Archived done",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        try store.toggleComplete(todoId: archived.id)
+        var archivePatch = UpdateTodoInput()
+        archivePatch.isArchived = true
+        try todoRepository.updateTodo(id: archived.id, input: archivePatch)
+        try store.reload()
+        appModel.selection = .archive
+
+        XCTAssertEqual(store.visibleTodos.map(\.id), [archived.id])
+    }
+
+    func testClearArchivedTodosRemovesArchivedRowsAndClearsSelection() throws {
+        let (store, appModel, _, todoRepository) = try makeStore()
+        let archived = try store.quickAdd(
+            title: "Archived done",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+        let visible = try store.quickAdd(
+            title: "Visible active",
+            planned: false,
+            isImportant: false,
+            isMyDay: false,
+            list: nil
+        )
+
+        try store.toggleComplete(todoId: archived.id)
+        var archivePatch = UpdateTodoInput()
+        archivePatch.isArchived = true
+        try todoRepository.updateTodo(id: archived.id, input: archivePatch)
+        try store.reload()
+        appModel.selection = .archive
+        store.selectTodo(todoId: archived.id)
+
+        try store.clearArchivedTodos()
+
+        XCTAssertNil(store.selectedTodo)
+        XCTAssertFalse(store.todos.contains(where: { $0.id == archived.id }))
+        XCTAssertTrue(store.todos.contains(where: { $0.id == visible.id }))
+        XCTAssertEqual(store.archivedCount, 0)
+    }
+
+    func testClearCompletedTodosWithExplicitIDsArchivesOnlyMatchingCompletedRows() throws {
+        let (store, _, _, _) = try makeStore()
+        let first = try store.quickAdd(title: "First", planned: false, isImportant: false, isMyDay: false, list: nil)
+        let second = try store.quickAdd(title: "Second", planned: false, isImportant: false, isMyDay: false, list: nil)
+
+        try store.toggleComplete(todoId: first.id)
+        try store.toggleComplete(todoId: second.id)
+
+        try store.clearCompletedTodos(todoIDs: [first.id])
+
+        XCTAssertTrue(store.todos.contains(where: { $0.id == first.id && $0.isArchived }))
+        XCTAssertTrue(store.todos.contains(where: { $0.id == second.id && !$0.isArchived }))
+    }
+
+    func testUnarchiveTodoClearsSelection() throws {
+        let (store, _, _, todoRepository) = try makeStore()
+        let archived = try store.quickAdd(title: "Archived done", planned: false, isImportant: false, isMyDay: false, list: nil)
+
+        try store.toggleComplete(todoId: archived.id)
+        var archivePatch = UpdateTodoInput()
+        archivePatch.isArchived = true
+        try todoRepository.updateTodo(id: archived.id, input: archivePatch)
+        try store.reload()
+        store.selectTodo(todoId: archived.id)
+
+        try store.unarchiveTodo(todoId: archived.id)
+
+        XCTAssertNil(store.selectedTodo)
+        XCTAssertTrue(store.todos.contains(where: { $0.id == archived.id && !$0.isArchived }))
     }
 
     @MainActor

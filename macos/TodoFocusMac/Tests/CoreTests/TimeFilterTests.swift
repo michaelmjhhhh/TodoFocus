@@ -25,22 +25,22 @@ final class TimeFilterTests: XCTestCase {
         let now = date(2026, 3, 21, 23, 59)
         let dueEarlierToday = date(2026, 3, 21, 0, 1)
 
-        XCTAssertFalse(matches(filter: .overdue, dueDate: dueEarlierToday, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertTrue(matches(filter: .today, dueDate: dueEarlierToday, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .overdue, dueDate: dueEarlierToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .today, dueDate: dueEarlierToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testOverdueMatchesPreviousDay() {
         let now = date(2026, 3, 21, 10)
         let dueYesterday = date(2026, 3, 20, 23, 59)
 
-        XCTAssertTrue(matches(filter: .overdue, dueDate: dueYesterday, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .overdue, dueDate: dueYesterday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testOverdueExcludesCompletedTasks() {
         let now = date(2026, 3, 21, 10)
         let dueYesterday = date(2026, 3, 20, 23, 59)
 
-        XCTAssertFalse(matches(filter: .overdue, dueDate: dueYesterday, isCompleted: true, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .overdue, dueDate: dueYesterday, isCompleted: true, isArchived: false, now: now, calendar: calendar))
     }
 
     func testTodayMatchesOnlyLocalToday() {
@@ -48,8 +48,8 @@ final class TimeFilterTests: XCTestCase {
         let dueToday = date(2026, 3, 21, 23, 30)
         let dueTomorrow = date(2026, 3, 22, 0, 0)
 
-        XCTAssertTrue(matches(filter: .today, dueDate: dueToday, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .today, dueDate: dueTomorrow, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .today, dueDate: dueToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .today, dueDate: dueTomorrow, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testTomorrowMatchesNextLocalDayOnly() {
@@ -57,8 +57,8 @@ final class TimeFilterTests: XCTestCase {
         let dueTomorrow = date(2026, 3, 22, 9)
         let dueInTwoDays = date(2026, 3, 23, 9)
 
-        XCTAssertTrue(matches(filter: .tomorrow, dueDate: dueTomorrow, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .tomorrow, dueDate: dueInTwoDays, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .tomorrow, dueDate: dueTomorrow, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .tomorrow, dueDate: dueInTwoDays, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testNext7DaysIncludesTodayAndNextSixDays() {
@@ -68,35 +68,42 @@ final class TimeFilterTests: XCTestCase {
         let dueDaySeven = date(2026, 3, 28, 12)
         let dueYesterday = date(2026, 3, 20, 12)
 
-        XCTAssertTrue(matches(filter: .next7Days, dueDate: dueToday, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertTrue(matches(filter: .next7Days, dueDate: dueDaySix, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .next7Days, dueDate: dueDaySeven, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .next7Days, dueDate: dueYesterday, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .next7Days, dueDate: dueToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .next7Days, dueDate: dueDaySix, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .next7Days, dueDate: dueDaySeven, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .next7Days, dueDate: dueYesterday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testNoDateMatchesOnlyNilDueDate() {
         let now = date(2026, 3, 21, 10)
         let dueToday = date(2026, 3, 21, 18)
 
-        XCTAssertTrue(matches(filter: .noDate, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .noDate, dueDate: dueToday, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .noDate, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .noDate, dueDate: dueToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testAllDatesAlwaysMatches() {
         let now = date(2026, 3, 21, 10)
         let dueToday = date(2026, 3, 21, 18)
 
-        XCTAssertTrue(matches(filter: .allDates, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertTrue(matches(filter: .allDates, dueDate: dueToday, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .allDates, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertTrue(matches(filter: .allDates, dueDate: dueToday, isCompleted: false, isArchived: false, now: now, calendar: calendar))
     }
 
     func testNonAllDateFiltersRejectNilDueDate() {
         let now = date(2026, 3, 21, 10)
 
-        XCTAssertFalse(matches(filter: .overdue, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .today, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .tomorrow, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
-        XCTAssertFalse(matches(filter: .next7Days, dueDate: nil, isCompleted: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .overdue, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .today, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .tomorrow, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+        XCTAssertFalse(matches(filter: .next7Days, dueDate: nil, isCompleted: false, isArchived: false, now: now, calendar: calendar))
+    }
+
+    func testOverdueExcludesArchivedTasks() {
+        let now = date(2026, 3, 21, 10)
+        let dueYesterday = date(2026, 3, 20, 23, 59)
+
+        XCTAssertFalse(matches(filter: .overdue, dueDate: dueYesterday, isCompleted: true, isArchived: true, now: now, calendar: calendar))
     }
 
     func testTodoIsOverdueExcludesDatesEarlierToday() {

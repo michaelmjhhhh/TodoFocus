@@ -12,6 +12,7 @@ struct AddTodoInput {
 struct UpdateTodoInput {
     var title: String?
     var isCompleted: Bool?
+    var isArchived: Bool?
     var isImportant: Bool?
     var isMyDay: Bool?
     var recurrence: String??
@@ -50,6 +51,7 @@ struct TodoRepository {
                 id: UUID().uuidString,
                 title: trimmedTitle,
                 isCompleted: false,
+                isArchived: false,
                 isImportant: input.isImportant,
                 isMyDay: input.isMyDay,
                 recurrence: nil,
@@ -86,6 +88,12 @@ struct TodoRepository {
             }
             if let isCompleted = input.isCompleted {
                 current.isCompleted = isCompleted
+                if !isCompleted {
+                    current.isArchived = false
+                }
+            }
+            if let isArchived = input.isArchived {
+                current.isArchived = isArchived
             }
             if let isImportant = input.isImportant {
                 current.isImportant = isImportant
@@ -121,6 +129,10 @@ struct TodoRepository {
             }
             if let focusTimeSeconds = input.focusTimeSeconds {
                 current.focusTimeSeconds = max(0, focusTimeSeconds)
+            }
+
+            if current.isArchived {
+                current.isCompleted = true
             }
 
             current.updatedAt = now
@@ -180,7 +192,43 @@ struct TodoRepository {
 
     func clearCompletedTodos() throws -> Int {
         try dbQueue.write { db in
-            try db.execute(sql: "DELETE FROM todo WHERE isCompleted = 1")
+            try db.execute(sql: "DELETE FROM todo WHERE isCompleted = 1 AND isArchived = 0")
+            return Int(db.changesCount)
+        }
+    }
+
+    func archiveCompletedTodos(now: Date = Date()) throws -> Int {
+        try dbQueue.write { db in
+            try db.execute(
+                sql: "UPDATE todo SET isArchived = 1, updatedAt = ? WHERE isCompleted = 1 AND isArchived = 0",
+                arguments: [now]
+            )
+            return Int(db.changesCount)
+        }
+    }
+
+    func archiveCompletedTodos(ids: [String], now: Date = Date()) throws -> Int {
+        let uniqueIDs = Array(Set(ids))
+        guard !uniqueIDs.isEmpty else { return 0 }
+
+        return try dbQueue.write { db in
+            let placeholders = databaseQuestionMarks(count: uniqueIDs.count)
+            var arguments = StatementArguments()
+            arguments += [now]
+            for id in uniqueIDs {
+                arguments += [id]
+            }
+            try db.execute(
+                sql: "UPDATE todo SET isArchived = 1, updatedAt = ? WHERE isCompleted = 1 AND isArchived = 0 AND id IN (\(placeholders))",
+                arguments: arguments
+            )
+            return Int(db.changesCount)
+        }
+    }
+
+    func clearArchivedTodos() throws -> Int {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM todo WHERE isArchived = 1")
             return Int(db.changesCount)
         }
     }
@@ -217,5 +265,9 @@ struct TodoRepository {
         case let .ok(serialized):
             return serialized
         }
+    }
+
+    private func databaseQuestionMarks(count: Int) -> String {
+        Array(repeating: "?", count: count).joined(separator: ", ")
     }
 }

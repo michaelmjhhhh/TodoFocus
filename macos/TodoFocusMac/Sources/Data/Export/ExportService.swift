@@ -105,6 +105,7 @@ final class ExportService {
                     id: record.id,
                     title: record.title,
                     isCompleted: record.isCompleted,
+                    isArchived: record.isArchived,
                     isImportant: record.isImportant,
                     isMyDay: record.isMyDay,
                     dueDate: record.dueDate,
@@ -271,7 +272,8 @@ final class ExportService {
                 let record = TodoRecord(
                     id: todo.id,
                     title: todo.title,
-                    isCompleted: todo.isCompleted,
+                    isCompleted: todo.isCompleted || todo.isArchived,
+                    isArchived: todo.isArchived,
                     isImportant: todo.isImportant,
                     isMyDay: todo.isMyDay,
                     recurrence: todo.recurrence,

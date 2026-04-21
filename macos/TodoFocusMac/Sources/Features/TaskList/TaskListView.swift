@@ -8,6 +8,7 @@ struct TaskListView: View {
     @State private var isCompletedCollapsed: Bool = false
     @State private var isCompletedPanelVisible: Bool = true
     @State private var showClearCompletedConfirmation: Bool = false
+    @State private var showEmptyArchiveConfirmation: Bool = false
     @State private var filteredTodosCache: [Todo] = []
     @State private var activeTodosCache: [Todo] = []
     @State private var completedTodosCache: [Todo] = []
@@ -52,7 +53,7 @@ struct TaskListView: View {
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
                 }
                 Spacer()
-                if !isOverdueView {
+                if !isOverdueView && !isArchiveView {
                     filterPicker
                 }
 
@@ -68,65 +69,79 @@ struct TaskListView: View {
                             .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
                     }
 
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isCompletedPanelVisible.toggle()
+                if isArchiveView {
+                    Button(role: .destructive) {
+                        showEmptyArchiveConfirmation = true
+                    } label: {
+                        Text("Empty Archive")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(tokens.danger)
                     }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(isCompletedPanelVisible ? tokens.accentTerracotta : tokens.textTertiary)
-                            .frame(width: 20, height: 20)
-                            .background(tokens.bgFloating.opacity(0.95), in: Circle())
-                        Text("Completed")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
-                        Text("\(completedTodosCache.count)")
-                            .font(.caption.weight(.semibold))
-                            .monospacedDigit()
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .foregroundStyle(isCompletedPanelVisible ? tokens.textPrimary : tokens.textSecondary)
-                            .background(tokens.bgFloating.opacity(0.95), in: Capsule())
+                    .buttonStyle(.plain)
+                    .disabled(filteredTodosCache.isEmpty)
+                } else {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isCompletedPanelVisible.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(isCompletedPanelVisible ? tokens.accentTerracotta : tokens.textTertiary)
+                                .frame(width: 20, height: 20)
+                                .background(tokens.bgFloating.opacity(0.95), in: Circle())
+                            Text("Completed")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
+                            Text("\(completedTodosCache.count)")
+                                .font(.caption.weight(.semibold))
+                                .monospacedDigit()
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .foregroundStyle(isCompletedPanelVisible ? tokens.textPrimary : tokens.textSecondary)
+                                .background(tokens.bgFloating.opacity(0.95), in: Capsule())
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(tokens.bgFloating.opacity(isCompletedPanelVisible ? 0.82 : 0.66), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(
+                                    isCompletedPanelVisible
+                                        ? tokens.accentTerracotta.opacity(0.28)
+                                        : tokens.sectionBorder.opacity(0.92),
+                                    lineWidth: 1
+                                )
+                        }
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(tokens.bgFloating.opacity(isCompletedPanelVisible ? 0.82 : 0.66), in: Capsule())
-                    .overlay {
-                        Capsule()
-                            .stroke(
-                                isCompletedPanelVisible
-                                    ? tokens.accentTerracotta.opacity(0.28)
-                                    : tokens.sectionBorder.opacity(0.92),
-                                lineWidth: 1
-                            )
-                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
+                    .help(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
-                .help(isCompletedPanelVisible ? "Hide completed panel" : "Show completed panel")
             }
 
-            QuickAddView { title in
-                do {
-                    try store.quickAddNaturalLanguage(
-                        input: title,
-                        defaultPlanned: appModel.selection == .planned,
-                        defaultIsImportant: appModel.selection == .important,
-                        defaultIsMyDay: appModel.selection == .myDay,
-                        defaultList: selectedList
-                    )
-                } catch {
+            if !isArchiveView {
+                QuickAddView { title in
+                    do {
+                        try store.quickAddNaturalLanguage(
+                            input: title,
+                            defaultPlanned: appModel.selection == .planned,
+                            defaultIsImportant: appModel.selection == .important,
+                            defaultIsMyDay: appModel.selection == .myDay,
+                            defaultList: selectedList
+                        )
+                    } catch {
+                    }
                 }
+                .padding(10)
+                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(tokens.sectionBorder, lineWidth: 1)
+                }
+                .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
             }
-            .padding(10)
-            .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
-            .overlay {
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(tokens.sectionBorder, lineWidth: 1)
-            }
-            .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
 
             if isOverdueView && activeTodosCache.isEmpty {
                 Spacer()
@@ -143,13 +158,15 @@ struct TaskListView: View {
                 Spacer()
             } else {
                 HStack(spacing: 12) {
-                    todoColumn(title: "Active", todos: activeTodosCache)
+                    todoColumn(title: isArchiveView ? "Archived" : "Active", todos: activeTodosCache)
                         .frame(maxWidth: .infinity)
 
-                    if isCompletedPanelVisible {
-                        completedColumn(todos: completedTodosCache)
-                            .frame(width: 260)
-                            .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    if !isArchiveView {
+                        if isCompletedPanelVisible {
+                            completedColumn(todos: completedTodosCache)
+                                .frame(width: 260)
+                                .transition(.opacity.combined(with: .move(edge: .trailing)))
+                        }
                     }
                 }
                 .animation(.easeInOut(duration: 0.2), value: isCompletedPanelVisible)
@@ -187,10 +204,18 @@ struct TaskListView: View {
         .alert("Clear completed tasks?", isPresented: $showClearCompletedConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
-                try? store.clearCompletedTodos()
+                try? store.clearCompletedTodos(todoIDs: completedTodosCache.map(\.id))
             }
         } message: {
-            Text("This permanently deletes all completed tasks in the current view.")
+            Text("This moves all completed tasks in the current view to Archive.")
+        }
+        .alert("Empty Archive?", isPresented: $showEmptyArchiveConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Empty", role: .destructive) {
+                try? store.clearArchivedTodos()
+            }
+        } message: {
+            Text("This permanently deletes all archived tasks.")
         }
     }
 
@@ -260,6 +285,8 @@ struct TaskListView: View {
             return "Overdue"
         case .all:
             return "All Tasks"
+        case .archive:
+            return "Archive"
         case let .customList(id):
             return store.lists.first(where: { $0.id == id })?.name ?? "List"
         }
@@ -276,11 +303,15 @@ struct TaskListView: View {
         appModel.selection == .overdue
     }
 
+    private var isArchiveView: Bool {
+        appModel.selection == .archive
+    }
+
     private func recalculateCaches() {
         let filtered = store.filteredVisibleTodos(searchQuery: commandText)
         filteredTodosCache = filtered
-        activeTodosCache = Self.activeTodos(filtered, isOverdueView: isOverdueView)
-        completedTodosCache = filtered.filter(\.isCompleted)
+        activeTodosCache = Self.activeTodos(filtered, isOverdueView: isOverdueView, isArchiveView: isArchiveView)
+        completedTodosCache = isArchiveView ? [] : filtered.filter { $0.isCompleted && !$0.isArchived }
     }
 
     private func rebuildListColorCache() {
@@ -290,8 +321,8 @@ struct TaskListView: View {
         })
     }
 
-    private static func activeTodos(_ todos: [Todo], isOverdueView: Bool) -> [Todo] {
-        var todos = todos.filter { !$0.isCompleted }
+    private static func activeTodos(_ todos: [Todo], isOverdueView: Bool, isArchiveView: Bool) -> [Todo] {
+        var todos = isArchiveView ? todos.filter(\.isArchived) : todos.filter { !$0.isCompleted && !$0.isArchived }
         if isOverdueView {
             todos.sort { ($0.dueDate ?? .distantFuture) < ($1.dueDate ?? .distantFuture) }
         }
@@ -338,6 +369,13 @@ struct TaskListView: View {
                             },
                             onToggleImportant: {
                                 try? store.toggleImportant(todoId: todo.id)
+                            },
+                            onToggleArchive: {
+                                if todo.isArchived {
+                                    try? store.unarchiveTodo(todoId: todo.id)
+                                } else {
+                                    try? store.archiveTodo(todoId: todo.id)
+                                }
                             },
                             onDelete: {
                                 try? store.deleteTodo(todoId: todo.id)
@@ -390,9 +428,9 @@ struct TaskListView: View {
                     Button {
                         showClearCompletedConfirmation = true
                     } label: {
-                        Text("Clear")
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(tokens.accentTerracotta)
+                            Text("Archive")
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(tokens.accentTerracotta)
                     }
                     .buttonStyle(.plain)
                 }
@@ -413,12 +451,19 @@ struct TaskListView: View {
                                 onToggleComplete: {
                                     try? store.toggleComplete(todoId: todo.id)
                                 },
-                                onToggleImportant: {
-                                    try? store.toggleImportant(todoId: todo.id)
-                                },
-                                onDelete: {
-                                    try? store.deleteTodo(todoId: todo.id)
+                            onToggleImportant: {
+                                try? store.toggleImportant(todoId: todo.id)
+                            },
+                            onToggleArchive: {
+                                if todo.isArchived {
+                                    try? store.unarchiveTodo(todoId: todo.id)
+                                } else {
+                                    try? store.archiveTodo(todoId: todo.id)
                                 }
+                            },
+                            onDelete: {
+                                try? store.deleteTodo(todoId: todo.id)
+                            }
                             )
                         }
                     }

@@ -27,6 +27,7 @@ struct SidebarView: View {
                 smartRow("Planned", systemImage: "calendar", selection: .planned, count: store.plannedCount)
                 smartRow("Overdue", systemImage: "exclamationmark.triangle", selection: .overdue, count: store.overdueCount)
                 smartRow("All Tasks", systemImage: "tray.full", selection: .all, count: store.todoCount)
+                smartRow("Archive", systemImage: "archivebox", selection: .archive, count: store.archivedCount)
             }
 
             Section {

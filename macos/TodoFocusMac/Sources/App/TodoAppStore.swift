@@ -17,17 +17,21 @@ final class TodoAppStore {
     var todos: [Todo] = []
     var mutationErrorMessage: String?
 
+    private var nonArchivedTodos: [Todo] { todos.filter { !$0.isArchived } }
+    var reviewTodos: [Todo] { nonArchivedTodos }
+
     var deepFocusService: DeepFocusService { appModel.deepFocusService }
     let hardFocusManager: HardFocusSessionManager
 
-    var todoCount: Int { todos.count }
-    var completedCount: Int { todos.filter { $0.isCompleted }.count }
-    var importantCount: Int { todos.filter { $0.isImportant }.count }
-    var myDayCount: Int { todos.filter { $0.isMyDay }.count }
-    var todayCount: Int { todos.filter { ($0.dueDate ?? .distantPast) < Date() && !$0.isCompleted }.count }
-    var plannedCount: Int { todos.filter { $0.dueDate != nil && !$0.isCompleted }.count }
-    var overdueCount: Int { todos.filter { $0.isOverdue }.count }
-    var totalOverdueDebtSeconds: Int { todos.compactMap { $0.debtSeconds }.reduce(0, +) }
+    var todoCount: Int { nonArchivedTodos.count }
+    var completedCount: Int { nonArchivedTodos.filter { $0.isCompleted }.count }
+    var importantCount: Int { nonArchivedTodos.filter { $0.isImportant }.count }
+    var myDayCount: Int { nonArchivedTodos.filter { $0.isMyDay }.count }
+    var todayCount: Int { nonArchivedTodos.filter { ($0.dueDate ?? .distantPast) < Date() && !$0.isCompleted }.count }
+    var plannedCount: Int { nonArchivedTodos.filter { $0.dueDate != nil && !$0.isCompleted }.count }
+    var overdueCount: Int { nonArchivedTodos.filter { $0.isOverdue }.count }
+    var archivedCount: Int { todos.filter { $0.isArchived }.count }
+    var totalOverdueDebtSeconds: Int { nonArchivedTodos.compactMap { $0.debtSeconds }.reduce(0, +) }
 
     func formatDebt(_ seconds: Int) -> String {
         if seconds < 60 {
@@ -47,7 +51,7 @@ final class TodoAppStore {
     }
 
     func countForList(_ listId: String) -> Int {
-        todos.filter { $0.listId == listId && !$0.isCompleted }.count
+        nonArchivedTodos.filter { $0.listId == listId && !$0.isCompleted }.count
     }
 
     init(
@@ -197,7 +201,13 @@ final class TodoAppStore {
         }
         var input = UpdateTodoInput()
         input.isCompleted = !current.isCompleted
+        if current.isArchived, current.isCompleted {
+            input.isArchived = false
+        }
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        if current.isArchived, appModel.selectedTodoID == todoId {
+            appModel.selectedTodoID = nil
+        }
         try reloadTodos()
         // Play completion sound when marking as complete (not uncompleting)
         if !current.isCompleted {
@@ -208,6 +218,7 @@ final class TodoAppStore {
     func markComplete(todoId: String) throws {
         var input = UpdateTodoInput()
         input.isCompleted = true
+        input.isArchived = false
         try todoRepository.updateTodo(id: todoId, input: input, now: now())
         try reloadTodos()
         NSSound(named: NSSound.Name("Pop"))?.play()
@@ -232,9 +243,50 @@ final class TodoAppStore {
     }
 
     func clearCompletedTodos() throws {
-        let selectedTodoWasRemoved = selectedTodo?.isCompleted ?? false
-        _ = try todoRepository.clearCompletedTodos()
+        try clearCompletedTodos(todoIDs: nonArchivedTodos.filter(\.isCompleted).map(\.id))
+    }
+
+    func clearCompletedTodos(todoIDs: [String]) throws {
+        let selectedTodoWasArchived = selectedTodo?.isCompleted == true && selectedTodo?.isArchived == false
+        _ = try todoRepository.archiveCompletedTodos(ids: todoIDs, now: now())
+        if selectedTodoWasArchived {
+            appModel.selectedTodoID = nil
+        }
+        try reloadTodos()
+    }
+
+    func clearArchivedTodos() throws {
+        let selectedTodoWasRemoved = selectedTodo?.isArchived == true
+        _ = try todoRepository.clearArchivedTodos()
         if selectedTodoWasRemoved {
+            appModel.selectedTodoID = nil
+        }
+        try reloadTodos()
+    }
+
+    func archiveTodo(todoId: String) throws {
+        guard let current = try todoRepository.fetchTodo(id: todoId), current.isCompleted, !current.isArchived else {
+            return
+        }
+
+        var input = UpdateTodoInput()
+        input.isArchived = true
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        if appModel.selectedTodoID == todoId {
+            appModel.selectedTodoID = nil
+        }
+        try reloadTodos()
+    }
+
+    func unarchiveTodo(todoId: String) throws {
+        guard let current = try todoRepository.fetchTodo(id: todoId), current.isArchived else {
+            return
+        }
+
+        var input = UpdateTodoInput()
+        input.isArchived = false
+        try todoRepository.updateTodo(id: todoId, input: input, now: now())
+        if appModel.selectedTodoID == todoId {
             appModel.selectedTodoID = nil
         }
         try reloadTodos()
@@ -572,7 +624,15 @@ final class TodoAppStore {
 
 private extension Todo {
     var coreTodo: CoreTodo {
-        CoreTodo(id: id, isMyDay: isMyDay, isImportant: isImportant, isCompleted: isCompleted, dueDate: dueDate, listId: listId)
+        CoreTodo(
+            id: id,
+            isMyDay: isMyDay,
+            isImportant: isImportant,
+            isCompleted: isCompleted,
+            isArchived: isArchived,
+            dueDate: dueDate,
+            listId: listId
+        )
     }
 }
 
@@ -582,6 +642,7 @@ private extension TodoRecord {
             id: id,
             title: title,
             isCompleted: isCompleted,
+            isArchived: isArchived,
             isImportant: isImportant,
             isMyDay: isMyDay,
             dueDate: dueDate,

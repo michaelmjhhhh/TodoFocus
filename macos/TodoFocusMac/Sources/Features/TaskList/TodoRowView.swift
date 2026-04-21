@@ -23,6 +23,7 @@ struct TodoRowView: View {
     let onSelect: () -> Void
     let onToggleComplete: () -> Void
     let onToggleImportant: () -> Void
+    let onToggleArchive: () -> Void
     let onDelete: () -> Void
     @Environment(\.themeTokens) private var tokens
     @State private var isHovered: Bool = false
@@ -119,6 +120,17 @@ struct TodoRowView: View {
             }
         }
         .contentShape(Rectangle())
+        .contextMenu {
+            if todo.isArchived {
+                Button("Unarchive", action: onToggleArchive)
+            } else if todo.isCompleted {
+                Button("Archive", action: onToggleArchive)
+            }
+
+            Button(todo.isImportant ? "Mark as not important" : "Mark as important", action: onToggleImportant)
+            Divider()
+            Button("Delete task", role: .destructive, action: onDelete)
+        }
         .onTapGesture {
             onSelect()
         }
