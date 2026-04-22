@@ -27,6 +27,7 @@ final class QuickCaptureService {
     var voicePreviewText: String?
 
     var deepFocusService: DeepFocusService?
+    var dailyReviewPreviewService: DailyReviewPreviewService?
     var onCapture: ((String) -> Void)?
 
     private var eventTap: CFMachPort?
@@ -125,6 +126,14 @@ final class QuickCaptureService {
                 if hasCmd && hasShift && isQuickCaptureKey {
                     DispatchQueue.main.async {
                         service.showCapturePanel()
+                    }
+                    return nil
+                }
+
+                let isDailyReviewPreviewKey = charsIgnoringModifiers == "u" || keyCode == 32
+                if hasCmd && hasShift && isDailyReviewPreviewKey {
+                    DispatchQueue.main.async {
+                        service.dailyReviewPreviewService?.togglePanel()
                     }
                     return nil
                 }
