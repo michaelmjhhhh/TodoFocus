@@ -4,24 +4,24 @@ import Observation
 @Observable
 @MainActor
 final class DailyReviewBoardViewModel {
-    var board: DailyReviewView.ReviewBoard = .empty
+    var board: DailyReviewBoard = .empty
     var isCompletedCollapsed: Bool = true
-    private var collapsedColumns: Set<DailyReviewView.ReviewColumnCollapseKey> = []
+    private var collapsedColumns: Set<DailyReviewColumnCollapseKey> = []
 
     func recompute(todos: [Todo], now: Date = Date(), calendar: Calendar = .current) {
-        board = DailyReviewView.buildBoard(todos, now: now, calendar: calendar)
+        board = DailyReview.buildBoard(todos, now: now, calendar: calendar)
     }
 
     func toggleCompletedLane() {
         isCompletedCollapsed.toggle()
     }
 
-    func isColumnCollapsed(bucket: DailyReviewView.ReviewTimeBucket, lane: DailyReviewView.ReviewLane) -> Bool {
+    func isColumnCollapsed(bucket: DailyReviewTimeBucket, lane: DailyReviewLane) -> Bool {
         collapsedColumns.contains(.init(lane: lane, bucket: bucket))
     }
 
-    func toggleColumn(bucket: DailyReviewView.ReviewTimeBucket, lane: DailyReviewView.ReviewLane) {
-        let key = DailyReviewView.ReviewColumnCollapseKey(lane: lane, bucket: bucket)
+    func toggleColumn(bucket: DailyReviewTimeBucket, lane: DailyReviewLane) {
+        let key = DailyReviewColumnCollapseKey(lane: lane, bucket: bucket)
         if collapsedColumns.contains(key) {
             collapsedColumns.remove(key)
         } else {
@@ -116,8 +116,8 @@ struct DailyReviewView: View {
     private func laneSection(
         title: String,
         systemImage: String,
-        columns: [ReviewColumn],
-        lane: ReviewLane,
+        columns: [DailyReviewColumn],
+        lane: DailyReviewLane,
         collapsed: Bool,
         isCompletedLane: Bool
     ) -> some View {
@@ -173,7 +173,7 @@ struct DailyReviewView: View {
         }
     }
 
-    private func reviewColumnView(_ column: ReviewColumn, lane: ReviewLane, isCompletedLane: Bool) -> some View {
+    private func reviewColumnView(_ column: DailyReviewColumn, lane: DailyReviewLane, isCompletedLane: Bool) -> some View {
         let isColumnCollapsed = boardViewModel.isColumnCollapsed(bucket: column.bucket, lane: lane)
 
         return VStack(alignment: .leading, spacing: 8) {
@@ -428,7 +428,7 @@ struct DailyReviewView: View {
     }
 
     private func dueText(for dueDate: Date?) -> String {
-        Self.dueText(for: dueDate)
+        DailyReview.dueText(for: dueDate)
     }
 
     private func listName(for listID: String) -> String? {
@@ -480,136 +480,29 @@ struct DailyReviewView: View {
 }
 
 extension DailyReviewView {
-    private static let dueDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
-
-    enum ReviewLane: String {
-        case open
-        case completed
-    }
-
-    struct ReviewColumnCollapseKey: Hashable {
-        let lane: ReviewLane
-        let bucket: ReviewTimeBucket
-    }
-
-    enum ReviewTimeBucket: String, CaseIterable, Identifiable {
-        case overdue
-        case today
-        case tomorrow
-        case later
-        case noDate
-
-        var id: String { rawValue }
-
-        var title: String {
-            switch self {
-            case .overdue: return "Overdue"
-            case .today: return "Today"
-            case .tomorrow: return "Tomorrow"
-            case .later: return "Later"
-            case .noDate: return "No Date"
-            }
-        }
-    }
-
-    struct ReviewColumn: Identifiable {
-        let bucket: ReviewTimeBucket
-        let todos: [Todo]
-
-        var id: String { bucket.rawValue }
-    }
-
-    struct ReviewBoard {
-        let openColumns: [ReviewColumn]
-        let completedColumns: [ReviewColumn]
-
-        static let empty = ReviewBoard(
-            openColumns: ReviewTimeBucket.allCases.map { ReviewColumn(bucket: $0, todos: []) },
-            completedColumns: ReviewTimeBucket.allCases.map { ReviewColumn(bucket: $0, todos: []) }
-        )
-    }
+    typealias ReviewLane = DailyReviewLane
+    typealias ReviewColumnCollapseKey = DailyReviewColumnCollapseKey
+    typealias ReviewTimeBucket = DailyReviewTimeBucket
+    typealias ReviewColumn = DailyReviewColumn
+    typealias ReviewBoard = DailyReviewBoard
 
     static func sortedForReview(_ todos: [Todo]) -> [Todo] {
-        todos.sorted { lhs, rhs in
-            if lhs.isCompleted != rhs.isCompleted {
-                return !lhs.isCompleted && rhs.isCompleted
-            }
-            switch (lhs.dueDate, rhs.dueDate) {
-            case let (l?, r?):
-                return l < r
-            case (.some, .none):
-                return true
-            case (.none, .some):
-                return false
-            case (.none, .none):
-                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
-            }
-        }
+        DailyReview.sortedForReview(todos)
     }
 
     static func dueText(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> String {
-        guard let dueDate else { return "No Date" }
-        if calendar.isDate(dueDate, inSameDayAs: now) { return "Today" }
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
-        if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return "Tomorrow" }
-        if dueDate < now { return "Overdue" }
-        return dueDateFormatter.string(from: dueDate)
+        DailyReview.dueText(for: dueDate, now: now, calendar: calendar)
     }
 
     static func dueBucket(for dueDate: Date?, now: Date = Date(), calendar: Calendar = .current) -> ReviewTimeBucket {
-        guard let dueDate else { return .noDate }
-        if calendar.isDate(dueDate, inSameDayAs: now) { return .today }
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))
-        if let tomorrow, calendar.isDate(dueDate, inSameDayAs: tomorrow) { return .tomorrow }
-        if dueDate < now { return .overdue }
-        return .later
+        DailyReview.dueBucket(for: dueDate, now: now, calendar: calendar)
     }
 
     static func buildBoard(_ todos: [Todo], now: Date = Date(), calendar: Calendar = .current) -> ReviewBoard {
-        var openMap: [ReviewTimeBucket: [Todo]] = [:]
-        var completedMap: [ReviewTimeBucket: [Todo]] = [:]
-        ReviewTimeBucket.allCases.forEach {
-            openMap[$0] = []
-            completedMap[$0] = []
-        }
-
-        for todo in todos {
-            let bucket = dueBucket(for: todo.dueDate, now: now, calendar: calendar)
-            if todo.isCompleted {
-                completedMap[bucket, default: []].append(todo)
-            } else {
-                openMap[bucket, default: []].append(todo)
-            }
-        }
-
-        let openColumns = ReviewTimeBucket.allCases.map { bucket in
-            ReviewColumn(bucket: bucket, todos: sortColumnTodos(openMap[bucket] ?? []))
-        }
-        let completedColumns = ReviewTimeBucket.allCases.map { bucket in
-            ReviewColumn(bucket: bucket, todos: sortColumnTodos(completedMap[bucket] ?? []))
-        }
-
-        return ReviewBoard(openColumns: openColumns, completedColumns: completedColumns)
+        DailyReview.buildBoard(todos, now: now, calendar: calendar)
     }
 
     static func sortColumnTodos(_ todos: [Todo]) -> [Todo] {
-        todos.sorted { lhs, rhs in
-            switch (lhs.dueDate, rhs.dueDate) {
-            case let (l?, r?):
-                if l != r { return l < r }
-                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
-            case (.some, .none):
-                return true
-            case (.none, .some):
-                return false
-            case (.none, .none):
-                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
-            }
-        }
+        DailyReview.sortColumnTodos(todos)
     }
 }

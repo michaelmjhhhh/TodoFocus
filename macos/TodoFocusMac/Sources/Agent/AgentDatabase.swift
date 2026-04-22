@@ -5,13 +5,10 @@ final class AgentDatabase {
     private let dbQueue: DatabaseQueue
 
     init(appGroupIdentifier: String = "group.com.todofocus") throws {
-        let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier)
-            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support/todofocus")
-        let dbURL = containerURL.appendingPathComponent("todofocus.db")
+        let dbPath = AppGroupDatabasePath.defaultDatabasePath(appGroupIdentifier: appGroupIdentifier)
         var config = Configuration()
         config.foreignKeysEnabled = true
-        // Agent writes heartbeat only; session data is read-only
-        self.dbQueue = try DatabaseQueue(path: dbURL.path, configuration: config)
+        self.dbQueue = try DatabaseQueue(path: dbPath, configuration: config)
         try Migrations.makeMigrator().migrate(dbQueue)
     }
 
