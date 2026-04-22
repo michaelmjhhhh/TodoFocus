@@ -112,6 +112,8 @@ struct RootView: View {
                     store?.appendToFocusTaskNotes(text)
                 }
                 appModel.quickCaptureService.setup()
+                appModel.quickCaptureService.dailyReviewPreviewService = appModel.dailyReviewPreviewService
+                appModel.dailyReviewPreviewService.store = store
             }
             .onChange(of: proxy.size.width) { _, newValue in
                 containerWidth = newValue
@@ -139,6 +141,9 @@ struct RootView: View {
                 }
             }
             isHardFocusActive = isEnforcing
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("todoFocusNavigateToDailyReview"))) { _ in
+            appModel.selectSidebar(.dailyReview)
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
