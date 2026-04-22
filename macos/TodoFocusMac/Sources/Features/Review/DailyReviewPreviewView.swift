@@ -102,12 +102,27 @@ struct DailyReviewPreviewView: View {
                 .accessibilityLabel("Close preview")
             }
 
-            HStack(spacing: 8) {
-                metricPill(title: "Open", value: totalOpen)
-                metricPill(title: "Today", value: todayOpen)
-                metricPill(title: "Overdue", value: overdueOpen)
-                if totalCompleted > 0 {
-                    metricPill(title: "Done", value: totalCompleted)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    metricPill(title: "Open", value: totalOpen)
+                    metricPill(title: "Today", value: todayOpen)
+                    metricPill(title: "Overdue", value: overdueOpen)
+                    if totalCompleted > 0 {
+                        metricPill(title: "Done", value: totalCompleted)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        metricPill(title: "Open", value: totalOpen)
+                        metricPill(title: "Today", value: todayOpen)
+                    }
+                    HStack(spacing: 8) {
+                        metricPill(title: "Overdue", value: overdueOpen)
+                        if totalCompleted > 0 {
+                            metricPill(title: "Done", value: totalCompleted)
+                        }
+                    }
                 }
             }
         }
@@ -154,7 +169,6 @@ struct DailyReviewPreviewView: View {
                     .font(.subheadline.weight(isCompletedSection ? .medium : .semibold))
                     .foregroundStyle(isCompletedSection ? tokens.textSecondary : tokens.textPrimary)
                     .strikethrough(isCompletedSection)
-                    .lineLimit(1)
 
                 HStack(spacing: 6) {
                     dueChip(text: DailyReview.dueText(for: task.dueDate), bucket: DailyReview.dueBucket(for: task.dueDate))
@@ -179,20 +193,21 @@ struct DailyReviewPreviewView: View {
     }
 
     private func metricPill(title: String, value: Int) -> some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 6) {
             Text(title)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(tokens.textSecondary)
+                .lineLimit(1)
             Text("\(value)")
                 .font(.caption.weight(.bold))
                 .monospacedDigit()
                 .foregroundStyle(tokens.textPrimary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
                 .background(tokens.bgFloating.opacity(0.9), in: Capsule())
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
         .background(tokens.sectionBackground, in: Capsule())
         .overlay {
             Capsule()
