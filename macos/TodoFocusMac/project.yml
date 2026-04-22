@@ -18,6 +18,7 @@ targets:
       - path: Sources
         excludes:
           - Agent/**
+          - WidgetExtension/**
       - path: Assets.xcassets
         buildPhase: resources
       - path: Resources/com.todofocus.hardfocus.agent.plist
@@ -34,6 +35,11 @@ targets:
         codeSign: false
         copy:
           destination: executables
+      - target: TodoFocusWidgetExtension
+        embed: true
+        codeSign: false
+        copy:
+          destination: plugins
     scheme:
       testTargets:
         - CoreTests
@@ -49,6 +55,7 @@ targets:
           - Data/DTO/HardFocusSessionRecord.swift
           - Data/DTO/AgentHeartbeatRecord.swift
           - Data/Database/DatabaseManager.swift
+          - Data/Database/AppGroupDatabasePath.swift
           - Data/Repositories/HardFocusSessionRepository.swift
     settings:
       base:
@@ -58,6 +65,25 @@ targets:
         CODE_SIGN_IDENTITY: "-"
         CODE_SIGN_STYLE: Manual
         SWIFT_VERSION: "6.0"
+    dependencies:
+      - package: GRDB
+  TodoFocusWidgetExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources
+        includes:
+          - WidgetExtension/**
+          - Core/Review/**
+          - Core/Models/Todo.swift
+          - Data/DTO/TodoRecord.swift
+          - Data/Database/AppGroupDatabasePath.swift
+    settings:
+      base:
+        PRODUCT_NAME: TodoFocusWidgetExtension
+        PRODUCT_BUNDLE_IDENTIFIER: com.michaelmjhhhh.todofocus.mac.widget
+        INFOPLIST_FILE: WidgetExtension-Info.plist
+        APPLICATION_EXTENSION_API_ONLY: YES
     dependencies:
       - package: GRDB
   CoreTests:
