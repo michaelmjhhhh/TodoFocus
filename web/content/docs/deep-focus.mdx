@@ -1,0 +1,71 @@
+---
+title: Deep Focus
+description: Built-in focus timer with session stats, menu bar controls, and a workflow that helps you stay with the task.
+---
+
+# Deep Focus
+
+TodoFocus's Deep Focus is a built-in focus timer that helps you commit to one task at a time. It tracks your sessions, counts your distractions, and shows your progress in the menu bar.
+
+## Starting Deep Focus
+
+1. Select a task in your list
+2. Press **`⌘⇧F`** (or right-click → **Start Focus**)
+3. A sheet appears: choose **blocked apps** to prevent during the session
+4. Optionally set a **timer duration** (or leave it open-ended)
+5. Click **Start**
+
+The session begins immediately. Your menu bar shows a timer badge.
+
+## What Deep Focus Does
+
+- **Blocks selected apps** — when a blocked app is opened, TodoFocus shows a distraction overlay and logs the attempt
+- **Tracks session time** — total focus time accumulates in your stats
+- **Counts distractions** — every blocked app launch is recorded
+- **Marks tasks complete** — when a timed session ends, the focus task can be auto-marked Done
+
+## Menu Bar Controls
+
+While Deep Focus is running, the TodoFocus menu bar extra shows:
+
+- **Remaining time** (if timed) or elapsed time (if open)
+- **Session subtitle** with task name
+- **End Session** button — requires your passphrase to confirm
+
+Click the menu bar item to open quick controls without switching to the app.
+
+## Deep Focus vs Hard Focus
+
+TodoFocus has two focus modes:
+
+| | Deep Focus | Hard Focus |
+|--|------------|------------|
+| **What it does** | Timer + overlay + stats | App blocking + enforcement |
+| **Blocking** | Overlay only | Terminates or prevents blocked apps |
+| **Passphrase to end** | Optional | Required |
+| **Requires Accessibility** | No | Yes |
+
+Deep Focus is the default mode. Hard Focus is more aggressive — use it when you need real enforcement.
+
+## Session Stats
+
+After each session, TodoFocus records:
+
+- Total focus time
+- Number of focus sessions
+- Distraction count
+
+These accumulate over time and are visible in the Deep Focus stats panel.
+
+## Ending a Session
+
+- **Timed session** — ends automatically when the timer completes
+- **Manual end** — click **End Session** in the menu bar or app
+- **Hard Focus end** — requires your passphrase; the session is logged as interrupted or completed
+
+## Keyboard Reference
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘⇧F` | Start Deep Focus on selected task |
+| `Esc` | Cancel focus setup sheet |

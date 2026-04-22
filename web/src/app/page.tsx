@@ -49,12 +49,20 @@ export default function Home() {
             TodoFocus
           </span>
         </div>
-        <a
-          href={DIRECT_DOWNLOAD_URL}
-          className="font-sans text-sm font-medium bg-ink text-paper px-5 py-2.5 rounded-full hover:bg-terracotta transition-colors duration-300"
-        >
-          Download for macOS
-        </a>
+        <nav className="flex items-center gap-6">
+          <a
+            href={`${assetBase}/docs/quick-start/`}
+            className="font-sans text-sm text-ink-light hover:text-ink transition-colors"
+          >
+            Docs
+          </a>
+          <a
+            href={DIRECT_DOWNLOAD_URL}
+            className="font-sans text-sm font-medium bg-ink text-paper px-5 py-2.5 rounded-full hover:bg-terracotta transition-colors duration-300"
+          >
+            Download for macOS
+          </a>
+        </nav>
       </header>
 
       <section className="w-full max-w-3xl mx-auto px-6 py-24 md:py-32 flex flex-col items-center text-center">

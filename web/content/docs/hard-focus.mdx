@@ -1,0 +1,72 @@
+---
+title: Hard Focus
+description: Block distractions and commit to the work. Focus becomes harder to escape.
+---
+
+# Hard Focus
+
+Hard Focus is TodoFocus's enforcement mode. Unlike Deep Focus (which shows overlays), Hard Focus actually prevents blocked apps from launching. Starting a Hard Focus session is a commitment — ending it requires your passphrase.
+
+## When to Use Hard Focus
+
+- You need to write or code without checking messages
+- You're presenting and can't afford distractions
+- You want real teeth behind a focus session
+
+> [!warning]
+> Hard Focus requires **Accessibility permission** to monitor and block app launches. Without it, Hard Focus cannot enforce blocking.
+
+## Starting Hard Focus
+
+1. Select a task
+2. Press **`⌘⇧F`** → **Hard Focus** tab
+3. Choose which apps to block
+4. Set a duration or leave it open
+5. Create a **passphrase** (used to end the session)
+6. Click **Start**
+
+## How Hard Focus Works
+
+When Hard Focus is active:
+
+- Blocked apps that are already open continue running
+- If someone tries to **open** a blocked app, TodoFocus intercepts it and shows a lock screen
+- The lock screen requires your **passphrase** to unlock — or you can wait for the session to end
+- Each blocked attempt is logged as a distraction
+
+## The Lock Screen
+
+When a blocked app is activated during Hard Focus, a lock overlay appears:
+
+- Shows the app that was blocked
+- Displays a countdown or "Hard Focus active" status
+- **Unlock with passphrase** to end Hard Focus early
+- **Emergency End** button (logs the session as interrupted)
+
+## Ending Hard Focus
+
+- **Normal end** — session timer completes, session logged as completed
+- **Passphrase end** — enter your passphrase in the lock screen or menu bar to end early
+- **Emergency end** — available on the lock screen, logs the session as interrupted
+
+## Hard Focus vs Deep Focus
+
+| | Hard Focus | Deep Focus |
+|--|------------|------------|
+| **Blocking** | Terminates/prevents blocked apps | Overlay only |
+| **Unlock** | Requires passphrase | No unlock needed |
+| **Session logging** | Completed / interrupted / emergency | Standard |
+| **Accessibility required** | Yes | No |
+| **Best for** | Deep work, writing, coding | Casual focus, timer use |
+
+## Permissions
+
+Hard Focus uses macOS Accessibility APIs to monitor app launches. If Accessibility permission is revoked while Hard Focus is running, TodoFocus falls back to in-process enforcement — core blocking still works, but may be less robust.
+
+## Session History
+
+Hard Focus sessions are recorded with:
+- Start and end time
+- Duration
+- Blocked app attempts (distractions)
+- Outcome (completed, interrupted, emergency end)

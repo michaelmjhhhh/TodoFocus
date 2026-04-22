@@ -1,0 +1,70 @@
+---
+title: Quick Start
+description: Get up and running with TodoFocus in minutes.
+---
+
+# Quick Start
+
+TodoFocus is a local-first macOS task app that helps you finish things — not just collect them. Here's everything you need to get going in under five minutes.
+
+## System Requirements
+
+- **macOS 14+** (Sonoma or later)
+- **Download**: Latest release from [GitHub Releases](https://github.com/michaelmjhhhh/TodoFocus/releases)
+
+## Installation
+
+1. Download `TodoFocus-macos-universal.zip` from the latest release.
+2. Unzip and move `TodoFocus.app` to your **Applications** folder.
+3. Open TodoFocus.
+4. Grant **Accessibility permission** when prompted — this enables the global `⌘⇧T` capture hotkey.
+5. Optionally grant **Microphone** and **Speech Recognition** permission to enable voice capture.
+
+> [!tip]
+> If you skip the Accessibility prompt, TodoFocus will still work — you just won't be able to use the global hotkey. You can grant permission later in **System Settings → Privacy & Security → Accessibility**.
+
+## Your First Session
+
+### 1. Capture something
+
+Press **`⌘⇧T`** from any app. A small floating panel appears. Type a task and press **Enter** — it lands in your Inbox instantly.
+
+Or try voice: click the microphone icon in the capture panel and speak. TodoFocus transcribes in real time (English).
+
+### 2. Start a Focus session
+
+Select a task in your list and press **`⌘⇧F`**. Choose your blocked apps, set a duration (or leave it open-ended), and hit **Start**.
+
+While Deep Focus is active, blocked apps won't open. Your menu bar shows remaining time.
+
+### 3. End your day with Daily Review
+
+Press **`⌘⇧R`** or click **Daily Review** in the sidebar. Move overdue tasks to Today, sweep completed tasks into Done, and leave tomorrow's plans for tomorrow.
+
+## The Core Loop
+
+```
+⌘⇧T → Capture everything on your mind
+⌘⇧F → Start Focus, lock in
+Come back → Daily Review, clean your day
+```
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘⇧T` | Quick Capture (global, works anywhere) |
+| `⌘⇧F` | Start Deep Focus on selected task |
+| `⌘K` | Search tasks |
+| `⌘⇧N` | New task in current view |
+| `⌘⇧R` | Open Daily Review |
+
+## Where Your Data Lives
+
+All data is stored locally in SQLite:
+
+```
+~/Library/Application Support/todofocus/
+```
+
+No login. No cloud. No sync. Your tasks are yours.

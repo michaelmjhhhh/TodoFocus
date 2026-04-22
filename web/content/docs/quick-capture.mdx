@@ -1,0 +1,68 @@
+---
+title: Quick Capture
+description: Capture thoughts instantly from anywhere on macOS with ⌘⇧T or voice input.
+---
+
+# Quick Capture
+
+TodoFocus's most immediate feature: a global hotkey that works from anywhere on your Mac, even when the app is in the background.
+
+## Using ⌘⇧T
+
+Press **`⌘⇧T`** from any application. A floating capture panel slides down from the top of your screen.
+
+1. Type your thought
+2. Press **Enter** to save
+
+The panel closes automatically. You're back to what you were doing.
+
+> [!note]
+> The global hotkey requires **Accessibility permission**. On first use, macOS will prompt you to grant it in **System Settings → Privacy & Security → Accessibility**. This is a macOS requirement for monitoring keystrokes system-wide.
+
+## Where Captures Go
+
+- **If Deep Focus is active** — the capture is appended as a timestamped note to your active focus task. This lets you capture interruptions without breaking your flow.
+- **If no Deep Focus is running** — a new task is created in your Inbox.
+
+## Voice Capture
+
+Inside the Quick Capture panel, click the **microphone icon** to switch to voice mode.
+
+- Speak your thought and TodoFocus transcribes it in real time
+- Tap the mic again or pause for 1.6 seconds to auto-submit
+- Works in English (`en-US`)
+
+> [!warning]
+> Voice capture requires **Microphone** and **Speech Recognition** permissions in **System Settings → Privacy & Security**.
+
+## Natural Language Quick Add
+
+You can type short commands directly into Quick Capture or the task list Quick Add field:
+
+| Input | Result |
+|-------|--------|
+| `Write report !` | Task "Write report" marked Important |
+| `Call mom tomorrow` | Task "Call mom" due tomorrow |
+| `Review doc @myday` | Task "Review doc" in My Day |
+| `Presentation ! next week` | Important task due next week |
+
+Tokens are highlighted as you type so you can verify what TodoFocus understood.
+
+## Keyboard Reference
+
+| Key | Action |
+|-----|--------|
+| `⌘⇧T` | Open Quick Capture (global) |
+| `Enter` | Submit capture |
+| `Esc` | Dismiss panel without saving |
+
+## Troubleshooting
+
+**⌘⇧T doesn't work**
+: Check that TodoFocus has Accessibility permission in **System Settings → Privacy & Security → Accessibility**. If the app was recently re-signed or reinstalled, you may need to re-grant permission.
+
+**Voice capture isn't transcribing**
+: Ensure **Speech Recognition** is enabled in **System Settings → Privacy & Security → Speech**.
+
+**Capture goes to the wrong task**
+: Make sure no Deep Focus session is running, or check which task is selected as the focus target in the task detail panel.

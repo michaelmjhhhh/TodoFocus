@@ -1,0 +1,59 @@
+---
+title: Launchpad
+description: Attach links, files, and apps to tasks — launch everything in one click.
+---
+
+# Launchpad
+
+Tasks are not just text. TodoFocus lets you attach **links**, **files**, and **apps** to any task, then launch everything you need in a single click.
+
+## Adding Launch Resources
+
+1. Open a task's detail view
+2. Scroll to the **Launchpad** section
+3. Click **Add Resource**
+4. Choose the type:
+   - **URL** — paste a link (`https://...`)
+   - **File** — use the native file picker to select a document
+   - **App** — select an application (`.app`)
+
+You can attach up to **12 resources** per task.
+
+## Resource Rules
+
+| Type | Valid format | Notes |
+|------|-------------|-------|
+| URL | `https://` or `http://` | Must be a valid web link |
+| File | Full path starting with `/` | Any file on your Mac |
+| App | `.app` path or app link | Opens the application |
+
+Invalid resources are rejected with a clear error message.
+
+## Launch All
+
+When a task has resources attached, a **Launch All** button appears in the task detail view.
+
+Click it to open every attached resource at once — your browser tabs, documents, and apps all launch together.
+
+> [!tip]
+> Use this when starting a project: attach all the files, links, and apps you need upfront, then "Launch All" to set up your entire working context in one click.
+
+## Validation
+
+TodoFocus validates resources before saving:
+
+- URLs must use `http://` or `https://`
+- Files must exist and have a valid path
+- Apps must be recognized macOS applications
+
+Malformed or inaccessible resources are rejected with a specific error so you can correct them.
+
+## Removing Resources
+
+Hover over a resource in the Launchpad section and click the **×** button to remove it.
+
+## Security
+
+- No shell or terminal commands can be attached — only URLs, files, and apps
+- Resource launching uses macOS's native `NSWorkspace`, not shell execution
+- TodoFocus does not access the internet beyond what the attached URLs specify

@@ -1,0 +1,88 @@
+---
+title: Data & Privacy
+description: Your data stays on your Mac. No accounts, no cloud, no sync.
+---
+
+# Data & Privacy
+
+TodoFocus is **local-first**. Everything you add stays on your Mac. No login, no cloud account, no synchronization.
+
+## Where Data Lives
+
+```
+~/Library/Application Support/todofocus/
+```
+
+Inside that folder:
+
+| File | What it contains |
+|------|------------------|
+| `todofocus.db` | All tasks, lists, focus sessions, and settings |
+
+This is a standard SQLite database backed by [GRDB](https://github.com/groue/GRDB.swift).
+
+## Database Path
+
+The exact database path is shown in **Settings** if you ever need to locate it.
+
+## Exporting Your Data
+
+TodoFocus supports **JSON export** so you can back up or move your data:
+
+1. Open **Settings**
+2. Find **Export Data**
+3. Choose a location to save `todofocus-export.json`
+
+The export includes all tasks, lists, and launch resources in a portable JSON format.
+
+## Importing Data
+
+1. Open **Settings**
+2. Find **Import Data**
+3. Select a previously exported `todofocus-export.json`
+
+> [!warning]
+> Import merges with existing data — it does not replace your current database. Review the import results to confirm everything transferred correctly.
+
+## Privacy Guarantees
+
+- **No network requests** for task data — TodoFocus never contacts a server
+- **No analytics** — no tracking, no telemetry
+- **No login** — the app works fully offline from first launch
+- **No cloud sync** — your tasks never leave your machine unless you explicitly export them
+
+## Resetting Local Data
+
+To start fresh (permanently deletes all data):
+
+1. Open **Settings**
+2. Find **Reset Database** (or remove `todofocus.db` from the Application Support folder)
+3. Restart TodoFocus
+
+> [!danger]
+> Resetting is permanent and cannot be undone. Export your data first if you want a backup.
+
+## Permissions Used
+
+TodoFocus requests only the permissions it needs:
+
+| Permission | Why |
+|------------|-----|
+| **Accessibility** | Required for `⌘⇧T` global hotkey and Hard Focus enforcement |
+| **Microphone** | Required for voice capture in Quick Capture |
+| **Speech Recognition** | Required to transcribe voice input |
+| **File Access** | Required to attach files in Launchpad and for export/import |
+
+None of these permissions give TodoFocus network access or the ability to share your data anywhere.
+
+## Build from Source
+
+The entire codebase is public. You can build and inspect TodoFocus yourself:
+
+```bash
+brew install xcodegen
+git clone --recurse-submodules https://github.com/michaelmjhhhh/TodoFocus.git
+cd TodoFocus/macos/TodoFocusMac
+xcodegen generate
+xcodebuild build -project "TodoFocusMac.xcodeproj" -scheme "TodoFocusMac"
+```
