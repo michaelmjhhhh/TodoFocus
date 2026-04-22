@@ -90,52 +90,25 @@ export default function Home() {
       </section>
 
       <section className="w-full max-w-5xl mx-auto px-6 mb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
-            <img
-              src={`${assetBase}/screenshot-01.png`}
-              alt="TodoFocus main task list view"
-              width={1200}
-              height={800}
-              className="w-full h-auto rounded-xl"
-            />
-          </div>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
-            <img
-              src={`${assetBase}/screenshot-02.png`}
-              alt="TodoFocus Deep Focus session"
-              width={1200}
-              height={800}
-              className="w-full h-auto rounded-xl"
-            />
-          </div>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
-            <img
-              src={`${assetBase}/screenshot-03.png`}
-              alt="TodoFocus Quick Capture"
-              width={1200}
-              height={800}
-              className="w-full h-auto rounded-xl"
-            />
-          </div>
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
-            <img
-              src={`${assetBase}/screenshot-04.png`}
-              alt="TodoFocus Launchpad tasks"
-              width={1200}
-              height={800}
-              className="w-full h-auto rounded-xl"
-            />
-          </div>
-        </div>
-        <div className="mt-6 relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
-          <img
-            src={`${assetBase}/screenshot-05.png`}
-            alt="TodoFocus Daily Review"
-            width={1200}
-            height={800}
-            className="w-full h-auto rounded-xl"
-          />
+        <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth
+            [&::-webkit-scrollbar]:h-1.5
+            [&::-webkit-scrollbar-track]:bg-ink-lighter/10
+            [&::-webkit-scrollbar-thumb]:bg-ink-lighter/30
+            [&::-webkit-scrollbar-thumb]:rounded-full">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <div
+              key={n}
+              className="flex-shrink-0 w-[480px] md:w-[560px] snap-center"
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+                <img
+                  src={`${assetBase}/screenshot-0${n}.png`}
+                  alt={`TodoFocus screenshot ${n}`}
+                  className="w-full h-auto rounded-xl"
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
