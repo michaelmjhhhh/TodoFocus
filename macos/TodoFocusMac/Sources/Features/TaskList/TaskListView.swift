@@ -73,9 +73,20 @@ struct TaskListView: View {
                     Button(role: .destructive) {
                         showEmptyArchiveConfirmation = true
                     } label: {
-                        Text("Empty Archive")
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(tokens.danger)
+                        HStack(spacing: 6) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 11, weight: .semibold))
+                            Text("Empty Archive")
+                                .font(.caption.weight(.semibold))
+                        }
+                        .foregroundStyle(filteredTodosCache.isEmpty ? tokens.textTertiary : tokens.danger)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(tokens.bgFloating.opacity(0.82), in: Capsule())
+                        .overlay {
+                            Capsule()
+                                .stroke(filteredTodosCache.isEmpty ? tokens.sectionBorder.opacity(0.5) : tokens.danger.opacity(0.4), lineWidth: 1)
+                        }
                     }
                     .buttonStyle(.plain)
                     .disabled(filteredTodosCache.isEmpty)
