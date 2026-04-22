@@ -10,6 +10,7 @@ final class AppModel {
     var detailPanelWidth: Double = WindowPersistence.loadDetailWidth()
     var deepFocusService: DeepFocusService = DeepFocusService()
     var quickCaptureService: QuickCaptureService = QuickCaptureService()
+    var dailyReviewPreviewService: DailyReviewPreviewService = DailyReviewPreviewService()
 
     func selectSidebar(_ next: SidebarSelection) {
         if selection != next {
