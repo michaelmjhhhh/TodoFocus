@@ -1,9 +1,40 @@
 /* eslint-disable @next/next/no-img-element */
 
+const DIRECT_DOWNLOAD_URL =
+  "https://github.com/michaelmjhhhh/TodoFocus/releases/latest/download/TodoFocus-macos-universal.zip";
+
 export default function Home() {
   const assetBase = process.env.NODE_ENV === "production" ? "/TodoFocus" : "";
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "TodoFocus",
+    description:
+      "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense.",
+    url: "https://michaelmjhhhh.github.io/TodoFocus",
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "macOS 14+",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    downloadUrl:
+      "https://github.com/michaelmjhhhh/TodoFocus/releases/latest/download/TodoFocus-macos-universal.zip",
+    softwareVersion: "1.0.8",
+    author: {
+      "@type": "Person",
+      name: "TodoFocus",
+    },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
     <main className="flex min-h-screen flex-col items-center selection:bg-terracotta selection:text-paper overflow-x-hidden">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -19,7 +50,7 @@ export default function Home() {
           </span>
         </div>
         <a
-          href="https://github.com/michaelmjhhhh/TodoFocus/releases"
+          href={DIRECT_DOWNLOAD_URL}
           className="font-sans text-sm font-medium bg-ink text-paper px-5 py-2.5 rounded-full hover:bg-terracotta transition-colors duration-300"
         >
           Download for macOS
@@ -37,13 +68,13 @@ export default function Home() {
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <a
-            href="https://github.com/michaelmjhhhh/TodoFocus/releases"
+            href={DIRECT_DOWNLOAD_URL}
             className="font-sans text-base font-medium bg-terracotta text-paper px-8 py-4 rounded-full hover:bg-terracotta-hover transition-colors shadow-lg hover:shadow-xl duration-300"
           >
             Download Latest Release
           </a>
           <a
-            href="https://github.com/michaelmjhhhh/TodoFocus"
+            href="https://github.com/michaelmjhhhh/TodoFocus/releases"
             className="font-sans text-base font-medium bg-transparent text-ink-light border border-ink-lighter/30 px-8 py-4 rounded-full hover:bg-paper-dark hover:text-ink transition-colors duration-300"
           >
             View on GitHub
@@ -59,10 +90,48 @@ export default function Home() {
       </section>
 
       <section className="w-full max-w-5xl mx-auto px-6 mb-32">
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+            <img
+              src={`${assetBase}/screenshot-01.png`}
+              alt="TodoFocus main task list view"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl"
+            />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+            <img
+              src={`${assetBase}/screenshot-02.png`}
+              alt="TodoFocus Deep Focus session"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl"
+            />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+            <img
+              src={`${assetBase}/screenshot-03.png`}
+              alt="TodoFocus Quick Capture"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl"
+            />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
+            <img
+              src={`${assetBase}/screenshot-04.png`}
+              alt="TodoFocus Launchpad tasks"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl"
+            />
+          </div>
+        </div>
+        <div className="mt-6 relative rounded-2xl overflow-hidden shadow-2xl border border-ink/5 bg-white p-2">
           <img
-            src={`${assetBase}/overdue-screenshot.png`}
-            alt="TodoFocus Interface showing overdue tasks"
+            src={`${assetBase}/screenshot-05.png`}
+            alt="TodoFocus Daily Review"
             width={1200}
             height={800}
             className="w-full h-auto rounded-xl"
@@ -156,7 +225,7 @@ export default function Home() {
               <div className="rounded-xl overflow-hidden shadow-2xl border border-white/10">
                 <img
                   src={`${assetBase}/demo.gif`}
-                  alt="TodoFocus Launchpad Demo"
+                  alt="TodoFocus Launchpad — launch links, files, and apps from a single task"
                   width={800}
                   height={600}
                   className="w-full h-auto"
@@ -187,7 +256,7 @@ export default function Home() {
           Ready to finish things?
         </h2>
         <a
-          href="https://github.com/michaelmjhhhh/TodoFocus/releases"
+          href={DIRECT_DOWNLOAD_URL}
           className="inline-block font-sans text-lg font-medium bg-paper text-terracotta px-10 py-5 rounded-full hover:bg-white transition-colors shadow-xl duration-300"
         >
           Download for macOS
@@ -229,5 +298,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
+    </>
   );
 }

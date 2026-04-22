@@ -19,10 +19,65 @@ const mono = JetBrains_Mono({
 });
 
 const assetBase = process.env.NODE_ENV === "production" ? "/TodoFocus" : "";
+const siteUrl = "https://michaelmjhhhh.github.io/TodoFocus";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "TodoFocus | Stop collecting tasks. Start finishing them.",
-  description: "A local-first macOS task app that actually helps you finish things.",
+  description:
+    "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense. Just you and your work.",
+  keywords: [
+    "task manager macOS",
+    "productivity app mac",
+    "focus timer app mac",
+    "local first todo app",
+    "macOS task app",
+    "Deep Focus",
+    "Quick Capture",
+    "Launchpad tasks",
+  ],
+  authors: [{ name: "TodoFocus" }],
+  creator: "TodoFocus",
+  publisher: "TodoFocus",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "TodoFocus",
+    title: "TodoFocus | Stop collecting tasks. Start finishing them.",
+    description:
+      "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense.",
+    images: [
+      {
+        url: `${assetBase}/og-image.svg`,
+        width: 1200,
+        height: 630,
+        alt: "TodoFocus — macOS Task App",
+      },
+    ],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TodoFocus | Stop collecting tasks. Start finishing them.",
+    description:
+      "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense.",
+    images: [`${assetBase}/og-image.svg`],
+    creator: "@todofocus",
+  },
   icons: {
     icon: `${assetBase}/readme-logo.png`,
   },
