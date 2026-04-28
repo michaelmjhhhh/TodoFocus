@@ -2,14 +2,28 @@ import AppKit
 import Observation
 import SwiftUI
 
+extension Notification.Name {
+    static let todoFocusNavigateToDailyReview = Notification.Name("todoFocusNavigateToDailyReview")
+}
+
 @Observable
 @MainActor
 final class DailyReviewPreviewService {
     var isVisible: Bool = false
     private var panel: DailyReviewPreviewPanel?
     private var hostingView: DailyReviewPreviewHostingView?
+    @ObservationIgnored private let appActivator: @MainActor () -> Void
+    @ObservationIgnored private let notificationCenter: NotificationCenter
     
     var store: TodoAppStore?
+
+    init(
+        appActivator: @escaping @MainActor () -> Void = DailyReviewPreviewService.activateCurrentApplication,
+        notificationCenter: NotificationCenter = .default
+    ) {
+        self.appActivator = appActivator
+        self.notificationCenter = notificationCenter
+    }
     
     func showPanel() {
         guard let store else { return }
@@ -25,9 +39,7 @@ final class DailyReviewPreviewService {
             self?.hidePanel()
         }
         let onActivateApp: () -> Void = { [weak self] in
-            self?.hidePanel()
-            NSApp.activate(ignoringOtherApps: true)
-            NotificationCenter.default.post(name: Notification.Name("todoFocusNavigateToDailyReview"), object: nil)
+            self?.activateAppAndNavigateToDailyReview()
         }
         
         if hostingView == nil {
@@ -62,5 +74,19 @@ final class DailyReviewPreviewService {
         } else {
             showPanel()
         }
+    }
+
+    func activateAppAndNavigateToDailyReview() {
+        hidePanel()
+        appActivator()
+        notificationCenter.post(name: .todoFocusNavigateToDailyReview, object: nil)
+    }
+
+    private static func activateCurrentApplication() {
+        NSRunningApplication.current.activate(options: [.activateAllWindows])
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.windows
+            .first { $0.isVisible && $0.canBecomeKey && !($0 is DailyReviewPreviewPanel) }?
+            .makeKeyAndOrderFront(nil)
     }
 }

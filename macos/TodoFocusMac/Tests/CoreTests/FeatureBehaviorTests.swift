@@ -29,6 +29,48 @@ final class FeatureBehaviorTests: XCTestCase {
         XCTAssertEqual(text, "Launched 2. 1 failed")
     }
 
+    func testShortcutHintBarListsAllAvailableShortcuts() {
+        XCTAssertEqual(ShortcutHintBar.availableShortcuts.map(\.key), ["⌘⇧T", "⌘⇧U", "⌘⇧F", "⌘K", "⌘⇧L", "⌘⇧N"])
+        XCTAssertEqual(ShortcutHintBar.availableShortcuts.map(\.action), [
+            "Global Quick Capture",
+            "Daily Review Preview",
+            "Start Deep Focus",
+            "Search Tasks",
+            "Toggle Theme",
+            "New Task"
+        ])
+    }
+
+    func testDailyReviewPreviewActivationHidesPreviewActivatesAppAndPostsNavigation() {
+        let notificationCenter = NotificationCenter()
+        var didActivateApp = false
+        var didReceiveNavigation = false
+        let observer = notificationCenter.addObserver(
+            forName: .todoFocusNavigateToDailyReview,
+            object: nil,
+            queue: nil
+        ) { _ in
+            didReceiveNavigation = true
+        }
+        defer {
+            notificationCenter.removeObserver(observer)
+        }
+
+        let service = DailyReviewPreviewService(
+            appActivator: {
+                didActivateApp = true
+            },
+            notificationCenter: notificationCenter
+        )
+        service.isVisible = true
+
+        service.activateAppAndNavigateToDailyReview()
+
+        XCTAssertFalse(service.isVisible)
+        XCTAssertTrue(didActivateApp)
+        XCTAssertTrue(didReceiveNavigation)
+    }
+
     private func launchSummaryText(_ summary: LaunchSummary) -> String {
         if summary.results.isEmpty {
             return summary.failedCount + summary.rejectedCount == 0 ? "No resources" : "Launched \(summary.launchedCount). \(summary.failedCount + summary.rejectedCount) failed"
