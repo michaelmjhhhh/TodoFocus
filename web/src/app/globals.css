@@ -6,4 +6,24 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .opacity-42 {
+    opacity: 0.42;
+  }
+}
+
+html {
+  background: #f5f0e8;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
 }
