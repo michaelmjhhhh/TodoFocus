@@ -10,12 +10,12 @@ const workflowSteps = [
   {
     kicker: "01",
     title: "Capture",
-    copy: "Drop thoughts into TodoFocus from anywhere with the global shortcut.",
+    copy: "Open Quick Capture from anywhere and send the thought to Inbox or the active focus task.",
   },
   {
     kicker: "02",
     title: "Choose",
-    copy: "Use My Day, time filters, and clean lists to decide what matters now.",
+    copy: "Search, filter, and pick from the native task list before the day gets crowded.",
   },
   {
     kicker: "03",
@@ -33,52 +33,52 @@ const featureSpotlights = [
   {
     eyebrow: "Quick Capture",
     title: "Capture ideas without leaving the work.",
-    copy: "The system-wide shortcut turns stray thoughts into tasks or appends them to the active Deep Focus task, so context stays intact.",
-    image: "screenshot-05.png",
-    alt: "TodoFocus quick capture and task detail screenshot",
+    copy: "The Quick Capture panel makes a thought fast to enter, with voice capture available and routing shown clearly when no Deep Focus session is active.",
+    image: "screenshot-03.png",
+    alt: "TodoFocus Quick Capture panel",
     stat: "Command Shift T",
   },
   {
     eyebrow: "Deep Focus",
-    title: "Make one task the room.",
-    copy: "Start a focused session, block distracting apps, track focus time, and keep the next action visible until it is done.",
-    image: "screenshot-02.png",
-    alt: "TodoFocus Deep Focus task list screenshot",
-    stat: "Focus timer + stats",
+    title: "Keep focus state close to the menu bar.",
+    copy: "The Deep Focus status panel shows whether a session is active, how many apps are blocked, and gives quick access back into TodoFocus.",
+    image: "screenshot-05.png",
+    alt: "TodoFocus Deep Focus status panel",
+    stat: "Blocked apps + session state",
   },
   {
     eyebrow: "Daily Review",
-    title: "End the day with a clean reset.",
-    copy: "Review overdue, today, tomorrow, and done in a fast native flow that helps you recover momentum instead of reorganizing forever.",
-    image: "screenshot-03.png",
-    alt: "TodoFocus Daily Review preview screenshot",
-    stat: "Overdue to done",
+    title: "Review the day before it becomes clutter.",
+    copy: "The Daily Review board separates overdue, today, tomorrow, later, and completed work so you can move tasks with a clear sense of status.",
+    image: "screenshot-01.png",
+    alt: "TodoFocus Daily Review board",
+    stat: "Open, today, tomorrow, done",
   },
 ];
 
 const galleryItems = [
   {
     image: "screenshot-01.png",
-    title: "Main workspace",
-    copy: "A calm task list with detail, notes, launch resources, and list color context.",
+    title: "Daily Review board",
+    copy: "A full-screen review surface for open, overdue, today, tomorrow, later, and completed work.",
     className: "lg:col-span-8",
   },
   {
     image: "screenshot-04.png",
-    title: "Compact review",
-    copy: "Focused panels keep planning useful without becoming another project.",
+    title: "Menu bar review preview",
+    copy: "A compact Daily Review preview shows counts and the tasks needing attention next.",
     className: "lg:col-span-4",
   },
   {
     image: "screenshot-02.png",
-    title: "Focus surface",
-    copy: "Selection, shortcuts, and task detail stay close to the work.",
+    title: "All Tasks workspace",
+    copy: "Search, time filters, active tasks, completed visibility, and shortcut hints stay in one calm view.",
     className: "lg:col-span-5",
   },
   {
     image: "screenshot-03.png",
-    title: "Daily reset",
-    copy: "Preview tomorrow's shape and clear the loose ends.",
+    title: "Quick Capture panel",
+    copy: "A focused capture window keeps adding a task lightweight, including microphone capture.",
     className: "lg:col-span-7",
   },
 ];
@@ -219,14 +219,14 @@ export default function Home() {
                 </div>
                 <img
                   src={imagePath("screenshot-02.png")}
-                  alt="TodoFocus focus interface"
+                  alt="TodoFocus All Tasks workspace"
                   className="h-[421px] w-full rounded-b-[1.7rem] object-cover object-left-top"
                 />
               </div>
               <div className="absolute bottom-12 left-8 w-[330px] rounded-3xl border border-paper/12 bg-[#191715]/92 p-4 shadow-[0_32px_80px_rgba(0,0,0,0.36)] backdrop-blur">
                 <img
-                  src={imagePath("screenshot-05.png")}
-                  alt="TodoFocus focused task detail"
+                  src={imagePath("screenshot-03.png")}
+                  alt="TodoFocus Quick Capture panel"
                   className="aspect-[1.16] w-full rounded-2xl object-cover"
                 />
                 <div className="mt-4 flex items-center justify-between text-sm">
