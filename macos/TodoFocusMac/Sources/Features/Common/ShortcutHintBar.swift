@@ -1,6 +1,22 @@
 import SwiftUI
 
+struct ShortcutHintItem: Identifiable, Equatable {
+    let key: String
+    let action: String
+
+    var id: String { key }
+}
+
 struct ShortcutHintBar: View {
+    static let availableShortcuts: [ShortcutHintItem] = [
+        ShortcutHintItem(key: "⌘⇧T", action: "Global Quick Capture"),
+        ShortcutHintItem(key: "⌘⇧U", action: "Daily Review Preview"),
+        ShortcutHintItem(key: "⌘⇧F", action: "Start Deep Focus"),
+        ShortcutHintItem(key: "⌘K", action: "Search Tasks"),
+        ShortcutHintItem(key: "⌘⇧L", action: "Toggle Theme"),
+        ShortcutHintItem(key: "⌘⇧N", action: "New Task")
+    ]
+
     var needsAccessibilityPermission: Bool = false
     var onRequestPermission: (() -> Void)?
     @Environment(\.themeTokens) private var tokens
@@ -14,11 +30,9 @@ struct ShortcutHintBar: View {
             Spacer()
 
             HStack(spacing: 12) {
-                shortcutPill("⌘⇧T", "Global Quick Capture")
-                shortcutPill("⌘⇧F", "Start Deep Focus")
-                shortcutPill("⌘K", "Search Tasks")
-                shortcutPill("⌘⇧L", "Toggle Theme")
-                shortcutPill("⌘⇧N", "New Task")
+                ForEach(Self.availableShortcuts) { shortcut in
+                    shortcutPill(shortcut.key, shortcut.action)
+                }
             }
         }
         .padding(.horizontal, 12)

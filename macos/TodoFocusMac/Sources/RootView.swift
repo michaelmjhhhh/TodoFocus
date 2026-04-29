@@ -142,20 +142,31 @@ struct RootView: View {
             }
             isHardFocusActive = isEnforcing
         }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("todoFocusNavigateToDailyReview"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .todoFocusNavigateToDailyReview)) { _ in
             appModel.selectSidebar(.dailyReview)
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
         .overlay(alignment: .bottomTrailing) {
-            Button("") {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    themeStore.cycleTheme()
+            ZStack(alignment: .bottomTrailing) {
+                ShortcutHintBar(
+                    needsAccessibilityPermission: appModel.quickCaptureService.needsAccessibilityPermission,
+                    onRequestPermission: {
+                        appModel.quickCaptureService.requestAccessibilityPermission()
+                    }
+                )
+                .padding(.trailing, 16)
+                .padding(.bottom, 16)
+
+                Button("") {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        themeStore.cycleTheme()
+                    }
                 }
+                .keyboardShortcut("l", modifiers: [.command, .shift])
+                .opacity(0)
+                .allowsHitTesting(false)
             }
-            .keyboardShortcut("l", modifiers: [.command, .shift])
-            .opacity(0)
-            .allowsHitTesting(false)
         }
         .safeAreaInset(edge: .top) {
             if isHardFocusActive {
