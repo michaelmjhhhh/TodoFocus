@@ -18,14 +18,14 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-const assetBase = process.env.NODE_ENV === "production" ? "/TodoFocus" : "";
+const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteUrl = "https://michaelmjhhhh.github.io/TodoFocus";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "TodoFocus | Stop collecting tasks. Start finishing them.",
+  title: "TodoFocus | Native macOS task focus",
   description:
-    "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense. Just you and your work.",
+    "A native, local-first macOS task app for Quick Capture, Deep Focus, Context Launchpad tasks, Daily Review, and private SQLite storage.",
   keywords: [
     "task manager macOS",
     "productivity app mac",
@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     type: "website",
     url: siteUrl,
     siteName: "TodoFocus",
-    title: "TodoFocus | Stop collecting tasks. Start finishing them.",
+    title: "TodoFocus | Native macOS task focus",
     description:
-      "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense.",
+      "Capture tasks, launch context, protect focus, and review the day in one local-first macOS workflow.",
     images: [
       {
         url: `${assetBase}/og-image.svg`,
@@ -72,9 +72,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TodoFocus | Stop collecting tasks. Start finishing them.",
+    title: "TodoFocus | Native macOS task focus",
     description:
-      "A local-first macOS task app that actually helps you finish things. No cloud, no logins, no nonsense.",
+      "Capture tasks, launch context, protect focus, and review the day in one local-first macOS workflow.",
     images: [`${assetBase}/og-image.svg`],
     creator: "@todofocus",
   },

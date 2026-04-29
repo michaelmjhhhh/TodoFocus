@@ -1,14 +1,23 @@
-const isProduction = process.env.NODE_ENV === "production";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: "export",
-  images: {
-    unoptimized: true,
-  },
-  trailingSlash: true,
-  basePath: isProduction ? "/TodoFocus" : "",
-  assetPrefix: isProduction ? "/TodoFocus/" : "",
+const createNextConfig = (phase) => {
+  const isDevelopmentServer = phase === PHASE_DEVELOPMENT_SERVER;
+  const basePath = isDevelopmentServer ? "" : "/TodoFocus";
+
+  return {
+    distDir: isDevelopmentServer ? ".next-dev" : ".next",
+    output: "export",
+    images: {
+      unoptimized: true,
+    },
+    trailingSlash: true,
+    basePath,
+    assetPrefix: basePath ? `${basePath}/` : "",
+    env: {
+      NEXT_PUBLIC_BASE_PATH: basePath,
+    },
+  };
 };
 
-export default nextConfig;
+export default createNextConfig;
