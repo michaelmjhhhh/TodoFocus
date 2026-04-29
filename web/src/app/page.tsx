@@ -223,11 +223,11 @@ export default function Home() {
                   className="h-[421px] w-full rounded-b-[1.7rem] object-cover object-left-top"
                 />
               </div>
-              <div className="absolute bottom-12 left-8 w-[330px] rounded-3xl border border-paper/12 bg-[#191715]/92 p-4 shadow-[0_32px_80px_rgba(0,0,0,0.36)] backdrop-blur">
+              <div className="absolute bottom-12 left-8 w-[380px] rounded-3xl border border-paper/12 bg-[#191715]/92 p-3 shadow-[0_32px_80px_rgba(0,0,0,0.36)] backdrop-blur">
                 <img
                   src={imagePath("screenshot-03.png")}
                   alt="TodoFocus Quick Capture panel"
-                  className="aspect-[1.16] w-full rounded-2xl object-cover"
+                  className="aspect-[1000/530] w-full rounded-2xl bg-[#191715] object-contain"
                 />
                 <div className="mt-4 flex items-center justify-between text-sm">
                   <span className="font-medium text-paper">Quick Capture</span>
