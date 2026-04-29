@@ -18,7 +18,7 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-const assetBase = process.env.NODE_ENV === "production" ? "/TodoFocus" : "";
+const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteUrl = "https://michaelmjhhhh.github.io/TodoFocus";
 
 export const metadata: Metadata = {

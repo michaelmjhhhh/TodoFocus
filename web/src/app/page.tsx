@@ -92,7 +92,7 @@ const trustFacts = [
 ];
 
 export default function Home() {
-  const assetBase = process.env.NODE_ENV === "production" ? "/TodoFocus" : "";
+  const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   const productSchema = {
     "@context": "https://schema.org",
