@@ -36,6 +36,7 @@ const featureSpotlights = [
     copy: "The Quick Capture panel makes a thought fast to enter, with voice capture available and routing shown clearly when no Deep Focus session is active.",
     image: "screenshot-03.png",
     alt: "TodoFocus Quick Capture panel",
+    aspectRatio: "1000 / 530",
     stat: "Command Shift T",
   },
   {
@@ -44,6 +45,7 @@ const featureSpotlights = [
     copy: "The Deep Focus status panel shows whether a session is active, how many apps are blocked, and gives quick access back into TodoFocus.",
     image: "screenshot-05.png",
     alt: "TodoFocus Deep Focus status panel",
+    aspectRatio: "676 / 580",
     stat: "Blocked apps + session state",
   },
   {
@@ -52,6 +54,7 @@ const featureSpotlights = [
     copy: "The Daily Review board separates overdue, today, tomorrow, later, and completed work so you can move tasks with a clear sense of status.",
     image: "screenshot-01.png",
     alt: "TodoFocus Daily Review board",
+    aspectRatio: "2940 / 1912",
     stat: "Open, today, tomorrow, done",
   },
 ];
@@ -61,24 +64,28 @@ const galleryItems = [
     image: "screenshot-01.png",
     title: "Daily Review board",
     copy: "A full-screen review surface for open, overdue, today, tomorrow, later, and completed work.",
+    aspectRatio: "2940 / 1912",
     className: "lg:col-span-8",
   },
   {
     image: "screenshot-04.png",
     title: "Menu bar review preview",
     copy: "A compact Daily Review preview shows counts and the tasks needing attention next.",
+    aspectRatio: "668 / 890",
     className: "lg:col-span-4",
   },
   {
     image: "screenshot-02.png",
     title: "All Tasks workspace",
     copy: "Search, time filters, active tasks, completed visibility, and shortcut hints stay in one calm view.",
+    aspectRatio: "2940 / 1912",
     className: "lg:col-span-5",
   },
   {
     image: "screenshot-03.png",
     title: "Quick Capture panel",
     copy: "A focused capture window keeps adding a task lightweight, including microphone capture.",
+    aspectRatio: "1000 / 530",
     className: "lg:col-span-7",
   },
 ];
@@ -298,12 +305,17 @@ export default function Home() {
                       {feature.stat}
                     </div>
                   </div>
-                  <div className="bg-[#141210] p-3 sm:p-5">
-                    <img
-                      src={imagePath(feature.image)}
-                      alt={feature.alt}
-                      className="h-full min-h-[320px] w-full rounded-[1.25rem] object-cover object-left-top"
-                    />
+                  <div className="flex items-center justify-center bg-[#141210] p-3 sm:p-5">
+                    <div
+                      className="w-full overflow-hidden rounded-[1.25rem] bg-[#191715]"
+                      style={{ aspectRatio: feature.aspectRatio }}
+                    >
+                      <img
+                        src={imagePath(feature.image)}
+                        alt={feature.alt}
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
                   </div>
                 </article>
               ))}
@@ -360,11 +372,16 @@ export default function Home() {
                   className={`${item.className} overflow-hidden rounded-[1.5rem] border border-[#2b2722]/10 bg-[#fbf8f1] shadow-[0_26px_80px_rgba(43,39,34,0.14)]`}
                 >
                   <div className="bg-[#161411] p-2.5">
-                    <img
-                      src={imagePath(item.image)}
-                      alt={`${item.title} screenshot`}
-                      className="h-[330px] w-full rounded-[1rem] object-cover object-left-top md:h-[430px]"
-                    />
+                    <div
+                      className="w-full overflow-hidden rounded-[1rem] bg-[#191715]"
+                      style={{ aspectRatio: item.aspectRatio }}
+                    >
+                      <img
+                        src={imagePath(item.image)}
+                        alt={`${item.title} screenshot`}
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
                   </div>
                   <figcaption className="p-5 sm:p-6">
                     <h3 className="font-serif text-2xl text-[#1b1815]">
