@@ -2,9 +2,11 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
 
 /** @type {import('next').NextConfig} */
 const createNextConfig = (phase) => {
-  const basePath = phase === PHASE_DEVELOPMENT_SERVER ? "" : "/TodoFocus";
+  const isDevelopmentServer = phase === PHASE_DEVELOPMENT_SERVER;
+  const basePath = isDevelopmentServer ? "" : "/TodoFocus";
 
   return {
+    distDir: isDevelopmentServer ? ".next-dev" : ".next",
     output: "export",
     images: {
       unoptimized: true,
