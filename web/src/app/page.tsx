@@ -434,7 +434,7 @@ export default function Home() {
             Start with the next task, not another system.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-paper/78">
-            Latest release: v1.0.9. Requires macOS 14 Sonoma or later.
+            Latest release: v1.0.10. Requires macOS 14 Sonoma or later.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
