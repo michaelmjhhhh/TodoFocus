@@ -147,15 +147,14 @@ struct RootView: View {
         }
         .immersiveHeader(isExpanded: $isHeaderExpanded, isSidebarVisible: $isSidebarVisible)
         .environment(\.themeTokens, themeTokens)
-        .overlay(alignment: .bottomTrailing) {
-            ZStack(alignment: .bottomTrailing) {
+        .overlay(alignment: .bottom) {
+            ZStack(alignment: .bottom) {
                 ShortcutHintBar(
                     needsAccessibilityPermission: appModel.quickCaptureService.needsAccessibilityPermission,
                     onRequestPermission: {
                         appModel.quickCaptureService.requestAccessibilityPermission()
                     }
                 )
-                .padding(.trailing, 16)
                 .padding(.bottom, 16)
 
                 Button("") {

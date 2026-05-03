@@ -5,6 +5,24 @@ struct ShortcutHintItem: Identifiable, Equatable {
     let action: String
 
     var id: String { key }
+    var shortAction: String {
+        switch action {
+        case "Global Quick Capture":
+            return "Capture"
+        case "Daily Review Preview":
+            return "Review"
+        case "Start Deep Focus":
+            return "Focus"
+        case "Search Tasks":
+            return "Search"
+        case "Toggle Theme":
+            return "Theme"
+        case "New Task":
+            return "New"
+        default:
+            return action
+        }
+    }
 }
 
 struct ShortcutHintBar: View {
@@ -17,70 +35,78 @@ struct ShortcutHintBar: View {
         ShortcutHintItem(key: "⌘⇧N", action: "New Task")
     ]
 
+    private static let visibleShortcutKeys = ["⌘⇧T", "⌘⇧U", "⌘K", "⌘⇧F", "⌘⇧N"]
+    private static var visibleShortcuts: [ShortcutHintItem] {
+        visibleShortcutKeys.compactMap { key in
+            availableShortcuts.first { $0.key == key }
+        }
+    }
+
     var needsAccessibilityPermission: Bool = false
     var onRequestPermission: (() -> Void)?
     @Environment(\.themeTokens) private var tokens
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 8) {
             if needsAccessibilityPermission {
                 permissionWarning
+                dotSeparator
             }
-            
-            Spacer()
 
-            HStack(spacing: 12) {
-                ForEach(Self.availableShortcuts) { shortcut in
-                    shortcutPill(shortcut.key, shortcut.action)
+            HStack(spacing: 7) {
+                ForEach(Array(Self.visibleShortcuts.enumerated()), id: \.element.id) { index, shortcut in
+                    shortcutHint(shortcut)
+                    if index < Self.visibleShortcuts.count - 1 {
+                        dotSeparator
+                    }
                 }
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 11)
+        .padding(.vertical, 5)
         .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(tokens.bgFloating.opacity(0.8))
+            Capsule()
+                .fill(tokens.bgFloating.opacity(0.30))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(tokens.sectionBorder, lineWidth: 1)
+                    Capsule()
+                        .stroke(tokens.sectionBorder.opacity(0.18), lineWidth: 1)
                 )
         )
+        .fixedSize(horizontal: true, vertical: false)
+    }
+
+    private var dotSeparator: some View {
+        Text("·")
+            .font(.caption2)
+            .foregroundStyle(tokens.textTertiary.opacity(0.28))
     }
     
     private var permissionWarning: some View {
         Button {
             onRequestPermission?()
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                Text("Enable Accessibility for ⌘⇧T")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.orange)
+            HStack(spacing: 4) {
+                Image(systemName: "lock.open.fill")
+                    .font(.caption2)
+                Text("Quick Capture access")
+                    .font(.caption2.weight(.semibold))
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(.orange.opacity(0.15))
-            )
+            .foregroundStyle(tokens.accentTerracotta.opacity(0.66))
         }
         .buttonStyle(.plain)
+        .help("Enable Accessibility permission for Global Quick Capture")
     }
 
-    private func shortcutPill(_ key: String, _ action: String) -> some View {
-        HStack(spacing: 4) {
-            Text(key)
+    private func shortcutHint(_ shortcut: ShortcutHintItem) -> some View {
+        HStack(spacing: 5) {
+            Text(shortcut.shortAction)
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(tokens.textSecondary.opacity(0.86))
+            Text(shortcut.key)
                 .font(.caption2.weight(.semibold).monospaced())
-                .foregroundStyle(tokens.textPrimary)
-            Text(action)
-                .font(.caption2)
-                .foregroundStyle(tokens.textTertiary)
+                .foregroundStyle(tokens.textTertiary.opacity(0.72))
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
-        .background(tokens.sectionBackground, in: Capsule())
+        .help(shortcut.action)
     }
 }
 
