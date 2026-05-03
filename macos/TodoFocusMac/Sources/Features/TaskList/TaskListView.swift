@@ -57,18 +57,6 @@ struct TaskListView: View {
                     filterPicker
                 }
 
-                Text("\(filteredTodosCache.count)")
-                    .font(.caption.weight(.semibold))
-                    .monospacedDigit()
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .foregroundStyle(tokens.textSecondary)
-                    .background(tokens.bgFloating.opacity(0.85), in: Capsule())
-                    .overlay {
-                        Capsule()
-                            .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-                    }
-
                 if isArchiveView {
                     Button(role: .destructive) {
                         showEmptyArchiveConfirmation = true
@@ -105,13 +93,6 @@ struct TaskListView: View {
                             Text("Completed")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
-                            Text("\(completedTodosCache.count)")
-                                .font(.caption.weight(.semibold))
-                                .monospacedDigit()
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .foregroundStyle(isCompletedPanelVisible ? tokens.textPrimary : tokens.textSecondary)
-                                .background(tokens.bgFloating.opacity(0.95), in: Capsule())
                         }
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -353,9 +334,6 @@ struct TaskListView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(tokens.mutedText)
                 Spacer()
-                Text("\(todos.count)")
-                    .font(.caption2)
-                    .foregroundStyle(tokens.mutedText)
             }
 
             ScrollView {
@@ -419,13 +397,6 @@ struct TaskListView: View {
                     }
                 }
                 .buttonStyle(.plain)
-
-                Text("\(todos.count)")
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(tokens.textTertiary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(tokens.bgFloating, in: Capsule())
 
                 Spacer()
 

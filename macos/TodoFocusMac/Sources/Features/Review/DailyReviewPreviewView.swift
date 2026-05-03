@@ -13,11 +13,9 @@ struct DailyReviewPreviewView: View {
         let snapshot = DailyReviewPreviewSnapshot.shaped(from: board, maxRowsPerBucket: 4)
         let totalOpen = snapshot.openTasks.reduce(0) { $0 + $1.tasks.count }
         let totalCompleted = snapshot.completedTasks.reduce(0) { $0 + $1.tasks.count }
-        let overdueOpen = snapshot.openTasks.first(where: { $0.bucket == .overdue })?.tasks.count ?? 0
-        let todayOpen = snapshot.openTasks.first(where: { $0.bucket == .today })?.tasks.count ?? 0
         
         VStack(spacing: 18) {
-            header(totalOpen: totalOpen, totalCompleted: totalCompleted, overdueOpen: overdueOpen, todayOpen: todayOpen)
+            header
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
@@ -62,7 +60,7 @@ struct DailyReviewPreviewView: View {
         )
     }
 
-    private func header(totalOpen: Int, totalCompleted: Int, overdueOpen: Int, todayOpen: Int) -> some View {
+    private var header: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center, spacing: 10) {
                 Image(systemName: "calendar.day.timeline.left")
@@ -102,29 +100,6 @@ struct DailyReviewPreviewView: View {
                 .accessibilityLabel("Close preview")
             }
 
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) {
-                    metricPill(title: "Open", value: totalOpen)
-                    metricPill(title: "Today", value: todayOpen)
-                    metricPill(title: "Overdue", value: overdueOpen)
-                    if totalCompleted > 0 {
-                        metricPill(title: "Done", value: totalCompleted)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        metricPill(title: "Open", value: totalOpen)
-                        metricPill(title: "Today", value: todayOpen)
-                    }
-                    HStack(spacing: 8) {
-                        metricPill(title: "Overdue", value: overdueOpen)
-                        if totalCompleted > 0 {
-                            metricPill(title: "Done", value: totalCompleted)
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -189,29 +164,6 @@ struct DailyReviewPreviewView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
-        }
-    }
-
-    private func metricPill(title: String, value: Int) -> some View {
-        HStack(spacing: 6) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(tokens.textSecondary)
-                .lineLimit(1)
-            Text("\(value)")
-                .font(.caption.weight(.bold))
-                .monospacedDigit()
-                .foregroundStyle(tokens.textPrimary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(tokens.bgFloating.opacity(0.9), in: Capsule())
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
-        .background(tokens.sectionBackground, in: Capsule())
-        .overlay {
-            Capsule()
-                .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
 

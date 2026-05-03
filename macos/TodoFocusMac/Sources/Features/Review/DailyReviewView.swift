@@ -109,7 +109,6 @@ struct DailyReviewView: View {
                     .foregroundStyle(tokens.textTertiary)
             }
             Spacer(minLength: 8)
-            metricPill(title: "All Tasks", value: store.todoCount)
         }
     }
 
@@ -134,13 +133,6 @@ struct DailyReviewView: View {
                     Text(title)
                         .font(.headline.weight(.semibold))
                         .foregroundStyle(Color.white)
-                    Text("\(columns.reduce(0) { $0 + $1.todos.count })")
-                        .font(.caption.weight(.bold))
-                        .monospacedDigit()
-                        .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(tokens.bgFloating.opacity(0.8), in: Capsule())
                     Spacer(minLength: 8)
                     if isCompletedLane {
                         Image(systemName: collapsed ? "chevron.right" : "chevron.down")
@@ -181,13 +173,6 @@ struct DailyReviewView: View {
                 Text(column.bucket.title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(tokens.textPrimary)
-                Text("\(column.todos.count)")
-                    .font(.caption.weight(.bold))
-                    .monospacedDigit()
-                    .foregroundStyle(tokens.textSecondary)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 2)
-                    .background(tokens.bgFloating.opacity(0.8), in: Capsule())
                 Spacer(minLength: 6)
                 Button {
                     boardViewModel.toggleColumn(bucket: column.bucket, lane: lane)
@@ -261,28 +246,6 @@ struct DailyReviewView: View {
                 .frame(width: 3)
                 .padding(.vertical, 7)
                 .padding(.leading, 5)
-        }
-    }
-
-    private func metricPill(title: String, value: Int) -> some View {
-        HStack(spacing: 7) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(tokens.textSecondary)
-            Text("\(value)")
-                .font(.caption.weight(.bold))
-                .monospacedDigit()
-                .foregroundStyle(tokens.textPrimary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(tokens.bgFloating.opacity(0.9), in: Capsule())
-        }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
-        .background(tokens.sectionBackground, in: Capsule())
-        .overlay {
-            Capsule()
-                .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
 
