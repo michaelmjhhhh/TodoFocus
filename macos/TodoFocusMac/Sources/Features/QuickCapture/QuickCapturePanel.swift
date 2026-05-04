@@ -4,7 +4,7 @@ class QuickCapturePanel: NSPanel {
     init() {
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 220),
-            styleMask: [.titled, .closable, .nonactivatingPanel, .hudWindow, .utilityWindow],
+            styleMask: [.titled, .closable, .nonactivatingPanel, .utilityWindow],
             backing: .buffered,
             defer: false
         )
@@ -15,7 +15,7 @@ class QuickCapturePanel: NSPanel {
         self.titleVisibility = .hidden
         self.titlebarAppearsTransparent = true
         self.isMovableByWindowBackground = true
-        self.backgroundColor = NSColor(red: 0.094, green: 0.090, blue: 0.082, alpha: 0.94)
+        self.backgroundColor = NSColor(red: 0.937, green: 0.914, blue: 0.871, alpha: 0.97)
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         self.isOpaque = false
         self.hasShadow = true

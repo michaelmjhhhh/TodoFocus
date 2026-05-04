@@ -95,7 +95,7 @@ struct RootView: View {
                             .fill(themeTokens.hairline)
                             .frame(width: 1)
                     }
-                    .shadow(color: Color.black.opacity(0.10), radius: 8, x: -3, y: 0)
+                    .shadow(color: Color.black.opacity(0.06), radius: 4, x: -2, y: 0)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }

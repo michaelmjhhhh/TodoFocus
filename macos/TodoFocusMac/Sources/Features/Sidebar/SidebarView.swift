@@ -278,7 +278,7 @@ private struct SidebarRowButton: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(isSelected ? tokens.surfaceCreamStrong : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+            .background(isSelected ? tokens.surfaceCreamStrong : (isHovered ? tokens.hairlineSoft : Color.clear), in: RoundedRectangle(cornerRadius: 8))
             .contentShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)

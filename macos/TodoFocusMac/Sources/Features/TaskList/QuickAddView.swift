@@ -63,7 +63,7 @@ struct QuickAddView: View {
             .foregroundStyle(canSubmit ? .white : tokens.textTertiary)
             .background(canSubmit ? tokens.accentTerracotta : tokens.surfaceCreamStrong, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(canSubmit ? tokens.accentTerracotta.opacity(0.55) : tokens.inputBorder, lineWidth: 1)
             }
             .opacity(canSubmit ? 1 : 0.72)

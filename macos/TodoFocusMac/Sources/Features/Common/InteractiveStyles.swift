@@ -22,20 +22,20 @@ struct RowStateModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(
-                (isSelected ? tokens.surfaceCreamStrong : (isHovered ? tokens.hairlineSoft : Color.clear)),
+                (isSelected ? tokens.surfaceCreamStrong : (isHovered ? tokens.bgFloating : tokens.bgBase)),
                 in: RoundedRectangle(cornerRadius: 8)
             )
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        isSelected ? tokens.hairline : (isHovered ? tokens.hairlineSoft : Color.clear),
+                        isSelected ? tokens.hairline : (isHovered ? tokens.hairline : tokens.hairlineSoft),
                         lineWidth: 1
                     )
             }
             .shadow(
-                color: isSelected ? Color.black.opacity(0.08) : .clear,
-                radius: isSelected ? 4 : 0,
-                y: isSelected ? 1 : 0
+                color: isSelected ? Color.black.opacity(0.06) : Color.black.opacity(0.03),
+                radius: isSelected ? 3 : 1,
+                y: isSelected ? 1 : 0.5
             )
             .animation(MotionTokens.focusEase, value: isHovered)
             .animation(MotionTokens.focusEase, value: isSelected)
