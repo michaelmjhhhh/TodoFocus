@@ -16,7 +16,7 @@ struct QuickCaptureView: View {
                     .foregroundStyle(tokens.accentTerracotta)
                     .font(.system(size: 16, weight: .semibold))
                 Text("Quick Capture")
-                    .font(.headline)
+                    .font(.system(.headline, design: .serif).weight(.regular))
                     .foregroundStyle(tokens.textPrimary)
                 Spacer()
                 Text(targetInfo)

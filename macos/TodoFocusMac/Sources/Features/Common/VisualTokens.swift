@@ -1,29 +1,31 @@
 import SwiftUI
 
 enum VisualTokens {
-    static let bgBase = Color(red: 0.039, green: 0.039, blue: 0.039)
-    static let bgElevated = Color(red: 0.11, green: 0.11, blue: 0.11)
-    static let bgFloating = Color(red: 0.15, green: 0.15, blue: 0.15)
+    static let bgBase = Color(hex: "faf9f5")
+    static let bgElevated = Color(hex: "efe9de")
+    static let bgFloating = Color(hex: "f5f0e8")
 
-    static let textPrimary = Color(red: 0.98, green: 0.98, blue: 0.98)
-    static let textSecondary = Color(red: 0.55, green: 0.55, blue: 0.55)
-    static let textTertiary = Color(red: 0.40, green: 0.40, blue: 0.40)
+    static let textPrimary = Color(hex: "141413")
+    static let textSecondary = Color(hex: "3d3d3a")
+    static let textTertiary = Color(hex: "6c6a64")
 
-    static let success = Color(red: 0.37, green: 0.81, blue: 0.61)
-    static let warning = Color(red: 0.97, green: 0.73, blue: 0.31)
-    static let danger = Color(red: 0.94, green: 0.41, blue: 0.47)
+    static let success = Color(hex: "5db872")
+    static let warning = Color(hex: "d4a017")
+    static let danger = Color(hex: "c64545")
 
-    static let accentBlue = Color(red: 0.40, green: 0.71, blue: 0.96)
-    static let accentViolet = Color(red: 0.60, green: 0.53, blue: 0.95)
-    static let accentAmber = Color(red: 0.95, green: 0.64, blue: 0.29)
-    static let accentTerracotta = Color(red: 0.769, green: 0.408, blue: 0.286)
+    static let accentBlue = Color(hex: "5db8a6")
+    static let accentViolet = Color(hex: "8b5cf6")
+    static let accentAmber = Color(hex: "e8a55a")
+    static let accentTerracotta = Color(hex: "cc785c")
+
+    static let hairline = Color(hex: "e6dfd8")
+    static let hairlineSoft = Color(hex: "ebe6df")
+    static let surfaceCreamStrong = Color(hex: "e8e0d2")
+    static let primaryActive = Color(hex: "a9583e")
+    static let primaryDisabled = Color(hex: "e6dfd8")
 
     static let appBackground = LinearGradient(
-        colors: [
-            bgBase,
-            bgBase,
-            Color(red: 0.05, green: 0.05, blue: 0.05)
-        ],
+        colors: [Color(hex: "faf9f5"), Color(hex: "f5f0e8")],
         startPoint: .top,
         endPoint: .bottom
     )
@@ -36,7 +38,7 @@ enum VisualTokens {
 
     static let panelBackground = bgElevated
     static let sectionBackground = bgElevated
-    static let sectionBorder = Color.white.opacity(0.06)
+    static let sectionBorder = hairline
     static let mutedText = textSecondary
     static let violetAccent = accentViolet
     static let cyanAccent = accentBlue
@@ -44,8 +46,7 @@ enum VisualTokens {
 }
 
 extension VisualTokens {
-    /// Returns ThemeTokens for a given theme (for test/preview use)
-    static func current(for theme: ThemeStore.Theme = .dark) -> ThemeTokens {
+    static func current(for theme: ThemeStore.Theme = .light) -> ThemeTokens {
         ThemeTokens(theme: theme)
     }
 }

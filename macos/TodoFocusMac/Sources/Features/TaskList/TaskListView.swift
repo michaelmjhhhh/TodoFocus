@@ -47,10 +47,12 @@ struct TaskListView: View {
             HStack(spacing: 10) {
                 if isOverdueView {
                     Text("Overdue \u{00b7} \(store.formatDebt(store.totalOverdueDebtSeconds)) total debt")
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(.system(size: 20, design: .serif).weight(.regular))
+                        .tracking(-0.5)
                 } else {
                     Text(title)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(.system(size: 20, design: .serif).weight(.regular))
+                        .tracking(-0.5)
                 }
                 Spacer()
                 if !isOverdueView && !isArchiveView {
@@ -132,7 +134,7 @@ struct TaskListView: View {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(tokens.sectionBorder, lineWidth: 1)
                 }
-                .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
+                .shadow(color: Color.black.opacity(0.08), radius: 6, y: 2)
             }
 
             if isOverdueView && activeTodosCache.isEmpty {
@@ -375,7 +377,7 @@ struct TaskListView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
+        .shadow(color: Color.black.opacity(0.06), radius: 4, y: 1)
     }
 
     private func completedColumn(todos: [Todo]) -> some View {
@@ -470,14 +472,14 @@ struct TaskListView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .background(
-                                appModel.timeFilter == filter ? tokens.bgFloating.opacity(0.92) : Color.clear,
+                                appModel.timeFilter == filter ? tokens.surfaceCreamStrong : Color.clear,
                                 in: Capsule()
                             )
                             .overlay {
                                 Capsule()
                                     .stroke(
                                         appModel.timeFilter == filter
-                                            ? tokens.inputBorderFocused.opacity(0.65)
+                                            ? tokens.accentTerracotta.opacity(0.45)
                                             : tokens.sectionBorder.opacity(0.0),
                                         lineWidth: 1
                                     )
@@ -489,12 +491,12 @@ struct TaskListView: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
         }
-        .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(tokens.surfaceCreamStrong.opacity(0.7), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
         }
-        .shadow(color: Color.black.opacity(0.10), radius: 6, y: 2)
+        .shadow(color: Color.black.opacity(0.06), radius: 4, y: 1)
         .fixedSize(horizontal: false, vertical: true)
     }
 

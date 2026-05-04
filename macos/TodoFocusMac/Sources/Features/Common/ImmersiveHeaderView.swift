@@ -26,7 +26,7 @@ struct ImmersiveHeaderView: View {
                 .foregroundStyle(tokens.accentTerracotta)
 
             Text("TodoFocus.")
-                .font(.system(size: 13, weight: .medium, design: .default))
+                .font(.system(size: 13, design: .serif).weight(.regular))
                 .foregroundStyle(tokens.textSecondary)
         }
     }

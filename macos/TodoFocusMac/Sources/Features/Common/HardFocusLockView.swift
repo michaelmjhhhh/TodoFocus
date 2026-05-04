@@ -64,7 +64,7 @@ struct HardFocusLockView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.22), radius: 10, x: 0, y: 5)
+        .shadow(color: Color.black.opacity(0.10), radius: 6, x: 0, y: 3)
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .confirmationDialog(
@@ -103,7 +103,7 @@ struct HardFocusLockView: View {
     private var unlockPopover: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Unlock Hard Focus")
-                .font(.headline)
+                .font(.system(.headline, design: .serif).weight(.regular))
                 .foregroundStyle(tokens.textPrimary)
 
             SecureField("Enter passphrase", text: $passphrase)

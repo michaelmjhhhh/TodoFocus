@@ -60,7 +60,7 @@ struct SidebarView: View {
         }
         .listStyle(.sidebar)
         .scrollContentBackground(.hidden)
-        .background(tokens.bgElevated)
+        .background(tokens.bgFloating)
         .animation(MotionTokens.focusEase, value: appModel.selection)
         .animation(.easeInOut(duration: 0.15), value: lists.count)
     }
@@ -107,10 +107,10 @@ struct SidebarView: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(tokens.bgFloating.opacity(0.28), in: RoundedRectangle(cornerRadius: 9))
+            .background(tokens.surfaceCreamStrong.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
             .overlay {
-                RoundedRectangle(cornerRadius: 9)
-                    .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tokens.hairline, lineWidth: 1)
             }
         }
         .buttonStyle(.plain)
@@ -278,8 +278,8 @@ private struct SidebarRowButton: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(isSelected ? tokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
-            .contentShape(RoundedRectangle(cornerRadius: 9))
+            .background(isSelected ? tokens.surfaceCreamStrong : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+            .contentShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
         .onHover { hovering in

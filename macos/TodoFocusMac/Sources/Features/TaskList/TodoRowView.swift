@@ -53,13 +53,13 @@ struct TodoRowView: View {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 17, weight: .semibold))
                     .padding(5)
-                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.12), in: Circle())
+                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.hairlineSoft, in: Circle())
             }
             .buttonStyle(.plain)
             .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary.opacity(0.94))
             .overlay {
                 Circle()
-                    .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
+                    .stroke(tokens.hairline.opacity(todo.isCompleted ? 0.6 : 1), lineWidth: 1)
                     .padding(2)
             }
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")

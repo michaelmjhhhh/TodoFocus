@@ -66,10 +66,10 @@ struct ShortcutHintBar: View {
         .padding(.vertical, 5)
         .background(
             Capsule()
-                .fill(tokens.bgFloating.opacity(0.30))
+                .fill(tokens.surfaceCreamStrong.opacity(0.4))
                 .overlay(
                     Capsule()
-                        .stroke(tokens.sectionBorder.opacity(0.18), lineWidth: 1)
+                        .stroke(tokens.hairlineSoft, lineWidth: 1)
                 )
         )
         .fixedSize(horizontal: true, vertical: false)

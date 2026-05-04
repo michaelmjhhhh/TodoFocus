@@ -21,7 +21,7 @@ struct DeepFocusReportView: View {
         .frame(width: 340)
         .background(tokens.bgFloating)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
+        .shadow(color: .black.opacity(0.10), radius: 8, x: 0, y: 4)
         .scaleEffect(isAppeared ? 1 : 0.9)
         .opacity(isAppeared ? 1 : 0)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isAppeared)
@@ -43,7 +43,7 @@ struct DeepFocusReportView: View {
             }
 
             Text("Focus Complete")
-                .font(.title2.weight(.semibold))
+                .font(.system(.title2, design: .serif).weight(.regular))
                 .foregroundStyle(tokens.textPrimary)
         }
     }

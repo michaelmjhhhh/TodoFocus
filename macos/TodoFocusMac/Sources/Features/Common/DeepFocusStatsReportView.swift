@@ -45,17 +45,19 @@ struct StatCard: View {
     let icon: String
     let value: String
     let label: String
-    
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(Color(hex: "C46849"))
+                .foregroundStyle(tokens.accentTerracotta)
             Text(value)
                 .font(.title.weight(.semibold))
+                .foregroundStyle(tokens.textPrimary)
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(tokens.textSecondary)
         }
         .frame(maxWidth: .infinity)
     }

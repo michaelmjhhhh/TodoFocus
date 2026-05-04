@@ -5,45 +5,57 @@ struct DeepFocusOverlayView: View {
     let attemptCount: Int
     let onDismiss: () -> Void
     let onEndFocus: () -> Void
-    
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: "flame.fill")
                 .font(.system(size: 48))
-                .foregroundColor(Color(hex: "C46849"))
-            
+                .foregroundColor(tokens.accentTerracotta)
+
             Text("Deep Focus Active")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
+                .font(.system(.title2, design: .serif).weight(.regular))
+
             Text("You tried to open \(blockedAppName)")
-                .foregroundColor(.secondary)
-            
+                .foregroundColor(tokens.textSecondary)
+
             Text("Attempt #\(attemptCount)")
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(tokens.textSecondary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 4)
-                .background(Color.secondary.opacity(0.2))
+                .background(tokens.hairlineSoft)
                 .clipShape(Capsule())
-            
+
             HStack(spacing: 16) {
                 Button("End Focus") {
                     onEndFocus()
                 }
-                .buttonStyle(.bordered)
-                
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(tokens.hairline, lineWidth: 1)
+                }
+                .foregroundStyle(tokens.textPrimary)
+
                 Button("Dismiss") {
                     onDismiss()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.white)
             }
         }
         .padding(32)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(hex: "1C1C1E"))
-                .shadow(radius: 20)
+                .fill(tokens.bgElevated)
+                .shadow(color: tokens.textPrimary.opacity(0.10), radius: 8)
         )
         .frame(width: 300)
     }

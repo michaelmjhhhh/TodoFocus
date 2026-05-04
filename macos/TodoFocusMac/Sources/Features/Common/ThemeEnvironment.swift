@@ -2,12 +2,12 @@ import SwiftUI
 
 // Expose ThemeStore.Theme through environment
 private struct ThemeModeKey: EnvironmentKey {
-    static let defaultValue: ThemeStore.Theme = .dark
+    static let defaultValue: ThemeStore.Theme = .light
 }
 
 // Expose ThemeTokens through environment
 private struct ThemeTokensKey: EnvironmentKey {
-    static let defaultValue: ThemeTokens = ThemeTokens(theme: .dark)
+    static let defaultValue: ThemeTokens = ThemeTokens(theme: .light)
 }
 
 extension EnvironmentValues {

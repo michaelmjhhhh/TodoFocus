@@ -29,15 +29,15 @@ struct RootView: View {
                 if isSidebarVisible {
                     SidebarView(appModel: appModel, store: store, lists: store.lists, themeStore: themeStore)
                         .frame(width: 250)
-                        .background(themeTokens.bgElevated)
+                        .background(themeTokens.bgFloating)
                         .overlay(alignment: .trailing) {
                             Rectangle()
-                                .fill(themeTokens.sectionBorder.opacity(0.9))
+                                .fill(themeTokens.hairline)
                                 .frame(width: 1)
                         }
 
                     Divider()
-                        .overlay(themeTokens.sectionBorder.opacity(0.4))
+                        .overlay(themeTokens.hairlineSoft)
                 }
 
                 if appModel.selection == .dailyReview {
@@ -54,7 +54,7 @@ struct RootView: View {
                         .frame(width: 14)
                         .overlay {
                             Rectangle()
-                                .fill(themeTokens.sectionBorder.opacity(0.9))
+                                .fill(themeTokens.hairline)
                                 .frame(width: 3)
                         }
                         .contentShape(Rectangle())
@@ -92,10 +92,10 @@ struct RootView: View {
                     .background(themeTokens.panelBackground)
                     .overlay(alignment: .leading) {
                         Rectangle()
-                            .fill(themeTokens.sectionBorder)
+                            .fill(themeTokens.hairline)
                             .frame(width: 1)
                     }
-                    .shadow(color: Color.black.opacity(0.30), radius: 12, x: -6, y: 0)
+                    .shadow(color: Color.black.opacity(0.10), radius: 8, x: -3, y: 0)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }

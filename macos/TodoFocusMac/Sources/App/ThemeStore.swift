@@ -22,7 +22,7 @@ final class ThemeStore {
            let saved = Theme(rawValue: raw) {
             self.theme = saved
         } else {
-            self.theme = .dark
+            self.theme = .light
         }
     }
 
@@ -39,12 +39,12 @@ final class ThemeStore {
 
     func cycleTheme() {
         switch theme {
-        case .dark:
-            theme = .light
         case .light:
+            theme = .dark
+        case .dark:
             theme = .system
         case .system:
-            theme = .dark
+            theme = .light
         }
     }
 }

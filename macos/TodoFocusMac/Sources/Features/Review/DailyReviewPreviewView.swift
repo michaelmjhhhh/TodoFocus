@@ -69,7 +69,8 @@ struct DailyReviewPreviewView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Text("Daily Review")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .font(.system(size: 20, design: .serif).weight(.regular))
+                            .tracking(-0.5)
                             .foregroundStyle(tokens.textPrimary)
                         Text("Preview")
                             .font(.caption2.weight(.semibold))

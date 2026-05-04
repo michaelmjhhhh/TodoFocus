@@ -91,7 +91,8 @@ struct DailyReviewView: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text("Daily Review")
-                        .font(.system(size: 23, weight: .bold, design: .rounded))
+                        .font(.system(size: 24, design: .serif).weight(.regular))
+                        .tracking(-0.8)
                         .foregroundStyle(tokens.textPrimary)
                     Text("Manual")
                         .font(.caption2.weight(.semibold))
@@ -131,8 +132,8 @@ struct DailyReviewView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(tokens.textSecondary)
                     Text(title)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(Color.white)
+                        .font(.system(.headline, design: .serif).weight(.regular))
+                        .foregroundStyle(tokens.textPrimary)
                     Spacer(minLength: 8)
                     if isCompletedLane {
                         Image(systemName: collapsed ? "chevron.right" : "chevron.down")
@@ -171,7 +172,7 @@ struct DailyReviewView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
                 Text(column.bucket.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.system(.subheadline, design: .serif).weight(.regular))
                     .foregroundStyle(tokens.textPrimary)
                 Spacer(minLength: 6)
                 Button {

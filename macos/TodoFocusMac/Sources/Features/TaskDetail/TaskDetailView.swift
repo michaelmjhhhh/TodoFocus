@@ -149,7 +149,8 @@ struct TaskDetailView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     TextField("Task title", text: $titleText)
                         .textFieldStyle(.plain)
-                        .font(.headline.weight(.semibold))
+                        .font(.system(size: 18, design: .serif).weight(.regular))
+                        .tracking(-0.3)
                         .focused($isTitleFocused)
                         .onSubmit {
                             commitTitle(todoId: todo.id)
@@ -171,7 +172,7 @@ struct TaskDetailView: View {
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(tokens.textPrimary.opacity(isTitleFocused ? 0.11 : 0.05))
+                        .fill(isTitleFocused ? tokens.hairlineSoft : tokens.hairlineSoft.opacity(0.5))
                 )
                 .overlay {
                     RoundedRectangle(cornerRadius: 10)
@@ -179,7 +180,7 @@ struct TaskDetailView: View {
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(tokens.textPrimary.opacity(titleGlowOpacity), lineWidth: 4)
+                        .stroke(tokens.accentTerracotta.opacity(titleGlowOpacity), lineWidth: 4)
                         .blur(radius: 0.4)
                 }
                 .shadow(color: hasValidationError ? tokens.danger.opacity(0.16) : .clear, radius: 6)
@@ -225,7 +226,7 @@ struct TaskDetailView: View {
                 .padding(.vertical, 4)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(tokens.textPrimary.opacity(isTitleFocused ? 0.11 : 0.05))
+                        .fill(isTitleFocused ? tokens.hairlineSoft : tokens.hairlineSoft.opacity(0.5))
                 )
                 .overlay {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -334,7 +335,7 @@ struct TaskDetailView: View {
                     .blur(radius: 0.7)
             }
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .shadow(color: Color.black.opacity(0.12), radius: 5, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 4, y: 1)
             .animation(MotionTokens.focusEase, value: isNotesFocused)
         }
     }
@@ -629,9 +630,9 @@ struct StepsEditorView: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(tokens.bgFloating.opacity(0.74), in: RoundedRectangle(cornerRadius: 9))
+        .background(tokens.bgFloating.opacity(0.74), in: RoundedRectangle(cornerRadius: 8))
         .overlay {
-            RoundedRectangle(cornerRadius: 9)
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(tokens.sectionBorder, lineWidth: 1)
         }
     }
@@ -885,7 +886,8 @@ struct DeepFocusSetupSheet: View {
     var body: some View {
             VStack(spacing: 20) {
             Text("Start Hard Focus")
-                .font(.headline)
+                .font(.system(size: 20, design: .serif).weight(.regular))
+                .tracking(-0.3)
                 .padding(.top, 20)
 
             // Timer Mode Picker

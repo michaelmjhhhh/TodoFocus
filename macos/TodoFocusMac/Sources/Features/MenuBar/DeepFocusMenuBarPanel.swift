@@ -85,7 +85,7 @@ struct DeepFocusMenuBarPanel: View {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(themeTokens.sectionBorder, lineWidth: 1)
         }
-        .shadow(color: themeTokens.textPrimary.opacity(0.18), radius: 10, y: 4)
+        .shadow(color: themeTokens.textPrimary.opacity(0.10), radius: 8, y: 3)
         .animation(MotionTokens.panelSpring, value: state.isActive)
         .preferredColorScheme(themeStore.preferredColorScheme)
         .themeMode(themeStore.theme)

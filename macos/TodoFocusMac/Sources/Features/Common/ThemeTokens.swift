@@ -5,76 +5,85 @@ import Observation
 final class ThemeTokens: Sendable {
     let theme: ThemeStore.Theme
 
-    init(theme: ThemeStore.Theme = .dark) {
+    init(theme: ThemeStore.Theme = .light) {
         self.theme = theme
     }
 
     // MARK: - Backgrounds
     var bgBase: Color {
-        theme == .light ? Color(red: 0.961, green: 0.953, blue: 0.933) : Color(red: 0.039, green: 0.039, blue: 0.039)
+        theme == .light ? Color(hex: "faf9f5") : Color(hex: "181715")
     }
     var bgElevated: Color {
-        theme == .light ? Color.white : Color(red: 0.11, green: 0.11, blue: 0.11)
+        theme == .light ? Color(hex: "efe9de") : Color(hex: "252320")
     }
     var bgFloating: Color {
-        theme == .light ? Color(red: 0.980, green: 0.980, blue: 0.980) : Color(red: 0.15, green: 0.15, blue: 0.15)
+        theme == .light ? Color(hex: "f5f0e8") : Color(hex: "1f1e1b")
     }
 
     // MARK: - Text
     var textPrimary: Color {
-        theme == .light ? Color(red: 0.102, green: 0.102, blue: 0.102) : Color(red: 0.98, green: 0.98, blue: 0.98)
+        theme == .light ? Color(hex: "141413") : Color(hex: "faf9f5")
     }
     var textSecondary: Color {
-        theme == .light ? Color(red: 0.420, green: 0.420, blue: 0.420) : Color(red: 0.55, green: 0.55, blue: 0.55)
+        theme == .light ? Color(hex: "3d3d3a") : Color(hex: "a09d96")
     }
     var textTertiary: Color {
-        theme == .light ? Color(red: 0.608, green: 0.608, blue: 0.608) : Color(red: 0.40, green: 0.40, blue: 0.40)
+        theme == .light ? Color(hex: "6c6a64") : Color(hex: "6c6a64")
     }
 
     // MARK: - Semantic
     var success: Color {
-        theme == .light ? Color(red: 0.063, green: 0.725, blue: 0.506) : Color(red: 0.37, green: 0.81, blue: 0.61)
+        theme == .light ? Color(hex: "5db872") : Color(hex: "5db872")
     }
     var warning: Color {
-        theme == .light ? Color(red: 0.961, green: 0.620, blue: 0.043) : Color(red: 0.97, green: 0.73, blue: 0.31)
+        theme == .light ? Color(hex: "d4a017") : Color(hex: "d4a017")
     }
     var danger: Color {
-        theme == .light ? Color(red: 0.937, green: 0.267, blue: 0.267) : Color(red: 0.94, green: 0.41, blue: 0.47)
+        theme == .light ? Color(hex: "c64545") : Color(hex: "c64545")
     }
 
     // MARK: - Accents
     var accentBlue: Color {
-        theme == .light ? Color(red: 0.231, green: 0.510, blue: 0.965) : Color(red: 0.40, green: 0.71, blue: 0.96)
+        theme == .light ? Color(hex: "5db8a6") : Color(hex: "5db8a6")
     }
     var accentViolet: Color {
-        theme == .light ? Color(red: 0.545, green: 0.361, blue: 0.965) : Color(red: 0.60, green: 0.53, blue: 0.95)
+        theme == .light ? Color(hex: "8b5cf6") : Color(hex: "9986f5")
     }
     var accentAmber: Color {
-        theme == .light ? Color(red: 0.961, green: 0.620, blue: 0.043) : Color(red: 0.95, green: 0.64, blue: 0.29)
+        theme == .light ? Color(hex: "e8a55a") : Color(hex: "e8a55a")
     }
     var accentTerracotta: Color {
-        theme == .light ? Color(red: 0.918, green: 0.345, blue: 0.047) : Color(red: 0.769, green: 0.408, blue: 0.286)
+        theme == .light ? Color(hex: "cc785c") : Color(hex: "cc785c")
+    }
+
+    // MARK: - Brand
+    var hairline: Color {
+        theme == .light ? Color(hex: "e6dfd8") : Color.white.opacity(0.08)
+    }
+    var hairlineSoft: Color {
+        theme == .light ? Color(hex: "ebe6df") : Color.white.opacity(0.05)
+    }
+    var surfaceCreamStrong: Color {
+        theme == .light ? Color(hex: "e8e0d2") : Color(hex: "252320")
+    }
+    var primaryActive: Color {
+        Color(hex: "a9583e")
+    }
+    var primaryDisabled: Color {
+        theme == .light ? Color(hex: "e6dfd8") : Color(hex: "3d3d3a")
     }
 
     // MARK: - Gradients
     var appBackground: LinearGradient {
         if theme == .light {
             return LinearGradient(
-                colors: [
-                    Color(red: 0.961, green: 0.953, blue: 0.933),
-                    Color(red: 0.961, green: 0.953, blue: 0.933),
-                    Color(red: 0.95, green: 0.94, blue: 0.93)
-                ],
+                colors: [Color(hex: "faf9f5"), Color(hex: "f5f0e8")],
                 startPoint: .top,
                 endPoint: .bottom
             )
         } else {
             return LinearGradient(
-                colors: [
-                    Color(red: 0.039, green: 0.039, blue: 0.039),
-                    Color(red: 0.039, green: 0.039, blue: 0.039),
-                    Color(red: 0.05, green: 0.05, blue: 0.05)
-                ],
+                colors: [Color(hex: "181715"), Color(hex: "1f1e1b")],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -92,9 +101,7 @@ final class ThemeTokens: Sendable {
     // MARK: - Aliases
     var panelBackground: Color { bgElevated }
     var sectionBackground: Color { bgElevated }
-    var sectionBorder: Color {
-        theme == .light ? Color.black.opacity(0.08) : Color.white.opacity(0.06)
-    }
+    var sectionBorder: Color { hairline }
     var mutedText: Color { textSecondary }
     var violetAccent: Color { accentViolet }
     var cyanAccent: Color { accentBlue }
@@ -102,15 +109,13 @@ final class ThemeTokens: Sendable {
 
     // MARK: - Input Surfaces
     var inputSurface: Color {
-        theme == .light ? Color.white.opacity(0.96) : bgFloating.opacity(0.78)
+        theme == .light ? Color(hex: "faf9f5") : bgFloating
     }
-    var inputBorder: Color {
-        theme == .light ? Color.black.opacity(0.10) : sectionBorder.opacity(0.95)
-    }
+    var inputBorder: Color { hairline }
     var inputBorderFocused: Color {
         theme == .light ? accentTerracotta.opacity(0.58) : accentTerracotta.opacity(0.72)
     }
     var inputGlow: Color {
-        theme == .light ? accentTerracotta.opacity(0.24) : accentTerracotta.opacity(0.22)
+        theme == .light ? accentTerracotta.opacity(0.20) : accentTerracotta.opacity(0.18)
     }
 }
