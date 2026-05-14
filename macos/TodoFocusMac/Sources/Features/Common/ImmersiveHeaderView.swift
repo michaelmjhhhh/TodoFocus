@@ -22,11 +22,11 @@ struct ImmersiveHeaderView: View {
     private var branding: some View {
         HStack(spacing: 8) {
             Image(systemName: "checkmark")
-                .font(.system(size: 12, weight: .semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.accentTerracotta)
 
             Text("TodoFocus.")
-                .font(.system(size: 13, weight: .medium, design: .default))
+                .font(TypographyTokens.headingSmall)
                 .foregroundStyle(tokens.textSecondary)
         }
     }
@@ -38,7 +38,7 @@ struct ImmersiveHeaderView: View {
             }
         } label: {
             Image(systemName: isSidebarVisible ? "sidebar.leading" : "sidebar.trailing")
-                .font(.system(size: 12, weight: .medium))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.textSecondary)
                 .frame(width: 24, height: 24)
         }

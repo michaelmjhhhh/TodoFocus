@@ -4,7 +4,6 @@ struct SidebarView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
     let lists: [TodoList]
-    let themeStore: ThemeStore
     @Environment(\.themeTokens) private var tokens
     @State private var isAddingList: Bool = false
     @State private var newListName: String = ""
@@ -21,6 +20,10 @@ struct SidebarView: View {
     var body: some View {
         List {
             Section {
+                Text("Smart Lists")
+                    .font(TypographyTokens.displaySmall)
+                    .foregroundStyle(tokens.textSecondary)
+
                 smartRow("Daily Review", systemImage: "checklist", selection: .dailyReview)
                 smartRow("My Day", systemImage: "sun.max", selection: .myDay)
                 smartRow("Important", systemImage: "star", selection: .important)
@@ -31,6 +34,10 @@ struct SidebarView: View {
             }
 
             Section {
+                Text("Lists")
+                    .font(TypographyTokens.displaySmall)
+                    .foregroundStyle(tokens.textSecondary)
+
                 ForEach(lists) { list in
                     SidebarListItemView(
                         list: list,
@@ -49,13 +56,6 @@ struct SidebarView: View {
                 } else {
                     addListButton
                 }
-            } footer: {
-                HStack {
-                    Spacer()
-                    themeToggleButton
-                    Spacer()
-                }
-                .padding(.top, 4)
             }
         }
         .listStyle(.sidebar)
@@ -88,25 +88,22 @@ struct SidebarView: View {
             HStack(spacing: 10) {
                 Capsule()
                     .fill(tokens.accentTerracotta)
-                    .frame(width: 3, height: 16)
+                    .frame(width: 2, height: 16)
                     .opacity(0)
 
                 Image(systemName: "plus")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(TypographyTokens.headingSmall)
                     .foregroundStyle(tokens.textTertiary)
                     .frame(width: 16, alignment: .center)
 
                 Text("Add list")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(TypographyTokens.headingSmall)
                     .foregroundStyle(tokens.textTertiary)
 
                 Spacer(minLength: 0)
-
-                Color.clear
-                    .frame(width: 14, height: 10)
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 6)
+            .padding(.horizontal, SpacingTokens.sm)
+            .padding(.vertical, SpacingTokens.sm + SpacingTokens.xxs)
             .background(tokens.bgFloating.opacity(0.28), in: RoundedRectangle(cornerRadius: 9))
             .overlay {
                 RoundedRectangle(cornerRadius: 9)
@@ -117,21 +114,21 @@ struct SidebarView: View {
     }
 
     private var addingListRow: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+            HStack(spacing: SpacingTokens.sm) {
                 Circle()
                     .fill(Color(hex: newListColor))
                     .frame(width: 12, height: 12)
 
                 TextField("List name", text: $newListName)
                     .textFieldStyle(.plain)
-                    .font(.system(size: 13))
+                    .font(TypographyTokens.bodySmall)
                     .foregroundStyle(tokens.textPrimary)
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, SpacingTokens.sm)
                     .padding(.vertical, 5)
-                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
+                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 6)
+                        RoundedRectangle(cornerRadius: RadiusTokens.sm)
                             .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                     }
                     .onSubmit {
@@ -142,7 +139,7 @@ struct SidebarView: View {
                     commitAddList()
                 } label: {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
@@ -155,7 +152,7 @@ struct SidebarView: View {
                     }
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 10))
+                        .font(TypographyTokens.micro)
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
@@ -163,8 +160,8 @@ struct SidebarView: View {
 
             colorPickerRow(selectedColor: $newListColor)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, SpacingTokens.sm)
+        .padding(.vertical, SpacingTokens.sm + SpacingTokens.xxs)
     }
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {
@@ -208,38 +205,6 @@ struct SidebarView: View {
         }
     }
 
-    private var themeIcon: String {
-        switch themeStore.theme {
-        case .dark: return "moon.fill"
-        case .light: return "sun.max.fill"
-        case .system: return "circle.lefthalf.filled"
-        }
-    }
-
-    private var themeTooltip: String {
-        switch themeStore.theme {
-        case .dark: return "Dark mode — click to switch"
-        case .light: return "Light mode — click to switch"
-        case .system: return "System mode — click to switch"
-        }
-    }
-
-    private var themeToggleButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                themeStore.cycleTheme()
-            }
-        } label: {
-            Image(systemName: themeIcon)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(tokens.textSecondary)
-                .frame(width: 28, height: 28)
-                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 6))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(themeTooltip)
-        .help(themeTooltip)
-    }
 }
 
 private struct SidebarRowButton: View {
@@ -255,30 +220,31 @@ private struct SidebarRowButton: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Capsule()
-                    .fill(listColor ?? tokens.accentTerracotta)
-                    .frame(width: 3, height: 16)
-                    .opacity(listColor != nil || isSelected ? 1 : 0)
+                    .fill(tokens.accentTerracotta)
+                    .frame(width: 2, height: 16)
+                    .opacity(isSelected ? 1 : 0)
 
-                Image(systemName: systemImage)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
-                    .frame(width: 16, alignment: .center)
+                if let listColor {
+                    Circle()
+                        .fill(listColor)
+                        .frame(width: 10, height: 10)
+                        .frame(width: 16, alignment: .center)
+                } else {
+                    Image(systemName: systemImage)
+                        .font(isSelected ? TypographyTokens.headingSmall : TypographyTokens.bodySmall)
+                        .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
+                        .frame(width: 16, alignment: .center)
+                }
 
                 Text(title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                    .font(isSelected ? TypographyTokens.headingSmall : TypographyTokens.bodySmall)
                     .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
                 Spacer(minLength: 0)
-
-                Image(systemName: "checkmark")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(listColor ?? tokens.accentTerracotta)
-                    .opacity(isSelected ? 1 : 0)
-                    .frame(width: 14, alignment: .trailing)
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 6)
-            .background(isSelected ? tokens.bgFloating : Color.clear, in: RoundedRectangle(cornerRadius: 9))
+            .padding(.horizontal, SpacingTokens.sm)
+            .padding(.vertical, SpacingTokens.sm + SpacingTokens.xxs)
+            .background(isSelected ? tokens.accentTerracotta.opacity(0.08) : Color.clear, in: RoundedRectangle(cornerRadius: 9))
             .contentShape(RoundedRectangle(cornerRadius: 9))
         }
         .buttonStyle(.plain)
@@ -352,21 +318,21 @@ private struct SidebarListItemView: View {
 
     @ViewBuilder
     private var listEditRow: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+            HStack(spacing: SpacingTokens.sm) {
                 Circle()
                     .fill(Color(hex: editingListColor))
                     .frame(width: 12, height: 12)
 
                 TextField("List name", text: $editingListName)
                     .textFieldStyle(.plain)
-                    .font(.system(size: 13))
+                    .font(TypographyTokens.bodySmall)
                     .foregroundStyle(tokens.textPrimary)
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, SpacingTokens.sm)
                     .padding(.vertical, 5)
-                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: 6))
+                    .background(tokens.bgBase, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 6)
+                        RoundedRectangle(cornerRadius: RadiusTokens.sm)
                             .stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1)
                     }
                     .onSubmit {
@@ -377,7 +343,7 @@ private struct SidebarListItemView: View {
                     renameList
                 } label: {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
@@ -387,7 +353,7 @@ private struct SidebarListItemView: View {
                     editingListName = ""
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 10))
+                        .font(TypographyTokens.micro)
                         .foregroundStyle(tokens.textTertiary)
                 }
                 .buttonStyle(.plain)
@@ -395,8 +361,8 @@ private struct SidebarListItemView: View {
 
             colorPickerRow(selectedColor: $editingListColor)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
+        .padding(.horizontal, SpacingTokens.sm)
+        .padding(.vertical, SpacingTokens.sm + SpacingTokens.xxs)
     }
 
     private func colorPickerRow(selectedColor: Binding<String>) -> some View {

@@ -6,12 +6,12 @@ struct DebtBadge: View {
 
     var body: some View {
         Text("Overdue \(timeString)")
-            .font(.caption2.weight(.medium))
+            .font(TypographyTokens.micro)
             .foregroundStyle(tokens.danger)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(tokens.danger.opacity(0.12))
-            .cornerRadius(4)
+            .cornerRadius(SpacingTokens.xs)
     }
 }
 
@@ -48,43 +48,60 @@ struct TodoRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: SpacingTokens.md) {
             Button(action: onToggleComplete) {
-                Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 17, weight: .semibold))
-                    .padding(5)
-                    .background(todo.isCompleted ? tokens.success.opacity(0.22) : tokens.textPrimary.opacity(0.12), in: Circle())
+                ZStack {
+                    Circle()
+                        .stroke(tokens.accentTerracotta, lineWidth: 1)
+                        .frame(width: 20, height: 20)
+
+                    if todo.isCompleted {
+                        Circle()
+                            .fill(tokens.accentTerracotta)
+                            .frame(width: 20, height: 20)
+                            .transition(.scale.combined(with: .opacity))
+
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.white)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
+                .contentShape(Circle())
+                .animation(MotionTokens.checkboxSpring, value: todo.isCompleted)
             }
             .buttonStyle(.plain)
-            .foregroundStyle(todo.isCompleted ? tokens.success : tokens.textPrimary.opacity(0.94))
-            .overlay {
-                Circle()
-                    .stroke(tokens.textPrimary.opacity(todo.isCompleted ? 0.10 : 0.20), lineWidth: 1)
-                    .padding(2)
-            }
             .accessibilityLabel(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
             .help(todo.isCompleted ? "Mark as not completed" : "Mark as completed")
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(todo.title)
-                    .strikethrough(todo.isCompleted)
-                    .font(.body.weight(todo.isCompleted ? .regular : .medium))
-                    .foregroundStyle(isSelected ? tokens.textPrimary : .primary)
-                if let dueDate = todo.dueDate {
-                    Label {
-                        Text(dueDate, style: .date)
-                    } icon: {
-                        Image(systemName: "calendar")
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: SpacingTokens.xxs) {
+                    Text(todo.title)
+                        .strikethrough(todo.isCompleted)
+                        .font(TypographyTokens.bodyLarge)
+                        .fontWeight(todo.isCompleted ? .regular : .medium)
+                        .foregroundStyle(todo.isCompleted ? tokens.textTertiary : (isSelected ? tokens.textPrimary : .primary))
+                        .opacity(todo.isCompleted ? 0.5 : 1)
+                    if let dueDate = todo.dueDate {
+                        Label {
+                            Text(dueDate, style: .date)
+                        } icon: {
+                            Image(systemName: "calendar")
+                        }
+                        .font(TypographyTokens.caption)
+                        .foregroundStyle(isSelected ? tokens.textPrimary.opacity(0.82) : tokens.mutedText)
                     }
-                    .font(.caption2)
-                    .foregroundStyle(isSelected ? tokens.textPrimary.opacity(0.82) : tokens.mutedText)
+                    if todo.isOverdue {
+                        DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
+                    }
                 }
-                if todo.isOverdue {
-                    DebtBadge(timeString: store.formatDebt(todo.debtSeconds ?? 0))
-                }
-            }
 
-            Spacer()
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                onSelect()
+            }
 
             HStack(spacing: 8) {
                 Button(action: onToggleImportant) {
@@ -130,9 +147,6 @@ struct TodoRowView: View {
             Button(todo.isImportant ? "Mark as not important" : "Mark as important", action: onToggleImportant)
             Divider()
             Button("Delete task", role: .destructive, action: onDelete)
-        }
-        .onTapGesture {
-            onSelect()
         }
         .onHover { hovering in
             isHovered = hovering

@@ -23,6 +23,8 @@ targets:
         buildPhase: resources
       - path: Resources/com.todofocus.hardfocus.agent.plist
         buildPhase: resources
+      - path: Fonts
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: TodoFocusMac

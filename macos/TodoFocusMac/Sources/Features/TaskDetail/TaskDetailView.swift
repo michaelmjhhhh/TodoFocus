@@ -46,7 +46,8 @@ struct TaskDetailView: View {
                         stepsSection(todo: todo)
                         launchpadSection(todo: todo)
                     }
-                    .padding(16)
+                    .padding(.horizontal, SpacingTokens.lg)
+                    .padding(.vertical, SpacingTokens.lg)
                     .onAppear {
                         titleText = todo.title
                         notesText = todo.notes
@@ -82,8 +83,8 @@ struct TaskDetailView: View {
                         startPoint: .top,
                         endPoint: .bottom
                     )
-                    .frame(height: 12)
-                    .padding(.horizontal, 16)
+                    .frame(height: SpacingTokens.md)
+                    .padding(.horizontal, SpacingTokens.lg)
                     .allowsHitTesting(false)
                 }
             } else {
@@ -137,19 +138,19 @@ struct TaskDetailView: View {
                 return tokens.danger.opacity(0.70)
             }
             if isTitleFocused {
-                return tokens.textPrimary.opacity(0.26)
+                return tokens.inputBorderFocused
             }
-            return tokens.sectionBorder.opacity(0.70)
+            return Color.clear
         }()
-        let titleStrokeWidth: CGFloat = (hasValidationError || isTitleFocused) ? 1.2 : 1
-        let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.10 : 0
+        let titleStrokeWidth: CGFloat = (hasValidationError || isTitleFocused) ? 1.2 : 0
+        let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.52 : 0
 
-        return VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                VStack(alignment: .leading, spacing: 6) {
+        return VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+            HStack(spacing: SpacingTokens.sm) {
+                VStack(alignment: .leading, spacing: SpacingTokens.sm) {
                     TextField("Task title", text: $titleText)
                         .textFieldStyle(.plain)
-                        .font(.headline.weight(.semibold))
+                        .font(TypographyTokens.displaySmall)
                         .focused($isTitleFocused)
                         .onSubmit {
                             commitTitle(todoId: todo.id)
@@ -162,43 +163,43 @@ struct TaskDetailView: View {
 
                     if let titleValidationMessage {
                         Text(titleValidationMessage)
-                            .font(.caption)
+                            .font(TypographyTokens.caption)
                             .foregroundStyle(tokens.danger.opacity(0.92))
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 8)
+                .padding(.horizontal, SpacingTokens.md)
+                .padding(.vertical, SpacingTokens.sm)
                 .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(tokens.textPrimary.opacity(isTitleFocused ? 0.11 : 0.05))
+                    RoundedRectangle(cornerRadius: RadiusTokens.md)
+                        .fill(isTitleFocused ? tokens.inputSurface : Color.clear)
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: RadiusTokens.md)
                         .stroke(titleStrokeColor, lineWidth: titleStrokeWidth)
                 }
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(tokens.textPrimary.opacity(titleGlowOpacity), lineWidth: 4)
-                        .blur(radius: 0.4)
+                    RoundedRectangle(cornerRadius: RadiusTokens.md)
+                        .stroke(tokens.inputGlow.opacity(titleGlowOpacity), lineWidth: 4)
+                        .blur(radius: 0.7)
                 }
                 .shadow(color: hasValidationError ? tokens.danger.opacity(0.16) : .clear, radius: 6)
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
                 .animation(MotionTokens.validationEase, value: hasValidationError)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                HStack(spacing: 10) {
+                HStack(spacing: SpacingTokens.md) {
                     Button {
                         showDeepFocusSheet = true
                     } label: {
-                        HStack(spacing: 6) {
+                        HStack(spacing: SpacingTokens.sm) {
                             Image(systemName: "flame.fill")
                             Text(store.deepFocusService.isActive ? "Focus Running" : "Deep Focus")
-                                .font(.subheadline.weight(.medium))
+                                .font(TypographyTokens.headingSmall)
                         }
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, SpacingTokens.md)
+                        .padding(.vertical, SpacingTokens.sm)
                         .background(
                             store.deepFocusService.isActive
                                 ? tokens.textTertiary
@@ -221,21 +222,22 @@ struct TaskDetailView: View {
                     .accessibilityLabel("Close detail")
                     .help("Close detail")
                 }
-                .padding(.horizontal, 6)
-                .padding(.vertical, 4)
+                .padding(.horizontal, SpacingTokens.sm)
+                .padding(.vertical, SpacingTokens.xs)
                 .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(tokens.textPrimary.opacity(isTitleFocused ? 0.11 : 0.05))
+                    RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                        .fill(isTitleFocused ? tokens.inputSurface : Color.clear)
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
                         .stroke(titleStrokeColor, lineWidth: titleStrokeWidth)
                 }
                 .animation(MotionTokens.focusEase, value: isTitleFocused)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, SpacingTokens.lg)
+        .padding(.top, SpacingTokens.xl - SpacingTokens.xs)
+        .padding(.bottom, SpacingTokens.md)
         .background(tokens.sectionBackground)
         .overlay(alignment: .bottom) {
             LinearGradient(
@@ -270,71 +272,77 @@ struct TaskDetailView: View {
     }
 
     private func focusTimeSection(todo: Todo) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "clock.fill")
-                .foregroundStyle(tokens.accentTerracotta)
-                .font(.system(size: 14))
-
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
             Text("Focus Time")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(tokens.mutedText)
+                .font(TypographyTokens.micro)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(tokens.textTertiary)
 
-            Spacer()
+            HStack(spacing: SpacingTokens.sm) {
+                Image(systemName: "clock.fill")
+                    .foregroundStyle(tokens.accentTerracotta)
+                    .font(TypographyTokens.bodyLarge)
 
-            Text(store.formatFocusTime(todo.focusTimeSeconds))
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.textPrimary)
+                Spacer()
+
+                Text(store.formatFocusTime(todo.focusTimeSeconds))
+                    .font(TypographyTokens.headingLarge)
+                    .foregroundStyle(tokens.textPrimary)
+            }
+            .padding(.horizontal, SpacingTokens.lg)
+            .padding(.vertical, SpacingTokens.md)
+            .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: 8))
     }
 
     private func notesSection(todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Notes")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(tokens.mutedText)
-                Spacer()
-                Text("Scrollable")
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(tokens.textTertiary)
-            }
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+            Text("Notes")
+                .font(TypographyTokens.micro)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(tokens.textTertiary)
 
             ZStack(alignment: .topLeading) {
                 if notesText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     Text("Capture thoughts, context, and follow-ups...")
-                        .font(.subheadline)
-                        .foregroundStyle(tokens.textTertiary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
+                        .font(TypographyTokens.bodyLarge)
+                        .foregroundStyle(tokens.textTertiary.opacity(0.7))
+                        .padding(.horizontal, SpacingTokens.lg)
+                        .padding(.vertical, SpacingTokens.lg)
                         .allowsHitTesting(false)
                 }
 
                 TextEditor(text: $notesText)
                     .focused($isNotesFocused)
-                    .frame(height: 170)
+                    .font(TypographyTokens.bodyLarge)
+                    .frame(height: 140)
                     .scrollContentBackground(.hidden)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, SpacingTokens.lg)
+                    .padding(.vertical, SpacingTokens.md)
                     .foregroundStyle(tokens.textPrimary)
                     .onChange(of: notesText) { _, newValue in
                         store.updateNotesDebounced(todoId: todo.id, notes: newValue)
                     }
             }
-            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(
+                isNotesFocused ? tokens.inputSurface : tokens.bgFloating.opacity(0.3),
+                in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+            )
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isNotesFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isNotesFocused ? 1.2 : 1)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                    .stroke(
+                        isNotesFocused ? tokens.inputBorderFocused : tokens.sectionBorder.opacity(0.4),
+                        lineWidth: isNotesFocused ? 1.2 : 0.5
+                    )
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
                     .stroke(tokens.inputGlow.opacity(isNotesFocused ? 0.52 : 0), lineWidth: 4)
                     .blur(radius: 0.7)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .shadow(color: Color.black.opacity(0.12), radius: 5, y: 2)
+            .clipShape(RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
             .animation(MotionTokens.focusEase, value: isNotesFocused)
         }
     }
@@ -342,29 +350,21 @@ struct TaskDetailView: View {
     private func stepsSection(todo: Todo) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Steps")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+                .font(TypographyTokens.micro)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(tokens.textTertiary)
 
             StepsEditorView(todoId: todo.id, store: store)
         }
     }
 
     private func launchpadSection(todo: Todo) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Launchpad")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
-
-            Text(Self.launchpadHintTitle)
-                .font(.caption)
-                .foregroundStyle(tokens.textSecondary)
-
-            LaunchResourceEditorView(
-                store: store,
-                todo: todo,
-                launchpadService: launchpadService
-            )
-        }
+        LaunchResourceEditorView(
+            store: store,
+            todo: todo,
+            launchpadService: launchpadService
+        )
     }
 
     private var deepFocusActiveBar: some View {
@@ -379,13 +379,13 @@ struct TaskDetailView: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 Text("Deep Focus Active")
-                    .font(.subheadline.weight(.semibold))
+                    .font(TypographyTokens.headingSmall)
                     .foregroundColor(tokens.textPrimary)
                 Text("Blocking \(store.deepFocusService.blockedApps.count) apps")
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundColor(tokens.textSecondary)
                 Text("Unlock from the top Hard Focus bar")
-                    .font(.caption2)
+                    .font(TypographyTokens.micro)
                     .foregroundColor(tokens.textSecondary.opacity(0.9))
             }
             
@@ -452,24 +452,27 @@ struct InlineDatePicker: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
             Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+                .font(TypographyTokens.micro)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(tokens.textTertiary)
 
-            HStack(spacing: 8) {
+            HStack(spacing: SpacingTokens.sm) {
                 Button {
                     isPickerPresented = true
                 } label: {
-                    HStack(spacing: 6) {
+                    HStack(spacing: SpacingTokens.sm) {
                         Image(systemName: "calendar")
                             .foregroundStyle(tokens.accentTerracotta)
                         Text(formattedDate)
+                            .font(TypographyTokens.bodySmall)
                             .foregroundStyle(tokens.textPrimary)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                    .padding(.horizontal, SpacingTokens.md)
+                    .padding(.vertical, SpacingTokens.sm)
+                    .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
                 }
                 .buttonStyle(.plain)
                 .popover(isPresented: $isPickerPresented, arrowEdge: .top) {
@@ -480,21 +483,22 @@ struct InlineDatePicker: View {
                             displayedComponents: [.date]
                         )
                         .datePickerStyle(.graphical)
-                        .padding(12)
+                        .padding(SpacingTokens.md)
                         .onChange(of: date) { _, newValue in
                             isPickerPresented = false
                         }
 
                         if dueDate != nil {
                             Divider()
-                                .padding(.horizontal, 8)
+                                .padding(.horizontal, SpacingTokens.sm)
                             Button("Clear date") {
                                 onClear()
                                 isPickerPresented = false
                             }
                             .buttonStyle(.plain)
+                            .font(TypographyTokens.bodySmall)
                             .foregroundStyle(tokens.danger)
-                            .padding(12)
+                            .padding(SpacingTokens.md)
                         }
                     }
                     .background(tokens.bgElevated)
@@ -524,45 +528,39 @@ struct StepsEditorView: View {
             HStack(spacing: 0) {
                 TextField("Add a step", text: $newStepTitle)
                     .textFieldStyle(.plain)
-                    .padding(.horizontal, 12)
+                    .font(TypographyTokens.bodySmall)
+                    .padding(.horizontal, SpacingTokens.md)
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(tokens.bgFloating)
                     .foregroundStyle(tokens.textPrimary)
                     .onSubmit(addStep)
-
-                Rectangle()
-                    .fill(tokens.sectionBorder.opacity(0.55))
-                    .frame(width: 1)
-                    .padding(.vertical, 7)
 
                 Button("Add") {
                     addStep()
                 }
                 .buttonStyle(.plain)
+                .font(TypographyTokens.caption)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                    .background(tokens.accentTerracotta)
-                .foregroundStyle(.white)
-                .opacity(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
+                .foregroundStyle(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? tokens.textTertiary : tokens.accentTerracotta)
                 .disabled(newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-            .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
+            .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: RadiusTokens.md))
             .overlay {
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(tokens.sectionBorder, lineWidth: 1)
+                RoundedRectangle(cornerRadius: RadiusTokens.md)
+                    .stroke(tokens.sectionBorder.opacity(0.4), lineWidth: 0.5)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .clipShape(RoundedRectangle(cornerRadius: RadiusTokens.md))
 
             if let stepErrorMessage {
                 Text(stepErrorMessage)
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.danger)
             }
 
             if steps.isEmpty {
                 Text("No steps yet")
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textTertiary)
                     .padding(.top, 4)
             } else {
@@ -586,25 +584,18 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: step.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(TypographyTokens.bodyLarge)
                     .frame(width: 24, height: 24)
-                    .background(
-                        step.isCompleted ? tokens.success.opacity(0.14) : tokens.bgElevated,
-                        in: Circle()
-                    )
-                    .overlay {
-                        Circle()
-                            .stroke(step.isCompleted ? tokens.success.opacity(0.3) : tokens.sectionBorder, lineWidth: 1)
-                    }
-                    .foregroundStyle(step.isCompleted ? tokens.success : tokens.textTertiary)
+                    .foregroundStyle(step.isCompleted ? tokens.success : tokens.accentTerracotta.opacity(0.6))
             }
             .buttonStyle(.plain)
 
             Text(step.title)
-                .font(.subheadline)
+                .font(TypographyTokens.bodySmall)
                 .lineLimit(2)
                 .foregroundStyle(step.isCompleted ? tokens.textTertiary : tokens.textPrimary)
                 .strikethrough(step.isCompleted)
+                .opacity(step.isCompleted ? 0.5 : 1)
 
             Spacer()
 
@@ -613,27 +604,18 @@ struct StepsEditorView: View {
                 reloadSteps()
             } label: {
                 Image(systemName: "trash")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textTertiary)
                     .frame(width: 22, height: 22)
-                    .background(tokens.bgElevated, in: Circle())
-                    .overlay {
-                        Circle()
-                            .stroke(tokens.sectionBorder, lineWidth: 1)
-                    }
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Delete step")
             .help("Delete step")
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 10)
+        .padding(.vertical, SpacingTokens.sm)
+        .padding(.horizontal, SpacingTokens.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(tokens.bgFloating.opacity(0.74), in: RoundedRectangle(cornerRadius: 9))
-        .overlay {
-            RoundedRectangle(cornerRadius: 9)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
+        .background(tokens.bgFloating.opacity(0.4), in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
     }
 
     private func addStep() {
@@ -756,8 +738,10 @@ struct DeepFocusSetupSheet: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Templates")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(tokens.textPrimary)
+                    .font(TypographyTokens.micro)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .foregroundStyle(tokens.textTertiary)
                 Spacer()
                 Button {
                     isCreatingTemplate.toggle()
@@ -766,7 +750,7 @@ struct DeepFocusSetupSheet: View {
                     }
                 } label: {
                     Label("Save Current", systemImage: "plus")
-                        .font(.caption.weight(.semibold))
+                        .font(TypographyTokens.caption)
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(tokens.accentTerracotta)
@@ -829,7 +813,7 @@ struct DeepFocusSetupSheet: View {
 
             if templateStore.templates.isEmpty {
                 Text("No templates yet")
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textSecondary)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -840,7 +824,7 @@ struct DeepFocusSetupSheet: View {
                                     applyTemplate(template)
                                 } label: {
                                     Text(template.name)
-                                        .font(.caption.weight(.semibold))
+                                        .font(TypographyTokens.caption)
                                         .lineLimit(1)
                                 }
                                 .buttonStyle(.plain)
@@ -850,7 +834,7 @@ struct DeepFocusSetupSheet: View {
                                     startFromTemplate(template)
                                 } label: {
                                     Image(systemName: "play.fill")
-                                        .font(.system(size: 10, weight: .bold))
+                                        .font(TypographyTokens.micro)
                                         .frame(width: 28, height: 28)
                                         .contentShape(Rectangle())
                                 }
@@ -885,7 +869,7 @@ struct DeepFocusSetupSheet: View {
     var body: some View {
             VStack(spacing: 20) {
             Text("Start Hard Focus")
-                .font(.headline)
+                .font(TypographyTokens.displaySmall)
                 .padding(.top, 20)
 
             // Timer Mode Picker
@@ -905,22 +889,21 @@ struct DeepFocusSetupSheet: View {
                                 minutes = max(1, minutes - 5)
                             } label: {
                                 Image(systemName: "minus")
-                                    .font(.system(size: 12, weight: .bold))
+                                    .font(TypographyTokens.caption)
                                     .frame(width: 28, height: 28)
-                                    .background(tokens.bgFloating)
+                                    .background(tokens.bgSubtle)
                                     .clipShape(Circle())
-                                    .overlay(Circle().stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
                             .foregroundStyle(minutes > 1 ? tokens.textPrimary : tokens.textTertiary)
 
                             VStack(spacing: 2) {
                                 Text("\(minutes)")
-                                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                                    .font(TypographyTokens.displayLarge)
                                     .foregroundStyle(tokens.textPrimary)
                                     .monospacedDigit()
                                 Text("minutes")
-                                    .font(.caption2)
+                                    .font(TypographyTokens.micro)
                                     .foregroundStyle(tokens.textSecondary)
                             }
                             .frame(minWidth: 80)
@@ -931,11 +914,10 @@ struct DeepFocusSetupSheet: View {
                                 }
                             } label: {
                                 Image(systemName: "plus")
-                                    .font(.system(size: 12, weight: .bold))
+                                    .font(TypographyTokens.caption)
                                     .frame(width: 28, height: 28)
-                                    .background(tokens.bgFloating)
+                                    .background(tokens.bgSubtle)
                                     .clipShape(Circle())
-                                    .overlay(Circle().stroke(tokens.textTertiary.opacity(0.3), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
                             .foregroundStyle(minutes < 480 ? tokens.textPrimary : tokens.textTertiary)
@@ -955,7 +937,7 @@ struct DeepFocusSetupSheet: View {
                                     minutes = preset
                                 } label: {
                                     Text("\(preset)m")
-                                        .font(.system(size: 12, weight: .medium))
+                                        .font(TypographyTokens.caption)
                                         .foregroundStyle(minutes == preset ? .white : tokens.textSecondary)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 6)
@@ -983,7 +965,7 @@ struct DeepFocusSetupSheet: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 } else {
                     Text("Session runs until you manually end it")
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                         .padding(.horizontal, 20)
                         .transition(.opacity.combined(with: .move(edge: .top)))
@@ -993,51 +975,73 @@ struct DeepFocusSetupSheet: View {
 
             templateSection
 
-            Text("Select apps to block during focus session")
-                .font(.subheadline)
-                .foregroundStyle(tokens.textSecondary)
+            VStack(alignment: .leading, spacing: SpacingTokens.md) {
+                Text("Blocked Apps")
+                    .font(TypographyTokens.micro)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .foregroundStyle(tokens.textTertiary)
+                    .padding(.horizontal, 20)
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(availableApps, id: \.bundleId) { app in
-                        appRow(name: app.name, bundleId: app.bundleId)
-                    }
-
-                    if !customApps.isEmpty {
-                        Divider()
-                            .padding(.vertical, 4)
-
-                        ForEach(customApps, id: \.bundleId) { app in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 2) {
+                        ForEach(availableApps, id: \.bundleId) { app in
                             appRow(name: app.name, bundleId: app.bundleId)
-                                .contextMenu {
-                                    Button("Remove") {
-                                        customApps.removeAll { $0.bundleId == app.bundleId }
-                                        selectedApps.remove(app.bundleId)
-                                    }
-                                }
                         }
-                    }
 
-                    Button {
-                        addCustomApp()
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                            Text("Add Custom App")
+                        if !customApps.isEmpty {
+                            Rectangle()
+                                .fill(tokens.sectionBorder.opacity(0.3))
+                                .frame(height: 0.5)
+                                .padding(.vertical, SpacingTokens.xs)
+                                .padding(.horizontal, SpacingTokens.md)
+
+                            ForEach(customApps, id: \.bundleId) { app in
+                                appRow(name: app.name, bundleId: app.bundleId)
+                                    .contextMenu {
+                                        Button("Remove") {
+                                            customApps.removeAll { $0.bundleId == app.bundleId }
+                                            selectedApps.remove(app.bundleId)
+                                        }
+                                    }
+                            }
                         }
-                        .foregroundStyle(tokens.accentTerracotta)
+
+                        Button {
+                            addCustomApp()
+                        } label: {
+                            HStack(spacing: SpacingTokens.sm) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundStyle(tokens.accentTerracotta)
+                                    .frame(width: 18, height: 18)
+                                    .background(tokens.accentTerracotta.opacity(0.12), in: Circle())
+                                Text("Add Custom App")
+                                    .font(TypographyTokens.caption)
+                                    .foregroundStyle(tokens.textSecondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.vertical, SpacingTokens.sm)
+                        .padding(.horizontal, SpacingTokens.md)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.top, 8)
+                    .padding(.vertical, SpacingTokens.xs)
+                }
+                .frame(maxHeight: 280)
+                .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+                .overlay {
+                    RoundedRectangle(cornerRadius: RadiusTokens.md)
+                        .stroke(tokens.sectionBorder.opacity(0.3), lineWidth: 0.5)
                 }
                 .padding(.horizontal, 20)
             }
-            .frame(maxHeight: 300)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Unlock Passphrase")
-                    .font(.subheadline)
-                    .foregroundStyle(tokens.textSecondary)
+                    .font(TypographyTokens.micro)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .foregroundStyle(tokens.textTertiary)
                 SecureField("Enter a passphrase to unlock later", text: $passphrase)
                     .textFieldStyle(.plain)
                     .focused($isPassphraseFocused)
@@ -1064,28 +1068,37 @@ struct DeepFocusSetupSheet: View {
             }
             .padding(.horizontal, 20)
 
-            HStack(spacing: 12) {
+            HStack(spacing: SpacingTokens.md) {
                 Button("Cancel") {
                     onCancel()
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 20)
+                .font(TypographyTokens.bodySmall)
+                .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
-                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .background(tokens.bgFloating, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
+                .overlay {
+                    RoundedRectangle(cornerRadius: RadiusTokens.sm)
+                        .stroke(tokens.sectionBorder.opacity(0.4), lineWidth: 0.5)
+                }
                 .foregroundStyle(tokens.textPrimary)
 
-                Button("Start") {
+                Button {
                     let trimmed = passphrase.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !trimmed.isEmpty else { return }
                     let duration: TimeInterval? = isTimedMode ? TimeInterval(minutes * 60) : nil
                     onStart(duration, trimmed)
+                } label: {
+                    Text("Start")
+                        .font(TypographyTokens.headingSmall)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
+                        .foregroundStyle(.white)
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .background(tokens.accentTerracotta, in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(.white)
             }
+            .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
         .frame(width: 300)
@@ -1093,19 +1106,36 @@ struct DeepFocusSetupSheet: View {
     }
 
     private func appRow(name: String, bundleId: String) -> some View {
-        HStack {
-            Image(systemName: selectedApps.contains(bundleId) ? "checkmark.square.fill" : "square")
-                .foregroundStyle(selectedApps.contains(bundleId) ? tokens.accentTerracotta : tokens.textTertiary)
+        let isSelected = selectedApps.contains(bundleId)
+        return HStack(spacing: SpacingTokens.md) {
+            ZStack {
+                Circle()
+                    .stroke(isSelected ? tokens.accentTerracotta : tokens.textTertiary.opacity(0.5), lineWidth: 1)
+                    .frame(width: 18, height: 18)
+
+                if isSelected {
+                    Circle()
+                        .fill(tokens.accentTerracotta)
+                        .frame(width: 18, height: 18)
+
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+            }
+            .animation(MotionTokens.checkboxSpring, value: isSelected)
 
             Text(name)
-                .foregroundStyle(tokens.textPrimary)
+                .font(TypographyTokens.bodySmall)
+                .foregroundStyle(isSelected ? tokens.textPrimary : tokens.textSecondary)
 
             Spacer()
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, SpacingTokens.sm)
+        .padding(.horizontal, SpacingTokens.md)
         .contentShape(Rectangle())
         .onTapGesture {
-            if selectedApps.contains(bundleId) {
+            if isSelected {
                 selectedApps.remove(bundleId)
             } else {
                 selectedApps.insert(bundleId)

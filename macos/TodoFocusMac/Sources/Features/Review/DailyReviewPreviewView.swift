@@ -21,7 +21,7 @@ struct DailyReviewPreviewView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     if totalOpen == 0 && totalCompleted == 0 {
                         Text("No tasks for review.")
-                            .font(.subheadline)
+                            .font(TypographyTokens.bodyLarge)
                             .foregroundStyle(tokens.textSecondary)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.vertical, 20)
@@ -38,7 +38,7 @@ struct DailyReviewPreviewView: View {
                     
                     if snapshot.isTruncated {
                         Text("...and more")
-                            .font(.caption)
+                            .font(TypographyTokens.caption)
                             .foregroundStyle(tokens.textTertiary)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
@@ -48,16 +48,13 @@ struct DailyReviewPreviewView: View {
             
             footer
         }
-        .padding(18)
+        .padding(SpacingTokens.xl)
         .frame(width: 340, height: 430)
         .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
+            RoundedRectangle(cornerRadius: RadiusTokens.lg, style: .continuous)
                 .fill(tokens.bgElevated)
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        )
+        .shadowFloat()
     }
 
     private var header: some View {
@@ -65,14 +62,14 @@ struct DailyReviewPreviewView: View {
             HStack(alignment: .center, spacing: 10) {
                 Image(systemName: "calendar.day.timeline.left")
                     .foregroundStyle(tokens.accentTerracotta)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(TypographyTokens.headingLarge)
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Text("Daily Review")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .font(TypographyTokens.displaySmall)
                             .foregroundStyle(tokens.textPrimary)
                         Text("Preview")
-                            .font(.caption2.weight(.semibold))
+                            .font(TypographyTokens.micro)
                             .foregroundStyle(tokens.textSecondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
@@ -83,7 +80,7 @@ struct DailyReviewPreviewView: View {
                             }
                     }
                     Text("Global shortcut ⌘⇧U")
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textTertiary)
                 }
                 Spacer()
@@ -94,7 +91,7 @@ struct DailyReviewPreviewView: View {
                         .font(.system(size: 12, weight: .bold))
                         .foregroundStyle(tokens.textSecondary)
                         .frame(width: 28, height: 28)
-                        .background(tokens.bgFloating.opacity(0.55), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .background(tokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.sm, style: .continuous))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Close preview")
@@ -108,10 +105,12 @@ struct DailyReviewPreviewView: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.caption.weight(.bold))
+                    .font(TypographyTokens.micro)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
                     .foregroundStyle(tokens.textTertiary)
                 Text(subtitle)
-                    .font(.caption2)
+                    .font(TypographyTokens.micro)
                     .foregroundStyle(tokens.textTertiary.opacity(0.9))
             }
 
@@ -119,7 +118,7 @@ struct DailyReviewPreviewView: View {
                 if !column.tasks.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(column.bucket.title)
-                            .font(.caption.weight(.medium))
+                            .font(TypographyTokens.caption)
                             .foregroundStyle(tokens.textSecondary)
 
                         VStack(alignment: .leading, spacing: 4) {
@@ -141,9 +140,10 @@ struct DailyReviewPreviewView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(task.title)
-                    .font(.subheadline.weight(isCompletedSection ? .medium : .semibold))
-                    .foregroundStyle(isCompletedSection ? tokens.textSecondary : tokens.textPrimary)
+                    .font(isCompletedSection ? TypographyTokens.bodySmall : TypographyTokens.bodyLarge)
+                    .foregroundStyle(isCompletedSection ? tokens.textTertiary : tokens.textPrimary)
                     .strikethrough(isCompletedSection)
+                    .opacity(isCompletedSection ? 0.5 : 1)
 
                 HStack(spacing: 6) {
                     dueChip(text: DailyReview.dueText(for: task.dueDate), bucket: DailyReview.dueBucket(for: task.dueDate))
@@ -160,16 +160,12 @@ struct DailyReviewPreviewView: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
-        .background(tokens.bgFloating.opacity(isCompletedSection ? 0.24 : 0.38), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(tokens.sectionBorder.opacity(0.75), lineWidth: 1)
-        }
+        .background(tokens.bgFloating.opacity(isCompletedSection ? 0.24 : 0.38), in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
     }
 
     private func dueChip(text: String, bucket: DailyReviewTimeBucket, accent: Bool = false) -> some View {
         Text(text)
-            .font(.caption2.weight(.semibold))
+            .font(TypographyTokens.micro)
             .foregroundStyle(accent ? tokens.textPrimary : tokens.textSecondary)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
@@ -203,9 +199,9 @@ struct DailyReviewPreviewView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "arrow.up.forward.app")
-                    .font(.caption.weight(.bold))
+                    .font(TypographyTokens.caption)
                 Text("Open Daily Review")
-                    .font(.subheadline.weight(.semibold))
+                    .font(TypographyTokens.headingSmall)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)

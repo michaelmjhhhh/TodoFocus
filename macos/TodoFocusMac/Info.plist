@@ -28,5 +28,7 @@
 	<string>NSApplication</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>TodoFocus uses speech recognition to transcribe Quick Capture voice notes.</string>
+	<key>ATSApplicationFontsPath</key>
+	<string>.</string>
 </dict>
 </plist>

@@ -4,23 +4,15 @@ import AppKit
 @MainActor
 struct DeepFocusMenuBarPanel: View {
     @Bindable var store: TodoAppStore
-    let themeStore: ThemeStore
     let mainWindowID: String
 
     @Environment(\.openWindow) private var openWindow
-    @State private var themeTokens: ThemeTokens
+    @State private var themeTokens = ThemeTokens()
     @State private var now: Date = .now
     @State private var endFocusPassphrase: String = ""
     @State private var showEndFocusPrompt: Bool = false
     @State private var passphraseError: String?
     @FocusState private var isPassphraseFieldFocused: Bool
-
-    init(store: TodoAppStore, themeStore: ThemeStore, mainWindowID: String) {
-        self._store = Bindable(store)
-        self.themeStore = themeStore
-        self.mainWindowID = mainWindowID
-        self._themeTokens = State(initialValue: ThemeTokens(theme: themeStore.theme))
-    }
 
     var body: some View {
         let state = menuBarState(from: store, now: now)
@@ -70,31 +62,23 @@ struct DeepFocusMenuBarPanel: View {
                 endFocusPrompt
             }
         }
-        .padding(14)
+        .padding(SpacingTokens.lg)
         .frame(width: 340)
         .background(
             ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: RadiusTokens.lg, style: .continuous)
                     .fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: RadiusTokens.lg, style: .continuous)
                     .fill(themeTokens.panelBackground.opacity(0.72))
             }
         )
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(themeTokens.sectionBorder, lineWidth: 1)
-        }
-        .shadow(color: themeTokens.textPrimary.opacity(0.18), radius: 10, y: 4)
+        .clipShape(RoundedRectangle(cornerRadius: RadiusTokens.lg))
+        .shadowFloat()
         .animation(MotionTokens.panelSpring, value: state.isActive)
-        .preferredColorScheme(themeStore.preferredColorScheme)
-        .themeMode(themeStore.theme)
+        .preferredColorScheme(.dark)
         .themeTokens(themeTokens)
         .onReceive(Timer.publish(every: 15, on: .main, in: .common).autoconnect()) { timestamp in
             now = timestamp
-        }
-        .onChange(of: themeStore.theme) { _, newTheme in
-            themeTokens = ThemeTokens(theme: newTheme)
         }
         .onChange(of: state.isActive) { _, isActive in
             if !isActive {
@@ -109,17 +93,17 @@ struct DeepFocusMenuBarPanel: View {
     private func statusSection(state: DeepFocusMenuBarState) -> some View {
         HStack(spacing: 10) {
             Image(systemName: state.isActive ? "flame.fill" : "flame")
-                .font(.system(size: 13, weight: .semibold))
+                .font(TypographyTokens.headingSmall)
                 .foregroundStyle(state.isActive ? themeTokens.accentTerracotta : themeTokens.textSecondary)
                 .frame(width: 28, height: 28)
-                .background(themeTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
+                .background(themeTokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(state.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(TypographyTokens.bodyLarge)
                     .foregroundStyle(themeTokens.textPrimary)
                 Text(state.subtitle)
-                    .font(.system(size: 12))
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(themeTokens.textSecondary)
             }
 
@@ -127,15 +111,11 @@ struct DeepFocusMenuBarPanel: View {
 
             if let badge = state.menuBarBadge {
                 Text(badge)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded).monospacedDigit())
+                    .font(TypographyTokens.caption.monospacedDigit())
                     .foregroundStyle(themeTokens.accentTerracotta)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(themeTokens.bgFloating, in: Capsule())
-                    .overlay {
-                        Capsule()
-                            .stroke(themeTokens.sectionBorder, lineWidth: 1)
-                    }
+                    .background(themeTokens.bgSubtle, in: Capsule())
             }
         }
     }
@@ -161,10 +141,10 @@ struct DeepFocusMenuBarPanel: View {
     private func contextChip(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
-                .font(.system(size: 10, weight: .medium))
+                .font(TypographyTokens.micro)
                 .foregroundStyle(themeTokens.textSecondary)
             Text(value)
-                .font(.system(size: 12, weight: .semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(themeTokens.textPrimary)
                 .lineLimit(1)
                 .truncationMode(.tail)
@@ -172,18 +152,14 @@ struct DeepFocusMenuBarPanel: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(themeTokens.bgFloating, in: RoundedRectangle(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(themeTokens.sectionBorder, lineWidth: 1)
-        }
+        .background(themeTokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
     }
 
     @ViewBuilder
     private var endFocusPrompt: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Enter passphrase to end focus")
-                .font(.system(size: 12, weight: .semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(themeTokens.textPrimary)
 
             HStack(spacing: 8) {
@@ -192,11 +168,7 @@ struct DeepFocusMenuBarPanel: View {
                     .focused($isPassphraseFieldFocused)
                     .padding(.horizontal, 10)
                     .frame(height: 34)
-                    .background(themeTokens.bgFloating, in: RoundedRectangle(cornerRadius: 8))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(themeTokens.sectionBorder, lineWidth: 1)
-                    }
+                    .background(themeTokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
                     .onSubmit {
                         submitEndFocus()
                     }
@@ -207,27 +179,20 @@ struct DeepFocusMenuBarPanel: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, 10)
                 .frame(height: 34)
-                .background(themeTokens.accentTerracotta.opacity(0.22), in: RoundedRectangle(cornerRadius: 8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(themeTokens.accentTerracotta.opacity(0.55), lineWidth: 1)
-                }
+                .background(themeTokens.accentTerracotta.opacity(0.22), in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
                 .foregroundStyle(themeTokens.textPrimary)
                 .disabled(endFocusPassphrase.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
 
             if let passphraseError {
                 Text(passphraseError)
-                    .font(.system(size: 11))
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(themeTokens.danger)
             }
         }
-        .padding(10)
-        .background(themeTokens.bgFloating.opacity(0.85), in: RoundedRectangle(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(themeTokens.sectionBorder, lineWidth: 1)
-        }
+        .padding(SpacingTokens.md)
+        .background(themeTokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+        .shadowSubtle()
         .transition(.opacity.combined(with: .move(edge: .top)))
         .animation(MotionTokens.focusEase, value: passphraseError ?? "")
     }
@@ -294,11 +259,11 @@ struct DeepFocusMenuBarLabel: View {
 
         HStack(spacing: 4) {
             Image(systemName: state.isActive ? "flame.fill" : "flame")
-                .font(.system(size: 13, weight: .semibold))
+                .font(TypographyTokens.headingSmall)
 
             if let badge = state.menuBarBadge {
                 Text(badge)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded).monospacedDigit())
+                    .font(TypographyTokens.caption.monospacedDigit())
                     .frame(minWidth: 28, alignment: .leading)
                     .transition(.opacity)
             }
@@ -328,9 +293,9 @@ private struct MenuBarPanelActionButton: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(TypographyTokens.headingSmall)
                 Text(title)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(TypographyTokens.headingSmall)
                 Spacer(minLength: 0)
             }
             .foregroundStyle(foregroundColor)
@@ -339,11 +304,7 @@ private struct MenuBarPanelActionButton: View {
             .contentShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
-        .background(backgroundColor, in: RoundedRectangle(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(borderColor, lineWidth: 1)
-        }
+        .background(backgroundColor, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.55 : 1)
         .onHover { hovering in

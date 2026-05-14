@@ -21,7 +21,7 @@ struct QuickAddView: View {
         HStack(spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(TypographyTokens.headingSmall)
                     .foregroundStyle(isInputFocused ? tokens.accentTerracotta : tokens.textTertiary)
                     .accessibilityHidden(true)
 
@@ -36,15 +36,15 @@ struct QuickAddView: View {
                 .frame(height: 20)
                     .accessibilityLabel("Task title")
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .padding(.horizontal, SpacingTokens.md)
+            .padding(.vertical, SpacingTokens.sm)
+            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isInputFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isInputFocused ? 1.2 : 1)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                    .stroke(isInputFocused ? tokens.inputBorderFocused : Color.clear, lineWidth: isInputFocused ? 1.2 : 0)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
                     .stroke(tokens.inputGlow.opacity(isInputFocused ? 0.55 : 0), lineWidth: 4)
                     .blur(radius: 0.7)
             }
@@ -54,17 +54,17 @@ struct QuickAddView: View {
                 submit()
             } label: {
                 Text("Add")
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(TypographyTokens.headingSmall)
                     .frame(minWidth: 54)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 9)
+                    .padding(.horizontal, SpacingTokens.md)
+                    .padding(.vertical, SpacingTokens.sm + 1)
             }
             .buttonStyle(.plain)
             .foregroundStyle(canSubmit ? tokens.textPrimary : tokens.textTertiary)
-            .background(canSubmit ? tokens.accentTerracotta.opacity(0.90) : tokens.bgFloating, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .background(canSubmit ? tokens.accentTerracotta.opacity(0.90) : tokens.bgFloating, in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(canSubmit ? tokens.accentTerracotta.opacity(0.55) : tokens.inputBorder, lineWidth: 1)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                    .stroke(canSubmit ? tokens.accentTerracotta.opacity(0.55) : Color.clear, lineWidth: 1)
             }
             .opacity(canSubmit ? 1 : 0.72)
             .disabled(!canSubmit)

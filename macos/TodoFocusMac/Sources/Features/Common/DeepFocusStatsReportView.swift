@@ -12,12 +12,15 @@ struct DeepFocusStatsReportView: View {
         return "\(minutes)m"
     }
     
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: SpacingTokens.lg) {
             Text("Deep Focus Stats")
-                .font(.headline)
-            
-            HStack(spacing: 24) {
+                .font(TypographyTokens.headingLarge)
+                .foregroundStyle(tokens.textPrimary)
+
+            HStack(spacing: SpacingTokens.xl) {
                 StatCard(
                     icon: "clock.fill",
                     value: formattedTotalTime,
@@ -45,17 +48,19 @@ struct StatCard: View {
     let icon: String
     let value: String
     let label: String
-    
+    @Environment(\.themeTokens) private var tokens
+
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: SpacingTokens.sm) {
             Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(Color(hex: "C46849"))
+                .font(TypographyTokens.displaySmall)
+                .foregroundStyle(tokens.accentTerracotta)
             Text(value)
-                .font(.title.weight(.semibold))
+                .font(TypographyTokens.displaySmall.weight(.semibold))
+                .foregroundStyle(tokens.textPrimary)
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(TypographyTokens.caption)
+                .foregroundStyle(tokens.textSecondary)
         }
         .frame(maxWidth: .infinity)
     }

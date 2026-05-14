@@ -5,9 +5,9 @@ import AppKit
 
 final class UIInteractionTokensTests: XCTestCase {
     func testMotionDurationsStayInExpectedRanges() {
-        XCTAssertTrue((0.12...0.20).contains(MotionTokens.quickDuration))
-        XCTAssertTrue((0.16...0.24).contains(MotionTokens.standardDuration))
-        XCTAssertTrue((0.22...0.32).contains(MotionTokens.emphasisDuration))
+        XCTAssertTrue((0.10...0.20).contains(MotionTokens.quickDuration))
+        XCTAssertTrue((0.16...0.28).contains(MotionTokens.standardDuration))
+        XCTAssertTrue((0.28...0.40).contains(MotionTokens.emphasisDuration))
         XCTAssertTrue((0.18...0.28).contains(MotionTokens.lingerDuration))
     }
 

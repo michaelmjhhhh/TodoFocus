@@ -20,8 +20,8 @@ struct DeepFocusReportView: View {
         .padding(28)
         .frame(width: 340)
         .background(tokens.bgFloating)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
+        .clipShape(RoundedRectangle(cornerRadius: RadiusTokens.lg))
+        .shadowFloat()
         .scaleEffect(isAppeared ? 1 : 0.9)
         .opacity(isAppeared ? 1 : 0)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: isAppeared)
@@ -43,7 +43,7 @@ struct DeepFocusReportView: View {
             }
 
             Text("Focus Complete")
-                .font(.title2.weight(.semibold))
+                .font(TypographyTokens.displaySmall)
                 .foregroundStyle(tokens.textPrimary)
         }
     }
@@ -51,12 +51,13 @@ struct DeepFocusReportView: View {
     private var durationHero: some View {
         VStack(spacing: 4) {
             Text(formatDuration(report.duration))
-                .font(.system(size: 48, weight: .bold, design: .rounded))
+                .font(.custom("Newsreader 16pt", size: 48))
                 .foregroundStyle(tokens.textPrimary)
+
                 .contentTransition(.numericText())
 
             Text("Duration")
-                .font(.subheadline)
+                .font(TypographyTokens.bodySmall)
                 .foregroundStyle(tokens.textSecondary)
         }
         .padding(.vertical, 8)
@@ -88,16 +89,16 @@ struct DeepFocusReportView: View {
     private func statItem(icon: String, value: String, label: String) -> some View {
         HStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 18))
+                .font(TypographyTokens.headingLarge)
                 .foregroundStyle(tokens.accentTerracotta)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(.body, design: .rounded).weight(.semibold))
+                    .font(TypographyTokens.bodyLarge.weight(.semibold))
                     .foregroundStyle(tokens.textPrimary)
 
                 Text(label)
-                    .font(.caption2)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textSecondary)
             }
         }
@@ -107,7 +108,7 @@ struct DeepFocusReportView: View {
     private var doneButton: some View {
         Button(action: onDismiss) {
             Text("Done")
-                .font(.body.weight(.medium))
+                .font(TypographyTokens.bodyLarge.weight(.medium))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)

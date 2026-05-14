@@ -15,8 +15,6 @@ struct ShortcutHintItem: Identifiable, Equatable {
             return "Focus"
         case "Search Tasks":
             return "Search"
-        case "Toggle Theme":
-            return "Theme"
         case "New Task":
             return "New"
         default:
@@ -31,7 +29,6 @@ struct ShortcutHintBar: View {
         ShortcutHintItem(key: "⌘⇧U", action: "Daily Review Preview"),
         ShortcutHintItem(key: "⌘⇧F", action: "Start Deep Focus"),
         ShortcutHintItem(key: "⌘K", action: "Search Tasks"),
-        ShortcutHintItem(key: "⌘⇧L", action: "Toggle Theme"),
         ShortcutHintItem(key: "⌘⇧N", action: "New Task")
     ]
 
@@ -77,7 +74,7 @@ struct ShortcutHintBar: View {
 
     private var dotSeparator: some View {
         Text("·")
-            .font(.caption2)
+            .font(TypographyTokens.micro)
             .foregroundStyle(tokens.textTertiary.opacity(0.28))
     }
     
@@ -87,9 +84,9 @@ struct ShortcutHintBar: View {
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "lock.open.fill")
-                    .font(.caption2)
+                    .font(TypographyTokens.micro)
                 Text("Quick Capture access")
-                    .font(.caption2.weight(.semibold))
+                    .font(TypographyTokens.micro)
             }
             .foregroundStyle(tokens.accentTerracotta.opacity(0.66))
         }
@@ -100,10 +97,10 @@ struct ShortcutHintBar: View {
     private func shortcutHint(_ shortcut: ShortcutHintItem) -> some View {
         HStack(spacing: 5) {
             Text(shortcut.shortAction)
-                .font(.caption2.weight(.medium))
+                .font(TypographyTokens.micro)
                 .foregroundStyle(tokens.textSecondary.opacity(0.86))
             Text(shortcut.key)
-                .font(.caption2.weight(.semibold).monospaced())
+                .font(TypographyTokens.micro)
                 .foregroundStyle(tokens.textTertiary.opacity(0.72))
         }
         .help(shortcut.action)
