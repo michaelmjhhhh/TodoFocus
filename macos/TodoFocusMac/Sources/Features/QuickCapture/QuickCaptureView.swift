@@ -14,18 +14,18 @@ struct QuickCaptureView: View {
             HStack {
                 Image(systemName: "sparkles")
                     .foregroundStyle(tokens.accentTerracotta)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(TypographyTokens.headingLarge)
                 Text("Quick Capture")
-                    .font(.headline)
+                    .font(TypographyTokens.headingLarge)
                     .foregroundStyle(tokens.textPrimary)
                 Spacer()
                 Text(targetInfo)
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textSecondary)
             }
 
             Text("Voice mode reminder: English only.")
-                .font(.caption2.weight(.medium))
+                .font(TypographyTokens.micro)
                 .foregroundStyle(tokens.textTertiary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -38,7 +38,7 @@ struct QuickCaptureView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(tokens.inputBorder, lineWidth: 1)
                     )
-                    .cornerRadius(8)
+                    .cornerRadius(RadiusTokens.sm)
                     .foregroundStyle(tokens.textPrimary)
                     .scaleEffect(isSubmitting ? 0.98 : 1.0)
                     .animation(.easeInOut(duration: 0.1), value: isSubmitting)
@@ -52,7 +52,7 @@ struct QuickCaptureView: View {
                     }
                 } label: {
                     Image(systemName: service.isRecordingVoice ? "stop.circle.fill" : "mic.circle.fill")
-                        .font(.system(size: 24))
+                        .font(.system(size: 24, weight: .regular))
                         .foregroundStyle(service.isRecordingVoice ? tokens.danger : tokens.accentTerracotta)
                 }
                 .buttonStyle(.plain)
@@ -62,7 +62,7 @@ struct QuickCaptureView: View {
                 if showSuccess {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(tokens.success)
-                        .font(.system(size: 20))
+                        .font(TypographyTokens.displaySmall)
                         .transition(.scale.combined(with: .opacity))
                 }
             }
@@ -73,7 +73,7 @@ struct QuickCaptureView: View {
                         .fill(service.isRecordingVoice ? tokens.danger : tokens.textSecondary)
                         .frame(width: 6, height: 6)
                     Text(status)
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -84,7 +84,7 @@ struct QuickCaptureView: View {
                     Image(systemName: "waveform")
                         .foregroundStyle(tokens.accentTerracotta)
                     Text("Preview: \(preview)")
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                         .lineLimit(2)
                 }
@@ -96,7 +96,7 @@ struct QuickCaptureView: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundStyle(tokens.warning)
                     Text(error)
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.warning)
                     if service.needsVoicePermission {
                         Button("Open Settings") {
@@ -126,16 +126,13 @@ struct QuickCaptureView: View {
                 .keyboardShortcut(.return)
             }
         }
-        .padding(16)
+        .padding(SpacingTokens.xl)
         .frame(width: 500, height: 250)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(tokens.bgElevated)
+            RoundedRectangle(cornerRadius: RadiusTokens.lg)
+                .fill(tokens.bgFloating)
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        )
+        .shadowFloat()
         .animation(.easeInOut(duration: 0.2), value: showSuccess)
     }
 

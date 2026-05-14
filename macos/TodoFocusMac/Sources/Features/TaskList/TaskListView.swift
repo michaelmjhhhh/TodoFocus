@@ -19,38 +19,37 @@ struct TaskListView: View {
         VStack(spacing: 12) {
             commandBar
             if let errorMessage = store.mutationErrorMessage {
-                HStack(spacing: 8) {
+                HStack(spacing: SpacingTokens.sm) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.caption.weight(.bold))
+                        .font(TypographyTokens.caption)
+                        .fontWeight(.bold)
                         .foregroundStyle(tokens.danger)
                     Text(errorMessage)
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                         .lineLimit(2)
-                    Spacer(minLength: 6)
+                    Spacer(minLength: RadiusTokens.sm)
                     Button("Dismiss") {
                         store.clearMutationError()
                     }
                     .buttonStyle(.plain)
-                    .font(.caption.weight(.semibold))
+                    .font(TypographyTokens.caption)
+                    .fontWeight(.semibold)
                     .foregroundStyle(tokens.accentTerracotta)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 8)
-                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(tokens.sectionBorder, lineWidth: 1)
-                }
+                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
+                .shadow(color: Color.black.opacity(0.08), radius: 4, y: 1)
             }
 
             HStack(spacing: 10) {
                 if isOverdueView {
                     Text("Overdue \u{00b7} \(store.formatDebt(store.totalOverdueDebtSeconds)) total debt")
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(TypographyTokens.displayLarge)
                 } else {
                     Text(title)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(TypographyTokens.displayLarge)
                 }
                 Spacer()
                 if !isOverdueView && !isArchiveView {
@@ -61,11 +60,13 @@ struct TaskListView: View {
                     Button(role: .destructive) {
                         showEmptyArchiveConfirmation = true
                     } label: {
-                        HStack(spacing: 6) {
+                        HStack(spacing: RadiusTokens.sm) {
                             Image(systemName: "trash")
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(TypographyTokens.caption)
+                                .fontWeight(.semibold)
                             Text("Empty Archive")
-                                .font(.caption.weight(.semibold))
+                                .font(TypographyTokens.caption)
+                                .fontWeight(.semibold)
                         }
                         .foregroundStyle(filteredTodosCache.isEmpty ? tokens.textTertiary : tokens.danger)
                         .padding(.horizontal, 10)
@@ -84,14 +85,16 @@ struct TaskListView: View {
                             isCompletedPanelVisible.toggle()
                         }
                     } label: {
-                        HStack(spacing: 6) {
+                        HStack(spacing: RadiusTokens.sm) {
                             Image(systemName: isCompletedPanelVisible ? "eye" : "eye.slash")
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(TypographyTokens.caption)
+                                .fontWeight(.semibold)
                                 .foregroundStyle(isCompletedPanelVisible ? tokens.accentTerracotta : tokens.textTertiary)
                                 .frame(width: 20, height: 20)
                                 .background(tokens.bgFloating.opacity(0.95), in: Circle())
                             Text("Completed")
-                                .font(.caption.weight(.semibold))
+                                .font(TypographyTokens.caption)
+                                .fontWeight(.semibold)
                                 .foregroundStyle(isCompletedPanelVisible ? tokens.textSecondary : tokens.textTertiary)
                         }
                         .padding(.horizontal, 10)
@@ -126,23 +129,20 @@ struct TaskListView: View {
                     } catch {
                     }
                 }
-                .padding(10)
-                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(tokens.sectionBorder, lineWidth: 1)
-                }
-                .shadow(color: Color.black.opacity(0.14), radius: 8, y: 3)
+                .padding(SpacingTokens.md)
+                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+                .shadow(color: Color.black.opacity(0.12), radius: 8, y: 3)
             }
 
             if isOverdueView && activeTodosCache.isEmpty {
                 Spacer()
-                VStack(spacing: 12) {
+                VStack(spacing: SpacingTokens.md) {
                     Image(systemName: "checkmark.circle")
                         .font(.system(size: 40))
                         .foregroundStyle(tokens.textTertiary)
                     Text("No overdue tasks")
-                        .font(.body.weight(.medium))
+                        .font(TypographyTokens.bodyLarge)
+                        .fontWeight(.medium)
                         .foregroundStyle(tokens.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
@@ -213,6 +213,7 @@ struct TaskListView: View {
 
                 TextField("Search tasks (⌘K)", text: $commandText)
                     .textFieldStyle(.plain)
+                    .font(TypographyTokens.bodyLarge)
                     .focused($isCommandFocused)
 
                 if !commandText.isEmpty {
@@ -221,7 +222,8 @@ struct TaskListView: View {
                         isCommandFocused = true
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(TypographyTokens.caption)
+                            .fontWeight(.semibold)
                             .foregroundStyle(tokens.textTertiary)
                     }
                     .buttonStyle(.plain)
@@ -230,15 +232,15 @@ struct TaskListView: View {
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, SpacingTokens.md)
             .padding(.vertical, 9)
-            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isCommandFocused ? tokens.inputBorderFocused : tokens.inputBorder, lineWidth: isCommandFocused ? 1.2 : 1)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                    .stroke(isCommandFocused ? tokens.inputBorderFocused : Color.clear, lineWidth: isCommandFocused ? 1.2 : 0)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
                     .stroke(tokens.inputGlow.opacity(isCommandFocused ? 0.52 : 0), lineWidth: 4)
                     .blur(radius: 0.7)
             }
@@ -328,16 +330,18 @@ struct TaskListView: View {
     }
 
     private func todoColumn(title: String, todos: [Todo]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
             HStack {
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(TypographyTokens.micro)
+                    .textCase(.uppercase)
+                    .tracking(1.2)
                     .foregroundStyle(tokens.mutedText)
                 Spacer()
             }
 
             ScrollView {
-                LazyVStack(spacing: 6) {
+                LazyVStack(spacing: 4) {
                     ForEach(todos) { todo in
                         TodoRowView(
                             todo: todo,
@@ -366,33 +370,31 @@ struct TaskListView: View {
                         )
                     }
                 }
-                .padding(2)
+                .padding(SpacingTokens.xs)
             }
         }
-        .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
-        .shadow(color: Color.black.opacity(0.12), radius: 6, y: 2)
+        .padding(SpacingTokens.md)
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+        .shadow(color: Color.black.opacity(0.10), radius: 8, y: 3)
     }
 
     private func completedColumn(todos: [Todo]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+            HStack(spacing: SpacingTokens.sm) {
                 Button {
                     withAnimation(.easeInOut(duration: 0.15)) {
                         isCompletedCollapsed.toggle()
                     }
                 } label: {
-                    HStack(spacing: 4) {
+                    HStack(spacing: SpacingTokens.xs) {
                         Image(systemName: isCompletedCollapsed ? "chevron.right" : "chevron.down")
-                            .font(.system(size: 10, weight: .semibold))
+                            .font(TypographyTokens.micro)
                             .foregroundStyle(tokens.textTertiary)
 
                         Text("Completed")
-                            .font(.caption.weight(.medium))
+                            .font(TypographyTokens.micro)
+                            .textCase(.uppercase)
+                            .tracking(1.2)
                             .foregroundStyle(tokens.textSecondary)
                     }
                 }
@@ -405,7 +407,8 @@ struct TaskListView: View {
                         showClearCompletedConfirmation = true
                     } label: {
                             Text("Archive")
-                                .font(.caption.weight(.medium))
+                                .font(TypographyTokens.caption)
+                                .fontWeight(.medium)
                                 .foregroundStyle(tokens.accentTerracotta)
                     }
                     .buttonStyle(.plain)
@@ -443,58 +446,41 @@ struct TaskListView: View {
                             )
                         }
                     }
-                    .padding(2)
+                    .padding(SpacingTokens.xs)
                 }
             }
         }
-        .padding(10)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
+        .padding(SpacingTokens.md)
+        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+        .shadow(color: Color.black.opacity(0.08), radius: 6, y: 2)
     }
 
     private var filterPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
+            HStack(spacing: SpacingTokens.lg) {
                 ForEach(TimeFilter.allCases) { filter in
                     Button {
                         withAnimation(MotionTokens.focusEase) {
                             appModel.timeFilter = filter
                         }
                     } label: {
-                        Text(filter.label)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(appModel.timeFilter == filter ? tokens.textPrimary : tokens.textTertiary)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(
-                                appModel.timeFilter == filter ? tokens.bgFloating.opacity(0.92) : Color.clear,
-                                in: Capsule()
-                            )
-                            .overlay {
-                                Capsule()
-                                    .stroke(
-                                        appModel.timeFilter == filter
-                                            ? tokens.inputBorderFocused.opacity(0.65)
-                                            : tokens.sectionBorder.opacity(0.0),
-                                        lineWidth: 1
-                                    )
-                            }
+                        VStack(spacing: SpacingTokens.xs) {
+                            Text(filter.label)
+                                .font(TypographyTokens.headingSmall)
+                                .foregroundStyle(appModel.timeFilter == filter ? tokens.textPrimary : tokens.textTertiary)
+
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(tokens.accentTerracotta)
+                                .frame(height: 2)
+                                .opacity(appModel.timeFilter == filter ? 1 : 0)
+                        }
                     }
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal, 6)
-            .padding(.vertical, 4)
+            .padding(.horizontal, SpacingTokens.xs)
+            .padding(.vertical, SpacingTokens.xs)
         }
-        .background(tokens.bgElevated.opacity(0.78), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-        }
-        .shadow(color: Color.black.opacity(0.10), radius: 6, y: 2)
         .fixedSize(horizontal: false, vertical: true)
     }
 

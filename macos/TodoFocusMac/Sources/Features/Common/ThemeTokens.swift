@@ -3,82 +3,39 @@ import Observation
 
 @Observable
 final class ThemeTokens: Sendable {
-    let theme: ThemeStore.Theme
-
-    init(theme: ThemeStore.Theme = .dark) {
-        self.theme = theme
-    }
-
     // MARK: - Backgrounds
-    var bgBase: Color {
-        theme == .light ? Color(red: 0.961, green: 0.953, blue: 0.933) : Color(red: 0.039, green: 0.039, blue: 0.039)
-    }
-    var bgElevated: Color {
-        theme == .light ? Color.white : Color(red: 0.11, green: 0.11, blue: 0.11)
-    }
-    var bgFloating: Color {
-        theme == .light ? Color(red: 0.980, green: 0.980, blue: 0.980) : Color(red: 0.15, green: 0.15, blue: 0.15)
-    }
+    var bgBase: Color { Color(red: 0.067, green: 0.067, blue: 0.063) }
+    var bgElevated: Color { Color(red: 0.102, green: 0.098, blue: 0.090) }
+    var bgFloating: Color { Color(red: 0.141, green: 0.137, blue: 0.125) }
+    var bgSubtle: Color { Color(red: 0.118, green: 0.114, blue: 0.106) }
 
     // MARK: - Text
-    var textPrimary: Color {
-        theme == .light ? Color(red: 0.102, green: 0.102, blue: 0.102) : Color(red: 0.98, green: 0.98, blue: 0.98)
-    }
-    var textSecondary: Color {
-        theme == .light ? Color(red: 0.420, green: 0.420, blue: 0.420) : Color(red: 0.55, green: 0.55, blue: 0.55)
-    }
-    var textTertiary: Color {
-        theme == .light ? Color(red: 0.608, green: 0.608, blue: 0.608) : Color(red: 0.40, green: 0.40, blue: 0.40)
-    }
+    var textPrimary: Color { Color(red: 0.941, green: 0.929, blue: 0.902) }
+    var textSecondary: Color { Color(red: 0.608, green: 0.584, blue: 0.565) }
+    var textTertiary: Color { Color(red: 0.420, green: 0.396, blue: 0.376) }
 
     // MARK: - Semantic
-    var success: Color {
-        theme == .light ? Color(red: 0.063, green: 0.725, blue: 0.506) : Color(red: 0.37, green: 0.81, blue: 0.61)
-    }
-    var warning: Color {
-        theme == .light ? Color(red: 0.961, green: 0.620, blue: 0.043) : Color(red: 0.97, green: 0.73, blue: 0.31)
-    }
-    var danger: Color {
-        theme == .light ? Color(red: 0.937, green: 0.267, blue: 0.267) : Color(red: 0.94, green: 0.41, blue: 0.47)
-    }
+    var success: Color { Color(red: 0.37, green: 0.81, blue: 0.61) }
+    var warning: Color { Color(red: 0.97, green: 0.73, blue: 0.31) }
+    var danger: Color { Color(red: 0.90, green: 0.42, blue: 0.42) }
 
     // MARK: - Accents
-    var accentBlue: Color {
-        theme == .light ? Color(red: 0.231, green: 0.510, blue: 0.965) : Color(red: 0.40, green: 0.71, blue: 0.96)
-    }
-    var accentViolet: Color {
-        theme == .light ? Color(red: 0.545, green: 0.361, blue: 0.965) : Color(red: 0.60, green: 0.53, blue: 0.95)
-    }
-    var accentAmber: Color {
-        theme == .light ? Color(red: 0.961, green: 0.620, blue: 0.043) : Color(red: 0.95, green: 0.64, blue: 0.29)
-    }
-    var accentTerracotta: Color {
-        theme == .light ? Color(red: 0.918, green: 0.345, blue: 0.047) : Color(red: 0.769, green: 0.408, blue: 0.286)
-    }
+    var accentBlue: Color { Color(red: 0.478, green: 0.671, blue: 0.859) }
+    var accentViolet: Color { Color(red: 0.608, green: 0.561, blue: 0.831) }
+    var accentAmber: Color { Color(red: 0.95, green: 0.64, blue: 0.29) }
+    var accentTerracotta: Color { Color(red: 0.831, green: 0.443, blue: 0.306) }
 
     // MARK: - Gradients
     var appBackground: LinearGradient {
-        if theme == .light {
-            return LinearGradient(
-                colors: [
-                    Color(red: 0.961, green: 0.953, blue: 0.933),
-                    Color(red: 0.961, green: 0.953, blue: 0.933),
-                    Color(red: 0.95, green: 0.94, blue: 0.93)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        } else {
-            return LinearGradient(
-                colors: [
-                    Color(red: 0.039, green: 0.039, blue: 0.039),
-                    Color(red: 0.039, green: 0.039, blue: 0.039),
-                    Color(red: 0.05, green: 0.05, blue: 0.05)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        }
+        LinearGradient(
+            colors: [
+                Color(red: 0.067, green: 0.067, blue: 0.063),
+                Color(red: 0.067, green: 0.067, blue: 0.063),
+                Color(red: 0.075, green: 0.075, blue: 0.071)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     var accent: LinearGradient {
@@ -92,25 +49,15 @@ final class ThemeTokens: Sendable {
     // MARK: - Aliases
     var panelBackground: Color { bgElevated }
     var sectionBackground: Color { bgElevated }
-    var sectionBorder: Color {
-        theme == .light ? Color.black.opacity(0.08) : Color.white.opacity(0.06)
-    }
+    var sectionBorder: Color { Color(red: 0.941, green: 0.929, blue: 0.902).opacity(0.05) }
     var mutedText: Color { textSecondary }
     var violetAccent: Color { accentViolet }
     var cyanAccent: Color { accentBlue }
     var roseAccent: Color { danger }
 
     // MARK: - Input Surfaces
-    var inputSurface: Color {
-        theme == .light ? Color.white.opacity(0.96) : bgFloating.opacity(0.78)
-    }
-    var inputBorder: Color {
-        theme == .light ? Color.black.opacity(0.10) : sectionBorder.opacity(0.95)
-    }
-    var inputBorderFocused: Color {
-        theme == .light ? accentTerracotta.opacity(0.58) : accentTerracotta.opacity(0.72)
-    }
-    var inputGlow: Color {
-        theme == .light ? accentTerracotta.opacity(0.24) : accentTerracotta.opacity(0.22)
-    }
+    var inputSurface: Color { bgFloating.opacity(0.78) }
+    var inputBorder: Color { sectionBorder.opacity(0.95) }
+    var inputBorderFocused: Color { accentTerracotta.opacity(0.72) }
+    var inputGlow: Color { accentTerracotta.opacity(0.22) }
 }

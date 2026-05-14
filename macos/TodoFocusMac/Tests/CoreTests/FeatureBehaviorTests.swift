@@ -30,13 +30,12 @@ final class FeatureBehaviorTests: XCTestCase {
     }
 
     func testShortcutHintBarListsAllAvailableShortcuts() {
-        XCTAssertEqual(ShortcutHintBar.availableShortcuts.map(\.key), ["⌘⇧T", "⌘⇧U", "⌘⇧F", "⌘K", "⌘⇧L", "⌘⇧N"])
+        XCTAssertEqual(ShortcutHintBar.availableShortcuts.map(\.key), ["⌘⇧T", "⌘⇧U", "⌘⇧F", "⌘K", "⌘⇧N"])
         XCTAssertEqual(ShortcutHintBar.availableShortcuts.map(\.action), [
             "Global Quick Capture",
             "Daily Review Preview",
             "Start Deep Focus",
             "Search Tasks",
-            "Toggle Theme",
             "New Task"
         ])
     }

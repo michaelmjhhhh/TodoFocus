@@ -73,7 +73,7 @@ struct DailyReviewView: View {
                 .scrollIndicators(.visible)
             }
         }
-        .padding(16)
+        .padding(SpacingTokens.xl)
         .onAppear {
             boardViewModel.recompute(todos: store.reviewTodos)
         }
@@ -91,10 +91,10 @@ struct DailyReviewView: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text("Daily Review")
-                        .font(.system(size: 23, weight: .bold, design: .rounded))
+                        .font(TypographyTokens.displayLarge)
                         .foregroundStyle(tokens.textPrimary)
                     Text("Manual")
-                        .font(.caption2.weight(.semibold))
+                        .font(TypographyTokens.micro)
                         .foregroundStyle(tokens.textSecondary)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -105,7 +105,7 @@ struct DailyReviewView: View {
                         }
                 }
                 Text("Kanban review by status and time horizon.")
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.textTertiary)
             }
             Spacer(minLength: 8)
@@ -120,40 +120,40 @@ struct DailyReviewView: View {
         collapsed: Bool,
         isCompletedLane: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: SpacingTokens.md) {
             Button {
                 if isCompletedLane {
                     boardViewModel.toggleCompletedLane()
                 }
             } label: {
-                HStack(spacing: 8) {
+                HStack(spacing: SpacingTokens.sm) {
                     Image(systemName: systemImage)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tokens.textSecondary)
+                        .font(TypographyTokens.caption)
+                        .foregroundStyle(tokens.textTertiary)
                     Text(title)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(Color.white)
-                    Spacer(minLength: 8)
+                        .font(TypographyTokens.micro)
+                        .textCase(.uppercase)
+                        .tracking(1.5)
+                        .foregroundStyle(tokens.textTertiary)
+
+                    Rectangle()
+                        .fill(tokens.sectionBorder.opacity(0.3))
+                        .frame(height: 0.5)
+
                     if isCompletedLane {
                         Image(systemName: collapsed ? "chevron.right" : "chevron.down")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(tokens.textSecondary)
+                            .font(TypographyTokens.caption)
+                            .foregroundStyle(tokens.textTertiary)
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 9)
-                .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(tokens.sectionBorder, lineWidth: 1)
-                }
+                .padding(.vertical, SpacingTokens.xs)
             }
             .buttonStyle(.plain)
             .disabled(!isCompletedLane)
 
             if !collapsed {
                 ScrollView(.horizontal) {
-                    HStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .top, spacing: SpacingTokens.md) {
                         ForEach(columns) { column in
                             reviewColumnView(column, lane: lane, isCompletedLane: isCompletedLane)
                         }
@@ -167,19 +167,41 @@ struct DailyReviewView: View {
 
     private func reviewColumnView(_ column: DailyReviewColumn, lane: DailyReviewLane, isCompletedLane: Bool) -> some View {
         let isColumnCollapsed = boardViewModel.isColumnCollapsed(bucket: column.bucket, lane: lane)
+        let columnAccent: Color = {
+            switch column.bucket {
+            case .overdue: return tokens.danger
+            case .today: return tokens.accentTerracotta
+            case .tomorrow: return tokens.accentBlue
+            case .later, .noDate: return tokens.textTertiary
+            }
+        }()
 
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
+        return VStack(alignment: .leading, spacing: SpacingTokens.md) {
+            HStack(spacing: SpacingTokens.sm) {
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(columnAccent)
+                    .frame(width: 3, height: 14)
+
                 Text(column.bucket.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(TypographyTokens.headingSmall)
                     .foregroundStyle(tokens.textPrimary)
+
+                if !column.todos.isEmpty {
+                    Text("\(column.todos.count)")
+                        .font(TypographyTokens.micro)
+                        .foregroundStyle(tokens.textTertiary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(tokens.bgFloating.opacity(0.5), in: Capsule())
+                }
+
                 Spacer(minLength: 6)
                 Button {
                     boardViewModel.toggleColumn(bucket: column.bucket, lane: lane)
                 } label: {
                     Image(systemName: isColumnCollapsed ? "chevron.right" : "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tokens.textSecondary)
+                        .font(TypographyTokens.caption)
+                        .foregroundStyle(tokens.textTertiary)
                         .frame(width: 20, height: 20)
                 }
                 .buttonStyle(.plain)
@@ -188,15 +210,14 @@ struct DailyReviewView: View {
 
             if !isColumnCollapsed {
                 if column.todos.isEmpty {
-                    Text("No tasks")
-                        .font(.caption)
-                        .foregroundStyle(tokens.textTertiary)
-                        .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 10)
-                        .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    VStack(spacing: SpacingTokens.sm) {
+                        Text("No tasks")
+                            .font(TypographyTokens.caption)
+                            .foregroundStyle(tokens.textTertiary.opacity(0.6))
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 48, alignment: .center)
                 } else {
-                    LazyVStack(spacing: 8) {
+                    LazyVStack(spacing: 6) {
                         ForEach(column.todos) { todo in
                             reviewCard(todo, isCompletedLane: isCompletedLane)
                         }
@@ -204,22 +225,24 @@ struct DailyReviewView: View {
                 }
             }
         }
-        .padding(10)
+        .padding(SpacingTokens.lg)
         .frame(width: 300, alignment: .topLeading)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(tokens.bgSubtle.opacity(0.6), in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
+                .stroke(tokens.sectionBorder.opacity(0.08), lineWidth: 0.5)
         }
+        .shadow(color: .black.opacity(0.08), radius: 6, y: 2)
     }
 
     private func reviewCard(_ todo: Todo, isCompletedLane: Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(todo.title)
-                    .font(.subheadline.weight(todo.isCompleted ? .medium : .semibold))
-                    .foregroundStyle(todo.isCompleted ? tokens.textSecondary : tokens.textPrimary)
+                    .font(todo.isCompleted ? TypographyTokens.bodySmall : TypographyTokens.bodyLarge)
+                    .foregroundStyle(todo.isCompleted ? tokens.textTertiary : tokens.textPrimary)
                     .strikethrough(todo.isCompleted)
+                    .opacity(todo.isCompleted ? 0.5 : 1)
                     .lineLimit(2)
                 Spacer(minLength: 8)
             }
@@ -237,25 +260,25 @@ struct DailyReviewView: View {
                 cardActionsRow(todo)
             }
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 9)
-        .background(tokens.bgFloating.opacity(isCompletedLane ? 0.42 : 0.58), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .padding(.horizontal, SpacingTokens.lg)
+        .padding(.vertical, SpacingTokens.md)
+        .background(tokens.bgFloating.opacity(isCompletedLane ? 0.3 : 0.45), in: RoundedRectangle(cornerRadius: RadiusTokens.sm, style: .continuous))
         .overlay(alignment: .leading) {
             RoundedRectangle(cornerRadius: 2, style: .continuous)
-                .fill(isCompletedLane ? tokens.textTertiary.opacity(0.5) : tokens.accentTerracotta.opacity(0.92))
+                .fill(isCompletedLane ? tokens.textTertiary.opacity(0.35) : tokens.accentTerracotta.opacity(0.85))
                 .frame(width: 3)
-                .padding(.vertical, 7)
-                .padding(.leading, 5)
+                .padding(.vertical, SpacingTokens.sm)
+                .padding(.leading, SpacingTokens.xs)
         }
     }
 
     private func errorBanner(_ message: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.caption.weight(.bold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.danger)
             Text(message)
-                .font(.caption)
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.textSecondary)
                 .lineLimit(2)
             Spacer(minLength: 6)
@@ -264,25 +287,22 @@ struct DailyReviewView: View {
                 store.clearMutationError()
             }
             .buttonStyle(.plain)
-            .font(.caption.weight(.semibold))
+            .font(TypographyTokens.caption)
             .foregroundStyle(tokens.accentTerracotta)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
-        .background(tokens.sectionBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        }
+        .padding(.horizontal, SpacingTokens.md)
+        .padding(.vertical, SpacingTokens.sm)
+        .background(tokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous))
+        .shadowSubtle()
     }
 
     private var emptyState: some View {
         VStack(spacing: 10) {
             Image(systemName: "sparkles")
-                .font(.system(size: 28, weight: .medium))
+                .font(.system(size: 28))
                 .foregroundStyle(tokens.textTertiary)
             Text("No tasks to review")
-                .font(.headline)
+                .font(TypographyTokens.displaySmall)
                 .foregroundStyle(tokens.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -345,15 +365,11 @@ struct DailyReviewView: View {
                 Image(systemName: compact ? "calendar" : "calendar.badge.clock")
                 Text(compact ? "Date" : "Reschedule")
             }
-            .font(.caption.weight(.semibold))
+            .font(TypographyTokens.caption)
             .foregroundStyle(tokens.textSecondary)
             .padding(.horizontal, compact ? 9 : 10)
             .padding(.vertical, compact ? 5 : 6)
-            .background(tokens.bgFloating.opacity(0.8), in: Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-            }
+            .background(tokens.bgSubtle, in: Capsule())
         }
         .menuStyle(.borderlessButton)
     }
@@ -364,22 +380,18 @@ struct DailyReviewView: View {
                 Image(systemName: systemImage)
                 Text(title)
             }
-            .font(.caption.weight(.semibold))
+            .font(TypographyTokens.caption)
             .foregroundStyle(emphasize ? Color.white : tokens.textSecondary)
             .padding(.horizontal, compact ? 9 : 11)
             .padding(.vertical, compact ? 5 : 7)
-            .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgFloating.opacity(0.8)), in: Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(tokens.sectionBorder.opacity(emphasize ? 0.0 : 0.9), lineWidth: 1)
-            }
+            .background((emphasize ? tokens.accentTerracotta.opacity(0.95) : tokens.bgSubtle), in: Capsule())
         }
         .buttonStyle(.plain)
     }
 
     private func metaChip(label: String, accent: Bool = false) -> some View {
         Text(label)
-            .font(.caption2.weight(.medium))
+            .font(TypographyTokens.micro)
             .foregroundStyle(accent ? tokens.accentTerracotta : tokens.textTertiary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)

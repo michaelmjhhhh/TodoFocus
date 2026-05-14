@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     let databasePath: String
-    let themeStore: ThemeStore
     @State private var selectedImportMode: ImportMode = .replace
     @State private var exportError: String?
     @State private var importError: String?
@@ -21,7 +20,6 @@ struct SettingsView: View {
         TabView {
             GeneralSettingsView(
                 databasePath: databasePath,
-                themeStore: themeStore,
                 selectedImportMode: $selectedImportMode,
                 onExport: performExport,
                 onImport: performImport,
@@ -140,7 +138,6 @@ struct SettingsView: View {
 
 struct GeneralSettingsView: View {
     let databasePath: String
-    @Bindable var themeStore: ThemeStore
     @Binding var selectedImportMode: ImportMode
     let onExport: () -> Void
     let onImport: () -> Void
@@ -159,21 +156,12 @@ struct GeneralSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                settingsCard(title: "Appearance", icon: "paintbrush") {
-                    Picker("Theme", selection: $themeStore.theme) {
-                        Text("Dark").tag(ThemeStore.Theme.dark)
-                        Text("Light").tag(ThemeStore.Theme.light)
-                        Text("System").tag(ThemeStore.Theme.system)
-                    }
-                    .pickerStyle(.segmented)
-                }
-
                 settingsCard(title: "Data Import & Export", icon: "arrow.left.arrow.right.circle") {
                     Text("Portable transfer: lists, tasks, steps, and URL launch resources.")
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                     Text("Reminder: file and app launch resources are device-local and are intentionally skipped during import/export.")
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.warning)
                         .padding(.bottom, 4)
 
@@ -199,16 +187,16 @@ struct GeneralSettingsView: View {
 
                 settingsCard(title: "Database", icon: "internaldrive") {
                     Text(URL(fileURLWithPath: databasePath).lastPathComponent)
-                        .font(.subheadline)
+                        .font(TypographyTokens.bodyLarge)
                         .foregroundStyle(tokens.textPrimary)
                     Text(databasePath)
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .lineLimit(2)
                         .truncationMode(.middle)
                         .foregroundStyle(tokens.textTertiary)
                 }
             }
-            .padding(16)
+            .padding(SpacingTokens.lg)
         }
         .background(tokens.bgBase)
         .alert("Export Successful", isPresented: $showExportSuccess) {
@@ -255,19 +243,16 @@ struct GeneralSettingsView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(TypographyTokens.bodyLarge)
                     .foregroundStyle(tokens.accentTerracotta)
                 Text(title)
-                    .font(.headline)
+                    .font(TypographyTokens.headingLarge)
                     .foregroundStyle(tokens.textPrimary)
             }
             content()
         }
-        .padding(12)
-        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(tokens.sectionBorder, lineWidth: 1)
-        )
+        .padding(SpacingTokens.md)
+        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+        .shadowSubtle()
     }
 }

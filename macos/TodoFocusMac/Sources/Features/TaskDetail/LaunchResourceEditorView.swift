@@ -47,8 +47,10 @@ struct LaunchResourceEditorView: View {
     private var headerRow: some View {
         HStack {
             Text("Launchpad")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tokens.mutedText)
+                .font(TypographyTokens.micro)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(tokens.textTertiary)
 
             Spacer()
 
@@ -58,9 +60,9 @@ struct LaunchResourceEditorView: View {
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "rocket.fill")
-                            .font(.system(size: 11))
+                            .font(TypographyTokens.caption)
                         Text("Launch All")
-                            .font(.caption.weight(.semibold))
+                            .font(TypographyTokens.caption)
                     }
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
@@ -80,12 +82,8 @@ struct LaunchResourceEditorView: View {
                 Image(systemName: "plus")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(tokens.accentTerracotta)
-                    .frame(width: 30, height: 30)
-                    .background(tokens.bgFloating.opacity(0.9), in: Circle())
-                    .overlay {
-                        Circle()
-                            .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-                    }
+                    .frame(width: 28, height: 28)
+                    .background(tokens.bgSubtle, in: Circle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Add resource")
@@ -102,11 +100,11 @@ struct LaunchResourceEditorView: View {
                 .foregroundStyle(tokens.textTertiary)
 
             Text("No resources yet")
-                .font(.caption)
+                .font(TypographyTokens.bodySmall)
                 .foregroundStyle(tokens.textTertiary)
 
             Text("Add URLs, files, or apps to launch from this task")
-                .font(.caption2)
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.textTertiary)
                 .multilineTextAlignment(.center)
         }
@@ -124,7 +122,7 @@ struct LaunchResourceEditorView: View {
 
             TextField("Label", text: $labelText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 13))
+                .font(TypographyTokens.bodySmall)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -135,7 +133,7 @@ struct LaunchResourceEditorView: View {
 
             TextField(typePlaceholder, text: $valueText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 13))
+                .font(TypographyTokens.bodySmall)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(tokens.inputSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -153,7 +151,7 @@ struct LaunchResourceEditorView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .font(.caption.weight(.semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.textSecondary)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -169,7 +167,7 @@ struct LaunchResourceEditorView: View {
                     cancelAdd()
                 }
                 .buttonStyle(.plain)
-                .font(.caption.weight(.semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(tokens.textSecondary)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -186,7 +184,7 @@ struct LaunchResourceEditorView: View {
                     addDraftResource()
                 }
                 .buttonStyle(.plain)
-                .font(.caption.weight(.semibold))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 7)
@@ -200,17 +198,14 @@ struct LaunchResourceEditorView: View {
 
             if let statusText {
                 Text(statusText)
-                    .font(.caption2)
+                    .font(TypographyTokens.micro)
                     .foregroundStyle(tokens.textTertiary)
                     .lineLimit(2)
             }
         }
-        .padding(14)
-        .background(tokens.bgFloating.opacity(0.46), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(tokens.sectionBorder.opacity(0.92), lineWidth: 1)
-        }
+        .padding(SpacingTokens.lg)
+        .background(tokens.bgSubtle, in: RoundedRectangle(cornerRadius: RadiusTokens.lg, style: .continuous))
+        .shadowSubtle()
     }
 
     private func typeButton(_ type: LaunchResourceType) -> some View {
@@ -219,9 +214,9 @@ struct LaunchResourceEditorView: View {
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: type.icon)
-                    .font(.system(size: 11))
+                    .font(TypographyTokens.caption)
                 Text(type.label)
-                    .font(.caption2.weight(.medium))
+                    .font(TypographyTokens.micro)
             }
             .foregroundStyle(selectedType == type ? .white : tokens.textSecondary)
             .padding(.horizontal, 12)
@@ -249,18 +244,18 @@ struct LaunchResourceEditorView: View {
     private func resourceRow(_ item: LaunchResource) -> some View {
         HStack(spacing: 10) {
             Image(systemName: item.type.icon)
-                .font(.system(size: 12))
+                .font(TypographyTokens.caption)
                 .foregroundStyle(resourceTypeColor(item.type))
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(item.label)
-                    .font(.system(size: 13))
+                    .font(TypographyTokens.bodySmall)
                     .foregroundStyle(tokens.textPrimary)
                     .lineLimit(1)
 
                 Text(item.displayValue)
-                    .font(.caption2)
+                    .font(TypographyTokens.micro)
                     .foregroundStyle(tokens.textTertiary)
                     .lineLimit(1)
             }
@@ -271,7 +266,7 @@ struct LaunchResourceEditorView: View {
                 launchSingle(item)
             } label: {
                 Image(systemName: "play.fill")
-                    .font(.system(size: 10))
+                    .font(TypographyTokens.micro)
                     .foregroundStyle(tokens.textTertiary)
                     .frame(width: 24, height: 24)
                     .background(tokens.bgFloating, in: Circle())
@@ -287,7 +282,7 @@ struct LaunchResourceEditorView: View {
                 }
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 10))
+                    .font(TypographyTokens.micro)
                     .foregroundStyle(tokens.textTertiary)
                     .frame(width: 24, height: 24)
             }
@@ -297,7 +292,7 @@ struct LaunchResourceEditorView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+        .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: RadiusTokens.sm))
     }
 
     private var typePlaceholder: String {

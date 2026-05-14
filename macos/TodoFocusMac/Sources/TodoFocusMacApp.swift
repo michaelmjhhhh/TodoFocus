@@ -73,11 +73,9 @@ struct TodoFocusMacApp: App {
                         appModel: appModel,
                         store: store,
                         launchpadService: launchpadService,
-                        databasePath: databaseManager?.path ?? "unavailable",
-                        themeStore: themeStore
+                        databasePath: databaseManager?.path ?? "unavailable"
                     )
-                    .preferredColorScheme(themeStore.preferredColorScheme)
-                    .themeMode(themeStore.theme)
+                    .preferredColorScheme(.dark)
                     .task {
                         appDelegate.onTerminateRequested = { [weak store] in
                             appModel.quickCaptureService.cleanup()
@@ -87,16 +85,16 @@ struct TodoFocusMacApp: App {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Database unavailable")
-                            .font(.headline)
+                            .font(TypographyTokens.headingLarge)
                         Text(startupError ?? "unknown startup error")
-                            .font(.caption)
+                            .font(TypographyTokens.caption)
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     }
                     .padding(20)
                 }
             }
-            .preferredColorScheme(themeStore.preferredColorScheme)
+            .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
@@ -107,16 +105,15 @@ struct TodoFocusMacApp: App {
                 if let store {
                     DeepFocusMenuBarPanel(
                         store: store,
-                        themeStore: themeStore,
                         mainWindowID: SceneIDs.mainWindow
                     )
                 } else {
                     Text("TodoFocus unavailable")
-                        .font(.system(size: 12))
+                        .font(TypographyTokens.caption)
                         .padding(12)
                 }
             }
-            .preferredColorScheme(themeStore.preferredColorScheme)
+            .preferredColorScheme(.dark)
         } label: {
             if let store {
                 DeepFocusMenuBarLabel(store: store)
@@ -128,7 +125,7 @@ struct TodoFocusMacApp: App {
 
 #if os(macOS)
         Settings {
-            SettingsView(databasePath: databaseManager?.path ?? "", themeStore: themeStore)
+            SettingsView(databasePath: databaseManager?.path ?? "")
         }
 #endif
     }

@@ -21,7 +21,7 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
         field.drawsBackground = false
         field.focusRingType = .none
         field.lineBreakMode = .byClipping
-        field.font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
+        field.font = TypographyTokens.nsBodyLarge
         field.delegate = context.coordinator
         field.placeholderString = placeholder
         field.maximumNumberOfLines = 1
@@ -119,7 +119,7 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
         func applyHighlight(to field: NSTextField, text: String, preserveSelection: Bool) {
             let selectedRange = field.currentEditor()?.selectedRange
             let attributed = NSMutableAttributedString(string: text)
-            let normalFont = NSFont.systemFont(ofSize: NSFont.systemFontSize)
+            let normalFont = TypographyTokens.nsBodyLarge
             attributed.addAttributes(
                 [
                     .font: normalFont,
@@ -137,7 +137,7 @@ struct QuickAddHighlightingTextField: NSViewRepresentable {
                 let nsRange = NSRange(range, in: text)
                 attributed.addAttributes(
                     [
-                        .font: NSFont.systemFont(ofSize: NSFont.systemFontSize, weight: .semibold),
+                        .font: NSFont.systemFont(ofSize: 14, weight: .semibold),
                         .foregroundColor: parent.highlightColor,
                     ],
                     range: nsRange

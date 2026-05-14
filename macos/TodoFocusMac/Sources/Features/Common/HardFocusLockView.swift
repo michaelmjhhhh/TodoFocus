@@ -9,20 +9,20 @@ struct HardFocusLockView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: SpacingTokens.md) {
             Image(systemName: "lock.fill")
-                .font(.system(size: 13, weight: .semibold))
+                .font(TypographyTokens.headingSmall)
                 .foregroundStyle(tokens.accentTerracotta)
-                .padding(8)
+                .padding(SpacingTokens.sm)
                 .background(tokens.accentTerracotta.opacity(0.14), in: Circle())
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: SpacingTokens.xxs) {
                 Text("Hard Focus Active")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(TypographyTokens.bodyLarge.weight(.semibold))
                     .foregroundStyle(tokens.textPrimary)
                 TimelineView(.periodic(from: .now, by: 30)) { context in
                     Text(sessionSubtitle(at: context.date))
-                        .font(.caption)
+                        .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
                         .lineLimit(1)
                 }
@@ -57,14 +57,10 @@ struct HardFocusLockView: View {
             )
             .foregroundStyle(tokens.danger)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(tokens.sectionBorder.opacity(0.9), lineWidth: 1)
-        )
-        .shadow(color: Color.black.opacity(0.22), radius: 10, x: 0, y: 5)
+        .padding(.horizontal, SpacingTokens.lg)
+        .padding(.vertical, SpacingTokens.md)
+        .background(tokens.bgElevated, in: RoundedRectangle(cornerRadius: RadiusTokens.md))
+        .shadowMedium()
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .confirmationDialog(
@@ -103,7 +99,7 @@ struct HardFocusLockView: View {
     private var unlockPopover: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Unlock Hard Focus")
-                .font(.headline)
+                .font(TypographyTokens.headingLarge)
                 .foregroundStyle(tokens.textPrimary)
 
             SecureField("Enter passphrase", text: $passphrase)
@@ -114,7 +110,7 @@ struct HardFocusLockView: View {
 
             if let errorMessage {
                 Text(errorMessage)
-                    .font(.caption)
+                    .font(TypographyTokens.caption)
                     .foregroundStyle(tokens.danger)
             }
 

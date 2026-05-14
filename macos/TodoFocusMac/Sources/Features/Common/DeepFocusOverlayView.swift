@@ -5,46 +5,56 @@ struct DeepFocusOverlayView: View {
     let attemptCount: Int
     let onDismiss: () -> Void
     let onEndFocus: () -> Void
-    
+    @Environment(\.themeTokens) private var tokens
+    @State private var isBreathing = false
+
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: SpacingTokens.xl) {
             Image(systemName: "flame.fill")
                 .font(.system(size: 48))
-                .foregroundColor(Color(hex: "C46849"))
-            
+                .foregroundColor(tokens.accentTerracotta)
+                .opacity(isBreathing ? 0.6 : 1.0)
+                .onAppear {
+                    withAnimation(MotionTokens.breathe) {
+                        isBreathing = true
+                    }
+                }
+
             Text("Deep Focus Active")
-                .font(.title2)
-                .fontWeight(.semibold)
-            
+                .font(TypographyTokens.displaySmall)
+                .foregroundStyle(tokens.textPrimary)
+
             Text("You tried to open \(blockedAppName)")
-                .foregroundColor(.secondary)
-            
+                .font(TypographyTokens.bodySmall)
+                .foregroundColor(tokens.textSecondary)
+
             Text("Attempt #\(attemptCount)")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .background(Color.secondary.opacity(0.2))
+                .font(TypographyTokens.caption)
+                .foregroundColor(tokens.textSecondary)
+                .padding(.horizontal, SpacingTokens.md)
+                .padding(.vertical, SpacingTokens.xs)
+                .background(tokens.textSecondary.opacity(0.2))
                 .clipShape(Capsule())
-            
-            HStack(spacing: 16) {
+
+            HStack(spacing: SpacingTokens.lg) {
                 Button("End Focus") {
                     onEndFocus()
                 }
                 .buttonStyle(.bordered)
-                
+
                 Button("Dismiss") {
                     onDismiss()
                 }
                 .buttonStyle(.borderedProminent)
             }
         }
-        .padding(32)
+        .padding(SpacingTokens.xxl)
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(hex: "1C1C1E"))
-                .shadow(radius: 20)
+            RoundedRectangle(cornerRadius: RadiusTokens.lg)
+                .fill(tokens.bgElevated)
         )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: RadiusTokens.lg))
+        .shadowFloat()
         .frame(width: 300)
     }
 }
