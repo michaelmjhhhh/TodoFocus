@@ -118,6 +118,7 @@
 		CCD83328C673F343DC524362 /* TodoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */; };
 		CD78286DADAFB794C7933580 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CE5F3BDE707034517F4204D9 /* GRDB */; };
 		CE68D70D52B8AC25F5488A5A /* AppGroupDatabasePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E58F663C2760243A4C31F1 /* AppGroupDatabasePath.swift */; };
+		CF2955A202B58FC057AA11B0 /* SectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F9256104B1AA7CE934BA8 /* SectionCard.swift */; };
 		D2DE83D790E60752968ACD55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */; };
 		D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CECDF3CE43A5D8655A27316 /* ImmersiveHeaderView.swift */; };
 		D47CCAA280BB56FC203BAE6E /* ExportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1A2C850F597AAD8E6B8A1F /* ExportModels.swift */; };
@@ -301,6 +302,7 @@
 		BC092BBEC0446A8B33FF3E7A /* QuickAddNaturalLanguageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddNaturalLanguageParser.swift; sourceTree = "<group>"; };
 		BE07B39987D458DF0BF2B7D5 /* LaunchResourceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceEditorView.swift; sourceTree = "<group>"; };
 		C041E259E1AA3D6238B2A360 /* ThemeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEnvironment.swift; sourceTree = "<group>"; };
+		C36F9256104B1AA7CE934BA8 /* SectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionCard.swift; sourceTree = "<group>"; };
 		C4C02F3CCE23A226FC531579 /* HardFocusSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardFocusSessionManager.swift; sourceTree = "<group>"; };
 		C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoFocusMacApp.swift; sourceTree = "<group>"; };
 		CD2CD5B74E5D46555A530C5A /* DeepFocusTemplateStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusTemplateStoreTests.swift; sourceTree = "<group>"; };
@@ -570,6 +572,7 @@
 				69D7E8E5ABB00A1C6EC8B171 /* InteractiveStyles.swift */,
 				557C0A5FAD5A80348079DDAA /* MotionTokens.swift */,
 				085B1E712E2F332EBC0416BB /* ResizableSplitView.swift */,
+				C36F9256104B1AA7CE934BA8 /* SectionCard.swift */,
 				E7D83311569889B9E7535C52 /* ShadowTokens.swift */,
 				2B5633165F8175CAD2AB7A90 /* ShortcutHintBar.swift */,
 				18071042FF2C42C110635591 /* SpacingTokens.swift */,
@@ -974,6 +977,7 @@
 				460E2FF0EC5F13E47EC00164 /* QuickCaptureView.swift in Sources */,
 				49C094D18BEB5BD380E70B5B /* ResizableSplitView.swift in Sources */,
 				98FEBD78B7C911D8AD057405 /* RootView.swift in Sources */,
+				CF2955A202B58FC057AA11B0 /* SectionCard.swift in Sources */,
 				A07A6F7772AE2B855A31DB11 /* SelectionState.swift in Sources */,
 				EF6BCA8F5969CF778AB4177C /* SettingsView.swift in Sources */,
 				5F12FCAFDB342F98CCC3D98F /* ShadowTokens.swift in Sources */,
