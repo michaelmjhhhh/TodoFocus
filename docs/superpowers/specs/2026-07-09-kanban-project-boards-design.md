@@ -44,8 +44,8 @@ A GRDB migration adds four tables.
 
 - `id`: text primary key
 - `name`: non-empty text
-- `color`: validated color value
-- `goal`: text
+- `color`: validated `#RRGGBB` value
+- `goal`: non-empty text
 - `createdAt`: date
 - `updatedAt`: date
 
@@ -82,15 +82,16 @@ Deleting a project cascades to its cards, labels, and checklist items. Deleting 
 
 ## State and Data Flow
 
-- `KanbanStore` loads project summaries and keeps the selected project for the current app session.
+- `KanbanStore` loads project summaries alphabetically and keeps the selected project for the current app session. On first entry, it selects the first project alphabetically.
 - Selecting a project loads its active cards, labels, and checklist data.
 - A new card enters Backlog at the bottom of that column unless created from another column's Add Card action.
-- Dragging within a column persists manual ordering.
-- Dragging between columns updates status and ordering in one database transaction.
+- Card order is represented by dense, zero-based `sortOrder` values within each project and status.
+- Dragging within a column renormalizes that column's order in one database transaction.
+- Dragging between columns updates status and renormalizes both affected columns in one database transaction.
 - Moving a card to Done does not archive it.
-- Archiving removes a card from the active board. An Archived Cards sheet supports restoration or permanent deletion.
+- Archiving removes a card from the active board. An Archived Cards sheet supports restoration or permanent deletion. Restoring returns the card to the bottom of its retained status column.
 - Repository mutations succeed before committed in-memory state is published. A failed drag restores the previous card position.
-- Deleting the selected card closes its detail panel. Deleting the selected project closes the panel and selects the next available project, if any.
+- Deleting the selected card closes its detail panel. Deleting the selected project closes the panel and selects the first remaining project alphabetically; if none remain, the empty-project state appears.
 
 ## Board UI
 
@@ -115,7 +116,7 @@ The detail panel supports:
 - a non-drag status control
 - archive and delete actions
 
-Direct text edits follow the app's established debounced-persistence pattern where appropriate. Status, priority, archive, and delete actions persist immediately.
+Project names and card titles persist on submit or focus loss. Multiline project goals and card descriptions persist after a 300-millisecond debounce. Labels and checklist items persist through explicit add, edit, toggle, reorder, and delete actions. Status, priority, due date, archive, and delete actions persist immediately.
 
 ## Accessibility and Keyboard Behavior
 
@@ -127,15 +128,16 @@ Direct text edits follow the app's established debounced-persistence pattern whe
 
 ## Validation and Error Handling
 
-- Trim project names, card titles, label names, and checklist titles; reject empty values.
-- Define explicit length limits for project names/goals, card titles/descriptions, labels, and checklist titles.
-- Define maximum label and checklist-item counts per card.
-- Validate project colors and persisted status/priority values.
-- Invalid persisted enum values fall back safely and surface a repairable data error rather than crashing.
+- Trim project names, project goals, card titles, label names, and checklist titles; reject empty values.
+- Limit project names to 100 characters and project goals to 500 characters.
+- Limit card titles to 200 characters and card descriptions to 10,000 characters.
+- Limit label names to 40 characters and each card to 10 labels.
+- Limit checklist titles to 200 characters and each card to 50 checklist items.
+- Validate project colors as six-digit hexadecimal values in `#RRGGBB` form.
+- Invalid persisted status values display the card in Backlog; invalid priority values display Medium. Either fallback raises a dismissible data-repair banner.
+- Encode all limits and fallback rules as named validation constants with unit tests.
 - Board mutations are transactional. Failed persistence leaves or restores the UI to the last confirmed state.
-- Repository failures appear in a dismissible inline board banner with retry where the operation is safely repeatable.
-
-Exact field-length and count limits will be chosen in the implementation plan and encoded as named validation constants with unit tests.
+- Repository failures appear in a dismissible inline board banner. Retry is offered only for idempotent loads and updates, never for destructive operations.
 
 ## Testing Strategy
 
