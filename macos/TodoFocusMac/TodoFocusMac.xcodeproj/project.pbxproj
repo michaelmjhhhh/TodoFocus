@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		00E12C0E0B5C03FC82CAA763 /* DeepFocusStatsReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */; };
+		058687941620CA0FD73F15F5 /* KanbanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3CF7D6B0223FD11899DDBF /* KanbanStore.swift */; };
 		05A4E94740B3822DF32846A2 /* HardFocusAgentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034819C4AD6863939B8A97A4 /* HardFocusAgentManager.swift */; };
+		06A6E12D0F1120DF21122341 /* KanbanStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1404313B878D09E023C75699 /* KanbanStoreTests.swift */; };
 		07373834032FFBC55E3FE5BC /* TodoFocusWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F4E3FD7CC651BADA474160 /* TodoFocusWidgetsBundle.swift */; };
 		087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */; };
 		0D712A2D40E42F756ACA4420 /* KanbanProjectRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB3FD918645A3C0E346A7F /* KanbanProjectRepository.swift */; };
@@ -192,9 +194,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolderSpec = 6;
 			files = (
-				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
+				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,9 +205,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 6;
+			dstSubfolderSpec = 13;
 			files = (
-				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
+				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,6 +230,7 @@
 		0CBB93E177F1BAE2BD678353 /* TodoFocusMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoFocusMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1029B9E04898D7E4C826988D /* DailyReviewWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewWidget.swift; sourceTree = "<group>"; };
 		10C4E9EB9EEDE55EC25A2997 /* TodoAppStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoAppStoreTests.swift; sourceTree = "<group>"; };
+		1404313B878D09E023C75699 /* KanbanStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanStoreTests.swift; sourceTree = "<group>"; };
 		16E091CF73EAB5386C5F51AF /* ThemeTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTokens.swift; sourceTree = "<group>"; };
 		173B7FBF596FE48369C865FF /* CoreTodo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTodo.swift; sourceTree = "<group>"; };
 		18071042FF2C42C110635591 /* SpacingTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacingTokens.swift; sourceTree = "<group>"; };
@@ -350,6 +353,7 @@
 		ED12BC2EBC6A94017376AAA8 /* KanbanRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanRepository.swift; sourceTree = "<group>"; };
 		EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 		F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusStatsReportView.swift; sourceTree = "<group>"; };
+		FC3CF7D6B0223FD11899DDBF /* KanbanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -542,6 +546,7 @@
 				9648E11182E6DEA84D7C6626 /* HardFocusSessionManagerTests.swift */,
 				E65D5D5CC645E1B7DA3CCB1B /* KanbanModelTests.swift */,
 				2CA26815AE286B598020E0D1 /* KanbanOrderingTests.swift */,
+				1404313B878D09E023C75699 /* KanbanStoreTests.swift */,
 				7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */,
 				3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */,
 				28871DC8EDACA8A843BBC9B2 /* QuickAddNaturalLanguageParserTests.swift */,
@@ -685,6 +690,7 @@
 				034819C4AD6863939B8A97A4 /* HardFocusAgentManager.swift */,
 				1C5CA8CF25F37C0C4358BE53 /* HardFocusInProcessEnforcer.swift */,
 				C4C02F3CCE23A226FC531579 /* HardFocusSessionManager.swift */,
+				FC3CF7D6B0223FD11899DDBF /* KanbanStore.swift */,
 				ABC90DAB9D3BCB9A0A483E24 /* LaunchpadService.swift */,
 				729482FCE1EC68FFAD05F576 /* QuickCaptureService.swift */,
 				2F3E319E19EF05FA501E7B85 /* SelectionState.swift */,
@@ -1026,6 +1032,7 @@
 				0D712A2D40E42F756ACA4420 /* KanbanProjectRepository.swift in Sources */,
 				7C17125860E3E771482294F8 /* KanbanRecordMappings.swift in Sources */,
 				1EFBFC78BD422B3900502264 /* KanbanRepository.swift in Sources */,
+				058687941620CA0FD73F15F5 /* KanbanStore.swift in Sources */,
 				75F615F6234CEA4740D22663 /* KanbanValidation.swift in Sources */,
 				7888AA64CCB1C0DAB036F4F1 /* LaunchResource.swift in Sources */,
 				2A77C39A5E1C252544AB40F1 /* LaunchResourceEditorView.swift in Sources */,
@@ -1106,6 +1113,7 @@
 				32FBE87DD9EB80B6D5112D8A /* HardFocusSessionManagerTests.swift in Sources */,
 				1C74529C0AF9749DB738AEF7 /* KanbanModelTests.swift in Sources */,
 				B0C5ED1C1635838C76EDF475 /* KanbanOrderingTests.swift in Sources */,
+				06A6E12D0F1120DF21122341 /* KanbanStoreTests.swift in Sources */,
 				B2FE5800F1C2848B1C954FF4 /* LaunchResourceValidationTests.swift in Sources */,
 				9F0592BDD879782AB111AE51 /* LaunchpadServiceTests.swift in Sources */,
 				28ACC25618CB3B0DD094C485 /* QuickAddNaturalLanguageParserTests.swift in Sources */,
