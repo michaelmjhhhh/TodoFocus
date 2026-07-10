@@ -11,6 +11,7 @@
 		05A4E94740B3822DF32846A2 /* HardFocusAgentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034819C4AD6863939B8A97A4 /* HardFocusAgentManager.swift */; };
 		07373834032FFBC55E3FE5BC /* TodoFocusWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F4E3FD7CC651BADA474160 /* TodoFocusWidgetsBundle.swift */; };
 		087809BC66AE962FA0518A3E /* DeepFocusReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504E4980F2F0A6C58014D11 /* DeepFocusReportView.swift */; };
+		0D712A2D40E42F756ACA4420 /* KanbanProjectRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB3FD918645A3C0E346A7F /* KanbanProjectRepository.swift */; };
 		0DE2C0C815D0F79A3F3BFCD9 /* DeepFocusMenuBarPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B2E637FB68A3509DEF191A /* DeepFocusMenuBarPanel.swift */; };
 		0EDA51E619FC88E2BF87629B /* VisualTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC7B115E98F0487D59FC4C /* VisualTokens.swift */; };
 		0F70D4013B41F9FBC4C4C4CB /* FeatureBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2BAFAFCA61F7CE9BF74C85 /* FeatureBehaviorTests.swift */; };
@@ -21,10 +22,12 @@
 		1B657D8D1A98A8F91A6CBBB5 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB414833F47C20B5284EA0B /* MigrationTests.swift */; };
 		1C74529C0AF9749DB738AEF7 /* KanbanModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65D5D5CC645E1B7DA3CCB1B /* KanbanModelTests.swift */; };
 		1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = B6D04E4A532D24A131DABCEB /* TodoFocusAgent */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1EFBFC78BD422B3900502264 /* KanbanRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED12BC2EBC6A94017376AAA8 /* KanbanRepository.swift */; };
 		1F174A73A98E17EDE018CB3A /* AgentHeartbeatRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711B45181613FE1BF17FFFCC /* AgentHeartbeatRecordTests.swift */; };
 		207C83314051B92B1810A45A /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 417BF9D384CB7E95497290B3 /* Todo.swift */; };
 		20AA60BA6B96F4EE69ED19A3 /* AgentSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC643C7BAC3501E9EFCC810F /* AgentSessionController.swift */; };
 		22DEC2A9F2055F21D3C2F84B /* TodoQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03542634FD66D0DA72745A3B /* TodoQuery.swift */; };
+		22EFE13EAC33C78726374718 /* KanbanRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80360BDFCB9566E4FB148145 /* KanbanRepositoryTests.swift */; };
 		243B5B18ADC816895A198044 /* ThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0EACE45650F8B34190D4A3 /* ThemeStore.swift */; };
 		2478E09007414B82EC20501B /* TodoFocusMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C714727C5D2521DFF716DC5F /* TodoFocusMacApp.swift */; };
 		2488D4F86087E1711676B089 /* TimeFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDF00C67B73AFD0EEAD7E8C /* TimeFilterTests.swift */; };
@@ -57,6 +60,7 @@
 		4E502D71D14C35BD7194756F /* WindowPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2983BB79FF8DA2AC19883045 /* WindowPersistence.swift */; };
 		531075B772988D227CF63410 /* KanbanOrdering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400109144C86C44B33EE42DD /* KanbanOrdering.swift */; };
 		5543700716C62441E47C8B5D /* DeepFocusMenuBarState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9BB691054BF0047578831 /* DeepFocusMenuBarState.swift */; };
+		56B2EA24008594783AEEFC9F /* KanbanCardRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA69496128B04CAD6481D71A /* KanbanCardRepository.swift */; };
 		5E58FB1D3B728345614D7D19 /* DailyReviewWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81AAACF970615DDA322C2403 /* DailyReviewWidgetView.swift */; };
 		5F12FCAFDB342F98CCC3D98F /* ShadowTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D83311569889B9E7535C52 /* ShadowTokens.swift */; };
 		5FD60125EFC0965590F89843 /* HardFocusInProcessEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CA8CF25F37C0C4358BE53 /* HardFocusInProcessEnforcer.swift */; };
@@ -71,6 +75,7 @@
 		6BEC76E1088A740B4FC7425E /* DailyReviewPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0402CB106A402D2F021CE504 /* DailyReviewPreviewService.swift */; };
 		6D031A2F8932B61B8EC44ED9 /* DeepFocusTimerNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F213B8DC45CE5527CE01193 /* DeepFocusTimerNotifier.swift */; };
 		6D5875620AFAA79CA0D62F07 /* KanbanChecklistItemRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA4B325A85C36EC3386920 /* KanbanChecklistItemRecord.swift */; };
+		6E745DE661D7244FB70AD100 /* KanbanCardChildrenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA59914D2321DE4FAF52C07 /* KanbanCardChildrenRepository.swift */; };
 		6EBDB9251FCFF084D803836F /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 24C8B9242CA9CA31D8088E71 /* GRDB */; };
 		72265A1B4F06BA340DDAABE8 /* DeepFocusTimerNotifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F36B8CD94963F72C3AF8041 /* DeepFocusTimerNotifierTests.swift */; };
 		74954EDEB70941B041B24896 /* KanbanCardLabelRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4041F3F6C64CAECE99C4D71 /* KanbanCardLabelRecord.swift */; };
@@ -238,6 +243,7 @@
 		2CA26815AE286B598020E0D1 /* KanbanOrderingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanOrderingTests.swift; sourceTree = "<group>"; };
 		2DA53D4632EFDA5206A1C1A8 /* SmartListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListFilterTests.swift; sourceTree = "<group>"; };
 		2DCDE1A9D59AEFBB5E780485 /* QuickCapturePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickCapturePanel.swift; sourceTree = "<group>"; };
+		2EEB3FD918645A3C0E346A7F /* KanbanProjectRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanProjectRepository.swift; sourceTree = "<group>"; };
 		2F36B8CD94963F72C3AF8041 /* DeepFocusTimerNotifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusTimerNotifierTests.swift; sourceTree = "<group>"; };
 		2F3E319E19EF05FA501E7B85 /* SelectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionState.swift; sourceTree = "<group>"; };
 		300362A9AC2F5216AB719E68 /* DailyReviewBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewBoard.swift; sourceTree = "<group>"; };
@@ -253,6 +259,7 @@
 		3CCE7E86937A152A989DCFCD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3D33F3EBD610561E79741C23 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		3DA7AAC0FF83F494BEC3E1A8 /* LaunchResourceValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchResourceValidationTests.swift; sourceTree = "<group>"; };
+		3EA59914D2321DE4FAF52C07 /* KanbanCardChildrenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanCardChildrenRepository.swift; sourceTree = "<group>"; };
 		3F7C7F2B40002DD63B8FFBD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		400109144C86C44B33EE42DD /* KanbanOrdering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanOrdering.swift; sourceTree = "<group>"; };
 		417BF9D384CB7E95497290B3 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
@@ -285,6 +292,7 @@
 		75FE53B3714FB5FC28F58150 /* TypographyTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypographyTokens.swift; sourceTree = "<group>"; };
 		77780E76FD121D34BF6D7EE3 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		7E3A1DE3A9EA54D73DFC6448 /* LaunchpadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadServiceTests.swift; sourceTree = "<group>"; };
+		80360BDFCB9566E4FB148145 /* KanbanRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanRepositoryTests.swift; sourceTree = "<group>"; };
 		80CC7B115E98F0487D59FC4C /* VisualTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualTokens.swift; sourceTree = "<group>"; };
 		812E495363C7EE87B8EF21E1 /* DailyReviewViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewViewTests.swift; sourceTree = "<group>"; };
 		81AAACF970615DDA322C2403 /* DailyReviewWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewWidgetView.swift; sourceTree = "<group>"; };
@@ -335,9 +343,11 @@
 		E6BA4B325A85C36EC3386920 /* KanbanChecklistItemRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanChecklistItemRecord.swift; sourceTree = "<group>"; };
 		E72D997E60421BA37BC058B1 /* HardFocusSessionRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardFocusSessionRecordTests.swift; sourceTree = "<group>"; };
 		E7D83311569889B9E7535C52 /* ShadowTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowTokens.swift; sourceTree = "<group>"; };
+		EA69496128B04CAD6481D71A /* KanbanCardRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanCardRepository.swift; sourceTree = "<group>"; };
 		EA83C04DBE6BA2D4990E7C67 /* TodoRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRowView.swift; sourceTree = "<group>"; };
 		EB028DBEA94826E11F650EB4 /* HardFocusIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardFocusIntegrationTests.swift; sourceTree = "<group>"; };
 		EC647BFFA3E7610B719CF793 /* KanbanProjectRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanProjectRecord.swift; sourceTree = "<group>"; };
+		ED12BC2EBC6A94017376AAA8 /* KanbanRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanRepository.swift; sourceTree = "<group>"; };
 		EDAD163056EA96CD2BF6C0D5 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 		F0473ACA56E9FD98B765D1A5 /* DeepFocusStatsReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusStatsReportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -441,6 +451,10 @@
 			isa = PBXGroup;
 			children = (
 				D71E865977B18B59F958122D /* HardFocusSessionRepository.swift */,
+				3EA59914D2321DE4FAF52C07 /* KanbanCardChildrenRepository.swift */,
+				EA69496128B04CAD6481D71A /* KanbanCardRepository.swift */,
+				2EEB3FD918645A3C0E346A7F /* KanbanProjectRepository.swift */,
+				ED12BC2EBC6A94017376AAA8 /* KanbanRepository.swift */,
 				6B9E972A5D6A75831750C718 /* ListRepository.swift */,
 				988EA3A536904886FAC704C1 /* StepRepository.swift */,
 				9BC2D82AE6A92695B56A24B3 /* TodoRepository.swift */,
@@ -699,6 +713,7 @@
 				D82EB36E626694B5222FBD25 /* ExportServiceTests.swift */,
 				E72D997E60421BA37BC058B1 /* HardFocusSessionRecordTests.swift */,
 				BAD9649B71E03B90C08B176B /* KanbanMigrationTests.swift */,
+				80360BDFCB9566E4FB148145 /* KanbanRepositoryTests.swift */,
 				3AB414833F47C20B5284EA0B /* MigrationTests.swift */,
 				74B6BB22FC0D4D6E37269721 /* StepRepositoryTests.swift */,
 				0047BD03BFF1CB3B2F5A5143 /* TodoDetailMutationTests.swift */,
@@ -957,6 +972,7 @@
 				8F24D1B5C9DE6DA6896DDB09 /* ExportServiceTests.swift in Sources */,
 				4AC71EE5815AC94388EAB685 /* HardFocusSessionRecordTests.swift in Sources */,
 				DD84373E1BD976A1215692C2 /* KanbanMigrationTests.swift in Sources */,
+				22EFE13EAC33C78726374718 /* KanbanRepositoryTests.swift in Sources */,
 				1B657D8D1A98A8F91A6CBBB5 /* MigrationTests.swift in Sources */,
 				10341A4956E2D5A4DCB19F6A /* StepRepositoryTests.swift in Sources */,
 				F29884FDFC44D04D39363CDF /* TodoDetailMutationTests.swift in Sources */,
@@ -999,13 +1015,17 @@
 				F608887EF174F394604FA5CF /* HardFocusSessionRepository.swift in Sources */,
 				D2F5C48FDC857B3D6D2B6E36 /* ImmersiveHeaderView.swift in Sources */,
 				82D99CCE3720B8974B8FD9AE /* InteractiveStyles.swift in Sources */,
+				6E745DE661D7244FB70AD100 /* KanbanCardChildrenRepository.swift in Sources */,
 				74954EDEB70941B041B24896 /* KanbanCardLabelRecord.swift in Sources */,
 				ECA5912A8B3082BC6A45F278 /* KanbanCardRecord.swift in Sources */,
+				56B2EA24008594783AEEFC9F /* KanbanCardRepository.swift in Sources */,
 				6D5875620AFAA79CA0D62F07 /* KanbanChecklistItemRecord.swift in Sources */,
 				EC65CA13C38C4E623087286A /* KanbanModels.swift in Sources */,
 				531075B772988D227CF63410 /* KanbanOrdering.swift in Sources */,
 				A0E57BDE6AF51584392441F4 /* KanbanProjectRecord.swift in Sources */,
+				0D712A2D40E42F756ACA4420 /* KanbanProjectRepository.swift in Sources */,
 				7C17125860E3E771482294F8 /* KanbanRecordMappings.swift in Sources */,
+				1EFBFC78BD422B3900502264 /* KanbanRepository.swift in Sources */,
 				75F615F6234CEA4740D22663 /* KanbanValidation.swift in Sources */,
 				7888AA64CCB1C0DAB036F4F1 /* LaunchResource.swift in Sources */,
 				2A77C39A5E1C252544AB40F1 /* LaunchResourceEditorView.swift in Sources */,
