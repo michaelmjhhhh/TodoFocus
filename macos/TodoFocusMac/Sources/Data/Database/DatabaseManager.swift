@@ -24,6 +24,10 @@ final class DatabaseManager {
 
     func clearAllTables() throws {
         try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM kanban_checklist_item")
+            try db.execute(sql: "DELETE FROM kanban_card_label")
+            try db.execute(sql: "DELETE FROM kanban_card")
+            try db.execute(sql: "DELETE FROM kanban_project")
             try db.execute(sql: "DELETE FROM step")
             try db.execute(sql: "DELETE FROM todo")
             try db.execute(sql: "DELETE FROM list")

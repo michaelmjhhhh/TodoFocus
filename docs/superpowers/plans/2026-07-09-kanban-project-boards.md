@@ -381,8 +381,10 @@ migrator.registerMigration("v5_kanban_project_boards") { db in
         t.column("projectId", .text).notNull().references("kanban_project", onDelete: .cascade)
         t.column("title", .text).notNull()
         t.column("description", .text).notNull().defaults(to: "")
-        t.column("status", .text).notNull().defaults(to: KanbanStatus.backlog.rawValue)
-        t.column("priority", .text).notNull().defaults(to: KanbanPriority.medium.rawValue)
+        // Keep shared migration code independent from app-only Core types because
+        // Migrations.swift is also compiled into the TodoFocusAgent target.
+        t.column("status", .text).notNull().defaults(to: "backlog")
+        t.column("priority", .text).notNull().defaults(to: "medium")
         t.column("dueDate", .datetime)
         t.column("sortOrder", .integer).notNull().defaults(to: 0)
         t.column("isArchived", .boolean).notNull().defaults(to: false)

@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
+    @Bindable var kanbanStore: KanbanStore
     let launchpadService: LaunchpadService
     let databasePath: String
     @State private var containerWidth: Double = 1200
@@ -22,7 +23,9 @@ struct RootView: View {
                         .background(themeTokens.bgElevated)
                 }
 
-                if appModel.selection == .dailyReview {
+                if appModel.selection == .kanban {
+                    KanbanView(store: kanbanStore)
+                } else if appModel.selection == .dailyReview {
                     DailyReviewView(appModel: appModel, store: store)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -30,7 +33,7 @@ struct RootView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
 
-                if store.selectedTodo != nil {
+                if appModel.selection != .kanban, store.selectedTodo != nil {
                     Rectangle()
                         .fill(.clear)
                         .frame(width: 10)
@@ -70,9 +73,36 @@ struct RootView: View {
                     .shadowMedium()
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
+
+                if appModel.selection == .kanban, kanbanStore.selectedCard != nil {
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(width: 10)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    if detailPanelDragStartWidth == nil { detailPanelDragStartWidth = detailPanelLiveWidth }
+                                    detailPanelLiveWidth = WindowPersistence.clampDetailWidth((detailPanelDragStartWidth ?? detailPanelLiveWidth) - value.translation.width, windowWidth: proxy.size.width)
+                                }
+                                .onEnded { value in
+                                    appModel.updateDetailPanelWidth((detailPanelDragStartWidth ?? detailPanelLiveWidth) - value.translation.width, windowWidth: proxy.size.width)
+                                    detailPanelLiveWidth = appModel.detailPanelWidth
+                                    detailPanelDragStartWidth = nil
+                                }
+                        )
+                    KanbanCardDetailView(store: kanbanStore) {
+                        withAnimation(MotionTokens.panelSpring) { kanbanStore.selectedCardID = nil }
+                    }
+                    .frame(width: detailPanelLiveWidth)
+                    .background(themeTokens.panelBackground)
+                    .shadowMedium()
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
             }
             .background(themeTokens.appBackground)
             .animation(MotionTokens.panelSpring, value: store.selectedTodo?.id)
+            .animation(MotionTokens.panelSpring, value: kanbanStore.selectedCardID)
             .onAppear {
                 containerWidth = proxy.size.width
                 appModel.updateDetailPanelWidth(appModel.detailPanelWidth, windowWidth: containerWidth)

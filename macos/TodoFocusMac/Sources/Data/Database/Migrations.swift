@@ -85,6 +85,47 @@ enum Migrations {
             try db.create(index: "idx_todo_archived_completed_sort", on: "todo", columns: ["isArchived", "isCompleted", "sortOrder", "createdAt"])
         }
 
+        migrator.registerMigration("v5_kanban_project_boards") { db in
+            try db.create(table: "kanban_project") { t in
+                t.column("id", .text).primaryKey()
+                t.column("name", .text).notNull()
+                t.column("color", .text).notNull()
+                t.column("goal", .text).notNull()
+                t.column("createdAt", .datetime).notNull()
+                t.column("updatedAt", .datetime).notNull()
+            }
+            try db.create(table: "kanban_card") { t in
+                t.column("id", .text).primaryKey()
+                t.column("projectId", .text).notNull().references("kanban_project", onDelete: .cascade)
+                t.column("title", .text).notNull()
+                t.column("description", .text).notNull().defaults(to: "")
+                t.column("status", .text).notNull().defaults(to: "backlog")
+                t.column("priority", .text).notNull().defaults(to: "medium")
+                t.column("dueDate", .datetime)
+                t.column("sortOrder", .integer).notNull().defaults(to: 0)
+                t.column("isArchived", .boolean).notNull().defaults(to: false)
+                t.column("createdAt", .datetime).notNull()
+                t.column("updatedAt", .datetime).notNull()
+            }
+            try db.create(table: "kanban_card_label") { t in
+                t.column("id", .text).primaryKey()
+                t.column("cardId", .text).notNull().references("kanban_card", onDelete: .cascade)
+                t.column("name", .text).notNull()
+                t.column("sortOrder", .integer).notNull().defaults(to: 0)
+            }
+            try db.create(table: "kanban_checklist_item") { t in
+                t.column("id", .text).primaryKey()
+                t.column("cardId", .text).notNull().references("kanban_card", onDelete: .cascade)
+                t.column("title", .text).notNull()
+                t.column("isCompleted", .boolean).notNull().defaults(to: false)
+                t.column("sortOrder", .integer).notNull().defaults(to: 0)
+            }
+            try db.create(index: "idx_kanban_project_name", on: "kanban_project", columns: ["name"])
+            try db.create(index: "idx_kanban_card_board_order", on: "kanban_card", columns: ["projectId", "isArchived", "status", "sortOrder"])
+            try db.create(index: "idx_kanban_label_order", on: "kanban_card_label", columns: ["cardId", "sortOrder"])
+            try db.create(index: "idx_kanban_checklist_order", on: "kanban_checklist_item", columns: ["cardId", "sortOrder"])
+        }
+
         return migrator
     }
 }

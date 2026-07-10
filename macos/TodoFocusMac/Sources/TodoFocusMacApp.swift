@@ -34,6 +34,7 @@ struct TodoFocusMacApp: App {
     @State private var appModel = AppModel()
     @State private var themeStore = ThemeStore()
     @State private var store: TodoAppStore?
+    @State private var kanbanStore: KanbanStore?
     @State private var launchpadService = LaunchpadService()
     @State private var startupError: String?
     private let databaseManager: DatabaseManager?
@@ -48,7 +49,9 @@ struct TodoFocusMacApp: App {
             let todoRepository = TodoRepository(dbQueue: manager.dbQueue)
             let stepRepository = StepRepository(dbQueue: manager.dbQueue)
             let hardFocusRepository = HardFocusSessionRepository(dbQueue: manager.dbQueue)
+            let kanbanRepository = KanbanRepository(dbQueue: manager.dbQueue)
             _appModel = State(initialValue: model)
+            _kanbanStore = State(initialValue: KanbanStore(repository: kanbanRepository))
             _store = State(
                 initialValue: TodoAppStore(
                     appModel: model,
@@ -68,10 +71,11 @@ struct TodoFocusMacApp: App {
     var body: some Scene {
         WindowGroup(id: SceneIDs.mainWindow) {
             Group {
-                if let store {
+                if let store, let kanbanStore {
                     RootView(
                         appModel: appModel,
                         store: store,
+                        kanbanStore: kanbanStore,
                         launchpadService: launchpadService,
                         databasePath: databaseManager?.path ?? "unavailable"
                     )

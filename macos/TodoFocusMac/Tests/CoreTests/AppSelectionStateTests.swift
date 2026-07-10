@@ -39,6 +39,9 @@ final class AppSelectionStateTests: XCTestCase {
 
         XCTAssertEqual(model.activeViewID, "myday")
 
+        model.selectSidebar(.kanban)
+        XCTAssertEqual(model.activeViewID, "kanban")
+
         model.selectSidebar(.important)
         XCTAssertEqual(model.activeViewID, "important")
 

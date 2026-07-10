@@ -32,6 +32,8 @@ final class AppModel {
         switch selection {
         case .dailyReview:
             return "daily-review"
+        case .kanban:
+            return "kanban"
         case .myDay:
             return "myday"
         case .important:
