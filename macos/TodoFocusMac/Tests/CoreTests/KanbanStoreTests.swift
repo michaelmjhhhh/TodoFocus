@@ -31,6 +31,27 @@ final class KanbanStoreTests: XCTestCase {
         XCTAssertNil(store.selectedCardID)
     }
 
+    func testArchiveRestoreAndPermanentDeleteRefreshesBothCollections() throws {
+        let (store, _) = try makeStore()
+        store.createProject(name: "App", color: "#C46849", goal: "Ship")
+        store.createCard(title: "Build", in: .done)
+        let id = try XCTUnwrap(store.cards.first?.id)
+
+        store.archiveCard(id: id)
+        store.loadArchivedCards()
+        XCTAssertTrue(store.cards.isEmpty)
+        XCTAssertEqual(store.archivedCards.map(\.id), [id])
+
+        store.restoreCard(id: id)
+        XCTAssertEqual(store.cards.map(\.id), [id])
+        XCTAssertTrue(store.archivedCards.isEmpty)
+
+        store.archiveCard(id: id)
+        store.loadArchivedCards()
+        store.permanentlyDeleteArchivedCard(id: id)
+        XCTAssertTrue(store.archivedCards.isEmpty)
+    }
+
     func testColumnsAlwaysUseFixedWorkflowOrder() throws {
         let (store, _) = try makeStore()
         XCTAssertEqual(store.columns.map(\.status), [.backlog, .ready, .inProgress, .blocked, .done])
