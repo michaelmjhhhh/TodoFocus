@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @Bindable var appModel: AppModel
     @Bindable var store: TodoAppStore
+    @Bindable var kanbanStore: KanbanStore
     let launchpadService: LaunchpadService
     let databasePath: String
     @State private var containerWidth: Double = 1200
@@ -22,7 +23,10 @@ struct RootView: View {
                         .background(themeTokens.bgElevated)
                 }
 
-                if appModel.selection == .dailyReview {
+                if appModel.selection == .kanban {
+                    Text("Kanban")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if appModel.selection == .dailyReview {
                     DailyReviewView(appModel: appModel, store: store)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -30,7 +34,7 @@ struct RootView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
 
-                if store.selectedTodo != nil {
+                if appModel.selection != .kanban, store.selectedTodo != nil {
                     Rectangle()
                         .fill(.clear)
                         .frame(width: 10)

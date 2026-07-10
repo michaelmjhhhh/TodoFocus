@@ -25,6 +25,7 @@ struct SidebarView: View {
                     .foregroundStyle(tokens.textSecondary)
 
                 smartRow("Daily Review", systemImage: "checklist", selection: .dailyReview)
+                smartRow("Kanban", systemImage: "rectangle.3.group", selection: .kanban)
                 smartRow("My Day", systemImage: "sun.max", selection: .myDay)
                 smartRow("Important", systemImage: "star", selection: .important)
                 smartRow("Planned", systemImage: "calendar", selection: .planned)

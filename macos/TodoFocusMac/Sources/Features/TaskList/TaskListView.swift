@@ -263,6 +263,8 @@ struct TaskListView: View {
         switch appModel.selection {
         case .dailyReview:
             return "Daily Review"
+        case .kanban:
+            return "Kanban"
         case .myDay:
             return "My Day"
         case .important:

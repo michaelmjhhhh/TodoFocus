@@ -2,6 +2,7 @@ import Foundation
 
 enum SidebarSelection: Equatable {
     case dailyReview
+    case kanban
     case myDay
     case important
     case planned
@@ -12,7 +13,7 @@ enum SidebarSelection: Equatable {
 
     var smartList: SmartList {
         switch self {
-        case .dailyReview:
+        case .dailyReview, .kanban:
             return .all
         case .myDay:
             return .myDay
