@@ -202,9 +202,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolderSpec = 6;
 			files = (
-				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
+				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,9 +213,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 6;
+			dstSubfolderSpec = 13;
 			files = (
-				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
+				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
