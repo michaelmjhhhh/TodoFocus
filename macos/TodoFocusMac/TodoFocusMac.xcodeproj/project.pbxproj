@@ -51,6 +51,7 @@
 		398F21706296FAAA014823D5 /* TodoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF39FF31F1FD2127E4C901 /* TodoAppStore.swift */; };
 		3B49F5A7AF6439E2453FC53B /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0FBC628810409AC97FA334 /* List.swift */; };
 		3C6F2349B5015A515214E282 /* AppSelectionStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CDF2379D349CC273493E5 /* AppSelectionStateTests.swift */; };
+		3CE14BE1B21413C339CA20D6 /* KanbanCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20CEBA561D21E192006E67C /* KanbanCardDetailView.swift */; };
 		3DD36CBB8693BC8526E1D406 /* SpacingTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18071042FF2C42C110635591 /* SpacingTokens.swift */; };
 		3DF661CE29113A87E1141782 /* Newsreader-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8CCD9C4E225346AC32DBDCF /* Newsreader-Italic.ttf */; };
 		3F046D236FE88C3F72BC1407 /* AgentDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6963116D658CFF84A42B30E8 /* AgentDatabase.swift */; };
@@ -200,9 +201,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 6;
+			dstSubfolderSpec = 13;
 			files = (
-				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
+				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -211,9 +212,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolderSpec = 6;
 			files = (
-				6A15C18C3286FEF1BADE86A6 /* TodoFocusWidgetExtension.appex in Embed Dependencies */,
+				1D1D43DF8BC675823A12F3FB /* TodoFocusAgent in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -325,6 +326,7 @@
 		988EA3A536904886FAC704C1 /* StepRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepRepository.swift; sourceTree = "<group>"; };
 		98CC14165EF1DF01CB5A975E /* DailyReviewWidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyReviewWidgetEntry.swift; sourceTree = "<group>"; };
 		9BC2D82AE6A92695B56A24B3 /* TodoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepository.swift; sourceTree = "<group>"; };
+		A20CEBA561D21E192006E67C /* KanbanCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanCardDetailView.swift; sourceTree = "<group>"; };
 		A4B2E637FB68A3509DEF191A /* DeepFocusMenuBarPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepFocusMenuBarPanel.swift; sourceTree = "<group>"; };
 		A7AF6A4A3CE241E3341FE30A /* TodoRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRepositoryTests.swift; sourceTree = "<group>"; };
 		ABC90DAB9D3BCB9A0A483E24 /* LaunchpadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadService.swift; sourceTree = "<group>"; };
@@ -792,6 +794,7 @@
 			children = (
 				25AFCC464AAB8DB4F9699794 /* KanbanArchiveView.swift */,
 				533E56816DA22F89DFF50E90 /* KanbanBoardView.swift */,
+				A20CEBA561D21E192006E67C /* KanbanCardDetailView.swift */,
 				34C1850F799C8F091EB1C87C /* KanbanCardDragPayload.swift */,
 				F9196DC775B746AB855327D6 /* KanbanCardView.swift */,
 				2FEEAD10D1078A139CF2754D /* KanbanColumnView.swift */,
@@ -1050,6 +1053,7 @@
 				6CA2CA1854A7C998CE052FED /* KanbanArchiveView.swift in Sources */,
 				EDEC9D622155CF4FF9307AAB /* KanbanBoardView.swift in Sources */,
 				6E745DE661D7244FB70AD100 /* KanbanCardChildrenRepository.swift in Sources */,
+				3CE14BE1B21413C339CA20D6 /* KanbanCardDetailView.swift in Sources */,
 				32A6293C00C3E780713704CB /* KanbanCardDragPayload.swift in Sources */,
 				74954EDEB70941B041B24896 /* KanbanCardLabelRecord.swift in Sources */,
 				ECA5912A8B3082BC6A45F278 /* KanbanCardRecord.swift in Sources */,
