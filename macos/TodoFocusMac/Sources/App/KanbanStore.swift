@@ -77,9 +77,11 @@ final class KanbanStore {
     func setSelectedCardPriority(_ value: KanbanPriority) { updateSelectedCard(.init(priority: value)) }
     func setSelectedCardDueDate(_ value: Date?) { var input = UpdateKanbanCardInput(); input.dueDate = .some(value); updateSelectedCard(input) }
     func moveCard(id: String, to status: KanbanStatus, destinationIndex: Int) { mutate { try repository.moveCard(id: id, to: status, destinationIndex: destinationIndex, now: now()); try reloadCards() } }
-    func archiveSelectedCard() { guard let id = selectedCardID else { return }; mutate { try repository.archiveCard(id: id, now: now()); selectedCardID = nil; try reloadCards() } }
+    func archiveSelectedCard() { guard let id = selectedCardID else { return }; archiveCard(id: id) }
+    func archiveCard(id: String) { mutate { try repository.archiveCard(id: id, now: now()); if selectedCardID == id { selectedCardID = nil }; try reloadCards() } }
     func restoreCard(id: String) { mutate { try repository.restoreCard(id: id, now: now()); try reloadCards(); try loadArchivedCardsThrowing() } }
-    func deleteSelectedCard() { guard let id = selectedCardID else { return }; mutate { try repository.deleteCard(id: id); selectedCardID = nil; try reloadCards() } }
+    func deleteSelectedCard() { guard let id = selectedCardID else { return }; deleteCard(id: id) }
+    func deleteCard(id: String) { mutate { try repository.deleteCard(id: id); if selectedCardID == id { selectedCardID = nil }; try reloadCards() } }
     func permanentlyDeleteArchivedCard(id: String) { mutate { try repository.deleteCard(id: id); try loadArchivedCardsThrowing() } }
     func loadArchivedCards() { do { try loadArchivedCardsThrowing() } catch { show(error, retryable: true) } }
 

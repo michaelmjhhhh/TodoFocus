@@ -24,8 +24,7 @@ struct RootView: View {
                 }
 
                 if appModel.selection == .kanban {
-                    Text("Kanban")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    KanbanView(store: kanbanStore)
                 } else if appModel.selection == .dailyReview {
                     DailyReviewView(appModel: appModel, store: store)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
