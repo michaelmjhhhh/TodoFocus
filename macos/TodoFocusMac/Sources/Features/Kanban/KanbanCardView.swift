@@ -36,7 +36,7 @@ struct KanbanCardView: View {
             Button("Archive") { store.archiveCard(id: card.id) }
             Button("Delete", role: .destructive) { store.deleteCard(id: card.id) }
         }
-        .accessibilityLabel("\(card.title), \(card.priority.title) priority")
+        .accessibilityLabel(Self.accessibilitySummary(card))
     }
 
     private var priorityColor: Color {
@@ -45,5 +45,13 @@ struct KanbanCardView: View {
     static func checklistProgress(_ card: KanbanCard) -> String? {
         guard !card.checklist.isEmpty else { return nil }
         return "\(card.checklist.filter(\.isCompleted).count)/\(card.checklist.count)"
+    }
+
+    static func accessibilitySummary(_ card: KanbanCard) -> String {
+        var parts = [card.title, card.status.title, "\(card.priority.title) priority"]
+        if !card.checklist.isEmpty {
+            parts.append("\(card.checklist.filter(\.isCompleted).count) of \(card.checklist.count) checklist items complete")
+        }
+        return parts.joined(separator: ", ")
     }
 }
