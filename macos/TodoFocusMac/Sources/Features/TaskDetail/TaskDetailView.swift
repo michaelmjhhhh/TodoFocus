@@ -38,7 +38,6 @@ struct TaskDetailView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        dateSection(todo: todo)
                         if todo.focusTimeSeconds > 0 {
                             focusTimeSection(todo: todo)
                         }
@@ -145,7 +144,7 @@ struct TaskDetailView: View {
         let titleStrokeWidth: CGFloat = (hasValidationError || isTitleFocused) ? 1.2 : 0
         let titleGlowOpacity: Double = (isTitleFocused && !hasValidationError) ? 0.52 : 0
 
-        return VStack(alignment: .leading, spacing: SpacingTokens.sm) {
+        return VStack(alignment: .leading, spacing: SpacingTokens.lg) {
             HStack(spacing: SpacingTokens.sm) {
                 VStack(alignment: .leading, spacing: SpacingTokens.sm) {
                     TextField("Task title", text: $titleText)
@@ -222,18 +221,9 @@ struct TaskDetailView: View {
                     .accessibilityLabel("Close detail")
                     .help("Close detail")
                 }
-                .padding(.horizontal, SpacingTokens.sm)
-                .padding(.vertical, SpacingTokens.xs)
-                .background(
-                    RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
-                        .fill(isTitleFocused ? tokens.inputSurface : Color.clear)
-                )
-                .overlay {
-                    RoundedRectangle(cornerRadius: RadiusTokens.md, style: .continuous)
-                        .stroke(titleStrokeColor, lineWidth: titleStrokeWidth)
-                }
-                .animation(MotionTokens.focusEase, value: isTitleFocused)
             }
+
+            dateSection(todo: todo)
         }
         .padding(.horizontal, SpacingTokens.lg)
         .padding(.top, SpacingTokens.xl - SpacingTokens.xs)
@@ -863,11 +853,12 @@ struct DeepFocusSetupSheet: View {
                 }
             }
         }
-        .padding(.horizontal, 20)
+        .sectionCard()
+        .padding(.horizontal, SpacingTokens.md)
     }
 
     var body: some View {
-            VStack(spacing: 20) {
+            VStack(spacing: SpacingTokens.md) {
             Text("Start Hard Focus")
                 .font(TypographyTokens.displaySmall)
                 .padding(.top, 20)
@@ -879,7 +870,6 @@ struct DeepFocusSetupSheet: View {
                     Text("Infinite").tag(false)
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 20)
 
                 if isTimedMode {
                     VStack(spacing: 16) {
@@ -923,7 +913,7 @@ struct DeepFocusSetupSheet: View {
                             .foregroundStyle(minutes < 480 ? tokens.textPrimary : tokens.textTertiary)
                         }
                         .padding(.vertical, 12)
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, SpacingTokens.md)
                         .background(tokens.bgFloating.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
@@ -961,17 +951,17 @@ struct DeepFocusSetupSheet: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 20)
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 } else {
                     Text("Session runs until you manually end it")
                         .font(TypographyTokens.caption)
                         .foregroundStyle(tokens.textSecondary)
-                        .padding(.horizontal, 20)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: isTimedMode)
+            .sectionCard()
+            .padding(.horizontal, SpacingTokens.md)
 
             templateSection
 
@@ -981,7 +971,6 @@ struct DeepFocusSetupSheet: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .foregroundStyle(tokens.textTertiary)
-                    .padding(.horizontal, 20)
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
@@ -1028,13 +1017,9 @@ struct DeepFocusSetupSheet: View {
                     .padding(.vertical, SpacingTokens.xs)
                 }
                 .frame(maxHeight: 280)
-                .background(tokens.bgFloating.opacity(0.35), in: RoundedRectangle(cornerRadius: RadiusTokens.md))
-                .overlay {
-                    RoundedRectangle(cornerRadius: RadiusTokens.md)
-                        .stroke(tokens.sectionBorder.opacity(0.3), lineWidth: 0.5)
-                }
-                .padding(.horizontal, 20)
             }
+            .sectionCard()
+            .padding(.horizontal, SpacingTokens.md)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Unlock Passphrase")
@@ -1066,7 +1051,8 @@ struct DeepFocusSetupSheet: View {
                     .shadow(color: isPassphraseFocused ? tokens.accentTerracotta.opacity(0.08) : .clear, radius: 8, y: 1)
                     .animation(MotionTokens.focusEase, value: isPassphraseFocused)
             }
-            .padding(.horizontal, 20)
+            .sectionCard()
+            .padding(.horizontal, SpacingTokens.md)
 
             HStack(spacing: SpacingTokens.md) {
                 Button("Cancel") {
@@ -1098,7 +1084,7 @@ struct DeepFocusSetupSheet: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, SpacingTokens.md)
             .padding(.bottom, 20)
         }
         .frame(width: 300)
